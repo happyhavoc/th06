@@ -1,0 +1,8 @@
+{
+    "[c]": {
+        "files.encoding": "shiftjis"
+    },
+    "[cpp]": {
+        "files.encoding": "shiftjis"
+    },
+}

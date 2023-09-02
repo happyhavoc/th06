@@ -1,0 +1,26 @@
+#!/bin/sh
+
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+DL_PATH="$SCRIPT_DIR/dls"
+
+
+ARCHIVE_DOWNLOAD_BASE_URL="https://archive.org/download"
+
+DX8_FILE_NAME="dx8sdk.exe"
+DX8_URL="$ARCHIVE_DOWNLOAD_BASE_URL/dx8sdk/$DX8_FILE_NAME"
+
+VS_02_FILE_NAME="en_vs.net_pro_full.exe"
+VS_02_URL="$ARCHIVE_DOWNLOAD_BASE_URL/en_vs.net_pro_full/$VS_02_FILE_NAME"
+
+mkdir -p $DL_PATH
+pushd $DL_PATH
+if [[ ! -e $DX8_FILE_NAME ]]; then
+    echo "Downloading DirectX 8"
+    curl -L -O $DX8_URL
+fi
+
+if [[ ! -e $VS_02_FILE_NAME ]]; then
+    echo "Downloading Visual Studio .NET 2002 Professional Edition"
+    curl -L -O $VS_02_URL
+fi
+popd
