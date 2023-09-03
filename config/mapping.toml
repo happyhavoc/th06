@@ -904,62 +904,62 @@ address = 0x41c676
 size = 0x56
 
 [[function]]
-name = "FUN_0041c6d0"
+name = "DropChain"
 address = 0x41c6d0
 size = 0x4b
 
 [[function]]
-name = "FUN_0041c720"
+name = "ChainElem::Init"
 address = 0x41c720
 size = 0x61
 
 [[function]]
-name = "FUN_0041c790"
+name = "ChainElem::drop"
 address = 0x41c790
 size = 0x56
 
 [[function]]
-name = "FUN_0041c7f0"
+name = "UnkChain2"
 address = 0x41c7f0
 size = 0x64
 
 [[function]]
-name = "FUN_0041c860"
+name = "Chain::AddToCalcChain"
 address = 0x41c860
 size = 0xda
 
 [[function]]
-name = "FUN_0041c940"
+name = "Chain::AddToDrawChain"
 address = 0x41c940
 size = 0xcd
 
 [[function]]
-name = "FUN_0041ca10"
+name = "RunCalcChain"
 address = 0x41ca10
 size = 0x9d
 
 [[function]]
-name = "FUN_0041cad0"
+name = "RunDrawChain"
 address = 0x41cad0
 size = 0x9e
 
 [[function]]
-name = "FUN_0041cb90"
+name = "Chain::ReleaseSingleChain"
 address = 0x41cb90
 size = 0x17f
 
 [[function]]
-name = "FUN_0041cd10"
+name = "Chain::Release"
 address = 0x41cd10
 size = 0x26
 
 [[function]]
-name = "FUN_0041cd40"
+name = "AllocateChainElem"
 address = 0x41cd40
 size = 0xa0
 
 [[function]]
-name = "FUN_0041cde0"
+name = "CutChain"
 address = 0x41cde0
 size = 0x17c
 
@@ -969,7 +969,7 @@ address = 0x41cf60
 size = 0x55
 
 [[function]]
-name = "FUN_0041cfc0"
+name = "GetControllerInput"
 address = 0x41cfc0
 size = 0x5c0
 
@@ -979,7 +979,7 @@ address = 0x41d580
 size = 0x7f
 
 [[function]]
-name = "FUN_0041d600"
+name = "setButtonFromControllerInputs"
 address = 0x41d600
 size = 0x75
 
@@ -989,7 +989,7 @@ address = 0x41d680
 size = 0x19e
 
 [[function]]
-name = "FUN_0041d820"
+name = "GetInput"
 address = 0x41d820
 size = 0x894
 
@@ -1019,7 +1019,7 @@ address = 0x41e290
 size = 0x1c8
 
 [[function]]
-name = "write_data_to_file"
+name = "WriteConfigToFile"
 address = 0x41e460
 size = 0x63
 
@@ -1349,7 +1349,7 @@ address = 0x423330
 size = 0xb
 
 [[function]]
-name = "FUN_0042333b"
+name = "InputChainCallback"
 address = 0x42333b
 size = 0x44a
 
@@ -1364,12 +1364,12 @@ address = 0x423801
 size = 0x6a
 
 [[function]]
-name = "FUN_0042386b"
+name = "AddInputChain"
 address = 0x42386b
 size = 0x9f
 
 [[function]]
-name = "FUN_0042390a"
+name = "InputChainAddedCallback"
 address = 0x42390a
 size = 0x20a
 
@@ -1379,12 +1379,12 @@ address = 0x423b14
 size = 0x28c
 
 [[function]]
-name = "FUN_00423da0"
+name = "EnumGameControllersCb"
 address = 0x423da0
 size = 0x3f
 
 [[function]]
-name = "FUN_00423ddf"
+name = "InputChainRemovedCallback"
 address = 0x423ddf
 size = 0x160
 
@@ -1424,7 +1424,7 @@ address = 0x4242f3
 size = 0x82
 
 [[function]]
-name = "FUN_00424375"
+name = "GameContext::FUN_00424375"
 address = 0x424375
 size = 0x2d8
 
@@ -1914,12 +1914,12 @@ address = 0x430a50
 size = 0x3b5
 
 [[function]]
-name = "FUN_00430e10"
+name = "SoundPlayer::FUN_00430e10"
 address = 0x430e10
 size = 0xad
 
 [[function]]
-name = "FUN_00430ec0"
+name = "SoundPlayer::playBGM"
 address = 0x430ec0
 size = 0xbe
 
@@ -1939,7 +1939,7 @@ address = 0x4311e0
 size = 0x85
 
 [[function]]
-name = "FUN_00431270"
+name = "playSounds"
 address = 0x431270
 size = 0x100
 
@@ -1954,7 +1954,7 @@ address = 0x431420
 size = 0x4c
 
 [[function]]
-name = "FUN_00431470"
+name = "VeryBigStruct::Init"
 address = 0x431470
 size = 0x1ed
 
@@ -4954,7 +4954,7 @@ address = 0x45c36e
 size = 0xa
 
 [[function]]
-name = "FUN_0045c386"
+name = "sprintf"
 address = 0x45c386
 size = 0x58
 
