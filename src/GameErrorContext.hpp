@@ -29,6 +29,12 @@ class GameErrorContext
     {
     }
 
+    void RstContext()
+    {
+        m_BufferEnd = m_Buffer;
+        m_Buffer[0] = '¥0';
+    }
+
     void Flush();
 };
 

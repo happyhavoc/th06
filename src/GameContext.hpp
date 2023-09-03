@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3d8.h>
+#include <dinput.h>
 
 enum GameConfigOpts
 {
@@ -58,10 +59,19 @@ struct GameContext
 
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
-    /* unknown values */
+    PDIRECT3DDEVICE8 d3dDevice;
+    LPDIRECTINPUT8 dinputIface;
+    LPDIRECTINPUTDEVICE8A keyboard;
+    LPDIRECTINPUTDEVICE8A controller;
+    DIDEVCAPS controllerCaps;
     HWND hwndGameWindow;
-    /* unknown values */
+    D3DMATRIX viewMatrix;
+    D3DMATRIX projectionMatrix;
+    D3DVIEWPORT8 viewport;
+    D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
+
+    int unk198;
 };
 int InitD3dInterface(void);
 

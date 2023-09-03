@@ -5,11 +5,31 @@
 #include <D3DX8.h>
 #include <stdio.h>
 
+#include "Chain.hpp"
 #include "GameContext.hpp"
 #include "GameErrorContext.hpp"
 #include "GameWindow.hpp"
+#include "SoundPlayer.hpp"
+#include "VeryBigStruct.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
+
+int WriteConfigToFile(char *path, void *data, size_t size) {
+    return 0;
+}
+
+int AddInputChain(void) {
+    return 0;
+}
+
+
+int InitD3dDevice(void) {
+    return 0;
+}
+
+int InitD3dRendering(void) {
+    return 0;
+}
 
 void ResetKeyboard(void)
 {
@@ -76,12 +96,18 @@ void CreateGameWindow(HINSTANCE hInstance)
     g_GameContext.hwndGameWindow = g_GameWindow.window;
 }
 
-static int g_SCREENSAVEACTIVE;
-static int g_LOWPOWERACTIVE;
-static int g_POWEROFFACTIVE;
+static int g_ScreenSaveActive;
+static int g_LowPowerActive;
+static int g_PowerOffActive;
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+    int renderResult = 0;
+    int testCoopLevelRes;
+    int testResetRes;
+    MSG msg;
+    VeryBigStruct *vbs;
+
     if (CheckForRunningGameInstance())
     {
         g_GameErrorContext.Flush();
@@ -91,29 +117,108 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     g_GameContext.hInstance = hInstance;
 
-    g_GameContext.Parse(TH_CONFIG_FILE);
+    if (g_GameContext.Parse(TH_CONFIG_FILE)) {
+        g_GameErrorContext.Flush();
+        return -1;
+    }
 
-    if (InitD3dInterface())
-    {
+    if (InitD3dInterface()) {
         g_GameErrorContext.Flush();
         return 1;
     }
 
-    SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, 0, &g_SCREENSAVEACTIVE, 0);
-    SystemParametersInfo(SPI_GETLOWPOWERACTIVE, 0, &g_LOWPOWERACTIVE, 0);
-    SystemParametersInfo(SPI_GETPOWEROFFACTIVE, 0, &g_POWEROFFACTIVE, 0);
-    SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, 0, NULL, SPIF_SENDCHANGE);
-    SystemParametersInfo(SPI_GETLOWPOWERACTIVE, 0, NULL, SPIF_SENDCHANGE);
-    SystemParametersInfo(SPI_GETPOWEROFFACTIVE, 0, NULL, SPIF_SENDCHANGE);
+    SystemParametersInfo(SPI_GETSCREENSAVEACTIVE, 0, &g_ScreenSaveActive, 0);
+    SystemParametersInfo(SPI_GETLOWPOWERACTIVE, 0, &g_LowPowerActive, 0);
+    SystemParametersInfo(SPI_GETPOWEROFFACTIVE, 0, &g_PowerOffActive, 0);
+    SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, 0, NULL, SPIF_SENDCHANGE);
+    SystemParametersInfo(SPI_SETLOWPOWERACTIVE, 0, NULL, SPIF_SENDCHANGE);
+    SystemParametersInfo(SPI_SETPOWEROFFACTIVE, 0, NULL, SPIF_SENDCHANGE);
 
-    while (TRUE)
-    {
+    for (;;) {
         CreateGameWindow(hInstance);
-        // if (InitD3dRendering()) {
-        //     break;
-        // }
+
+        if (InitD3dRendering()) {
+            g_GameErrorContext.Flush();
+            return 1;
+        }
+
+        g_SoundPlayer.Init(g_GameWindow.window);
+        GetJoystickCaps();
         ResetKeyboard();
+
+        vbs = new VeryBigStruct();
+        g_VeryBigStruct = vbs;
+
+        if (AddInputChain() != 0) {
+            goto exit;
+        }
+        if (!g_GameContext.cfg.windowed) {
+            ShowCursor(FALSE);
+        }
+
+        g_GameWindow.curFrame = 0;
+
+        while (!g_GameWindow.isAppClosing) {
+            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            } else {
+                testCoopLevelRes = g_GameContext.d3dDevice->TestCooperativeLevel();
+                if (testCoopLevelRes == D3D_OK) {
+                    renderResult = g_GameWindow.Render();
+                    if (renderResult != 0) {
+                        break;
+                    }
+                } else if (testCoopLevelRes == D3DERR_DEVICENOTRESET) {
+                    g_VeryBigStruct->ReleaseD3dSurfaces();
+                    testResetRes = g_GameContext.d3dDevice->Reset(&g_GameContext.presentParameters);
+                    if (testResetRes != 0) {
+                        break;
+                    }
+                    InitD3dDevice();
+                    g_GameContext.unk198 = 3;
+                }
+            }
+        }
+        break;
     }
 
+    g_Chain.Release();
+    g_SoundPlayer.Release();
+
+    delete g_VeryBigStruct;
+    g_VeryBigStruct = NULL;
+    if (g_GameContext.d3dDevice != NULL) {
+        g_GameContext.d3dDevice->Release();
+        g_GameContext.d3dDevice = NULL;
+    }
+
+    ShowWindow(g_GameWindow.window, 0);
+    MoveWindow(g_GameWindow.window, 0, 0, 0, 0, 0);
+    DestroyWindow(g_GameWindow.window);
+
+    if (renderResult == 2) {
+        g_GameErrorContext.RstContext();
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_OPTION_CHANGED_RESTART);
+ 
+        if (!g_GameContext.cfg.windowed) {
+            ShowCursor(TRUE);
+        }
+    } else {
+        WriteConfigToFile(TH_CONFIG_FILE, &g_GameContext.cfg, sizeof(g_GameContext.cfg));
+        SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, g_ScreenSaveActive, NULL, SPIF_SENDCHANGE);
+        SystemParametersInfo(SPI_SETLOWPOWERACTIVE, g_LowPowerActive, NULL, SPIF_SENDCHANGE);
+        SystemParametersInfo(SPI_SETPOWEROFFACTIVE, g_PowerOffActive, NULL, SPIF_SENDCHANGE);
+
+        if (g_GameContext.d3dIface != NULL) {
+            g_GameContext.d3dIface->Release();
+            g_GameContext.d3dIface = NULL;
+        }
+    }
+
+exit:
+    ShowCursor(TRUE);
+    g_GameErrorContext.Flush();
     return 0;
 }
+

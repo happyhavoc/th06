@@ -11,6 +11,7 @@
 #define TH_JP_ERR_LOGGER_START "東方動作記録 --------------------------------------------- ¥n"
 #define TH_JP_ERR_LOGGER_END "---------------------------------------------------------- ¥n"
 #define TH_JP_ERR_NO_PAD_FOUND "使えるパッドが存在しないようです、残念¥n"
+#define TH_JP_ERR_OPTION_CHANGED_RESTART "再起動を要するオプションが変更されたので再起動します¥n"
 
 // EN
 #define TH_EN_CONFIG_FILE "th06.cfg"
@@ -20,6 +21,7 @@
 #define TH_EN_ERR_LOGGER_START "Logger started --------------------------------------------- ¥n"
 #define TH_EN_ERR_LOGGER_END "---------------------------------------------------------- ¥n"
 #define TH_EN_ERR_NO_PAD_FOUND "Unfortunately, there doesn't seem to be a pad that can be used.¥n"
+#define TH_EN_ERR_OPTION_CHANGED_RESTART "An option that requires a restart has been changed¥n"
 
 #define TH_CONCAT_HELPER(x, y) x##y
 
@@ -32,3 +34,4 @@
 #define TH_ERR_LOGGER_START TH_MAKE_LANG_STR(TH_LANG, _ERR_LOGGER_START)
 #define TH_ERR_LOGGER_END TH_MAKE_LANG_STR(TH_LANG, _ERR_LOGGER_END)
 #define TH_ERR_NO_PAD_FOUND TH_MAKE_LANG_STR(TH_LANG, _ERR_NO_PAD_FOUND)
+#define TH_ERR_OPTION_CHANGED_RESTART TH_MAKE_LANG_STR(TH_LANG, _ERR_OPTION_CHANGED_RESTART)
