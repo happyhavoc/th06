@@ -65,4 +65,6 @@ struct GameContext
 };
 int InitD3dInterface(void);
 
+WORD GetJoystickCaps(void);
+
 extern GameContext g_GameContext;

@@ -8,6 +8,7 @@
 #define TH_JP_WINDOW_TITLE "東方紅魔郷　〜 the Embodiment of Scarlet Devil"
 #define TH_JP_ERR_ALREADY_RUNNING "二つは起動できません¥n"
 #define TH_JP_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ "Direct3D オブジェクトは何故か作成出来なかった¥n"
+#define TH_JP_ERR_NO_PAD_FOUND "使えるパッドが存在しないようです、残念¥n"
 #define TH_JP_ERR_LOGGER_START "東方動作記録 --------------------------------------------- ¥n"
 #define TH_JP_ERR_LOGGER_END "---------------------------------------------------------- ¥n"
 
@@ -16,6 +17,7 @@
 #define TH_EN_WINDOW_TITLE "Touhou Koumakyou　〜 the Embodiment of Scarlet Devil"
 #define TH_EN_ERR_ALREADY_RUNNING "Touhou cannot be started¥n"
 #define TH_EN_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D object could not be created for some reason¥n"
+#define TH_EN_ERR_NO_PAD_FOUND "Unfortunately, there doesn't seem to be a pad that can be used.¥n"
 #define TH_EN_ERR_LOGGER_START "Logger started --------------------------------------------- ¥n"
 #define TH_EN_ERR_LOGGER_END "---------------------------------------------------------- ¥n"
 
@@ -29,3 +31,4 @@
 #define TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ TH_MAKE_LANG_STR(TH_LANG, _ERR_D3D_COULD_NOT_CREATE_OBJ)
 #define TH_ERR_LOGGER_START TH_MAKE_LANG_STR(TH_LANG, _ERR_LOGGER_START)
 #define TH_ERR_LOGGER_END TH_MAKE_LANG_STR(TH_LANG, _ERR_LOGGER_END)
+#define TH_ERR_NO_PAD_FOUND TH_MAKE_LANG_STR(TH_LANG, _ERR_NO_PAD_FOUND)
