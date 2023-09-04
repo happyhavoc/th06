@@ -979,7 +979,7 @@ address = 0x41d580
 size = 0x7f
 
 [[function]]
-name = "setButtonFromControllerInputs"
+name = "SetButtonFromControllerInputs"
 address = 0x41d600
 size = 0x75
 

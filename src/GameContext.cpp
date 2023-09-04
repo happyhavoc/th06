@@ -39,3 +39,25 @@ WORD GetJoystickCaps(void)
     joyGetDevCapsA(0, &g_JoystickCaps, sizeof(g_JoystickCaps));
     return 0;
 }
+
+DWORD SetButtonFromControllerInputs(WORD *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
+                                    DWORD inputButtons)
+{
+    DWORD mask;
+
+    if (controllerButtonToTest < 0)
+    {
+        return 0;
+    }
+
+    mask = 1 << controllerButtonToTest;
+
+    // TODO: Figure out why this mismatch
+    // EXPECTED: xor eax, eax
+    //           mov ax, word ptr [edx]
+    //
+    // MISMATCH: movzx eax, word ptr [edx]
+    *outButtons |= (inputButtons & mask ? touhouButton & 0xFFFF : 0);
+
+    return inputButtons & mask ? touhouButton & 0xFFFF : 0;
+}
