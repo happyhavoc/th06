@@ -8,11 +8,15 @@ from typing import Optional
 
 
 def run_generic_extract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["7z", "x", msi_file_path], cwd=output_dir)
+    return subprocess.check_call(["7z", "x", "-y", msi_file_path], cwd=output_dir)
 
 
 def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
     return subprocess.check_call(["msiextract", msi_file_path], cwd=output_dir)
+
+
+def run_msiextract_win32(msi_file_path: Path, output_dir: Path) -> int:
+    return subprocess.check_call(["msiexec", "/a", msi_file_path, "/qb", f"TARGETDIR={output_dir}"], cwd=output_dir)
 
 
 def translate_msiextract_name(raw_name: str) -> Optional[str]:
@@ -26,6 +30,11 @@ def translate_msiextract_name(raw_name: str) -> Optional[str]:
 
 def msiextract(msi_file_path: Path, output_dir: Path) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
+    if sys.platform == "win32":
+        run_msiextract_win32(msi_file_path, output_dir)
+
+        return
+
     run_msiextract(msi_file_path, output_dir)
 
     for dir in glob.iglob(f"{output_dir}/**/.:*", recursive=True):

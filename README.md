@@ -26,7 +26,7 @@ The build system has the following package requirements:
 - `python3` >= 3.9
 - `curl`
 - `msiextract`
-- `p7zip`
+- `p7zip` (or 7-Zip on Windows)
 - `wine` (prefer CrossOver on macOS to avoid possible CL.EXE heap issues)
 
 The rest of the build system is constructed out of Visual Studio 2002 and DirectX 8.0 from the Web Archive.
@@ -34,7 +34,11 @@ The rest of the build system is constructed out of Visual Studio 2002 and Direct
 
 ### Windows
 
-TBD
+Run the following commands in PowerShell:
+```ps1
+.\scripts\download_requirements.ps1
+py -3 .\scripts\create_devenv.py .\scripts\dls\ .\scripts\prefix
+```
 
 #### Configure devenv
 
