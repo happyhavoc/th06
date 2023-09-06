@@ -13,7 +13,7 @@ FUNCTION_NAME=$1
 FUNCTION_OUTPUT_DIR=$DIFF_DIR/$FUNCTION_NAME
 
 mkdir -p $FUNCTION_OUTPUT_DIR
-satsuki --mapping-file $CONFIG_DIR/mapping.toml disassemble --att --force-address-zero $RESOURCES_DIR/game.exe $FUNCTION_NAME > $FUNCTION_OUTPUT_DIR/orig.asm
+satsuki --mapping-file $CONFIG_DIR/mapping.toml disassemble --force-address-zero $RESOURCES_DIR/game.exe $FUNCTION_NAME > $FUNCTION_OUTPUT_DIR/orig.asm
 
 rm -rf $BUILD_DIR
 
@@ -21,4 +21,4 @@ pushd $BASE_DIR
 ./scripts/wineth06 scripts/build.bat
 popd
 
-satsuki --mapping-file $CONFIG_DIR/mapping.toml disassemble --att --force-address-zero $BUILD_DIR/th06e.exe --pdb-file $BUILD_DIR/th06e.pdb $FUNCTION_NAME > $FUNCTION_OUTPUT_DIR/reimpl.asm
+satsuki --mapping-file $CONFIG_DIR/mapping.toml disassemble --force-address-zero $BUILD_DIR/th06e.exe --pdb-file $BUILD_DIR/th06e.pdb $FUNCTION_NAME > $FUNCTION_OUTPUT_DIR/reimpl.asm
