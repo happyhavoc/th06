@@ -1,5 +1,7 @@
 #include "Chain.hpp"
 
-void Chain::Release(void) {}
+void Chain::Release(void)
+{
+}
 
 Chain g_Chain;

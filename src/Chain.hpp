@@ -1,6 +1,7 @@
 #pragma once
 
-struct Chain {
+struct Chain
+{
     void Release(void);
 };
 extern Chain g_Chain;

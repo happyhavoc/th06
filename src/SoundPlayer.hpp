@@ -2,7 +2,8 @@
 
 #include <Windows.h>
 
-struct SoundPlayer {
+struct SoundPlayer
+{
     void Init(HWND window);
     void Release(void);
 };

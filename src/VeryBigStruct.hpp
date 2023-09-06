@@ -1,6 +1,7 @@
 #pragma once
 
-struct VeryBigStruct {
+struct VeryBigStruct
+{
     VeryBigStruct();
     ‾VeryBigStruct();
 

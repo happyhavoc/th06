@@ -1,6 +1,7 @@
 #include "GameWindow.hpp"
 
-int GameWindow::Render(void) {
+int GameWindow::Render(void)
+{
     return 0;
 }
 
