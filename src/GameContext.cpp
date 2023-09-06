@@ -40,8 +40,8 @@ WORD GetJoystickCaps(void)
     return 0;
 }
 
-DWORD SetButtonFromControllerInputs(WORD *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
-                                    DWORD inputButtons)
+unsigned int SetButtonFromControllerInputs(unsigned short *outButtons, short controllerButtonToTest,
+                                           unsigned int touhouButton, unsigned int inputButtons)
 {
     DWORD mask;
 
@@ -57,8 +57,8 @@ DWORD SetButtonFromControllerInputs(WORD *outButtons, SHORT controllerButtonToTe
     return inputButtons & mask ? touhouButton & 0xFFFF : 0;
 }
 
-DWORD SetButtonFromDirectInputJoystate(WORD *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
-                                       BYTE *inputButtons)
+unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short controllerButtonToTest,
+                                              unsigned int touhouButton, unsigned char *inputButtons)
 {
     if (controllerButtonToTest < 0)
     {
