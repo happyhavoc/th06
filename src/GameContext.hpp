@@ -79,4 +79,7 @@ WORD GetJoystickCaps(void);
 DWORD SetButtonFromControllerInputs(WORD *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
                                     DWORD inputButtons);
 
+DWORD SetButtonFromDirectInputJoystate(WORD *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
+                                       BYTE *inputButtons);
+
 extern GameContext g_GameContext;

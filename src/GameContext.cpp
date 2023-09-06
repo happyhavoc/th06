@@ -56,3 +56,16 @@ DWORD SetButtonFromControllerInputs(WORD *outButtons, SHORT controllerButtonToTe
 
     return inputButtons & mask ? touhouButton & 0xFFFF : 0;
 }
+
+DWORD SetButtonFromDirectInputJoystate(WORD *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
+                                       BYTE *inputButtons)
+{
+    if (controllerButtonToTest < 0)
+    {
+        return 0;
+    }
+
+    *outButtons |= (inputButtons[controllerButtonToTest] & 0x80 ? touhouButton & 0xFFFF : 0);
+
+    return inputButtons[controllerButtonToTest] & 0x80 ? touhouButton & 0xFFFF : 0;
+}

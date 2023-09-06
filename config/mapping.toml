@@ -974,7 +974,7 @@ address = 0x41cfc0
 size = 0x5c0
 
 [[function]]
-name = "FUN_0041d580"
+name = "SetButtonFromDirectInputJoystate"
 address = 0x41d580
 size = 0x7f
 
