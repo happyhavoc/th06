@@ -76,7 +76,7 @@ struct GameContext
 int InitD3dInterface(void);
 
 WORD GetJoystickCaps(void);
-DWORD SetButtonFromControllerInputs(SHORT *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
+DWORD SetButtonFromControllerInputs(WORD *outButtons, SHORT controllerButtonToTest, DWORD touhouButton,
                                     DWORD inputButtons);
 
 extern GameContext g_GameContext;
