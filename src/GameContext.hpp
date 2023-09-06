@@ -73,13 +73,28 @@ struct GameContext
 
     int unk198;
 };
+
+enum TouhouButton
+{
+    TH_BUTTON_SHOOT = 1 << 0,
+    TH_BUTTON_BOMB = 1 << 1,
+    TH_BUTTON_FOCUS = 1 << 2,
+    TH_BUTTON_MENU = 1 << 3,
+    TH_BUTTON_UP = 1 << 4,
+    TH_BUTTON_DOWN = 1 << 5,
+    TH_BUTTON_LEFT = 1 << 6,
+    TH_BUTTON_RIGHT = 1 << 7,
+    TH_BUTTON_UNK8 = 1 << 8,
+};
+
 int InitD3dInterface(void);
 
 unsigned short GetJoystickCaps(void);
 unsigned int SetButtonFromControllerInputs(unsigned short *outButtons, short controllerButtonToTest,
-                                           unsigned int touhouButton, unsigned int inputButtons);
+                                           enum TouhouButton touhouButton, unsigned int inputButtons);
 
 unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short controllerButtonToTest,
-                                              unsigned int touhouButton, unsigned char *inputButtons);
+                                              enum TouhouButton touhouButton, unsigned char *inputButtons);
+unsigned short GetControllerInput(unsigned short buttons);
 
 extern GameContext g_GameContext;
