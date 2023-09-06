@@ -5,7 +5,7 @@ CPP=cl.exe
 LINK32=link.exe
 RSC=rc.exe
 
-CFLAGS=/nologo /MT /GS /Od /Oi /Ob1 /DNDEBUG /Zi
+CFLAGS=/nologo /MT /G5 /GS /Od /Oi /Ob1 /DNDEBUG /Zi
 LINK32_BASE_LIBS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
 LINK32_LIBS=dxguid.lib d3dx8.lib d3d8.lib winmm.lib $(LINK32_BASE_LIBS)
 LINK32_FLAGS=/nologo /subsystem:windows /machine:X86 /filealign:4096 /incremental:no
