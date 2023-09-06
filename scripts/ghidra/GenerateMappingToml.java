@@ -1,24 +1,27 @@
-//Generate mapping.toml
+// Generate mapping.toml
 //@category TH06
-
-import java.io.File;
-import java.nio.file.Files;
 
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.listing.Function;
 import ghidra.program.model.listing.FunctionIterator;
+import java.io.File;
+import java.nio.file.Files;
 
-public class GenerateMappingToml extends GhidraScript {
+public class GenerateMappingToml extends GhidraScript
+{
 
     // TODO: handle duplicated
-    public String generateToml() {
+    public String generateToml()
+    {
         StringBuilder builder = new StringBuilder();
 
-		FunctionIterator funcIter = currentProgram.getListing().getFunctions(true);
-		while (funcIter.hasNext()) {
-			Function func = funcIter.next();
+        FunctionIterator funcIter = currentProgram.getListing().getFunctions(true);
+        while (funcIter.hasNext())
+        {
+            Function func = funcIter.next();
 
-            if (func.isThunk()) {
+            if (func.isThunk())
+            {
                 continue;
             }
 
@@ -36,16 +39,15 @@ public class GenerateMappingToml extends GhidraScript {
             builder.append(Long.toHexString(func.getBody().getNumAddresses()));
             builder.append("\n");
             builder.append("\n");
-		}
+        }
 
         return builder.toString();
     }
 
-	@Override
-	public void run() throws Exception {
+    @Override public void run() throws Exception
+    {
         String mappingData = generateToml();
         File outputMapping = askFile("mapping.toml", "Save");
         Files.write(outputMapping.toPath(), mappingData.getBytes());
-	}
-
+    }
 }
