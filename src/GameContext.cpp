@@ -60,6 +60,11 @@ unsigned int SetButtonFromControllerInputs(unsigned short *outButtons, short con
     return inputButtons & mask ? touhouButton & 0xFFFF : 0;
 }
 
+#define JOYSTICK_MIDPOINT(min, max) ((min + max) / 2)
+#define JOYSTICK_BUTTON_PRESSED(button, x, y) (x > y ? button : 0)
+#define JOYSTICK_BUTTON_PRESSED_INVERT(button, x, y) (x < y ? button : 0)
+#define KEYBOARD_KEY_PRESSED(button, x) keyboardState[x] & 0x80 ? button : 0
+
 unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short controllerButtonToTest,
                                               enum TouhouButton touhouButton, unsigned char *inputButtons)
 {
@@ -74,10 +79,6 @@ unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short 
 }
 
 unsigned short g_FocusButtonConflictState;
-
-#define JOYSTICK_MIDPOINT(min, max) ((min + max) / 2)
-#define JOYSTICK_BUTTON_PRESSED(button, x, y) (x > y ? button : 0)
-#define JOYSTICK_BUTTON_PRESSED_INVERT(button, x, y) (x < y ? button : 0)
 
 unsigned short GetControllerInput(unsigned short buttons)
 {
@@ -148,7 +149,7 @@ unsigned short GetControllerInput(unsigned short buttons)
                                       aa.dwButtons);
         SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.rightButton, TH_BUTTON_RIGHT,
                                       aa.dwButtons);
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.unkButton, TH_BUTTON_UNK8,
+        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.skipButton, TH_BUTTON_SKIP,
                                       aa.dwButtons);
 
         ab = ((g_JoystickCaps.wXmax - g_JoystickCaps.wXmin) / 2 / 2);
@@ -250,7 +251,7 @@ unsigned short GetControllerInput(unsigned short buttons)
                                              a0.rgbButtons);
             SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.rightButton, TH_BUTTON_RIGHT,
                                              a0.rgbButtons);
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.unkButton, TH_BUTTON_UNK8,
+            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.skipButton, TH_BUTTON_SKIP,
                                              a0.rgbButtons);
 
             buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_RIGHT, a0.lX, g_GameContext.cfg.padXAxis);
@@ -261,4 +262,78 @@ unsigned short GetControllerInput(unsigned short buttons)
     }
 
     return buttons;
+}
+
+unsigned short GetInput(void)
+{
+    unsigned char keyboardState[256];
+    unsigned short buttons;
+
+    buttons = 0;
+
+    if (g_GameContext.keyboard == NULL)
+    {
+        GetKeyboardState(keyboardState);
+
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP, VK_UP);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN, VK_DOWN);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_LEFT, VK_LEFT);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_RIGHT, VK_RIGHT);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP, VK_NUMPAD8);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN, VK_NUMPAD2);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_LEFT, VK_NUMPAD4);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_RIGHT, VK_NUMPAD6);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP_LEFT, VK_NUMPAD7);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP_RIGHT, VK_NUMPAD9);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_LEFT, VK_NUMPAD1);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_RIGHT, VK_NUMPAD3);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK11, VK_HOME);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SHOOT, 'Z');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_BOMB, 'X');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_FOCUS, VK_SHIFT);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_MENU, VK_ESCAPE);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, VK_CONTROL);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK9, 'Q');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK10, 'S');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK12, VK_RETURN);
+    }
+    else
+    {
+        HRESULT res = g_GameContext.keyboard->GetDeviceState(sizeof(keyboardState), keyboardState);
+
+        buttons = 0;
+
+        if (res == DIERR_INPUTLOST)
+        {
+            g_GameContext.keyboard->Acquire();
+
+            return GetControllerInput(buttons);
+        }
+
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP, DIK_UP);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN, DIK_DOWN);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_LEFT, DIK_LEFT);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_RIGHT, DIK_RIGHT);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP, DIK_NUMPAD8);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN, DIK_NUMPAD2);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_LEFT, DIK_NUMPAD4);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_RIGHT, DIK_NUMPAD6);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP_LEFT, DIK_NUMPAD7);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP_RIGHT, DIK_NUMPAD9);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_LEFT, DIK_NUMPAD1);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_RIGHT, DIK_NUMPAD3);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK11, DIK_HOME);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SHOOT, DIK_Z);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_BOMB, DIK_X);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_FOCUS, DIK_LSHIFT);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_FOCUS, DIK_RSHIFT);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_MENU, DIK_ESCAPE);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, DIK_LCONTROL);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, DIK_RCONTROL);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK9, DIK_Q);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK10, DIK_S);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK12, DIK_RETURN);
+    }
+
+    return GetControllerInput(buttons);
 }
