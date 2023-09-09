@@ -28,7 +28,7 @@ struct ControllerMapping
     short downButton;
     short leftButton;
     short rightButton;
-    short unkButton;
+    short skipButton;
 };
 
 struct GameConfiguration
@@ -84,7 +84,16 @@ enum TouhouButton
     TH_BUTTON_DOWN = 1 << 5,
     TH_BUTTON_LEFT = 1 << 6,
     TH_BUTTON_RIGHT = 1 << 7,
-    TH_BUTTON_UNK8 = 1 << 8,
+    TH_BUTTON_SKIP = 1 << 8,
+    TH_BUTTON_UNK9 = 1 << 9,
+    TH_BUTTON_UNK10 = 1 << 10,
+    TH_BUTTON_UNK11 = 1 << 11,
+    TH_BUTTON_UNK12 = 1 << 12,
+
+    TH_BUTTON_UP_LEFT = TH_BUTTON_UP | TH_BUTTON_LEFT,
+    TH_BUTTON_UP_RIGHT = TH_BUTTON_UP | TH_BUTTON_RIGHT,
+    TH_BUTTON_DOWN_LEFT = TH_BUTTON_DOWN | TH_BUTTON_LEFT,
+    TH_BUTTON_DOWN_RIGHT = TH_BUTTON_DOWN | TH_BUTTON_RIGHT,
 };
 
 int InitD3dInterface(void);
@@ -96,5 +105,6 @@ unsigned int SetButtonFromControllerInputs(unsigned short *outButtons, short con
 unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short controllerButtonToTest,
                                               enum TouhouButton touhouButton, unsigned char *inputButtons);
 unsigned short GetControllerInput(unsigned short buttons);
+unsigned short GetInput(void);
 
 extern GameContext g_GameContext;
