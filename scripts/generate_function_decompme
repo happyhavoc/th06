@@ -8,4 +8,4 @@ RESOURCES_DIR=$BASE_DIR/resources
 CONFIG_DIR=$BASE_DIR/config
 
 FUNCTION_NAME=$1
-satsuki --mapping-file $CONFIG_DIR/mapping.toml disassemble --att --force-address-zero $RESOURCES_DIR/game.exe $FUNCTION_NAME
+satsuki --mapping-file $CONFIG_DIR/mapping.toml disassemble --force-address-zero $RESOURCES_DIR/game.exe $FUNCTION_NAME
