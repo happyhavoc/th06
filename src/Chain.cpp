@@ -143,7 +143,7 @@ void Chain::Cut(ChainElem *to_remove)
 
     return;
 
-destroy_elem : {
+destroy_elem:
     if (!isDrawChain)
     {
         DebugPrint2("calc cut Chain (Pri = %d)¥n", to_remove->priority);
@@ -187,7 +187,6 @@ destroy_elem : {
             }
         }
     }
-}
 }
 
 int Chain::RunDrawChain(void)
