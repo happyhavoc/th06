@@ -63,7 +63,51 @@ void SetupConsole(void)
 // TODO: Implement
 LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    switch (uMsg)
+    {
+    case 0x3c9:
+        if (g_GameContext.midiOutput != NULL)
+        {
+            g_GameContext.midiOutput->UnprepareHeader((LPMIDIHDR)lParam);
+        }
+        break;
+    case WM_ACTIVATEAPP:
+        g_GameWindow.lastActiveAppValue = wParam;
+        if (g_GameWindow.lastActiveAppValue != 0)
+        {
+            g_GameWindow.isAppActive = 0;
+        }
+        else
+        {
+            g_GameWindow.isAppActive = 1;
+        }
+        break;
+    case WM_SETCURSOR:
+        if (!g_GameContext.cfg.windowed)
+        {
+            if (g_GameWindow.isAppActive != 0)
+            {
+                SetCursor(LoadCursorA(NULL, IDC_ARROW));
+                ShowCursor(1);
+            }
+            else
+            {
+                ShowCursor(0);
+                SetCursor((HCURSOR)0x0);
+            }
+        }
+        else
+        {
+            SetCursor(LoadCursorA(NULL, IDC_ARROW));
+            ShowCursor(1);
+        }
+
+        return 1;
+    case WM_CLOSE:
+        g_GameWindow.isAppClosing = 1;
+        return 1;
+    }
+    return DefWindowProcA(hWnd, uMsg, wParam, lParam);
 }
 
 void CreateGameWindow(HINSTANCE hInstance)
