@@ -1,6 +1,6 @@
 #include "GameWindow.hpp"
 
-int GameWindow::Render(void)
+i32 GameWindow::Render(void)
 {
     return 0;
 }

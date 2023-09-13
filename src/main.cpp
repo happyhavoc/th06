@@ -14,32 +14,32 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-int WriteConfigToFile(char *path, void *data, size_t size)
+i32 WriteConfigToFile(char *path, void *data, size_t size)
 {
     return 0;
 }
 
-int AddInputChain(void)
+i32 AddInputChain(void)
 {
     return 0;
 }
 
-int InitD3dDevice(void)
+i32 InitD3dDevice(void)
 {
     return 0;
 }
 
-int InitD3dRendering(void)
+i32 InitD3dRendering(void)
 {
     return 0;
 }
 
 void ResetKeyboard(void)
 {
-    BYTE key_states[256];
+    u8 key_states[256];
 
     GetKeyboardState(key_states);
-    for (int idx = 0; idx < 256; idx++)
+    for (i32 idx = 0; idx < 256; idx++)
     {
         *(key_states + idx) &= 0x7f;
     }
@@ -113,8 +113,8 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 void CreateGameWindow(HINSTANCE hInstance)
 {
     WNDCLASS base_class;
-    int width;
-    int height;
+    i32 width;
+    i32 height;
 
     memset(&base_class, 0, sizeof(base_class));
 
@@ -143,15 +143,15 @@ void CreateGameWindow(HINSTANCE hInstance)
     g_GameContext.hwndGameWindow = g_GameWindow.window;
 }
 
-static int g_ScreenSaveActive;
-static int g_LowPowerActive;
-static int g_PowerOffActive;
+static i32 g_ScreenSaveActive;
+static i32 g_LowPowerActive;
+static i32 g_PowerOffActive;
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-    int renderResult = 0;
-    int testCoopLevelRes;
-    int testResetRes;
+    i32 renderResult = 0;
+    i32 testCoopLevelRes;
+    i32 testResetRes;
     MSG msg;
     VeryBigStruct *vbs;
 

@@ -3,6 +3,7 @@
 #include <windows.h>
 
 #include "i18n.hpp"
+#include "inttypes.hpp"
 
 class GameErrorContext;
 
@@ -14,7 +15,7 @@ class GameErrorContext
   public:
     char m_Buffer[0x800];
     char *m_BufferEnd;
-    char m_ShowMessageBox;
+    u8 m_ShowMessageBox;
 
     GameErrorContext()
     {

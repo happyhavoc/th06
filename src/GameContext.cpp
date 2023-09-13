@@ -1,6 +1,7 @@
 #include "GameContext.hpp"
 #include "GameErrorContext.hpp"
 #include "i18n.hpp"
+#include "inttypes.hpp"
 #include "utils.hpp"
 
 #include <string.h>
@@ -8,7 +9,7 @@
 GameContext g_GameContext;
 JOYCAPSA g_JoystickCaps;
 
-int InitD3dInterface(void)
+i32 InitD3dInterface(void)
 {
     g_GameContext.d3dIface = Direct3DCreate8(D3D_SDK_VERSION);
 
@@ -21,12 +22,12 @@ int InitD3dInterface(void)
 }
 
 // TODO: Implement this.
-int GameContext::Parse(char *path)
+i32 GameContext::Parse(char *path)
 {
     return -1;
 }
 
-WORD GetJoystickCaps(void)
+u16 GetJoystickCaps(void)
 {
     JOYINFOEX pji;
 
@@ -43,8 +44,8 @@ WORD GetJoystickCaps(void)
     return 0;
 }
 
-unsigned int SetButtonFromControllerInputs(unsigned short *outButtons, short controllerButtonToTest,
-                                           enum TouhouButton touhouButton, unsigned int inputButtons)
+u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
+                                  u32 inputButtons)
 {
     DWORD mask;
 
@@ -65,8 +66,8 @@ unsigned int SetButtonFromControllerInputs(unsigned short *outButtons, short con
 #define JOYSTICK_BUTTON_PRESSED_INVERT(button, x, y) (x < y ? button : 0)
 #define KEYBOARD_KEY_PRESSED(button, x) keyboardState[x] & 0x80 ? button : 0
 
-unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short controllerButtonToTest,
-                                              enum TouhouButton touhouButton, unsigned char *inputButtons)
+u32 SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
+                                     u8 *inputButtons)
 {
     if (controllerButtonToTest < 0)
     {
@@ -78,17 +79,17 @@ unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short 
     return inputButtons[controllerButtonToTest] & 0x80 ? touhouButton & 0xFFFF : 0;
 }
 
-unsigned short g_FocusButtonConflictState;
+u16 g_FocusButtonConflictState;
 
-unsigned short GetControllerInput(unsigned short buttons)
+u16 GetControllerInput(u16 buttons)
 {
     // NOTE: Those names are like this to get perfect stack frame matching
     // TODO: Give meaningfull names that still match.
     JOYINFOEX aa;
-    unsigned int ab;
-    unsigned int ac;
+    u32 ab;
+    u32 ac;
     DIJOYSTATE2 a0;
-    unsigned int a2;
+    u32 a2;
     HRESULT aaa;
 
     if (g_GameContext.controller == NULL)
@@ -173,7 +174,7 @@ unsigned short GetControllerInput(unsigned short buttons)
         aaa = g_GameContext.controller->Poll();
         if (FAILED(aaa))
         {
-            int retryCount = 0;
+            i32 retryCount = 0;
 
             DebugPrint2("error : DIERR_INPUTLOST¥n");
             aaa = g_GameContext.controller->Acquire();
@@ -264,10 +265,10 @@ unsigned short GetControllerInput(unsigned short buttons)
     return buttons;
 }
 
-unsigned short GetInput(void)
+u16 GetInput(void)
 {
-    unsigned char keyboardState[256];
-    unsigned short buttons;
+    u8 keyboardState[256];
+    u16 buttons;
 
     buttons = 0;
 

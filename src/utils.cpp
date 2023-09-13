@@ -5,7 +5,7 @@
 
 HANDLE g_ExclusiveMutex;
 
-int CheckForRunningGameInstance(void)
+i32 CheckForRunningGameInstance(void)
 {
     g_ExclusiveMutex = CreateMutex(NULL, TRUE, TEXT("Touhou Koumakyou App"));
 

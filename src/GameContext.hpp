@@ -4,6 +4,7 @@
 #include <dinput.h>
 
 #include "MidiOutput.hpp"
+#include "inttypes.hpp"
 
 enum GameConfigOpts
 {
@@ -22,42 +23,42 @@ enum GameConfigOpts
 
 struct ControllerMapping
 {
-    short shootButton;
-    short bombButton;
-    short focusButton;
-    short menuButton;
-    short upButton;
-    short downButton;
-    short leftButton;
-    short rightButton;
-    short skipButton;
+    i16 shootButton;
+    i16 bombButton;
+    i16 focusButton;
+    i16 menuButton;
+    i16 upButton;
+    i16 downButton;
+    i16 leftButton;
+    i16 rightButton;
+    i16 skipButton;
 };
 
 struct GameConfiguration
 {
     ControllerMapping controllerMapping;
     // Always 0x102 for 1.02
-    int version;
-    char lifeCount;
-    char bombCount;
-    char colorMode16bit;
+    i32 version;
+    i8 lifeCount;
+    i8 bombCount;
+    i8 colorMode16bit;
     // 0 is off, 1 for wav, 2 for midi
-    char musicMode;
-    char playSounds;
-    char unk7;
-    unsigned char windowed;
+    i8 musicMode;
+    i8 playSounds;
+    i8 unk7;
+    u8 windowed;
     // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
-    char frameskipConfig;
-    short padXAxis;
-    short padYAxis;
-    char unk[16];
+    i8 frameskipConfig;
+    i16 padXAxis;
+    i16 padYAxis;
+    i8 unk[16];
     // GameConfigOpts bitfield.
-    int opts;
+    i32 opts;
 };
 
 struct GameContext
 {
-    int Parse(char *path);
+    i32 Parse(char *path);
 
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
@@ -73,7 +74,7 @@ struct GameContext
     D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
 
-    int unk198;
+    i32 unk198;
 
     MidiOutput *midiOutput;
 };
@@ -100,15 +101,15 @@ enum TouhouButton
     TH_BUTTON_DOWN_RIGHT = TH_BUTTON_DOWN | TH_BUTTON_RIGHT,
 };
 
-int InitD3dInterface(void);
+i32 InitD3dInterface(void);
 
-unsigned short GetJoystickCaps(void);
-unsigned int SetButtonFromControllerInputs(unsigned short *outButtons, short controllerButtonToTest,
-                                           enum TouhouButton touhouButton, unsigned int inputButtons);
+u16 GetJoystickCaps(void);
+u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
+                                  u32 inputButtons);
 
-unsigned int SetButtonFromDirectInputJoystate(unsigned short *outButtons, short controllerButtonToTest,
-                                              enum TouhouButton touhouButton, unsigned char *inputButtons);
-unsigned short GetControllerInput(unsigned short buttons);
-unsigned short GetInput(void);
+unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest,
+                                              enum TouhouButton touhouButton, u8 *inputButtons);
+u16 GetControllerInput(u16 buttons);
+u16 GetInput(void);
 
 extern GameContext g_GameContext;
