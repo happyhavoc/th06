@@ -3,6 +3,8 @@
 #include <d3d8.h>
 #include <dinput.h>
 
+#include "MidiOutput.hpp"
+
 enum GameConfigOpts
 {
     DONT_USE_VERTEX_BUF = 1 << 0x1,
@@ -43,7 +45,7 @@ struct GameConfiguration
     char musicMode;
     char playSounds;
     char unk7;
-    char windowed;
+    unsigned char windowed;
     // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
     char frameskipConfig;
     short padXAxis;
@@ -72,6 +74,8 @@ struct GameContext
     GameConfiguration cfg;
 
     int unk198;
+
+    MidiOutput *midiOutput;
 };
 
 enum TouhouButton
