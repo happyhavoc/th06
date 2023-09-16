@@ -1,16 +1,17 @@
 #pragma once
 
+#include "inttypes.hpp"
 #include <windows.h>
 
 struct GameWindow
 {
-    int Render(void);
+    i32 Render(void);
 
     HWND window;
-    int isAppClosing;
-    int lastActiveAppValue;
-    int isAppActive;
-    BYTE curFrame;
+    i32 isAppClosing;
+    i32 lastActiveAppValue;
+    i32 isAppActive;
+    u8 curFrame;
 };
 
 extern GameWindow g_GameWindow;
