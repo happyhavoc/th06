@@ -1,45 +1,45 @@
 [[function]]
-name = "FUN_00401000"
+name = "AsciiManager::AsciiManager"
 address = 0x401000
 size = 0xe0
 
 [[function]]
-name = "FUN_004010e0"
+name = "AsciiManagerProbablyStageRelated::AsciiManagerProbablyStageRelated"
 address = 0x4010e0
 size = 0x57
 
 [[function]]
-name = "FUN_00401140"
+name = "AsciiManager::FUN_00401140"
 address = 0x401140
 size = 0x101
 
 [[function]]
-name = "FUN_00401250"
+name = "AsciiManager::FUN_00401250"
 address = 0x401250
 size = 0x3b
 
 [[function]]
-name = "FUN_00401290"
+name = "AsciiManager::FUN_00401290"
 address = 0x401290
 size = 0x27
 
 [[function]]
-name = "FUN_004012c0"
+name = "AsciiManager::RegisterChain"
 address = 0x4012c0
 size = 0xd5
 
 [[function]]
-name = "FUN_004013a0"
+name = "AsciiManager::AddedCallback"
 address = 0x4013a0
 size = 0x6e
 
 [[function]]
-name = "FUN_00401410"
+name = "AsciiManager::Initialize"
 address = 0x401410
 size = 0xb9
 
 [[function]]
-name = "FUN_004014d0"
+name = "AsciiManager::DeletedCallback"
 address = 0x4014d0
 size = 0x2e
 
@@ -59,7 +59,7 @@ address = 0x401650
 size = 0x5a
 
 [[function]]
-name = "FUN_004016b0"
+name = "AsciiManager::FUN_004016b0"
 address = 0x4016b0
 size = 0x281
 
@@ -74,82 +74,82 @@ address = 0x401a60
 size = 0x11e
 
 [[function]]
-name = "FUN_00401b80"
+name = "AsciiManagerProbablyStageRelated::FUN_00401b80"
 address = 0x401b80
 size = 0xb9d
 
 [[function]]
-name = "FUN_00402740"
+name = "AsciiManagerProbablyStageRelated::FUN_00402740"
 address = 0x402740
 size = 0x126
 
 [[function]]
-name = "FUN_00402870"
+name = "AsciiManagerProbablyStageRelated::FUN_00402870"
 address = 0x402870
 size = 0x7ce
 
 [[function]]
-name = "FUN_00403060"
+name = "AsciiManagerProbablyStageRelated::FUN_00403060"
 address = 0x403060
 size = 0x17c
 
 [[function]]
-name = "FUN_004031e0"
+name = "AsciiManager::FUN_004031e0"
 address = 0x4031e0
 size = 0x1cc
 
 [[function]]
-name = "FUN_004033b0"
+name = "AsciiManager::FUN_004033b0"
 address = 0x4033b0
 size = 0x1cc
 
 [[function]]
-name = "FUN_00403580"
+name = "AnmVm::Initialize"
 address = 0x403580
 size = 0xee
 
 [[function]]
-name = "FUN_00403670"
+name = "D3DXMatrixIdentity"
 address = 0x403670
 size = 0xa7
 
 [[function]]
-name = "FUN_00403720"
+name = "AnmVm::AnmVm"
 address = 0x403720
 size = 0x68
 
 [[function]]
-name = "FUN_00403790"
+name = "Stage::Stage"
 address = 0x403790
 size = 0x72
 
 [[function]]
-name = "FUN_00403810"
+name = "Stage::FUN_00403810"
 address = 0x403810
 size = 0x89c
 
 [[function]]
-name = "FUN_004040d0"
+name = "Stage::FUN_004040d0"
 address = 0x4040d0
 size = 0xa2
 
 [[function]]
-name = "FUN_00404180"
+name = "Stage::FUN_00404180"
 address = 0x404180
 size = 0x180
 
 [[function]]
-name = "FUN_00404300"
+name = "Stage::AddedCallback"
 address = 0x404300
 size = 0x1b4
 
 [[function]]
-name = "FUN_004044c0"
+name = "Stage::RegisterChain"
 address = 0x4044c0
 size = 0x11e
 
 [[function]]
-name = "FUN_004045e0"
+name = "Stage::DeletedCallback"
 address = 0x4045e0
 size = 0x66
 
@@ -169,7 +169,7 @@ address = 0x404860
 size = 0x101
 
 [[function]]
-name = "FUN_00404970"
+name = "Stage::FUN_00404970"
 address = 0x404970
 size = 0x83d
 
@@ -1194,7 +1194,7 @@ address = 0x421950
 size = 0x7e
 
 [[function]]
-name = "VeryBigStruct::ReleaseD3dSurfaces"
+name = "AnmManager::ReleaseD3dSurfaces"
 address = 0x4219d0
 size = 0x68
 
@@ -1204,7 +1204,7 @@ address = 0x421a40
 size = 0x5e
 
 [[function]]
-name = "FUN_00421aa0"
+name = "MidiUnk::MidiUnk"
 address = 0x421aa0
 size = 0x21
 
@@ -1219,7 +1219,7 @@ address = 0x421af0
 size = 0x59
 
 [[function]]
-name = "FUN_00421b50"
+name = "MidiDevice::Close"
 address = 0x421b50
 size = 0x3b
 
@@ -1234,7 +1234,7 @@ address = 0x421be0
 size = 0x43
 
 [[function]]
-name = "FUN_00421c30"
+name = "MidiOutput::FUN_00421c30"
 address = 0x421c30
 size = 0x30
 
@@ -1249,7 +1249,7 @@ address = 0x421c90
 size = 0x73
 
 [[function]]
-name = "FUN_00421d10"
+name = "MidiOutput::StopTimer"
 address = 0x421d10
 size = 0x3d
 
@@ -1269,7 +1269,7 @@ address = 0x421d90
 size = 0x55
 
 [[function]]
-name = "FUN_00421df0"
+name = "MidiOutput::MidiOutput"
 address = 0x421df0
 size = 0x155
 
@@ -1279,47 +1279,47 @@ address = 0x421f50
 size = 0x93
 
 [[function]]
-name = "FUN_00421ff0"
+name = "MidiOutput::LoadFile"
 address = 0x421ff0
 size = 0x79
 
 [[function]]
-name = "FUN_00422070"
+name = "MidiOutput::UnloadFile"
 address = 0x422070
 size = 0x3c
 
 [[function]]
-name = "FUN_004220b0"
+name = "MidiOutput::FUN_004220b0"
 address = 0x4220b0
 size = 0x83
 
 [[function]]
-name = "FUN_00422140"
+name = "MidiOutput::FUN_00422140"
 address = 0x422140
 size = 0x231
 
 [[function]]
-name = "FUN_00422380"
+name = "MidiOutput::FUN_00422380"
 address = 0x422380
 size = 0x3a
 
 [[function]]
-name = "FUN_004223c0"
+name = "MidiOutput::FUN_004223c0"
 address = 0x4223c0
 size = 0xcf
 
 [[function]]
-name = "FUN_00422490"
+name = "MidiOutput::FUN_00422490"
 address = 0x422490
 size = 0x44
 
 [[function]]
-name = "FUN_004224e0"
+name = "MidiOutput::~MidiOutput"
 address = 0x4224e0
 size = 0x7c
 
 [[function]]
-name = "FUN_00422560"
+name = "MidiOutput::UnprepareHeader"
 address = 0x422560
 size = 0xc7
 
@@ -1334,7 +1334,7 @@ address = 0x422680
 size = 0x27b
 
 [[function]]
-name = "FUN_00422900"
+name = "MidiOutput::FUN_00422900"
 address = 0x422900
 size = 0x7ff
 
@@ -1344,7 +1344,7 @@ address = 0x423260
 size = 0xce
 
 [[function]]
-name = "VeryBigStruct::~VeryBigStruct"
+name = "AnmManager::~AnmManager"
 address = 0x423330
 size = 0xb
 
@@ -1399,7 +1399,7 @@ address = 0x4240f0
 size = 0x37
 
 [[function]]
-name = "FUN_00424127"
+name = "AnmTimer::AnmTimer"
 address = 0x424127
 size = 0x1e
 
@@ -1414,7 +1414,7 @@ address = 0x4241e5
 size = 0xa0
 
 [[function]]
-name = "FUN_00424285"
+name = "GameContext::FUN_00424285"
 address = 0x424285
 size = 0x6e
 
@@ -1454,7 +1454,7 @@ address = 0x424b5d
 size = 0x1db
 
 [[function]]
-name = "FUN_00424d38"
+name = "GameContext::FUN_00424d38"
 address = 0x424d38
 size = 0x4a
 
@@ -1929,7 +1929,7 @@ address = 0x430f80
 size = 0xfc
 
 [[function]]
-name = "FUN_00431080"
+name = "SoundPlayer::FUN_00431080"
 address = 0x431080
 size = 0x156
 
@@ -1954,12 +1954,12 @@ address = 0x431420
 size = 0x4c
 
 [[function]]
-name = "VeryBigStruct::VeryBigStruct"
+name = "AnmManager::AnmManager"
 address = 0x431470
 size = 0x1ed
 
 [[function]]
-name = "FUN_00431660"
+name = "AnmManager::FUN_00431660"
 address = 0x431660
 size = 0x2bc
 
@@ -1969,7 +1969,7 @@ address = 0x431920
 size = 0xed
 
 [[function]]
-name = "VeryBigStruct::Unknown"
+name = "AnmManager::Unknown"
 address = 0x431a10
 size = 0x35f
 
@@ -1979,17 +1979,17 @@ address = 0x431d70
 size = 0x42
 
 [[function]]
-name = "VeryBigStruct::LoadAnim"
+name = "AnmManager::LoadAnim"
 address = 0x431dc0
 size = 0x270
 
 [[function]]
-name = "FUN_00432030"
+name = "ReleaseAnm"
 address = 0x432030
 size = 0x1a2
 
 [[function]]
-name = "FUN_004321e0"
+name = "ReleaseTexture"
 address = 0x4321e0
 size = 0x7d
 
@@ -1999,12 +1999,12 @@ address = 0x432260
 size = 0x13b
 
 [[function]]
-name = "FUN_004323a0"
+name = "AnmManager::FUN_004323a0"
 address = 0x4323a0
 size = 0x90
 
 [[function]]
-name = "FUN_00432430"
+name = "AnmManager::SetBeginingOfScript"
 address = 0x432430
 size = 0x97
 
@@ -2014,12 +2014,12 @@ address = 0x4324d0
 size = 0x256
 
 [[function]]
-name = "FUN_00432730"
+name = "AnmManager::FUN_00432730"
 address = 0x432730
 size = 0x393
 
 [[function]]
-name = "FUN_00432ad0"
+name = "AnmManager::FUN_00432ad0"
 address = 0x432ad0
 size = 0x1af
 
@@ -2029,27 +2029,27 @@ address = 0x432c80
 size = 0x3c
 
 [[function]]
-name = "FUN_00432cc0"
+name = "AnmManager::FUN_00432cc0"
 address = 0x432cc0
 size = 0x2d7
 
 [[function]]
-name = "FUN_00432fa0"
+name = "AnmManager::FUN_00432fa0"
 address = 0x432fa0
 size = 0x1af
 
 [[function]]
-name = "FUN_00433150"
+name = "AnmManager::FUN_00433150"
 address = 0x433150
 size = 0x43e
 
 [[function]]
-name = "FUN_00433590"
+name = "AnmManager::FUN_00433590"
 address = 0x433590
 size = 0x3cf
 
 [[function]]
-name = "FUN_00433960"
+name = "AnmManager::FUN_00433960"
 address = 0x433960
 size = 0x1103
 
@@ -2074,17 +2074,17 @@ address = 0x434e20
 size = 0x1e2
 
 [[function]]
-name = "VeryBigStruct::LogoStuff"
+name = "AnmManager::LogoStuff"
 address = 0x435010
 size = 0x25b
 
 [[function]]
-name = "FUN_00435270"
+name = "AnmManager::FUN_00435270"
 address = 0x435270
 size = 0x8f
 
 [[function]]
-name = "FUN_00435300"
+name = "AnmManager::FUN_00435300"
 address = 0x435300
 size = 0x1bd
 
@@ -2359,17 +2359,17 @@ address = 0x43c2f0
 size = 0x13
 
 [[function]]
-name = "FUN_0043c310"
+name = "Pbg3FileStuff::Unk20"
 address = 0x43c310
 size = 0x5f
 
 [[function]]
-name = "FUN_0043c380"
+name = "Pbg3FileStuff::Unk3"
 address = 0x43c380
 size = 0x40
 
 [[function]]
-name = "FUN_0043c3c0"
+name = "Pbg3FileStuff::Unk21"
 address = 0x43c3c0
 size = 0x49
 
@@ -2384,7 +2384,7 @@ address = 0x43c420
 size = 0x20
 
 [[function]]
-name = "Pbg3FileStuff::Init"
+name = "Pbg3FileStuff::Init2"
 address = 0x43c440
 size = 0x5a
 
@@ -2399,37 +2399,37 @@ address = 0x43c4f0
 size = 0x11
 
 [[function]]
-name = "Pbg3FileStuff::Unk1"
+name = "Pbg3FileStuff::ReadBit"
 address = 0x43c510
 size = 0x59
 
 [[function]]
-name = "Pbg3FileStuff::Unk2"
+name = "Pbg3FileStuff::ReadInt"
 address = 0x43c570
 size = 0x7b
 
 [[function]]
-name = "Pbg3FileStuff::Unk3"
+name = "Pbg3FileStuff::ReadByteAssumeAligned"
 address = 0x43c5f0
 size = 0x16
 
 [[function]]
-name = "Pbg3FileStuff::Unk4"
+name = "Pbg3FileStuff::SeekToOffset"
 address = 0x43c610
 size = 0x40
 
 [[function]]
-name = "Pbg3FileStuff::Unk5"
+name = "Pbg3FileStuff::SeekToByteAligned"
 address = 0x43c650
 size = 0x27
 
 [[function]]
-name = "FUN_0043c680"
+name = "Pbg3FileStuff::ReadByteAlignedData"
 address = 0x43c680
 size = 0x25
 
 [[function]]
-name = "FUN_0043c6b0"
+name = "Pbg3FileStuff::GetLastWriteTime"
 address = 0x43c6b0
 size = 0x20
 
@@ -2439,32 +2439,32 @@ address = 0x43c6d0
 size = 0x8
 
 [[function]]
-name = "FUN_0043c6e0"
+name = "Pbg3FileStuff::Unk9"
 address = 0x43c6e0
 size = 0x69
 
 [[function]]
-name = "FUN_0043c750"
+name = "Pbg3FileStuff::Unk8"
 address = 0x43c750
 size = 0x1e
 
 [[function]]
-name = "Pbg3File::Init"
+name = "Pbg3File_conflict1::Init"
 address = 0x43c770
 size = 0x13
 
 [[function]]
-name = "FUN_0043c790"
+name = "Pbg3File_conflict1::Unk12"
 address = 0x43c790
 size = 0x131
 
 [[function]]
-name = "FUN_0043c8d0"
+name = "Pbg3File_conflict1::SomeKindOfDelete"
 address = 0x43c8d0
 size = 0x4e
 
 [[function]]
-name = "FUN_0043c920"
+name = "Pbg3File_conflict1::Unk23"
 address = 0x43c920
 size = 0x64
 
@@ -2479,7 +2479,7 @@ address = 0x43c9c0
 size = 0xbd
 
 [[function]]
-name = "Pbg3File::Unk1"
+name = "Pbg3File_conflict1::Unk1"
 address = 0x43ca90
 size = 0xa5
 
@@ -2544,7 +2544,7 @@ address = 0x43d0a0
 size = 0x85
 
 [[function]]
-name = "FUN_0043d130"
+name = "FileAbstraction::UnkDeinit"
 address = 0x43d130
 size = 0x28
 
@@ -2604,7 +2604,7 @@ address = 0x43f175
 size = 0xd0
 
 [[function]]
-name = "_D3DXVec3Project@24"
+name = "D3DXVec3Project"
 address = 0x43f245
 size = 0xfd
 
