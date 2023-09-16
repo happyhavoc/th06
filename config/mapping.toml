@@ -2604,7 +2604,7 @@ address = 0x43f175
 size = 0xd0
 
 [[function]]
-name = "D3DXVec3Project"
+name = "_D3DXVec3Project@24"
 address = 0x43f245
 size = 0xfd
 
