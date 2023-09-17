@@ -52,3 +52,14 @@ Run the following script:
 ### Building
 
 On Windows, run `scripts/build.bat` otherwise `./scripts/wineth06 scripts/build.bat`.
+
+## Reverse Engineering
+
+You can find an XML export of our Ghidra RE in the companion repository
+[th06-re]. This repo is updated nightly through [`scripts/export_ghidra_database.py`],
+and its history matches the checkin history from our team's Ghidra Server.
+
+If you wish to help us in our Reverse Engineering effort, please contact
+@roblabla on discord so we can give you an account on the Ghidra Server.
+
+[th06-re]: https://github.com/happyhavoc/th06-re

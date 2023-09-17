@@ -1,0 +1,49 @@
+name: Export Ghidra Database
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  export-ghidra:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+    # Don't use actions/checkout@v4 because hurr durr it be broken: https://github.com/actions/checkout/issues/1477
+    - name: Clone th06-re repo
+      run: |
+        echo "$GHIDRA_SSH_AUTH" > ssh_key
+        chmod 0600 ssh_key
+        GIT_SSH_COMMAND="ssh -i $PWD/ssh_key -o IdentitiesOnly=yes" git clone git@github.com:happyhavoc/th06-re th06-re
+        rm ssh_key
+      env:
+        GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
+    - name: Install python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Get ghidra
+      run: |
+        curl -L https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.3_build/ghidra_10.3.3_PUBLIC_20230829.zip -o /tmp/ghidra.zip
+        unzip -d /tmp /tmp/ghidra.zip
+        echo /tmp/ghidra_*/support >> $GITHUB_PATH
+    - name: Export ghidra
+      run: |
+        echo "$GHIDRA_SSH_AUTH" > ssh_key
+        python scripts/export_ghidra_database.py --user-mappings config/ghidra-user-maps.toml --username github-action --ssh-key ssh_key --program th06_102h.exe 'ghidra://roblab.la/Touhou 06' th06-re
+        rm ssh_key
+      env: # Or as an environment variable
+        GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
+    - name: Push
+      run: |
+        echo "$GHIDRA_SSH_AUTH" > ssh_key
+        chmod 0600 ssh_key
+        GIT_SSH_COMMAND="ssh -i $PWD/ssh_key -o IdentitiesOnly=yes" git -C th06-re push origin HEAD
+        rm ssh_key
+      env:
+        GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
