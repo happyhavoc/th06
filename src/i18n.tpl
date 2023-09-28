@@ -7,7 +7,7 @@
 #define TH_JP_CONFIG_FILE "東方紅魔郷.cfg"
 #define TH_JP_WINDOW_TITLE "東方紅魔郷　〜 the Embodiment of Scarlet Devil"
 #define TH_JP_ERR_ALREADY_RUNNING "二つは起動できません\n"
-#define TH_JP_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ "Direct3D オブジェクトは何故か作成出来なかった\n"
+#define TH_JP_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D オブジェクトは何故か作成出来なかった\n"
 #define TH_JP_ERR_LOGGER_START "東方動作記録 --------------------------------------------- \n"
 #define TH_JP_ERR_LOGGER_END "---------------------------------------------------------- \n"
 #define TH_JP_ERR_NO_PAD_FOUND "使えるパッドが存在しないようです、残念\n"
