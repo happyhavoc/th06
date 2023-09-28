@@ -8,6 +8,7 @@
 
 enum GameConfigOpts
 {
+    USE_D3D_HW_TEXTURE_BLENDING = 1 << 0x0,
     DONT_USE_VERTEX_BUF = 1 << 0x1,
     FORCE_16BIT_COLOR_MODE = 1 << 0x2,
     CLEAR_BACKBUFFER_ON_REFRESH = 1 << 0x3,
@@ -34,6 +35,13 @@ struct ControllerMapping
     i16 skipButton;
 };
 
+enum MusicMode
+{
+    OFF = 0,
+    WAV = 1,
+    MIDI = 2
+};
+
 struct GameConfiguration
 {
     ControllerMapping controllerMapping;
@@ -42,10 +50,9 @@ struct GameConfiguration
     i8 lifeCount;
     i8 bombCount;
     i8 colorMode16bit;
-    // 0 is off, 1 for wav, 2 for midi
-    i8 musicMode;
+    MusicMode musicMode;
     i8 playSounds;
-    i8 unk7;
+    i8 defaultDifficulty;
     u8 windowed;
     // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
     i8 frameskipConfig;
@@ -75,6 +82,7 @@ struct GameContext
     GameConfiguration cfg;
 
     i32 unk198;
+    i32 vsyncEnabled;
 
     MidiOutput *midiOutput;
 };
@@ -112,4 +120,5 @@ unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerBut
 u16 GetControllerInput(u16 buttons);
 u16 GetInput(void);
 
+extern ControllerMapping g_ControllerMapping;
 extern GameContext g_GameContext;

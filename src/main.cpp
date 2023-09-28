@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #include "Chain.hpp"
+#include "FileSystem.hpp"
 #include "GameContext.hpp"
 #include "GameErrorContext.hpp"
 #include "GameWindow.hpp"
@@ -13,11 +14,6 @@
 #include "VeryBigStruct.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
-
-i32 WriteConfigToFile(char *path, void *data, size_t size)
-{
-    return 0;
-}
 
 i32 AddInputChain(void)
 {
@@ -272,7 +268,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
     else
     {
-        WriteConfigToFile(TH_CONFIG_FILE, &g_GameContext.cfg, sizeof(g_GameContext.cfg));
+        WriteDataToFile(TH_CONFIG_FILE, &g_GameContext.cfg, sizeof(g_GameContext.cfg));
         SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, g_ScreenSaveActive, NULL, SPIF_SENDCHANGE);
         SystemParametersInfo(SPI_SETLOWPOWERACTIVE, g_LowPowerActive, NULL, SPIF_SENDCHANGE);
         SystemParametersInfo(SPI_SETPOWEROFFACTIVE, g_PowerOffActive, NULL, SPIF_SENDCHANGE);

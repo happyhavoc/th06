@@ -21,10 +21,12 @@ CFLAGS=/nologo /MT /EHsc /G5 /GS /Od /Oi /Ob1 /DNDEBUG /Zi /I $(OBJ_DIR)\autogen
 
 TH06E_OBJS=	$(OBJ_DIR)\main.obj \
 			$(OBJ_DIR)\Chain.obj \
+			$(OBJ_DIR)\FileSystem.obj \
 			$(OBJ_DIR)\GameContext.obj \
 			$(OBJ_DIR)\GameErrorContext.obj \
 			$(OBJ_DIR)\GameWindow.obj \
 			$(OBJ_DIR)\MidiOutput.obj \
+			$(OBJ_DIR)\Pbg3Archive.obj \
 			$(OBJ_DIR)\SoundPlayer.obj \
 			$(OBJ_DIR)\VeryBigStruct.obj \
 			$(OBJ_DIR)\utils.obj \

@@ -1,12 +1,15 @@
 #include "GameContext.hpp"
+#include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 #include "i18n.hpp"
 #include "inttypes.hpp"
 #include "utils.hpp"
 
+#include <stdio.h>
 #include <string.h>
 
 GameContext g_GameContext;
+ControllerMapping g_ControllerMapping;
 JOYCAPSA g_JoystickCaps;
 
 i32 InitD3dInterface(void)
@@ -21,10 +24,137 @@ i32 InitD3dInterface(void)
     return 0;
 }
 
-// TODO: Implement this.
+// TODO: Not a perfect match.
 i32 GameContext::Parse(char *path)
 {
-    return -1;
+    u8 *data;
+    FILE *wavFile;
+
+    memset(&g_GameContext.cfg, 0, sizeof(GameConfiguration));
+    g_GameContext.cfg.opts = g_GameContext.cfg.opts | USE_D3D_HW_TEXTURE_BLENDING;
+    data = OpenPath(path, 1);
+    if (data == NULL)
+    {
+        g_GameContext.cfg.lifeCount = 2;
+        g_GameContext.cfg.bombCount = 3;
+        g_GameContext.cfg.colorMode16bit = 0xff;
+        g_GameContext.cfg.version = 0x102;
+        g_GameContext.cfg.padXAxis = 600;
+        g_GameContext.cfg.padYAxis = 600;
+        wavFile = fopen("bgm/th06_01.wav", "rb");
+        if (wavFile == NULL)
+        {
+            g_GameContext.cfg.musicMode = MIDI;
+            DebugPrint(TH_ERR_NO_WAVE_FILE);
+        }
+        else
+        {
+            g_GameContext.cfg.musicMode = WAV;
+            fclose(wavFile);
+        }
+        g_GameContext.cfg.playSounds = 1;
+        g_GameContext.cfg.defaultDifficulty = 1;
+        g_GameContext.cfg.windowed = false;
+        g_GameContext.cfg.frameskipConfig = 0;
+        g_GameContext.cfg.controllerMapping = g_ControllerMapping;
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_CONFIG_NOT_FOUND);
+    }
+    else
+    {
+        memcpy(&g_GameContext.cfg, data, sizeof(GameConfiguration));
+        if ((4 < g_GameContext.cfg.lifeCount) || (3 < g_GameContext.cfg.bombCount) ||
+            (1 < g_GameContext.cfg.colorMode16bit) || (MIDI < g_GameContext.cfg.musicMode) ||
+            (4 < g_GameContext.cfg.defaultDifficulty) || (1 < g_GameContext.cfg.playSounds) ||
+            (1 < g_GameContext.cfg.windowed) || (2 < g_GameContext.cfg.frameskipConfig) ||
+            (g_GameContext.cfg.version != 0x102) || (g_LastFileSize != 0x38))
+        {
+            g_GameContext.cfg.lifeCount = 2;
+            g_GameContext.cfg.bombCount = 3;
+            g_GameContext.cfg.colorMode16bit = 0xff;
+            g_GameContext.cfg.version = 0x102;
+            g_GameContext.cfg.padXAxis = 600;
+            g_GameContext.cfg.padYAxis = 600;
+            wavFile = fopen("bgm/th06_01.wav", "rb");
+            if (wavFile == NULL)
+            {
+                g_GameContext.cfg.musicMode = MIDI;
+                DebugPrint(TH_ERR_NO_WAVE_FILE);
+            }
+            else
+            {
+                g_GameContext.cfg.musicMode = WAV;
+                fclose(wavFile);
+            }
+            g_GameContext.cfg.playSounds = 1;
+            g_GameContext.cfg.defaultDifficulty = 1;
+            g_GameContext.cfg.windowed = false;
+            g_GameContext.cfg.frameskipConfig = 0;
+            g_GameContext.cfg.controllerMapping = g_ControllerMapping;
+            g_GameContext.cfg.opts = g_GameContext.cfg.opts | USE_D3D_HW_TEXTURE_BLENDING;
+            GameErrorContextLog(&g_GameErrorContext, TH_ERR_CONFIG_CORRUPTED);
+        }
+        g_ControllerMapping = g_GameContext.cfg.controllerMapping;
+        free(data);
+    }
+    if (((this->cfg.opts >> 1) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_VERTEX_BUFFER);
+    }
+    if (((this->cfg.opts >> 10) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_FOG);
+    }
+    if (((this->cfg.opts >> 2) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_USE_16BIT_TEXTURES);
+    }
+    if (((this->cfg.opts >> 3) & 1 != 0 || (this->cfg.opts >> 4) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_FORCE_BACKBUFFER_CLEAR);
+    }
+    if (((this->cfg.opts >> 4) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_DONT_RENDER_ITEMS);
+    }
+    if (((this->cfg.opts >> 5) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_GOURAUD_SHADING);
+    }
+    if (((this->cfg.opts >> 6) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_DEPTH_TESTING);
+    }
+    if (((this->cfg.opts >> 7) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_FORCE_60FPS_MODE);
+        this->vsyncEnabled = 0;
+    }
+    if (((this->cfg.opts >> 8) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_TEXTURE_COLOR_COMPOSITING);
+    }
+    if (((this->cfg.opts >> 8) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_LAUNCH_WINDOWED);
+    }
+    if (((this->cfg.opts >> 9) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_FORCE_REFERENCE_RASTERIZER);
+    }
+    if (((this->cfg.opts >> 0xb) & 1) != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_DO_NOT_USE_DIRECTINPUT);
+    }
+    if (WriteDataToFile(path, &g_GameContext.cfg, sizeof(GameConfiguration)) == 0)
+    {
+        return 0;
+    }
+    else
+    {
+        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_FILE_CANNOT_BE_EXPORTED, path);
+        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL);
+        return -1;
+    }
 }
 
 u16 GetJoystickCaps(void)
