@@ -98,6 +98,10 @@ def main(args: Namespace) -> int:
         input_path / "en_vs.net_pro_full.exe",
         "Missing installer for Visual Studio .NET 2002 Professional Edition",
     )
+    python_installer_path = check_file(
+        input_path / "python-3.4.4.msi",
+        "Missing installer for Python 3.4.4",
+    )
 
     program_files = output_path / "PROGRAM FILES"
     program_files.mkdir(parents=True, exist_ok=True)
@@ -174,6 +178,14 @@ def main(args: Namespace) -> int:
     run_generic_extract(dx8sdk_installer_path, tmp_dir)
     dx8sdk_dst_dir = output_path / "mssdk"
     shutil.move(tmp_dir, dx8sdk_dst_dir)
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+
+    print("Installing Python")
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    msiextract(python_installer_path, tmp_dir)
+    python_dst_dir = output_path / "python"
+    shutil.move(tmp_dir, python_dst_dir)
     shutil.rmtree(tmp_dir, ignore_errors=True)
 
     return 0

@@ -7,6 +7,9 @@ $DX8_URL="$ARCHIVE_DOWNLOAD_BASE_URL/dx8sdk/$DX8_FILE_NAME"
 $VS_02_FILE_NAME="en_vs.net_pro_full.exe"
 $VS_02_URL="$ARCHIVE_DOWNLOAD_BASE_URL/en_vs.net_pro_full/$VS_02_FILE_NAME"
 
+$PYTHON_FILE_NAME="python-3.4.4.msi"
+$PYTHON_URL="https://www.python.org/ftp/python/3.4.4/$PYTHON_FILE_NAME"
+
 $SCRIPT_DIR=$PSScriptRoot
 $DL_PATH="$SCRIPT_DIR/dls"
 
@@ -20,4 +23,8 @@ if (!(Test-Path "$DL_PATH/$DX8_FILE_NAME")) {
 if (!(Test-Path "$DL_PATH/$VS_02_FILE_NAME")) {
     Write-Host "Downloading Visual Studio 2002"
     $client.DownloadFile($VS_02_URL, "$DL_PATH/$VS_02_FILE_NAME")
+}
+if (!(Test-Path "$DL_PATH/$PYTHON_FILE_NAME")) {
+    Write-Host "Downloading Python 3.4.4"
+    $client.DownloadFile($PYTHON_URL, "$DL_PATH/$PYTHON_FILE_NAME")
 }
