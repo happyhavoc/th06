@@ -1,0 +1,40 @@
+name: Update mapping file
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  update-mapping:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    - name: Get ghidra
+      run: |
+        curl -L https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.3_build/ghidra_10.3.3_PUBLIC_20230829.zip -o /tmp/ghidra.zip
+        unzip -d /tmp /tmp/ghidra.zip
+        echo /tmp/ghidra_*/support >> $GITHUB_PATH
+    - name: Update mapping
+      run: |
+        echo "$GHIDRA_SSH_AUTH" > ssh_key
+        python scripts/update_mapping.py --username github-action --ssh-key ssh_key --program th06_102h.exe 'ghidra://roblab.la/Touhou 06'
+        rm ssh_key
+      env: # Or as an environment variable
+        GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
+    - name: Create PR to TH06 with updated mapping
+      uses: peter-evans/create-pull-request@v5
+      with:
+        commit-message: Update mapping to latest ghidra changes
+        branch: update-mapping
+        title: Update mapping from ghidra
+        body: Updates the mapping to the latest changes in the ghidra database.
