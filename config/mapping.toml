@@ -9,17 +9,17 @@ address = 0x4010e0
 size = 0x57
 
 [[function]]
-name = "AsciiManager::FUN_00401140"
+name = "AsciiManager::OnUpdate"
 address = 0x401140
 size = 0x101
 
 [[function]]
-name = "AsciiManager::FUN_00401250"
+name = "AsciiManager::OnDrawLowPrio"
 address = 0x401250
 size = 0x3b
 
 [[function]]
-name = "AsciiManager::FUN_00401290"
+name = "AsciiManager::OnDrawHighPrio"
 address = 0x401290
 size = 0x27
 
@@ -49,12 +49,12 @@ address = 0x401500
 size = 0x23
 
 [[function]]
-name = "FUN_00401530"
+name = "AsciiManager::FUN_00401530"
 address = 0x401530
 size = 0x115
 
 [[function]]
-name = "FUN_00401650"
+name = "AsciiManager::FUN_00401650"
 address = 0x401650
 size = 0x5a
 
@@ -1014,12 +1014,12 @@ address = 0x41e260
 size = 0x30
 
 [[function]]
-name = "OpenPath"
+name = "FileSystem::OpenPath"
 address = 0x41e290
 size = 0x1c8
 
 [[function]]
-name = "WriteConfigToFile"
+name = "FileSystem::WriteDataToFile"
 address = 0x41e460
 size = 0x63
 
@@ -1194,7 +1194,7 @@ address = 0x421950
 size = 0x7e
 
 [[function]]
-name = "AnmManager::ReleaseD3dSurfaces"
+name = "AnmManager::ReleaseSurfaces"
 address = 0x4219d0
 size = 0x68
 
@@ -1899,7 +1899,7 @@ address = 0x430510
 size = 0x1cd
 
 [[function]]
-name = "FUN_004306e0"
+name = "SoundPlayer::FUN_004306e0"
 address = 0x4306e0
 size = 0x310
 
@@ -1909,7 +1909,7 @@ address = 0x4309f0
 size = 0x57
 
 [[function]]
-name = "FUN_00430a50"
+name = "SoundPlayer::FUN_00430a50"
 address = 0x430a50
 size = 0x3b5
 
@@ -1964,7 +1964,7 @@ address = 0x431660
 size = 0x2bc
 
 [[function]]
-name = "FUN_00431920"
+name = "AnmManager::LoadTexture"
 address = 0x431920
 size = 0xed
 
@@ -1979,7 +1979,7 @@ address = 0x431d70
 size = 0x42
 
 [[function]]
-name = "AnmManager::LoadAnim"
+name = "AnmManager::LoadAnm"
 address = 0x431dc0
 size = 0x270
 
@@ -2074,17 +2074,17 @@ address = 0x434e20
 size = 0x1e2
 
 [[function]]
-name = "AnmManager::LogoStuff"
+name = "AnmManager::LoadSurface"
 address = 0x435010
 size = 0x25b
 
 [[function]]
-name = "AnmManager::FUN_00435270"
+name = "AnmManager::ReleaseSurface"
 address = 0x435270
 size = 0x8f
 
 [[function]]
-name = "AnmManager::FUN_00435300"
+name = "AnmManager::CopySurfaceToBackBuffer"
 address = 0x435300
 size = 0x1bd
 
@@ -2304,7 +2304,7 @@ address = 0x43b4d0
 size = 0x8f
 
 [[function]]
-name = "HandleWaveStreamNotification"
+name = "CStreamingSound::HandleWaveStreamNotification"
 address = 0x43b560
 size = 0x377
 
@@ -2354,22 +2354,22 @@ address = 0x43c2c0
 size = 0x2f
 
 [[function]]
-name = "Pbg3FileStuff::Init"
+name = "Pbg3Parser::Init"
 address = 0x43c2f0
 size = 0x13
 
 [[function]]
-name = "Pbg3FileStuff::Unk20"
+name = "Pbg3Parser::ReadVarInt"
 address = 0x43c310
 size = 0x5f
 
 [[function]]
-name = "Pbg3FileStuff::Unk3"
+name = "Pbg3Parser::ReadMagic"
 address = 0x43c380
 size = 0x40
 
 [[function]]
-name = "Pbg3FileStuff::Unk21"
+name = "Pbg3Parser::ReadString"
 address = 0x43c3c0
 size = 0x49
 
@@ -2384,12 +2384,12 @@ address = 0x43c420
 size = 0x20
 
 [[function]]
-name = "Pbg3FileStuff::Init2"
+name = "Pbg3Parser::Init2"
 address = 0x43c440
 size = 0x5a
 
 [[function]]
-name = "Pbg3FileStuff::Unk1"
+name = "Pbg3Parser::Open"
 address = 0x43c4a0
 size = 0x49
 
@@ -2399,37 +2399,37 @@ address = 0x43c4f0
 size = 0x11
 
 [[function]]
-name = "Pbg3FileStuff::ReadBit"
+name = "Pbg3Parser::ReadBit"
 address = 0x43c510
 size = 0x59
 
 [[function]]
-name = "Pbg3FileStuff::ReadInt"
+name = "Pbg3Parser::ReadInt"
 address = 0x43c570
 size = 0x7b
 
 [[function]]
-name = "Pbg3FileStuff::ReadByteAssumeAligned"
+name = "Pbg3Parser::ReadByteAssumeAligned"
 address = 0x43c5f0
 size = 0x16
 
 [[function]]
-name = "Pbg3FileStuff::SeekToOffset"
+name = "Pbg3Parser::SeekToOffset"
 address = 0x43c610
 size = 0x40
 
 [[function]]
-name = "Pbg3FileStuff::SeekToByteAligned"
+name = "Pbg3Parser::SeekToByteAligned"
 address = 0x43c650
 size = 0x27
 
 [[function]]
-name = "Pbg3FileStuff::ReadByteAlignedData"
+name = "Pbg3Parser::ReadByteAlignedData"
 address = 0x43c680
 size = 0x25
 
 [[function]]
-name = "Pbg3FileStuff::GetLastWriteTime"
+name = "Pbg3Parser::GetLastWriteTime"
 address = 0x43c6b0
 size = 0x20
 
@@ -2439,52 +2439,52 @@ address = 0x43c6d0
 size = 0x8
 
 [[function]]
-name = "Pbg3FileStuff::Unk9"
+name = "Pbg3Parser::Unk9"
 address = 0x43c6e0
 size = 0x69
 
 [[function]]
-name = "Pbg3FileStuff::Unk8"
+name = "Pbg3Parser::Unk8"
 address = 0x43c750
 size = 0x1e
 
 [[function]]
-name = "Pbg3File_conflict1::Init"
+name = "Pbg3Archive::Pbg3Archive"
 address = 0x43c770
 size = 0x13
 
 [[function]]
-name = "Pbg3File_conflict1::Unk12"
+name = "Pbg3Archive::ParseHeader"
 address = 0x43c790
 size = 0x131
 
 [[function]]
-name = "Pbg3File_conflict1::SomeKindOfDelete"
+name = "Pbg3Archive::dtor"
 address = 0x43c8d0
 size = 0x4e
 
 [[function]]
-name = "Pbg3File_conflict1::Unk23"
+name = "Pbg3Archive::FindEntry"
 address = 0x43c920
 size = 0x64
 
 [[function]]
-name = "FUN_0043c990"
+name = "Pbg3Archive::GetEntrySize"
 address = 0x43c990
 size = 0x25
 
 [[function]]
-name = "FUN_0043c9c0"
+name = "Pbg3Archive::ReadEntry"
 address = 0x43c9c0
 size = 0xbd
 
 [[function]]
-name = "Pbg3File_conflict1::Unk1"
+name = "Pbg3Archive::Load"
 address = 0x43ca90
 size = 0xa5
 
 [[function]]
-name = "FUN_0043cb40"
+name = "Pbg3Archive::ReadAndValidateEntry"
 address = 0x43cb40
 size = 0x2f1
 
