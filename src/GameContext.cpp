@@ -32,7 +32,7 @@ i32 GameContext::Parse(char *path)
 
     memset(&g_GameContext.cfg, 0, sizeof(GameConfiguration));
     g_GameContext.cfg.opts = g_GameContext.cfg.opts | USE_D3D_HW_TEXTURE_BLENDING;
-    data = OpenPath(path, 1);
+    data = FileSystem::OpenPath(path, 1);
     if (data == NULL)
     {
         g_GameContext.cfg.lifeCount = 2;
@@ -145,7 +145,7 @@ i32 GameContext::Parse(char *path)
     {
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_DO_NOT_USE_DIRECTINPUT);
     }
-    if (WriteDataToFile(path, &g_GameContext.cfg, sizeof(GameConfiguration)) == 0)
+    if (FileSystem::WriteDataToFile(path, &g_GameContext.cfg, sizeof(GameConfiguration)) == 0)
     {
         return 0;
     }

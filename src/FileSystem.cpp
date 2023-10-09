@@ -7,7 +7,7 @@
 
 u32 g_LastFileSize;
 
-u8 *OpenPath(char *filepath, int isExternalResource)
+u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
 {
     // char *slashPos;
     u8 *buf;
@@ -87,7 +87,7 @@ u8 *OpenPath(char *filepath, int isExternalResource)
     return buf;
 }
 
-int WriteDataToFile(char *path, void *data, size_t size)
+int FileSystem::WriteDataToFile(char *path, void *data, size_t size)
 {
     FILE *f;
 

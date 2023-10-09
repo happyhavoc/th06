@@ -268,7 +268,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
     else
     {
-        WriteDataToFile(TH_CONFIG_FILE, &g_GameContext.cfg, sizeof(g_GameContext.cfg));
+        FileSystem::WriteDataToFile(TH_CONFIG_FILE, &g_GameContext.cfg, sizeof(g_GameContext.cfg));
         SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, g_ScreenSaveActive, NULL, SPIF_SENDCHANGE);
         SystemParametersInfo(SPI_SETLOWPOWERACTIVE, g_LowPowerActive, NULL, SPIF_SENDCHANGE);
         SystemParametersInfo(SPI_SETPOWEROFFACTIVE, g_PowerOffActive, NULL, SPIF_SENDCHANGE);
