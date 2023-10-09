@@ -176,13 +176,13 @@ u16 GetControllerInput(u16 buttons)
         {
             i32 retryCount = 0;
 
-            DebugPrint2("error : DIERR_INPUTLOST¥n");
+            DebugPrint2("error : DIERR_INPUTLOST\n");
             aaa = g_GameContext.controller->Acquire();
 
             while (aaa == DIERR_INPUTLOST)
             {
                 aaa = g_GameContext.controller->Acquire();
-                DebugPrint2("error : DIERR_INPUTLOST %d¥n", retryCount);
+                DebugPrint2("error : DIERR_INPUTLOST %d\n", retryCount);
 
                 retryCount++;
 

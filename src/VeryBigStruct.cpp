@@ -3,7 +3,7 @@
 VeryBigStruct::VeryBigStruct()
 {
 }
-VeryBigStruct::‾VeryBigStruct()
+VeryBigStruct::~VeryBigStruct()
 {
 }
 void VeryBigStruct::ReleaseD3dSurfaces(void)

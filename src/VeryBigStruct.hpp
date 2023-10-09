@@ -3,7 +3,7 @@
 struct VeryBigStruct
 {
     VeryBigStruct();
-    ‾VeryBigStruct();
+    ~VeryBigStruct();
 
     void ReleaseD3dSurfaces(void);
     char data[0x2112c];
