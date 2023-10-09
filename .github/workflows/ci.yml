@@ -36,3 +36,9 @@ jobs:
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
       run: scripts/build.bat
+    - uses: actions/upload-artifact@v3
+      with:
+        name: th06e
+        path: |
+          build/th06e.exe
+          build/th06e.pdb

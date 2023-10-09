@@ -1,0 +1,57 @@
+name: Compare reimplementation
+
+on:
+  workflow_run:
+    workflows: [Build binary]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      workflow_id:
+        required: true
+        type: number
+
+jobs:
+  compare:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install satsuki
+      uses: robinraju/release-downloader@v1.8
+      with:
+        repository: happyhavoc/satsuki
+        latest: false
+        tag: v0.1.0
+        fileName: satsuki.exe
+    - name: Add satsuki to PATH
+      run: |
+        echo $pwd.Path >> $env:GITHUB_PATH
+    - name: Download original game binary for comparison
+      run: curl -L $env:ORIGINAL_URL -o resources/game.exe
+      env:
+        ORIGINAL_URL: ${{ secrets.ORIGINAL_URL }}
+    - name: Download reimplemented game binary for comparison (1/2)
+      uses: actions/github-script@v6
+      with:
+        script: |
+          let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             run_id: context.payload.workflow_run ? context.payload.workflow_run.id : context.payload.inputs.workflow_id,
+          });
+          let matchArtifact = allArtifacts.data.artifacts.filter((artifact) => {
+            return artifact.name == "th06e"
+          })[0];
+          let download = await github.rest.actions.downloadArtifact({
+             owner: context.repo.owner,
+             repo: context.repo.repo,
+             artifact_id: matchArtifact.id,
+             archive_format: 'zip',
+          });
+          let fs = require('fs');
+          fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/th06e.zip`, Buffer.from(download.data));
+    - name: Download reimplemented game binary for comparison (2/2)
+      run: |
+        mkdir -p build
+        unzip th06e.zip -d build
+    - name: Create diff summary
+      run: python scripts/diff_all_functions.py > $env:GITHUB_STEP_SUMMARY
