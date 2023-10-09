@@ -12,10 +12,12 @@ def generate_function_diff(fn_name):
     diff_dir = base_dir / 'diff'
     resource_dir = base_dir / 'resources'
 
-    orig_asm_path = diff_dir / fn_name / 'orig.asm'
-    reimpl_asm_path = diff_dir / fn_name / 'reimpl.asm'
+    fs_fn_name = fn_name.replace(':', '__')
 
-    os.makedirs(diff_dir / fn_name, exist_ok=True)
+    orig_asm_path = diff_dir / fs_fn_name / 'orig.asm'
+    reimpl_asm_path = diff_dir / fs_fn_name / 'reimpl.asm'
+
+    os.makedirs(diff_dir / fs_fn_name, exist_ok=True)
     with open(orig_asm_path, 'w') as out:
         out = subprocess.run(['satsuki', '--mapping-file', str(config_dir / 'mapping.toml'), 'disassemble', str(resource_dir / 'game.exe'), '--resolve-names', fn_name], stdout=out)
     with open(reimpl_asm_path, 'w') as out:
