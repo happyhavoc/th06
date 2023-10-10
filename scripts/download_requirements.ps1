@@ -1,3 +1,5 @@
+$ErrorActionPreference = "Stop"
+
 $client = New-Object System.Net.WebClient
 
 $ARCHIVE_DOWNLOAD_BASE_URL="https://archive.org/download"
