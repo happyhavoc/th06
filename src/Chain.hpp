@@ -5,7 +5,7 @@
 enum ChainElemFlag
 {
     CHAIN_ELEM_FLAG_HEAP_ALLOCATED = (unsigned char)1,
-    CHAIN_ELEM_FLAG_MASK = ‾(unsigned char)CHAIN_ELEM_FLAG_HEAP_ALLOCATED,
+    CHAIN_ELEM_FLAG_MASK = ~(unsigned char)CHAIN_ELEM_FLAG_HEAP_ALLOCATED,
 };
 
 enum ChainCallbackResult
@@ -38,7 +38,7 @@ class ChainElem
     void *arg;
 
     ChainElem();
-    ‾ChainElem();
+    ~ChainElem();
 
     ChainElem *Allocate(ChainCallback callback);
 };
@@ -61,7 +61,7 @@ class Chain
         unk = 0;
     }
 
-    ‾Chain()
+    ~Chain()
     {
     }
 

@@ -102,6 +102,10 @@ def main(args: Namespace) -> int:
         input_path / "python-3.4.4.msi",
         "Missing installer for Python 3.4.4",
     )
+    vcredist_installer_path = check_file(
+        input_path / "vcredist_x86.exe",
+        "Missing installer for Visual C++ 2010 Runtime",
+    )
 
     program_files = output_path / "PROGRAM FILES"
     program_files.mkdir(parents=True, exist_ok=True)
@@ -186,6 +190,14 @@ def main(args: Namespace) -> int:
     msiextract(python_installer_path, tmp_dir)
     python_dst_dir = output_path / "python"
     shutil.move(tmp_dir, python_dst_dir)
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+
+    print("Installing MSVCR100.DLL for Python")
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    run_generic_extract(vcredist_installer_path, tmp_dir)
+    run_generic_extract(tmp_dir / "vc_red.cab", tmp_dir)
+    shutil.move(tmp_dir / "F_CENTRAL_msvcr100_x86", python_dst_dir / "msvcr100.dll")
     shutil.rmtree(tmp_dir, ignore_errors=True)
 
     return 0

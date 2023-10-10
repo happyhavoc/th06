@@ -20,20 +20,20 @@ class GameErrorContext
     GameErrorContext()
     {
         m_BufferEnd = m_Buffer;
-        m_Buffer[0] = '¥0';
+        m_Buffer[0] = '\0';
         // Required to get some mov eax, [m_Buffer_ptr]
         m_ShowMessageBox = false;
         GameErrorContextLog(this, TH_ERR_LOGGER_END);
     }
 
-    ‾GameErrorContext()
+    ~GameErrorContext()
     {
     }
 
     void RstContext()
     {
         m_BufferEnd = m_Buffer;
-        m_Buffer[0] = '¥0';
+        m_Buffer[0] = '\0';
     }
 
     void Flush();
