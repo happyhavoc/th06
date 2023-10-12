@@ -13,6 +13,10 @@ on:
 jobs:
   compare:
     runs-on: windows-latest
+
+    permissions:
+      statuses: write
+
     steps:
     - uses: actions/checkout@v3
     - name: Install satsuki
@@ -54,6 +58,21 @@ jobs:
         mkdir -p build
         unzip th06e.zip -d build
     - name: Use implemented.csv from target repo
-      run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_commit.id}}/config/implemented.csv -o config/implemented.csv
+      run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/implemented.csv -o config/implemented.csv
     - name: Create diff summary
       run: python scripts/diff_all_functions.py > $env:GITHUB_STEP_SUMMARY
+    - name: Report tests check
+      if: ${{ github.event_name == 'workflow_run' }}
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.workflow_run.head_sha,
+            state: 'success',
+            target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            description: 'Comparison checks',
+            context: 'comparison-checks',
+          })
