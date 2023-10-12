@@ -22,4 +22,8 @@ WindowProc
 CreateGameWindow
 WinMain
 CheckForRunningGameInstance
+DebugPrint
 DebugPrint2
+FileSystem::OpenPath
+FileSystem::WriteDataToFile
+GameContext::Parse
