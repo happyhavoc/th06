@@ -22,6 +22,19 @@ i32 CheckForRunningGameInstance(void)
     return 0;
 }
 
+void DebugPrint(const char *fmt, ...)
+{
+#ifdef DEBUG
+    char tmpBuffer[512];
+
+    va_start(args, fmt);
+    vsprintf(tmpBuffer, fmt, args);
+    va_end(args, fmt);
+
+    printf("DEBUG2: %s\n", tmpBuffer);
+#endif
+}
+
 void DebugPrint2(const char *fmt, ...)
 {
 #ifdef DEBUG
