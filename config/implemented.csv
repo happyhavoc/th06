@@ -27,3 +27,4 @@ DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
 GameContext::Parse
+InitD3dDevice
