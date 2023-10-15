@@ -7,8 +7,6 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 WINE=${WINE:-wine}
 
 export WINEPREFIX=$HOME/.wineth06
-# For use by crossover wine if crossover is used.
-export CX_BOTTLE=th06
 
 MAIN_DRIVE_PATH=$SCRIPT_DIR/prefix
 export WINEPATH="$SCRIPT_DIR;$WINEPATH"

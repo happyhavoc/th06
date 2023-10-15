@@ -5,7 +5,9 @@ import shutil
 import subprocess
 import sys
 from typing import Optional
+import os
 
+SCRIPTS_DIR = Path(__file__).parent
 
 def run_generic_extract(msi_file_path: Path, output_dir: Path) -> int:
     return subprocess.check_call(["7z", "x", "-y", msi_file_path], cwd=output_dir)
@@ -17,6 +19,17 @@ def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
 
 def run_msiextract_win32(msi_file_path: Path, output_dir: Path) -> int:
     return subprocess.check_call(["msiexec", "/a", msi_file_path, "/qb", f"TARGETDIR={output_dir}"], cwd=output_dir)
+
+
+def run_windows_program(args, add_env=None, cwd=None):
+    env = dict(os.environ)
+    for k, v in add_env.items():
+        env[k] = v
+
+    if sys.platform == "win32":
+        subprocess.check_call(args, env=env, cwd=cwd)
+    else:
+        subprocess.check_call([os.getenv("WINE", "wine")] + args, env=env, cwd=cwd)
 
 
 def translate_msiextract_name(raw_name: str) -> Optional[str]:
@@ -198,6 +211,16 @@ def main(args: Namespace) -> int:
     run_generic_extract(vcredist_installer_path, tmp_dir)
     run_generic_extract(tmp_dir / "vc_red.cab", tmp_dir)
     shutil.move(tmp_dir / "F_CENTRAL_msvcr100_x86", python_dst_dir / "msvcr100.dll")
+    shutil.rmtree(tmp_dir, ignore_errors=True)
+
+    print("Installing pragma_var_order")
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    run_windows_program([str(SCRIPTS_DIR / "th06run.bat"), "CL.EXE", str(SCRIPTS_DIR / "pragma_var_order.cpp"), "/ohackery.dll", "/link", "/DLL"], add_env={
+        'DEVENV_PREFIX': str(output_path)
+    }, cwd=str(tmp_dir))
+    VC7 = output_path / "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7"
+    shutil.move(VC7 / "BIN/C1XX.DLL", VC7 / "BIN/C1XXOrig.DLL")
+    shutil.move(tmp_dir / "hackery.dll", VC7 / "BIN/C1XX.DLL")
     shutil.rmtree(tmp_dir, ignore_errors=True)
 
     return 0

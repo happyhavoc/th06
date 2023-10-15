@@ -62,4 +62,12 @@ and its history matches the checkin history from our team's Ghidra Server.
 If you wish to help us in our Reverse Engineering effort, please contact
 @roblabla on discord so we can give you an account on the Ghidra Server.
 
+# Credits
+
+We would like to extend our thanks to the following individuals for their
+invaluable contributions:
+
+- @EstexNT for porting the [`var_order` pragma](scripts/pragma_var_order.cpp) to
+  MSVC7.
+
 [th06-re]: https://github.com/happyhavoc/th06-re
