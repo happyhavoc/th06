@@ -60,7 +60,7 @@ struct GameConfiguration
     i16 padYAxis;
     i8 unk[16];
     // GameConfigOpts bitfield.
-    i32 opts;
+    u32 opts;
 };
 
 struct GameContext
