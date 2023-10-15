@@ -5,13 +5,13 @@
 #include <D3DX8.h>
 #include <stdio.h>
 
+#include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "FileSystem.hpp"
 #include "GameContext.hpp"
 #include "GameErrorContext.hpp"
 #include "GameWindow.hpp"
 #include "SoundPlayer.hpp"
-#include "VeryBigStruct.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -149,7 +149,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     i32 testCoopLevelRes;
     i32 testResetRes;
     MSG msg;
-    VeryBigStruct *vbs;
+    AnmManager *anm;
 
     if (CheckForRunningGameInstance())
     {
@@ -193,8 +193,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         GetJoystickCaps();
         ResetKeyboard();
 
-        vbs = new VeryBigStruct();
-        g_VeryBigStruct = vbs;
+        anm = new AnmManager();
+        g_AnmManager = anm;
 
         if (AddInputChain() != 0)
         {
@@ -227,7 +227,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
                 }
                 else if (testCoopLevelRes == D3DERR_DEVICENOTRESET)
                 {
-                    g_VeryBigStruct->ReleaseD3dSurfaces();
+                    g_AnmManager->ReleaseD3dSurfaces();
                     testResetRes = g_GameContext.d3dDevice->Reset(&g_GameContext.presentParameters);
                     if (testResetRes != 0)
                     {
@@ -244,8 +244,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     g_Chain.Release();
     g_SoundPlayer.Release();
 
-    delete g_VeryBigStruct;
-    g_VeryBigStruct = NULL;
+    delete g_AnmManager;
+    g_AnmManager = NULL;
     if (g_GameContext.d3dDevice != NULL)
     {
         g_GameContext.d3dDevice->Release();

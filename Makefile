@@ -28,7 +28,7 @@ TH06E_OBJS=	$(OBJ_DIR)\main.obj \
 			$(OBJ_DIR)\MidiOutput.obj \
 			$(OBJ_DIR)\Pbg3Archive.obj \
 			$(OBJ_DIR)\SoundPlayer.obj \
-			$(OBJ_DIR)\VeryBigStruct.obj \
+			$(OBJ_DIR)\AnmManager.obj \
 			$(OBJ_DIR)\utils.obj \
 			$(OBJ_DIR)\th06.res
 
