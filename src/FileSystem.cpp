@@ -7,18 +7,17 @@
 
 u32 g_LastFileSize;
 
+#pragma var_order(pbg3Idx, entryname, entryIdx, fsize, data, file)
 u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
 {
-    // char *slashPos;
-    u8 *buf;
-    FILE *fileOb;
+    u8 *data;
+    FILE *file;
     size_t fsize;
-    // this is pbg3Idx
-    i32 pleaseGiveMeC;
+    i32 entryIdx;
     char *entryname;
-    i32 i;
+    i32 pbg3Idx;
 
-    pleaseGiveMeC = -1;
+    entryIdx = -1;
     if (isExternalResource == 0)
     {
         entryname = strrchr(filepath, '\\');
@@ -41,50 +40,50 @@ u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
         }
         if (g_Pbg3Archives != NULL)
         {
-            for (i = 0; i < 0x10; i += 1)
+            for (pbg3Idx = 0; pbg3Idx < 0x10; pbg3Idx += 1)
             {
-                if (g_Pbg3Archives[i] != NULL)
+                if (g_Pbg3Archives[pbg3Idx] != NULL)
                 {
-                    pleaseGiveMeC = g_Pbg3Archives[i]->FindEntry(entryname);
-                    if (pleaseGiveMeC >= 0)
+                    entryIdx = g_Pbg3Archives[pbg3Idx]->FindEntry(entryname);
+                    if (entryIdx >= 0)
                     {
                         break;
                     }
                 }
             }
         }
-        if (pleaseGiveMeC < 0)
+        if (entryIdx < 0)
         {
             return NULL;
         }
     }
-    if (pleaseGiveMeC >= 0)
+    if (entryIdx >= 0)
     {
         DebugPrint2("%s Decode ... \n", entryname);
-        buf = g_Pbg3Archives[i]->ReadAndValidateEntry(pleaseGiveMeC, entryname);
-        g_LastFileSize = g_Pbg3Archives[i]->GetEntrySize(pleaseGiveMeC);
+        data = g_Pbg3Archives[pbg3Idx]->ReadAndValidateEntry(entryIdx, entryname);
+        g_LastFileSize = g_Pbg3Archives[pbg3Idx]->GetEntrySize(entryIdx);
     }
     else
     {
         DebugPrint2("%s Load ... \n", filepath);
-        fileOb = fopen(filepath, "rb");
-        if (fileOb == NULL)
+        file = fopen(filepath, "rb");
+        if (file == NULL)
         {
             DebugPrint2("error : %s is not found.\n", filepath);
             return NULL;
         }
         else
         {
-            fseek(fileOb, 0, SEEK_END);
-            fsize = ftell(fileOb);
+            fseek(file, 0, SEEK_END);
+            fsize = ftell(file);
             g_LastFileSize = fsize;
-            fseek(fileOb, 0, SEEK_SET);
-            buf = (u8 *)malloc(fsize);
-            fread(buf, 1, fsize, fileOb);
-            fclose(fileOb);
+            fseek(file, 0, SEEK_SET);
+            data = (u8 *)malloc(fsize);
+            fread(data, 1, fsize, file);
+            fclose(file);
         }
     }
-    return buf;
+    return data;
 }
 
 int FileSystem::WriteDataToFile(char *path, void *data, size_t size)
