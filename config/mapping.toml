@@ -1969,7 +1969,7 @@ address = 0x431920
 size = 0xed
 
 [[function]]
-name = "AnmManager::Unknown"
+name = "AnmManager::LoadTextureMipmap"
 address = 0x431a10
 size = 0x35f
 
@@ -1999,12 +1999,12 @@ address = 0x432260
 size = 0x13b
 
 [[function]]
-name = "AnmManager::FUN_004323a0"
+name = "AnmManager::SetActiveSprite"
 address = 0x4323a0
 size = 0x90
 
 [[function]]
-name = "AnmManager::SetBeginingOfScript"
+name = "AnmManager::SetAndExecuteScript"
 address = 0x432430
 size = 0x97
 
@@ -2049,7 +2049,7 @@ address = 0x433590
 size = 0x3cf
 
 [[function]]
-name = "AnmManager::FUN_00433960"
+name = "AnmManager::ExecuteScript"
 address = 0x433960
 size = 0x1103
 
@@ -2439,12 +2439,12 @@ address = 0x43c6d0
 size = 0x8
 
 [[function]]
-name = "Pbg3Parser::Unk9"
+name = "Pbg3Parser::~Pbg3Parser"
 address = 0x43c6e0
 size = 0x69
 
 [[function]]
-name = "Pbg3Parser::Unk8"
+name = "Pbg3Parser::Close"
 address = 0x43c750
 size = 0x1e
 
