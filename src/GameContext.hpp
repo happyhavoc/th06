@@ -50,13 +50,13 @@ struct GameConfiguration
     i32 version;
     i8 lifeCount;
     i8 bombCount;
-    i8 colorMode16bit;
+    u8 colorMode16bit;
     MusicMode musicMode;
     i8 playSounds;
     i8 defaultDifficulty;
     u8 windowed;
     // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
-    i8 frameskipConfig;
+    u8 frameskipConfig;
     i16 padXAxis;
     i16 padYAxis;
     i8 unk[16];
