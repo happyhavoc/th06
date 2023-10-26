@@ -16,6 +16,9 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+#define GAME_WINDOW_WIDTH 640
+#define GAME_WINDOW_HEIGHT 480
+
 i32 AddInputChain(void)
 {
     return 0;
@@ -135,12 +138,32 @@ void InitD3dDevice(void)
     return;
 }
 
-void SetViewport(D3DCOLOR color)
+void Clear(D3DCOLOR color)
 {
+    g_GameContext.d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0, 0);
+    if (g_GameContext.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
+    {
+        g_GameContext.d3dDevice->Reset(&g_GameContext.presentParameters);
+    }
+    g_GameContext.d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0, 0);
+    if (g_GameContext.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
+    {
+        g_GameContext.d3dDevice->Reset(&g_GameContext.presentParameters);
+    }
+    return;
 }
 
-#define GAME_WINDOW_WIDTH 640
-#define GAME_WINDOW_HEIGHT 480
+void SetViewport(D3DCOLOR color)
+{
+    g_GameContext.viewport.X = 0;
+    g_GameContext.viewport.Y = 0;
+    g_GameContext.viewport.Width = GAME_WINDOW_WIDTH;
+    g_GameContext.viewport.Height = GAME_WINDOW_HEIGHT;
+    g_GameContext.viewport.MinZ = 0.0;
+    g_GameContext.viewport.MaxZ = 1.0;
+    g_GameContext.d3dDevice->SetViewport(&g_GameContext.viewport);
+    Clear(color);
+}
 
 #pragma var_order(using_d3d_hal, display_mode, present_params, camera_distance, half_height, half_width, aspect_ratio, \
                   field_of_view_y, up, at, eye, should_run_at_60_fps)
