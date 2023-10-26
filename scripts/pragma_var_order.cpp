@@ -373,8 +373,6 @@ void Scope::Add(Object *object)
     if (hashMask == 0)
     {
         index = 0;
-        if (varDebug)
-            printf("scope:%p add:%s index:%d (mask=%d)\n", this, object->entry.name->str, index, hashMask);
 
         // find the right place in the list to put it, based off our ordering
 
@@ -407,6 +405,19 @@ void Scope::Add(Object *object)
                         break;
                     }
                 }
+            }
+        }
+
+        if (varDebug)
+        {
+            if (addAfter)
+            {
+                printf("scope:%p add:%s idx:%d after:%s\n", this, object->entry.name->str, indexOfName,
+                       addAfter->name->str);
+            }
+            else
+            {
+                printf("scope:%p add:%s idx:%d at start\n", this, object->entry.name->str, indexOfName);
             }
         }
 

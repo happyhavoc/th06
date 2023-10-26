@@ -135,8 +135,226 @@ void InitD3dDevice(void)
     return;
 }
 
+void SetViewport(D3DCOLOR color)
+{
+}
+
+#define GAME_WINDOW_WIDTH 640
+#define GAME_WINDOW_HEIGHT 480
+
+#pragma var_order(using_d3d_hal, display_mode, present_params, camera_distance, half_height, half_width, aspect_ratio, \
+                  field_of_view_y, up, at, eye, should_run_at_60_fps)
 i32 InitD3dRendering(void)
 {
+    u8 using_d3d_hal;
+    D3DPRESENT_PARAMETERS present_params;
+    D3DDISPLAYMODE display_mode;
+    D3DXVECTOR3 eye;
+    D3DXVECTOR3 at;
+    D3DXVECTOR3 up;
+    float half_width;
+    float half_height;
+    float aspect_ratio;
+    float field_of_view_y;
+    float camera_distance;
+
+    using_d3d_hal = 1;
+    memset(&present_params, 0, sizeof(D3DPRESENT_PARAMETERS));
+    g_GameContext.d3dIface->GetAdapterDisplayMode(0, &display_mode);
+    if (!g_GameContext.cfg.windowed)
+    {
+        if ((((g_GameContext.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 1))
+        {
+            present_params.BackBufferFormat = D3DFMT_R5G6B5;
+            g_GameContext.cfg.colorMode16bit = 1;
+        }
+        else if (g_GameContext.cfg.colorMode16bit == 0xff)
+        {
+            if ((display_mode.Format == D3DFMT_X8R8G8B8) || (display_mode.Format == D3DFMT_A8R8G8B8))
+            {
+                present_params.BackBufferFormat = D3DFMT_X8R8G8B8;
+                g_GameContext.cfg.colorMode16bit = 0;
+                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SCREEN_INIT_32BITS);
+            }
+            else
+            {
+                present_params.BackBufferFormat = D3DFMT_R5G6B5;
+                g_GameContext.cfg.colorMode16bit = 1;
+                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SCREEN_INIT_16BITS);
+            }
+        }
+        else if (g_GameContext.cfg.colorMode16bit == 0)
+        {
+            present_params.BackBufferFormat = D3DFMT_X8R8G8B8;
+        }
+        else
+        {
+            present_params.BackBufferFormat = D3DFMT_R5G6B5;
+        }
+        if (!((g_GameContext.cfg.opts >> GCOS_FORCE_60FPS) & 1))
+        {
+            present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+        }
+        else
+        {
+            present_params.FullScreen_RefreshRateInHz = 60;
+            present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
+            GameErrorContextLog(&g_GameErrorContext, TH_ERR_SET_REFRESH_RATE_60HZ);
+        }
+        if (g_GameContext.cfg.frameskipConfig == 0)
+        {
+            present_params.SwapEffect = D3DSWAPEFFECT_FLIP;
+        }
+        else
+        {
+            present_params.SwapEffect = D3DSWAPEFFECT_COPY_VSYNC;
+        }
+    }
+    else
+    {
+        present_params.BackBufferFormat = display_mode.Format;
+        present_params.SwapEffect = D3DSWAPEFFECT_COPY;
+        present_params.Windowed = 1;
+    }
+    present_params.BackBufferWidth = GAME_WINDOW_WIDTH;
+    present_params.BackBufferHeight = GAME_WINDOW_HEIGHT;
+    present_params.EnableAutoDepthStencil = true;
+    present_params.AutoDepthStencilFormat = D3DFMT_D16;
+    present_params.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+    g_GameContext.lockableBackbuffer = 1;
+    memcpy(&g_GameContext.presentParameters, &present_params, sizeof(D3DPRESENT_PARAMETERS));
+    for (;;)
+    {
+        if (((g_GameContext.cfg.opts >> GCOS_REFERENCE_RASTERIZER_MODE) & 1) != 0)
+        {
+            goto REFERENCE_RASTERIZER_MODE;
+        }
+        else
+        {
+            if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_HAL, g_GameWindow.window,
+                                                     D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_params,
+                                                     &g_GameContext.d3dDevice) < 0)
+            {
+                GameErrorContextLog(&g_GameErrorContext, TH_ERR_TL_HAL_UNAVAILABLE);
+                if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_HAL, g_GameWindow.window,
+                                                         D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
+                                                         &g_GameContext.d3dDevice) < 0)
+                {
+                    GameErrorContextLog(&g_GameErrorContext, TH_ERR_HAL_UNAVAILABLE);
+                REFERENCE_RASTERIZER_MODE:
+                    if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_REF, g_GameWindow.window, 0x20,
+                                                             &present_params, &g_GameContext.d3dDevice) < 0)
+                    {
+                        if (((g_GameContext.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0 && !g_GameContext.vsyncEnabled)
+                        {
+                            GameErrorContextLog(&g_GameErrorContext, TH_ERR_CANT_CHANGE_REFRESH_RATE_FORCE_VSYNC);
+                            present_params.FullScreen_RefreshRateInHz = 0;
+                            g_GameContext.vsyncEnabled = 1;
+                            present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+                            continue;
+                        }
+                        else
+                        {
+                            if (present_params.Flags == 1)
+                            {
+                                GameErrorContextLog(&g_GameErrorContext, TH_ERR_BACKBUFFER_NONLOCKED);
+                                present_params.Flags = 0;
+                                g_GameContext.lockableBackbuffer = 0;
+                                continue;
+                            }
+                            else
+                            {
+                                GameErrorContextFatal(&g_GameErrorContext, TH_ERR_D3D_INIT_FAILED);
+                                if (g_GameContext.d3dIface != NULL)
+                                {
+                                    g_GameContext.d3dIface->Release();
+                                    g_GameContext.d3dIface = NULL;
+                                }
+                                return 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        GameErrorContextLog(&g_GameErrorContext, TH_USING_REF_MODE);
+                        g_GameContext.hasD3dHardwareVertexProcessing = 0;
+                        using_d3d_hal = 0;
+                    }
+                }
+                else
+                {
+                    GameErrorContextLog(&g_GameErrorContext, TH_USING_HAL_MODE);
+                    g_GameContext.hasD3dHardwareVertexProcessing = 0;
+                }
+            }
+            else
+            {
+                GameErrorContextLog(&g_GameErrorContext, TH_USING_TL_HAL_MODE);
+                g_GameContext.hasD3dHardwareVertexProcessing = 1;
+            }
+            break;
+        }
+    }
+
+    half_width = (float)GAME_WINDOW_WIDTH / 2.0;
+    half_height = (float)GAME_WINDOW_HEIGHT / 2.0;
+    aspect_ratio = (float)GAME_WINDOW_WIDTH / (float)GAME_WINDOW_HEIGHT;
+    field_of_view_y = 0.52359879; // PI / 6.0f
+    camera_distance = half_height / tanf(field_of_view_y / 2.0f);
+    up.x = 0.0;
+    up.y = 1.0;
+    up.z = 0.0;
+    at.x = half_width;
+    at.y = -half_height;
+    at.z = 0.0;
+    eye.x = half_width;
+    eye.y = -half_height;
+    eye.z = -camera_distance;
+    D3DXMatrixLookAtLH(&g_GameContext.viewMatrix, &eye, &at, &up);
+    D3DXMatrixPerspectiveFovLH(&g_GameContext.projectionMatrix, field_of_view_y, aspect_ratio, 100.0, 10000.0);
+    g_GameContext.d3dDevice->SetTransform(D3DTS_VIEW, &g_GameContext.viewMatrix);
+    g_GameContext.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_GameContext.projectionMatrix);
+    g_GameContext.d3dDevice->GetViewport(&g_GameContext.viewport);
+    g_GameContext.d3dDevice->GetDeviceCaps(&g_GameContext.d3dCaps);
+    if (((((g_GameContext.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0) &&
+         ((g_GameContext.d3dCaps.TextureOpCaps & D3DTEXOPCAPS_ADD) == 0)))
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_SUPPORT_FOR_D3DTEXOPCAPS_ADD);
+        g_GameContext.cfg.opts = g_GameContext.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
+    }
+    u32 should_run_at_60_fps;
+    if ((((g_GameContext.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0) && (g_GameContext.vsyncEnabled != 0))
+    {
+        should_run_at_60_fps = true;
+    }
+    else
+    {
+        should_run_at_60_fps = false;
+    }
+    if (should_run_at_60_fps && ((g_GameContext.d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) == 0))
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_CANT_FORCE_60FPS_NO_ASYNC_FLIP);
+        g_GameContext.cfg.opts = g_GameContext.cfg.opts & ~(1 << GCOS_FORCE_60FPS);
+    }
+    if ((((g_GameContext.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 0) && (using_d3d_hal != 0))
+    {
+        if (g_GameContext.d3dIface->CheckDeviceFormat(0, D3DDEVTYPE_HAL, present_params.BackBufferFormat, 0,
+                                                      D3DRTYPE_TEXTURE, D3DFMT_A8R8G8B8) == 0)
+        {
+            g_GameContext.colorMode16Bits = 1;
+        }
+        else
+        {
+            g_GameContext.colorMode16Bits = 0;
+            g_GameContext.cfg.opts = g_GameContext.cfg.opts | (1 << GCOS_FORCE_16BIT_COLOR_MODE);
+            GameErrorContextLog(&g_GameErrorContext, TH_ERR_D3DFMT_A8R8G8B8_UNSUPPORTED);
+        }
+    }
+    InitD3dDevice();
+    SetViewport(0);
+    g_GameWindow.isAppClosing = 0;
+    g_GameContext.lastFrameTime = 0;
+    g_GameContext.framerateMultiplier = 0.0;
     return 0;
 }
 
@@ -234,15 +452,15 @@ void CreateGameWindow(HINSTANCE hInstance)
     RegisterClass(&base_class);
     if (g_GameContext.cfg.windowed == 0)
     {
-        width = 640;
-        height = 480;
+        width = GAME_WINDOW_WIDTH;
+        height = GAME_WINDOW_HEIGHT;
         g_GameWindow.window =
             CreateWindowEx(0, "BASE", TH_WINDOW_TITLE, WS_OVERLAPPEDWINDOW, 0, 0, width, height, 0, 0, hInstance, 0);
     }
     else
     {
-        width = GetSystemMetrics(SM_CXFIXEDFRAME) * 2 + 640;
-        height = 480 + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
+        width = GetSystemMetrics(SM_CXFIXEDFRAME) * 2 + GAME_WINDOW_WIDTH;
+        height = GAME_WINDOW_HEIGHT + GetSystemMetrics(SM_CYFIXEDFRAME) * 2 + GetSystemMetrics(SM_CYCAPTION);
         g_GameWindow.window = CreateWindowEx(0, "BASE", TH_WINDOW_TITLE, WS_VISIBLE | WS_MINIMIZEBOX | WS_SYSMENU,
                                              CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, hInstance, 0);
     }

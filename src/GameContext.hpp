@@ -1,6 +1,7 @@
 #pragma once
 
 #include <d3d8.h>
+#include <d3dx8math.h>
 #include <dinput.h>
 
 #include "MidiOutput.hpp"
@@ -49,13 +50,13 @@ struct GameConfiguration
     i32 version;
     i8 lifeCount;
     i8 bombCount;
-    i8 colorMode16bit;
+    u8 colorMode16bit;
     MusicMode musicMode;
     i8 playSounds;
     i8 defaultDifficulty;
     u8 windowed;
     // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
-    i8 frameskipConfig;
+    u8 frameskipConfig;
     i16 padXAxis;
     i16 padYAxis;
     i8 unk[16];
@@ -75,16 +76,24 @@ struct GameContext
     LPDIRECTINPUTDEVICE8A controller;
     DIDEVCAPS controllerCaps;
     HWND hwndGameWindow;
-    D3DMATRIX viewMatrix;
-    D3DMATRIX projectionMatrix;
+    D3DXMATRIX viewMatrix;
+    D3DXMATRIX projectionMatrix;
     D3DVIEWPORT8 viewport;
     D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
 
     i32 unk198;
     i32 vsyncEnabled;
+    i32 lastFrameTime;
+    float framerateMultiplier;
 
     MidiOutput *midiOutput;
+
+    u8 hasD3dHardwareVertexProcessing;
+    u8 lockableBackbuffer;
+    u8 colorMode16Bits;
+
+    D3DCAPS8 d3dCaps;
 };
 
 enum TouhouButton

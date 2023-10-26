@@ -93,39 +93,14 @@ def check_file(path: Path, message: str) -> Path:
 
 def parse_arguments() -> Namespace:
     parser = ArgumentParser(description="Prepare devenv")
+    parser.add_argument("--only", action='append', choices=['vs', 'dx8', 'py', 'pragma'], help="Only run certain steps. Possible values are vs, dx8, py and pragma.")
     parser.add_argument("input_path", help="Path with required input files")
     parser.add_argument("output_path", help="The output directory")
 
     return parser.parse_args()
 
 
-def main(args: Namespace) -> int:
-    input_path = Path(args.input_path).absolute()
-    output_path = Path(args.output_path).absolute()
-
-    dx8sdk_installer_path = check_file(
-        input_path / "dx8sdk.exe",
-        "Missing installer for DirectX 8.0 SDK",
-    )
-    installer_path = check_file(
-        input_path / "en_vs.net_pro_full.exe",
-        "Missing installer for Visual Studio .NET 2002 Professional Edition",
-    )
-    python_installer_path = check_file(
-        input_path / "python-3.4.4.msi",
-        "Missing installer for Python 3.4.4",
-    )
-    vcredist_installer_path = check_file(
-        input_path / "vcredist_x86.exe",
-        "Missing installer for Visual C++ 2010 Runtime",
-    )
-
-    program_files = output_path / "PROGRAM FILES"
-    program_files.mkdir(parents=True, exist_ok=True)
-
-    tmp_dir = output_path / "tmp"
-    tmp2_dir = output_path / "tmp2"
-
+def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
     print("Installing Compiler and Platform SDK")
     compiler_directories = [
         "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/COMMON7/IDE",
@@ -189,6 +164,8 @@ def main(args: Namespace) -> int:
 
         should_continue = renamed_something
 
+
+def install_directx8(dx8sdk_installer_path, tmp_dir, output_path):
     print("Installing DirectX 8.0 SDK")
     shutil.rmtree(tmp_dir, ignore_errors=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
@@ -197,6 +174,8 @@ def main(args: Namespace) -> int:
     shutil.move(tmp_dir, dx8sdk_dst_dir)
     shutil.rmtree(tmp_dir, ignore_errors=True)
 
+
+def install_python(python_installer_path, vcredist_installer_path, tmp_dir, output_path):
     print("Installing Python")
     shutil.rmtree(tmp_dir, ignore_errors=True)
     tmp_dir.mkdir(parents=True, exist_ok=True)
@@ -213,15 +192,59 @@ def main(args: Namespace) -> int:
     shutil.move(tmp_dir / "F_CENTRAL_msvcr100_x86", python_dst_dir / "msvcr100.dll")
     shutil.rmtree(tmp_dir, ignore_errors=True)
 
+
+def install_pragma_var_order(tmp_dir, output_path):
     print("Installing pragma_var_order")
     tmp_dir.mkdir(parents=True, exist_ok=True)
     run_windows_program([str(SCRIPTS_DIR / "th06run.bat"), "CL.EXE", str(SCRIPTS_DIR / "pragma_var_order.cpp"), "/ohackery.dll", "/link", "/DLL"], add_env={
         'DEVENV_PREFIX': str(output_path)
     }, cwd=str(tmp_dir))
     VC7 = output_path / "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7"
-    shutil.move(VC7 / "BIN/C1XX.DLL", VC7 / "BIN/C1XXOrig.DLL")
+    if not (VC7 / "BIN/C1XXOrig.DLL").exists():
+        shutil.move(VC7 / "BIN/C1XX.DLL", VC7 / "BIN/C1XXOrig.DLL")
     shutil.move(tmp_dir / "hackery.dll", VC7 / "BIN/C1XX.DLL")
     shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
+def main(args: Namespace) -> int:
+    input_path = Path(args.input_path).absolute()
+    output_path = Path(args.output_path).absolute()
+
+    dx8sdk_installer_path = check_file(
+        input_path / "dx8sdk.exe",
+        "Missing installer for DirectX 8.0 SDK",
+    )
+    installer_path = check_file(
+        input_path / "en_vs.net_pro_full.exe",
+        "Missing installer for Visual Studio .NET 2002 Professional Edition",
+    )
+    python_installer_path = check_file(
+        input_path / "python-3.4.4.msi",
+        "Missing installer for Python 3.4.4",
+    )
+    vcredist_installer_path = check_file(
+        input_path / "vcredist_x86.exe",
+        "Missing installer for Visual C++ 2010 Runtime",
+    )
+
+    program_files = output_path / "PROGRAM FILES"
+    program_files.mkdir(parents=True, exist_ok=True)
+
+    tmp_dir = output_path / "tmp"
+    tmp2_dir = output_path / "tmp2"
+
+    if args.only is None or len(args.only) == 0:
+        steps = set(['vs', 'dx8', 'py', 'pragma'])
+    else:
+        steps = set(args.only)
+    if 'vs' in steps:
+        install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path)
+    if 'dx8' in steps:
+        install_directx8(dx8sdk_installer_path, tmp_dir, output_path)
+    if 'py' in steps:
+        install_python(python_installer_path, vcredist_installer_path, tmp_dir, output_path)
+    if 'pragma' in steps:
+        install_pragma_var_order(tmp_dir, output_path)
 
     return 0
 

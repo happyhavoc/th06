@@ -28,3 +28,4 @@ FileSystem::OpenPath
 FileSystem::WriteDataToFile
 GameContext::Parse
 InitD3dDevice
+InitD3dRendering
