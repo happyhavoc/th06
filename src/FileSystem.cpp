@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "FileSystem.hpp"
-#include "Pbg3Archive.hpp"
+#include "pbg3/Pbg3Archive.hpp"
 #include "utils.hpp"
 
 DIFFABLE_STATIC(u32, g_LastFileSize)
@@ -60,7 +60,7 @@ u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
     if (entryIdx >= 0)
     {
         DebugPrint2("%s Decode ... \n", entryname);
-        data = g_Pbg3Archives[pbg3Idx]->ReadAndValidateEntry(entryIdx, entryname);
+        data = g_Pbg3Archives[pbg3Idx]->ReadDecompressEntry(entryIdx, entryname);
         g_LastFileSize = g_Pbg3Archives[pbg3Idx]->GetEntrySize(entryIdx);
     }
     else
