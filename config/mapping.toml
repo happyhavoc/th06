@@ -44,17 +44,17 @@ address = 0x4014d0
 size = 0x2e
 
 [[function]]
-name = "FUN_00401500"
+name = "AsciiManager::CutChain"
 address = 0x401500
 size = 0x23
 
 [[function]]
-name = "AsciiManager::FUN_00401530"
+name = "AsciiManager::DrawText"
 address = 0x401530
 size = 0x115
 
 [[function]]
-name = "AsciiManager::FUN_00401650"
+name = "AsciiManager::DrawFormatText"
 address = 0x401650
 size = 0x5a
 
@@ -129,12 +129,12 @@ address = 0x403810
 size = 0x89c
 
 [[function]]
-name = "Stage::FUN_004040d0"
+name = "Stage::OnDrawHighPrio"
 address = 0x4040d0
 size = 0xa2
 
 [[function]]
-name = "Stage::FUN_00404180"
+name = "Stage::OnDrawLowPrio"
 address = 0x404180
 size = 0x180
 
@@ -159,12 +159,12 @@ address = 0x404650
 size = 0x32
 
 [[function]]
-name = "FUN_00404690"
+name = "Stage::LoadStageData"
 address = 0x404690
 size = 0x1c1
 
 [[function]]
-name = "FUN_00404860"
+name = "Stage::FUN_00404860"
 address = 0x404860
 size = 0x101
 
@@ -174,17 +174,17 @@ address = 0x404970
 size = 0x83d
 
 [[function]]
-name = "FUN_004051b0"
+name = "AnmManager::FUN_004051b0"
 address = 0x4051b0
 size = 0xa9
 
 [[function]]
-name = "FUN_00405260"
+name = "BombReimuACalc"
 address = 0x405260
 size = 0x9a4
 
 [[function]]
-name = "FUN_00405c10"
+name = "BombReimuADraw"
 address = 0x405c10
 size = 0x410
 
@@ -194,32 +194,32 @@ address = 0x406020
 size = 0x137
 
 [[function]]
-name = "FUN_00406160"
+name = "BombReimuBCalc"
 address = 0x406160
 size = 0x47d
 
 [[function]]
-name = "FUN_004065e0"
+name = "BombReimuBDraw"
 address = 0x4065e0
 size = 0x110
 
 [[function]]
-name = "FUN_004066f0"
+name = "BombMarisaACalc"
 address = 0x4066f0
 size = 0x411
 
 [[function]]
-name = "FUN_00406b10"
+name = "BombMarisaADraw"
 address = 0x406b10
 size = 0x354
 
 [[function]]
-name = "FUN_00406e70"
+name = "BombMarisaBCalc"
 address = 0x406e70
 size = 0x33e
 
 [[function]]
-name = "FUN_004071b0"
+name = "BombMarisaBDraw"
 address = 0x4071b0
 size = 0x185
 
@@ -239,7 +239,7 @@ address = 0x407440
 size = 0x54
 
 [[function]]
-name = "FUN_004074a0"
+name = "EclManager::run_ecl"
 address = 0x4074a0
 size = 0x3504
 
@@ -394,72 +394,72 @@ address = 0x40e1b0
 size = 0x114
 
 [[function]]
-name = "FUN_0040e2d0"
+name = "EffectManager::EffectManager"
 address = 0x40e2d0
 size = 0x65
 
 [[function]]
-name = "FUN_0040e340"
+name = "EffectManager::Reset"
 address = 0x40e340
 size = 0x19
 
 [[function]]
-name = "FUN_0040e360"
+name = "EffectManager::FUN_0040e360"
 address = 0x40e360
 size = 0x24d
 
 [[function]]
-name = "FUN_0040e5b0"
+name = "EffectManager::FUN_0040e5b0"
 address = 0x40e5b0
 size = 0x259
 
 [[function]]
-name = "FUN_0040e810"
+name = "EffectManager::FUN_0040e810"
 address = 0x40e810
 size = 0x10f
 
 [[function]]
-name = "FUN_0040e920"
+name = "EffectManager::FUN_0040e920"
 address = 0x40e920
 size = 0x2e1
 
 [[function]]
-name = "FUN_0040ec10"
+name = "EffectManager::FUN_0040ec10"
 address = 0x40ec10
 size = 0x1a0
 
 [[function]]
-name = "FUN_0040edb0"
+name = "EffectManager::FUN_0040edb0"
 address = 0x40edb0
 size = 0x1a0
 
 [[function]]
-name = "FUN_0040ef50"
+name = "EffectManager::FUN_0040ef50"
 address = 0x40ef50
 size = 0x1ae
 
 [[function]]
-name = "FUN_0040f100"
+name = "EffectManager::OnUpdate"
 address = 0x40f100
 size = 0xe6
 
 [[function]]
-name = "FUN_0040f1f0"
+name = "EffectManager::OnDraw"
 address = 0x40f1f0
 size = 0x81
 
 [[function]]
-name = "FUN_0040f280"
+name = "EffectManager::AddedCallback"
 address = 0x40f280
 size = 0x12c
 
 [[function]]
-name = "FUN_0040f3d0"
+name = "EffectManager::DeletedCallback"
 address = 0x40f3d0
 size = 0x14
 
 [[function]]
-name = "FUN_0040f3f0"
+name = "EffectManager::RegisterChain"
 address = 0x40f3f0
 size = 0xa5
 
@@ -1374,7 +1374,7 @@ address = 0x42390a
 size = 0x20a
 
 [[function]]
-name = "FUN_00423b14"
+name = "SetupDInput"
 address = 0x423b14
 size = 0x28c
 
@@ -1444,7 +1444,7 @@ address = 0x424ae4
 size = 0x4b
 
 [[function]]
-name = "FUN_00424b2f"
+name = "isMusicMutedWtf"
 address = 0x424b2f
 size = 0x2e
 
@@ -1509,7 +1509,7 @@ address = 0x425d97
 size = 0x6c
 
 [[function]]
-name = "FUN_00425e10"
+name = "Player::Player"
 address = 0x425e10
 size = 0x1e8
 
@@ -1544,102 +1544,102 @@ address = 0x426480
 size = 0x22
 
 [[function]]
-name = "FUN_004264b0"
+name = "Player::FUN_004264b0"
 address = 0x4264b0
 size = 0x77d
 
 [[function]]
-name = "FUN_00426c40"
+name = "Player::CalcKillBoxCollision"
 address = 0x426c40
 size = 0x1b0
 
 [[function]]
-name = "FUN_00426df0"
+name = "Player::FUN_00426df0"
 address = 0x426df0
 size = 0x1dd
 
 [[function]]
-name = "FUN_00426fd0"
+name = "Player::CalcBoxCollision"
 address = 0x426fd0
 size = 0x1ba
 
 [[function]]
-name = "FUN_00427190"
+name = "Player::FUN_00427190"
 address = 0x427190
 size = 0x49c
 
 [[function]]
-name = "FUN_00427630"
+name = "Player::FUN_00427630"
 address = 0x427630
 size = 0x139
 
 [[function]]
-name = "FUN_00427770"
+name = "Player::FUN_00427770"
 address = 0x427770
 size = 0xe6
 
 [[function]]
-name = "FUN_00427860"
+name = "Player::CalcMove"
 address = 0x427860
 size = 0xd9a
 
 [[function]]
-name = "FUN_00428630"
+name = "Player::FUN_00428630"
 address = 0x428630
 size = 0x45
 
 [[function]]
-name = "FUN_00428680"
+name = "Player::FUN_00428680"
 address = 0x428680
 size = 0x7a
 
 [[function]]
-name = "FUN_00428700"
+name = "Player::FUN_00428700"
 address = 0x428700
 size = 0x7a
 
 [[function]]
-name = "FUN_00428780"
+name = "Player::RegisterChain"
 address = 0x428780
 size = 0x135
 
 [[function]]
-name = "FUN_004288c0"
+name = "Player::OnUpdate"
 address = 0x4288c0
 size = 0x8ea
 
 [[function]]
-name = "FUN_004291b0"
+name = "Player::FUN_004291b0"
 address = 0x4291b0
 size = 0x55b
 
 [[function]]
-name = "FUN_00429710"
+name = "Player::FUN_00429710"
 address = 0x429710
 size = 0x10c
 
 [[function]]
-name = "FUN_00429820"
+name = "Player::FUN_00429820"
 address = 0x429820
 size = 0x10e
 
 [[function]]
-name = "FUN_00429930"
+name = "Player::OnDrawHighPrio"
 address = 0x429930
 size = 0x1c9
 
 [[function]]
-name = "FUN_00429b00"
+name = "Player::FUN_00429b00"
 address = 0x429b00
 size = 0x8c
 
 [[function]]
-name = "FUN_00429b90"
+name = "Player::OnDrawLowPrio"
 address = 0x429b90
 size = 0x16
 
 [[function]]
-name = "FUN_00429bb0"
+name = "Player::FUN_00429bb0"
 address = 0x429bb0
 size = 0x99
 
@@ -1649,12 +1649,12 @@ address = 0x429c50
 size = 0x45e
 
 [[function]]
-name = "FUN_0042a0b0"
+name = "Player::DeletedCallback"
 address = 0x42a0b0
 size = 0x24
 
 [[function]]
-name = "FUN_0042a0e0"
+name = "Player::CutChain"
 address = 0x42a0e0
 size = 0x55
 
@@ -1714,7 +1714,7 @@ address = 0x42ab30
 size = 0x5a9
 
 [[function]]
-name = "FUN_0042b0d9"
+name = "OpenScore"
 address = 0x42b0d9
 size = 0x1a7
 
@@ -1734,17 +1734,17 @@ address = 0x42b437
 size = 0x2f
 
 [[function]]
-name = "FUN_0042b466"
+name = "ParseCatk"
 address = 0x42b466
 size = 0x9c
 
 [[function]]
-name = "FUN_0042b502"
+name = "ParseClrd"
 address = 0x42b502
 size = 0x15c
 
 [[function]]
-name = "FUN_0042b65e"
+name = "ParsePscr"
 address = 0x42b65e
 size = 0x17e
 
@@ -1754,12 +1754,12 @@ address = 0x42b7dc
 size = 0x2d
 
 [[function]]
-name = "FUN_0042b809"
+name = "WriteScore"
 address = 0x42b809
 size = 0x424
 
 [[function]]
-name = "FUN_0042bc2d"
+name = "ResultScreen::FUN_0042bc2d"
 address = 0x42bc2d
 size = 0x2e
 
@@ -1804,7 +1804,7 @@ address = 0x42d773
 size = 0x12e
 
 [[function]]
-name = "FUN_0042d8a1"
+name = "ResultScreen::ResultScreen"
 address = 0x42d8a1
 size = 0xed
 
@@ -2354,22 +2354,22 @@ address = 0x43c2c0
 size = 0x2f
 
 [[function]]
-name = "Pbg3Parser::Init"
+name = "IPbg3Parser::IPbg3Parser"
 address = 0x43c2f0
 size = 0x13
 
 [[function]]
-name = "Pbg3Parser::ReadVarInt"
+name = "IPbg3Parser::ReadVarInt"
 address = 0x43c310
 size = 0x5f
 
 [[function]]
-name = "Pbg3Parser::ReadMagic"
+name = "IPbg3Parser::ReadMagic"
 address = 0x43c380
 size = 0x40
 
 [[function]]
-name = "Pbg3Parser::ReadString"
+name = "IPbg3Parser::ReadString"
 address = 0x43c3c0
 size = 0x49
 
@@ -2379,12 +2379,12 @@ address = 0x43c410
 size = 0x7
 
 [[function]]
-name = "FUN_0043c420"
+name = "IPbg3Parser::operator_delete"
 address = 0x43c420
 size = 0x20
 
 [[function]]
-name = "Pbg3Parser::Init2"
+name = "Pbg3Parser::Pbg3Parser"
 address = 0x43c440
 size = 0x5a
 
@@ -2419,7 +2419,7 @@ address = 0x43c610
 size = 0x40
 
 [[function]]
-name = "Pbg3Parser::SeekToByteAligned"
+name = "Pbg3Parser::SeekToNextByte"
 address = 0x43c650
 size = 0x27
 
@@ -2444,7 +2444,7 @@ address = 0x43c6e0
 size = 0x69
 
 [[function]]
-name = "Pbg3Parser::Close"
+name = "Pbg3Parser::operator_delete"
 address = 0x43c750
 size = 0x1e
 
@@ -2459,7 +2459,7 @@ address = 0x43c790
 size = 0x131
 
 [[function]]
-name = "Pbg3Archive::dtor"
+name = "Pbg3Archive::~Pbg3Archive"
 address = 0x43c8d0
 size = 0x4e
 
@@ -2474,7 +2474,7 @@ address = 0x43c990
 size = 0x25
 
 [[function]]
-name = "Pbg3Archive::ReadEntry"
+name = "Pbg3Archive::ReadEntryRaw"
 address = 0x43c9c0
 size = 0xbd
 
@@ -2484,12 +2484,12 @@ address = 0x43ca90
 size = 0xa5
 
 [[function]]
-name = "Pbg3Archive::ReadAndValidateEntry"
+name = "Pbg3Archive::ReadDecompressEntry"
 address = 0x43cb40
 size = 0x2f1
 
 [[function]]
-name = "FileAbstraction::Init"
+name = "FileAbstraction::FileAbstraction"
 address = 0x43ce40
 size = 0x17
 
@@ -2544,47 +2544,47 @@ address = 0x43d0a0
 size = 0x85
 
 [[function]]
-name = "FileAbstraction::UnkDeinit"
+name = "FileAbstraction::~FileAbstraction"
 address = 0x43d130
 size = 0x28
 
 [[function]]
-name = "_D3DXVec4Transform@12"
+name = "D3DXVec4Transform"
 address = 0x43ebb2
 size = 0x99
 
 [[function]]
-name = "_D3DXMatrixMultiply@12"
+name = "D3DXMatrixMultiply"
 address = 0x43ec4b
 size = 0xe3
 
 [[function]]
-name = "_D3DXMatrixTranspose@8"
+name = "D3DXMatrixTranspose"
 address = 0x43ed2e
 size = 0x6d
 
 [[function]]
-name = "_D3DXMatrixRotationX@8"
+name = "D3DXMatrixRotationX"
 address = 0x43ed9b
 size = 0x7a
 
 [[function]]
-name = "_D3DXMatrixRotationY@8"
+name = "D3DXMatrixRotationY"
 address = 0x43ee15
 size = 0x7b
 
 [[function]]
-name = "_D3DXMatrixRotationZ@8"
+name = "D3DXMatrixRotationZ"
 address = 0x43ee90
 size = 0x7c
 
 [[function]]
-name = "_D3DXMatrixRotationQuaternion@8"
+name = "D3DXMatrixRotationQuaternion"
 address = 0x43ef0c
 size = 0xe2
 
 [[function]]
-name = "_D3DXMatrixPerspectiveFovLH@20"
+name = "D3DXMatrixPerspectiveFovLH"
 address = 0x43efee
 size = 0x94
 
@@ -2594,42 +2594,42 @@ address = 0x43f082
 size = 0x4c
 
 [[function]]
-name = "_D3DXVec3Normalize@8"
+name = "D3DXVec3Normalize"
 address = 0x43f0ce
 size = 0xa7
 
 [[function]]
-name = "_D3DXVec3TransformCoord@12"
+name = "D3DXVec3TransformCoord"
 address = 0x43f175
 size = 0xd0
 
 [[function]]
-name = "_D3DXVec3Project@24"
+name = "D3DXVec3Project"
 address = 0x43f245
 size = 0xfd
 
 [[function]]
-name = "_D3DXMatrixTransformation@28"
+name = "D3DXMatrixTransformation"
 address = 0x43f362
 size = 0x1ff
 
 [[function]]
-name = "_D3DXMatrixLookAtLH@16"
+name = "D3DXMatrixLookAtLH"
 address = 0x43f561
 size = 0x106
 
 [[function]]
-name = "_D3DXCreateFontIndirect@12"
+name = "D3DXCreateFontIndirect"
 address = 0x43f667
 size = 0x74
 
 [[function]]
-name = "_D3DXCreateSprite@8"
+name = "D3DXCreateSprite"
 address = 0x43f6db
 size = 0x6a
 
 [[function]]
-name = "_D3DXCreateFont@12"
+name = "D3DXCreateFont"
 address = 0x43f745
 size = 0x33
 
@@ -2649,132 +2649,162 @@ address = 0x43f81c
 size = 0x3e2
 
 [[function]]
-name = "_D3DXLoadSurfaceFromMemory@40"
+name = "D3DXLoadSurfaceFromMemory"
 address = 0x43fbfe
 size = 0x236
 
 [[function]]
-name = "_D3DXCheckTextureRequirements@28"
+name = "D3DXCheckTextureRequirements"
 address = 0x43fe34
 size = 0x28
 
 [[function]]
-name = "_D3DXCreateTexture@32"
+name = "D3DXCreateTexture"
 address = 0x43fe5c
 size = 0x66
 
 [[function]]
-name = "_D3DXLoadSurfaceFromFileInMemory@36"
+name = "D3DXLoadSurfaceFromFileInMemory"
 address = 0x43fec2
 size = 0xb6
 
 [[function]]
-name = "_D3DXLoadSurfaceFromSurface@32"
+name = "D3DXLoadSurfaceFromSurface"
 address = 0x43ff78
 size = 0x11d
 
 [[function]]
-name = "_D3DXFilterTexture@16"
+name = "D3DXFilterTexture"
 address = 0x440095
 size = 0x131
 
 [[function]]
-name = "_D3DXCreateTextureFromFileInMemoryEx@60"
+name = "D3DXCreateTextureFromFileInMemoryEx"
 address = 0x4401c6
 size = 0x411
 
 [[function]]
-name = "~CD3DXFont"
+name = "CD3DXFont::~CD3DXFont"
 address = 0x4405d7
 size = 0x32
 
 [[function]]
-name = "Initialize"
+name = "CD3DXFont::AddRef"
+address = 0x440609
+size = 0xd
+
+[[function]]
+name = "CD3DXFont::Initialize"
 address = 0x440616
 size = 0x52
 
 [[function]]
-name = "GetLogFont"
+name = "CD3DXFont::GetDevice"
+address = 0x440668
+size = 0x26
+
+[[function]]
+name = "CD3DXFont::GetLogFont"
 address = 0x44068e
 size = 0x24
 
 [[function]]
-name = "DrawTextA"
+name = "CD3DXFont::Begin"
+address = 0x4406b2
+size = 0xf
+
+[[function]]
+name = "CD3DXFont::End"
+address = 0x4406c1
+size = 0xf
+
+[[function]]
+name = "CD3DXFont::DrawTextA"
 address = 0x4406d0
 size = 0x26
 
 [[function]]
-name = "DrawTextW"
+name = "CD3DXFont::DrawTextW"
 address = 0x4406f6
 size = 0x26
 
 [[function]]
-name = "QueryInterface"
+name = "CD3DXFont::QueryInterface"
 address = 0x44071c
 size = 0x44
 
 [[function]]
-name = "Release"
+name = "CD3DXFont::Release"
 address = 0x440760
 size = 0x21
 
 [[function]]
-name = "CD3DXFont"
+name = "CD3DXFont::CD3DXFont"
 address = 0x440781
 size = 0x1b
 
 [[function]]
-name = "~CD3DXSprite"
+name = "CD3DXSprite::~CD3DXSprite"
 address = 0x44079c
 size = 0x40
 
 [[function]]
-name = "Initialize"
+name = "CD3DXSprite::Initialize"
 address = 0x4407dc
 size = 0x287
 
 [[function]]
-name = "Begin"
+name = "CD3DXSprite::AddRef"
+address = 0x440a63
+size = 0x26
+
+[[function]]
+name = "CD3DXSprite::Begin"
 address = 0x440a89
 size = 0x3d
 
 [[function]]
-name = "End"
+name = "CD3DXSprite::End"
 address = 0x440ac6
 size = 0x2b
 
 [[function]]
-name = "QueryInterface"
+name = "CD3DXSprite::QueryInterface"
 address = 0x440af1
 size = 0x44
 
 [[function]]
-name = "Release"
+name = "CD3DXSprite::Release"
 address = 0x440b35
 size = 0x21
 
 [[function]]
-name = "Draw"
+name = "CD3DXSprite::Draw"
 address = 0x440b56
 size = 0xd7
 
 [[function]]
-name = "CD3DXSprite"
+name = "CD3DXSprite::DrawTransform"
+address = 0x440c2d
+size = 0x2bf
+
+[[function]]
+name = "CD3DXSprite::CD3DXSprite"
 address = 0x440eec
 size = 0x1e
 
 [[function]]
-name = "CD3DXBlt"
+name = "CD3DXBlt::CD3DXBlt"
 address = 0x440f0a
 size = 0xa
 
 [[function]]
-name = "~CD3DXBlt"
+name = "CD3DXBlt::~CD3DXBlt"
 address = 0x440f14
 size = 0x1e
 
 [[function]]
-name = "~TF_Row"
+name = "TF_Row::~TF_Row"
 address = 0x440f32
 size = 0x22
 
@@ -2784,82 +2814,82 @@ address = 0x440f54
 size = 0x2a1
 
 [[function]]
-name = "BltTriangle2D"
+name = "CD3DXBlt::BltTriangle2D"
 address = 0x4411f5
 size = 0x3b6
 
 [[function]]
-name = "BltTriangle3D"
+name = "CD3DXBlt::BltTriangle3D"
 address = 0x4415ab
 size = 0x4d7
 
 [[function]]
-name = "BltSame_DXTn"
+name = "CD3DXBlt::BltSame_DXTn"
 address = 0x441a82
 size = 0x181
 
 [[function]]
-name = "FUN_00441c03"
+name = "CD3DXBlt::BltBox2D_R8G8B8"
 address = 0x441c03
 size = 0x6
 
 [[function]]
-name = "BltBox2D_A8R8G8B8"
+name = "CD3DXBlt::BltBox2D_A8R8G8B8"
 address = 0x441c09
 size = 0x15e
 
 [[function]]
-name = "BltBox2D_X8R8G8B8"
+name = "CD3DXBlt::BltBox2D_X8R8G8B8"
 address = 0x441d67
 size = 0x11c
 
 [[function]]
-name = "BltBox2D_R5G6B5"
+name = "CD3DXBlt::BltBox2D_R5G6B5"
 address = 0x441e83
 size = 0x150
 
 [[function]]
-name = "BltBox2D_X1R5G5B5"
+name = "CD3DXBlt::BltBox2D_X1R5G5B5"
 address = 0x441fd3
 size = 0x124
 
 [[function]]
-name = "BltBox2D_A1R5G5B5"
+name = "CD3DXBlt::BltBox2D_A1R5G5B5"
 address = 0x4420f7
 size = 0x14f
 
 [[function]]
-name = "BltBox2D_A4R4G4B4"
+name = "CD3DXBlt::BltBox2D_A4R4G4B4"
 address = 0x442246
 size = 0x153
 
 [[function]]
-name = "BltBox2D_R3G3B2"
+name = "CD3DXBlt::BltBox2D_R3G3B2"
 address = 0x442399
 size = 0x13f
 
 [[function]]
-name = "BltBox2D_A8"
+name = "CD3DXBlt::BltBox2D_A8"
 address = 0x4424d8
 size = 0x9b
 
 [[function]]
-name = "BltBox2D_A8R3G3B2"
+name = "CD3DXBlt::BltBox2D_A8R3G3B2"
 address = 0x442573
 size = 0x14c
 
 [[function]]
-name = "BltBox2D_X4R4G4B4"
+name = "CD3DXBlt::BltBox2D_X4R4G4B4"
 address = 0x4426bf
 size = 0x121
 
 [[function]]
-name = "BltBox2D_A8L8"
+name = "CD3DXBlt::BltBox2D_A8L8"
 address = 0x4427e0
 size = 0x14c
 
 [[function]]
-name = "BltBox2D_A4L4"
+name = "CD3DXBlt::BltBox2D_A4L4"
 address = 0x44292c
 size = 0x13f
 
@@ -2874,32 +2904,32 @@ address = 0x442a8e
 size = 0x10
 
 [[function]]
-name = "BltSame"
+name = "CD3DXBlt::BltSame"
 address = 0x442a9e
 size = 0x132
 
 [[function]]
-name = "BltCopy"
+name = "CD3DXBlt::BltCopy"
 address = 0x442bd0
 size = 0xa2
 
 [[function]]
-name = "BltNone"
+name = "CD3DXBlt::BltNone"
 address = 0x442c72
 size = 0x175
 
 [[function]]
-name = "BltPoint"
+name = "CD3DXBlt::BltPoint"
 address = 0x442de7
 size = 0x196
 
 [[function]]
-name = "BltBox2D"
+name = "CD3DXBlt::BltBox2D"
 address = 0x442f7d
 size = 0x375
 
 [[function]]
-name = "BltBox3D"
+name = "CD3DXBlt::BltBox3D"
 address = 0x443312
 size = 0x3a9
 
@@ -2909,142 +2939,147 @@ address = 0x4436bb
 size = 0xd1
 
 [[function]]
-name = "BltLinear2D"
+name = "CD3DXBlt::BltLinear2D"
 address = 0x44378c
 size = 0x341
 
 [[function]]
-name = "BltLinear3D"
+name = "CD3DXBlt::BltLinear3D"
 address = 0x443acd
 size = 0x64d
 
 [[function]]
-name = "Blt"
+name = "CD3DXBlt::Blt"
 address = 0x44411a
 size = 0x112
 
 [[function]]
-name = "ImageDecoder::Init"
+name = "CD3DXImage::CD3DXImage"
 address = 0x44422c
 size = 0x19
 
 [[function]]
-name = "ImageDecoder::Drop"
+name = "CD3DXImage::~CD3DXImage"
 address = 0x444245
 size = 0x59
 
 [[function]]
-name = "LoadDIB"
+name = "CD3DXImage::LoadDIB"
 address = 0x44429e
 size = 0x63b
 
 [[function]]
-name = "FUN_004448d9"
+name = "d3dx_jpeg_error_exit"
 address = 0x4448d9
 size = 0x1b
 
 [[function]]
-name = "FUN_004448f5"
+name = "d3dx_jpeg_output_message"
 address = 0x4448f5
 size = 0x1d
 
 [[function]]
-name = "FUN_00444912"
+name = "d3dx_jpeg_fill_input_buffer"
 address = 0x444912
 size = 0x15
 
 [[function]]
-name = "FUN_00444927"
+name = "d3dx_jpeg_skip_input_data"
 address = 0x444927
 size = 0x11
 
 [[function]]
-name = "FUN_00444938"
+name = "d3dx_jpeg_term_source"
 address = 0x444938
 size = 0x1
 
 [[function]]
-name = "DecodeJpeg"
+name = "CD3DXImage::LoadJPG"
 address = 0x444939
 size = 0x255
 
 [[function]]
-name = "LoadTGA"
+name = "CD3DXImage::LoadTGA"
 address = 0x444b8e
 size = 0x478
 
 [[function]]
-name = "DecodePpm"
+name = "CD3DXImage::LoadPPM"
 address = 0x445006
 size = 0x282
 
 [[function]]
-name = "LoadPNG"
+name = "d3dx_png_read_fn"
+address = 0x445288
+size = 0x43
+
+[[function]]
+name = "CD3DXImage::LoadPNG"
 address = 0x4452cb
 size = 0x516
 
 [[function]]
-name = "DecodeDds"
+name = "CD3DXImage::LoadDDS"
 address = 0x4457e1
 size = 0x313
 
 [[function]]
-name = "DecodeBmp"
+name = "CD3DXImage::LoadBMP"
 address = 0x445af4
 size = 0x30
 
 [[function]]
-name = "ImageDecoder::DecodeImage"
+name = "CD3DXImage::Load"
 address = 0x445b24
 size = 0x15a
 
 [[function]]
-name = "CD3DXText"
+name = "CD3DXText::CD3DXText"
 address = 0x445c7e
 size = 0x3f
 
 [[function]]
-name = "~CD3DXText"
+name = "CD3DXText::~CD3DXText"
 address = 0x445cbd
 size = 0xcb
 
 [[function]]
-name = "FUN_00445d88"
+name = "CD3DXText::AddRef"
 address = 0x445d88
 size = 0x3
 
 [[function]]
-name = "Initialize"
+name = "CD3DXText::Initialize"
 address = 0x445d8b
 size = 0x1ba
 
 [[function]]
-name = "Begin"
+name = "CD3DXText::Begin"
 address = 0x445f45
 size = 0x42
 
 [[function]]
-name = "End"
+name = "CD3DXText::End"
 address = 0x445f87
 size = 0x30
 
 [[function]]
-name = "Release"
+name = "CD3DXText::Release"
 address = 0x445fb7
 size = 0x15
 
 [[function]]
-name = "Create"
+name = "CD3DXText::Create"
 address = 0x445fcc
 size = 0x7c
 
 [[function]]
-name = "DrawTextAW"
+name = "CD3DXText::DrawTextAW"
 address = 0x446048
 size = 0x59a
 
 [[function]]
-name = "FUN_004465e2"
+name = "CD3DXCodec::~CD3DXCodec"
 address = 0x4465e2
 size = 0x7
 
@@ -3054,42 +3089,42 @@ address = 0x4465e9
 size = 0x3
 
 [[function]]
-name = "D3DXCOLOR"
+name = "D3DXCOLOR::D3DXCOLOR"
 address = 0x4465ec
 size = 0x56
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_V8U8::Decode"
 address = 0x446642
 size = 0x69
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_L6V5U5::Decode"
 address = 0x4466ab
 size = 0x96
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_X8L8V8U8::Decode"
 address = 0x446741
 size = 0x78
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_Q8W8V8U8::Decode"
 address = 0x4467b9
 size = 0x7e
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_V16U16::Decode"
 address = 0x446837
 size = 0x6a
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_W11V11U10::Decode"
 address = 0x4468a1
 size = 0x9f
 
 [[function]]
-name = "operator-"
+name = "D3DXCOLOR::operator-"
 address = 0x446940
 size = 0x2c
 
@@ -3104,249 +3139,259 @@ address = 0x44698f
 size = 0x10
 
 [[function]]
-name = "CD3DXCodec"
+name = "CD3DXCodec::CD3DXCodec"
 address = 0x44699f
 size = 0x1e9
 
 [[function]]
-name = "FUN_00446b88"
+name = "CD3DXCodec::`vector_deleting_destructor'"
 address = 0x446b88
 size = 0x1c
 
 [[function]]
-name = "ColorKey"
+name = "CD3DXCodec::ColorKey"
 address = 0x446ba4
 size = 0x70
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_R8G8B8::Encode"
 address = 0x446c14
 size = 0xc1
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A8R8G8B8::Encode"
 address = 0x446cd5
 size = 0xf9
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_X8R8G8B8::Encode"
 address = 0x446dce
 size = 0xd7
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_R5G6B5::Encode"
 address = 0x446ea5
 size = 0xd7
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_X1R5G5B5::Encode"
 address = 0x446f7c
 size = 0xd7
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A1R5G5B5::Encode"
 address = 0x447053
 size = 0xf3
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A4R4G4B4::Encode"
 address = 0x447146
 size = 0xf9
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_R3G3B2::Encode"
 address = 0x44723f
 size = 0xd1
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A8::Encode"
 address = 0x447310
 size = 0x82
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A8R3G3B2::Encode"
 address = 0x447392
 size = 0xf9
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_X4R4G4B4::Encode"
 address = 0x44748b
 size = 0xd7
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A8P8::Encode"
 address = 0x447562
 size = 0xfd
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_P8::Encode"
 address = 0x44765f
 size = 0xba
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_L8::Encode"
 address = 0x447719
 size = 0x9e
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A8L8::Encode"
 address = 0x4477b7
 size = 0xd0
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_A4L4::Encode"
 address = 0x447887
 size = 0xc8
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_V8U8::Encode"
 address = 0x44794f
 size = 0xb0
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_L6V5U5::Encode"
 address = 0x4479ff
 size = 0xdf
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_X8L8V8U8::Encode"
 address = 0x447ade
 size = 0xe7
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_Q8W8V8U8::Encode"
 address = 0x447bc5
 size = 0x111
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_V16U16::Encode"
 address = 0x447cd6
 size = 0xb1
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodec_W11V11U10::Encode"
 address = 0x447d87
 size = 0xec
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_R8G8B8::Decode"
 address = 0x447e73
 size = 0x8c
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A8R8G8B8::Decode"
 address = 0x447eff
 size = 0xa2
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_X8R8G8B8::Decode"
 address = 0x447fa1
 size = 0x98
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_R5G6B5::Decode"
 address = 0x448039
 size = 0xa5
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_X1R5G5B5::Decode"
 address = 0x4480de
 size = 0xa2
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A1R5G5B5::Decode"
 address = 0x448180
 size = 0xb0
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A4R4G4B4::Decode"
 address = 0x448230
 size = 0xaf
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_R3G3B2::Decode"
 address = 0x4482df
 size = 0xa2
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A8::Decode"
 address = 0x448381
 size = 0x72
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A8R3G3B2::Decode"
 address = 0x4483f3
 size = 0xb2
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_X4R4G4B4::Decode"
 address = 0x4484a5
 size = 0x9f
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A8P8::Decode"
 address = 0x448544
 size = 0x87
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_P8::Decode"
+address = 0x4485cb
+size = 0x64
+
+[[function]]
+name = "CD3DXCodec_L8::Decode"
 address = 0x44862f
 size = 0x6e
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A8L8::Decode"
 address = 0x44869d
 size = 0x89
 
 [[function]]
-name = "Decode"
+name = "CD3DXCodec_A4L4::Decode"
 address = 0x448726
 size = 0x89
 
 [[function]]
-name = "CD3DXCodecYUV"
+name = "CD3DXCodecYUV::CD3DXCodecYUV"
 address = 0x4487af
 size = 0xd1
 
 [[function]]
-name = "Commit"
+name = "CD3DXCodecYUV::Commit"
 address = 0x448880
 size = 0x1f3
 
 [[function]]
-name = "Fetch"
+name = "CD3DXCodecYUV::Fetch"
 address = 0x448a73
 size = 0x2d1
 
 [[function]]
-name = "FUN_00448d44"
+name = "CD3DXCodecYUV::Encode"
 address = 0x448d44
 size = 0x78
 
 [[function]]
-name = "FUN_00448dbc"
+name = "CD3DXCodecYUV::Decode"
 address = 0x448dbc
 size = 0x6f
 
 [[function]]
-name = "CD3DXCodecDXT"
+name = "CD3DXCodecDXT::CD3DXCodecDXT"
 address = 0x448e2b
 size = 0x117
 
 [[function]]
-name = "Commit"
+name = "CD3DXCodecDXT::Commit"
 address = 0x448f42
 size = 0x32d
 
 [[function]]
-name = "Fetch"
+name = "CD3DXCodecDXT::Fetch"
 address = 0x44926f
 size = 0x2a7
 
 [[function]]
-name = "Encode"
+name = "CD3DXCodecDXT::Encode"
 address = 0x449516
 size = 0x86
+
+[[function]]
+name = "CD3DXCodecDXT::Decode"
+address = 0x44959c
+size = 0x74
 
 [[function]]
 name = "FUN_00449610"
@@ -3354,12 +3399,12 @@ address = 0x449610
 size = 0x1c
 
 [[function]]
-name = "~CD3DXCodecYUV"
+name = "CD3DXCodecYUV::~CD3DXCodecYUV"
 address = 0x449631
 size = 0x45
 
 [[function]]
-name = "~CD3DXCodecDXT"
+name = "CD3DXCodecDXT::~CD3DXCodecDXT"
 address = 0x449676
 size = 0x54
 
@@ -3369,352 +3414,377 @@ address = 0x4496ca
 size = 0x5e4
 
 [[function]]
-name = "`scalar_deleting_destructor'"
+name = "CD3DXCodec::Create"
+address = 0x449cda
+size = 0x1c
+
+[[function]]
+name = "CD3DXCodecYUV::`scalar_deleting_destructor'"
 address = 0x449cf6
 size = 0x1c
 
 [[function]]
-name = "`scalar_deleting_destructor'"
+name = "CD3DXCodecDXT::`scalar_deleting_destructor'"
 address = 0x449d12
 size = 0x1c
 
 [[function]]
-name = "`scalar_deleting_destructor'"
+name = "CD3DXCodecDXT::`scalar_deleting_destructor'"
 address = 0x449d33
 size = 0x1c
 
 [[function]]
-name = "_jpeg_CreateDecompress"
+name = "D3DX::jpeg_CreateDecompress"
 address = 0x449d54
 size = 0xc0
 
 [[function]]
-name = "default_decompress_parms"
+name = "D3DX::default_decompress_parms"
 address = 0x449e19
 size = 0x17f
 
 [[function]]
-name = "_jpeg_consume_input"
+name = "D3DX::jpeg_consume_input"
 address = 0x449f98
 size = 0x9a
 
 [[function]]
-name = "_jpeg_finish_decompress"
+name = "D3DX::jpeg_finish_decompress"
 address = 0x44a032
 size = 0xa1
 
 [[function]]
-name = "_jpeg_read_header"
+name = "D3DX::jpeg_read_header"
 address = 0x44a0d3
 size = 0x63
 
 [[function]]
-name = "output_pass_setup"
+name = "D3DX::output_pass_setup"
 address = 0x44a136
 size = 0xa4
 
 [[function]]
-name = "_jpeg_read_scanlines"
+name = "D3DX::jpeg_read_scanlines"
 address = 0x44a1da
 size = 0x84
 
 [[function]]
-name = "_jpeg_start_decompress"
+name = "D3DX::jpeg_start_decompress"
 address = 0x44a25e
 size = 0xc1
 
 [[function]]
-name = "get_soi"
+name = "D3DX::get_soi"
 address = 0x44a31f
 size = 0x8e
 
 [[function]]
-name = "get_sof"
+name = "D3DX::get_sof"
 address = 0x44a3ad
 size = 0x2fb
 
 [[function]]
-name = "get_sos"
+name = "D3DX::get_sos"
 address = 0x44a6a8
 size = 0x2e9
 
 [[function]]
-name = "get_app0"
+name = "D3DX::get_app0"
 address = 0x44a991
 size = 0x23c
 
 [[function]]
-name = "get_app14"
+name = "D3DX::get_app14"
 address = 0x44abcd
 size = 0x17a
 
 [[function]]
-name = "get_dac"
+name = "D3DX::get_dac"
 address = 0x44ad47
 size = 0x157
 
 [[function]]
-name = "get_dht"
+name = "D3DX::get_dht"
 address = 0x44ae9e
 size = 0x294
 
 [[function]]
-name = "get_dqt"
+name = "D3DX::get_dqt"
 address = 0x44b132
 size = 0x24a
 
 [[function]]
-name = "get_dri"
+name = "D3DX::get_dri"
 address = 0x44b37c
 size = 0xdf
 
 [[function]]
-name = "skip_variable"
+name = "D3DX::skip_variable"
 address = 0x44b45b
 size = 0x9c
 
 [[function]]
-name = "next_marker"
+name = "D3DX::next_marker"
 address = 0x44b4f7
 size = 0xd7
 
 [[function]]
-name = "first_marker"
+name = "D3DX::first_marker"
 address = 0x44b5ce
 size = 0x98
 
 [[function]]
-name = "read_restart_marker"
+name = "D3DX::read_markers"
+address = 0x44b666
+size = 0x1f4
+
+[[function]]
+name = "D3DX::read_restart_marker"
 address = 0x44b85a
 size = 0x7e
 
 [[function]]
-name = "_jpeg_resync_to_restart"
+name = "D3DX::jpeg_resync_to_restart"
 address = 0x44b8d8
 size = 0xef
 
 [[function]]
-name = "reset_marker_reader"
+name = "D3DX::reset_marker_reader"
 address = 0x44b9c7
 size = 0x2a
 
 [[function]]
-name = "jinit_marker_reader"
+name = "D3DX::jinit_marker_reader"
 address = 0x44b9f1
 size = 0x7d
 
 [[function]]
-name = "FUN_0044ba6e"
+name = "D3DX::error_exit"
 address = 0x44ba6e
-size = 0x4c
+size = 0x1b
 
 [[function]]
-name = "_jpeg_std_error"
+name = "D3DX::emit_message"
+address = 0x44ba89
+size = 0x31
+
+[[function]]
+name = "D3DX::format_message"
+address = 0x44baba
+size = 0x97
+
+[[function]]
+name = "D3DX::reset_error_mgr"
+address = 0x44bb51
+size = 0x11
+
+[[function]]
+name = "D3DX::jpeg_std_error"
 address = 0x44bb62
 size = 0x4c
 
 [[function]]
-name = "png_format_buffer"
+name = "D3DX::png_format_buffer"
 address = 0x44bbae
 size = 0x87
 
 [[function]]
-name = "FUN_0044bc35"
+name = "D3DX::png_default_error"
 address = 0x44bc35
 size = 0xb
 
 [[function]]
-name = "_png_set_error_fn"
+name = "D3DX::png_set_error_fn"
 address = 0x44bc40
 size = 0x1a
 
 [[function]]
-name = "_png_error"
+name = "D3DX::png_error"
 address = 0x44bc5a
 size = 0x23
 
 [[function]]
-name = "_png_warning"
+name = "D3DX::png_warning"
 address = 0x44bc7d
 size = 0x15
 
 [[function]]
-name = "_png_chunk_error"
+name = "D3DX::png_chunk_error"
 address = 0x44bc92
 size = 0x25
 
 [[function]]
-name = "_png_chunk_warning"
+name = "D3DX::png_chunk_warning"
 address = 0x44bcb7
 size = 0x25
 
 [[function]]
-name = "_png_create_read_struct"
+name = "D3DX::png_create_read_struct"
 address = 0x44bcdc
 size = 0x103
 
 [[function]]
-name = "_png_read_info"
+name = "D3DX::png_read_info"
 address = 0x44bddf
 size = 0x174
 
 [[function]]
-name = "_png_read_update_info"
+name = "D3DX::png_read_update_info"
 address = 0x44bf53
 size = 0x20
 
 [[function]]
-name = "_png_read_row"
+name = "D3DX::png_read_row"
 address = 0x44bf73
 size = 0x3a8
 
 [[function]]
-name = "_png_read_image"
+name = "D3DX::png_read_image"
 address = 0x44c31b
 size = 0x4d
 
 [[function]]
-name = "_png_read_destroy"
+name = "D3DX::png_read_destroy"
 address = 0x44c368
 size = 0x123
 
 [[function]]
-name = "_png_destroy_read_struct"
+name = "D3DX::png_destroy_read_struct"
 address = 0x44c48b
 size = 0x81
 
 [[function]]
-name = "_png_get_valid"
+name = "D3DX::png_get_valid"
 address = 0x44c50c
 size = 0x1a
 
 [[function]]
-name = "_png_get_rowbytes"
+name = "D3DX::png_get_rowbytes"
 address = 0x44c526
 size = 0x16
 
 [[function]]
-name = "_png_get_channels"
+name = "D3DX::png_get_channels"
 address = 0x44c53c
 size = 0x16
 
 [[function]]
-name = "_png_get_gAMA"
+name = "D3DX::png_get_gAMA"
 address = 0x44c552
 size = 0x29
 
 [[function]]
-name = "_png_get_sRGB"
+name = "D3DX::png_get_sRGB"
 address = 0x44c57b
 size = 0x2b
 
 [[function]]
-name = "_png_get_IHDR"
+name = "D3DX::png_get_IHDR"
 address = 0x44c5a6
 size = 0xd1
 
 [[function]]
-name = "_png_get_PLTE"
+name = "D3DX::png_get_PLTE"
 address = 0x44c677
 size = 0x33
 
 [[function]]
-name = "_png_get_tRNS"
+name = "D3DX::_png_get_tRNS"
 address = 0x44c6aa
 size = 0x67
 
 [[function]]
-name = "FUN_0044c711"
+name = "D3DX::png_set_bgr"
 address = 0x44c711
 size = 0x9
 
 [[function]]
-name = "_png_set_packing"
+name = "D3DX::png_set_packing"
 address = 0x44c71a
 size = 0x19
 
 [[function]]
-name = "_png_set_interlace_handling"
+name = "D3DX::png_set_interlace_handling"
 address = 0x44c733
 size = 0x19
 
 [[function]]
-name = "_png_set_filler"
+name = "D3DX::png_set_filler"
 address = 0x44c74c
 size = 0x4d
 
 [[function]]
-name = "_png_do_bgr"
+name = "D3DX::png_do_bgr"
 address = 0x44c799
 size = 0xbf
 
 [[function]]
-name = "FUN_0044c858"
+name = "D3DX::png_set_strip_16"
 address = 0x44c858
 size = 0x9
 
 [[function]]
-name = "_png_set_gamma"
+name = "D3DX::png_set_gamma"
 address = 0x44c861
 size = 0x36
 
 [[function]]
-name = "FUN_0044c897"
+name = "D3DX::png_set_expand"
 address = 0x44c897
 size = 0x9
 
 [[function]]
-name = "_png_read_transform_info"
+name = "D3DX::png_read_transform_info"
 address = 0x44c8a0
 size = 0xeb
 
 [[function]]
-name = "_png_do_unpack"
+name = "D3DX::png_do_unpack"
 address = 0x44c98b
 size = 0x10f
 
 [[function]]
-name = "_png_do_unshift"
+name = "D3DX::png_do_unshift"
 address = 0x44ca9a
 size = 0x17b
 
 [[function]]
-name = "_png_do_chop"
+name = "D3DX::png_do_chop"
 address = 0x44cc15
 size = 0x44
 
 [[function]]
-name = "_png_do_read_filler"
+name = "D3DX::png_do_read_filler"
 address = 0x44cc59
 size = 0x237
 
 [[function]]
-name = "_png_do_gamma"
+name = "D3DX::png_do_gamma"
 address = 0x44ce90
 size = 0x372
 
 [[function]]
-name = "_png_do_expand_palette"
+name = "D3DX::png_do_expand_palette"
 address = 0x44d202
 size = 0x207
 
 [[function]]
-name = "_png_do_expand"
+name = "D3DX::png_do_expand"
 address = 0x44d409
 size = 0x353
 
 [[function]]
-name = "_png_do_dither"
+name = "D3DX::png_do_dither"
 address = 0x44d75c
 size = 0x10d
 
 [[function]]
-name = "_png_build_gamma_table"
+name = "D3DX::png_build_gamma_table"
 address = 0x44d869
 size = 0x2ff
 
 [[function]]
-name = "_png_init_read_transformations"
+name = "D3DX::png_init_read_transformations"
 address = 0x44db68
 size = 0x115
 
@@ -3724,7 +3794,7 @@ address = 0x44dc7d
 size = 0x19c
 
 [[function]]
-name = "_png_set_gAMA"
+name = "D3DX::png_set_gAMA"
 address = 0x44de19
 size = 0x1b
 
@@ -3734,67 +3804,67 @@ address = 0x44de34
 size = 0xa2
 
 [[function]]
-name = "_png_set_PLTE"
+name = "D3DX::png_set_PLTE"
 address = 0x44ded6
 size = 0x24
 
 [[function]]
-name = "_png_set_sRGB"
+name = "D3DX::png_set_sRGB"
 address = 0x44defa
 size = 0x1b
 
 [[function]]
-name = "_png_set_sRGB_gAMA_and_cHRM"
+name = "D3DX::png_set_sRGB_gAMA_and_cHRM"
 address = 0x44df15
 size = 0x39
 
 [[function]]
-name = "_png_set_tRNS"
+name = "D3DX::png_set_tRNS"
 address = 0x44df4e
 size = 0x47
 
 [[function]]
-name = "_png_read_data"
+name = "D3DX::png_read_data"
 address = 0x44df95
 size = 0x28
 
 [[function]]
-name = "_png_set_read_fn"
+name = "D3DX::png_set_read_fn"
 address = 0x44dfbd
 size = 0x3f
 
 [[function]]
-name = "_png_sig_cmp"
+name = "D3DX::png_sig_cmp"
 address = 0x44dffc
 size = 0x48
 
 [[function]]
-name = "_png_zalloc"
+name = "D3DX::png_zalloc"
 address = 0x44e044
 size = 0x53
 
 [[function]]
-name = "_png_reset_crc"
+name = "D3DX::png_reset_crc"
 address = 0x44e09c
 size = 0x18
 
 [[function]]
-name = "_png_calculate_crc"
+name = "D3DX::png_calculate_crc"
 address = 0x44e0b4
 size = 0x3f
 
 [[function]]
-name = "_png_info_init"
+name = "D3DX::png_info_init"
 address = 0x44e0f3
 size = 0xe
 
 [[function]]
-name = "_png_info_destroy"
+name = "D3DX::png_info_destroy"
 address = 0x44e101
 size = 0xb
 
 [[function]]
-name = "_png_create_info_struct"
+name = "D3DX::png_create_info_struct"
 address = 0x44e10c
 size = 0x22
 
@@ -3884,457 +3954,497 @@ address = 0x44ecb7
 size = 0x156
 
 [[function]]
-name = "jdiv_round_up"
+name = "D3DX::jdiv_round_up"
 address = 0x44ee0d
 size = 0x10
 
 [[function]]
-name = "jround_up"
+name = "D3DX::jround_up"
 address = 0x44ee1d
 size = 0x18
 
 [[function]]
-name = "jcopy_sample_rows"
+name = "D3DX::jcopy_sample_rows"
 address = 0x44ee35
 size = 0x47
 
 [[function]]
-name = "jcopy_block_row"
+name = "D3DX::jcopy_block_row"
 address = 0x44ee7c
 size = 0x22
 
 [[function]]
-name = "jzero_far"
+name = "D3DX::jzero_far"
 address = 0x44ee9e
 size = 0x1b
 
 [[function]]
-name = "IsMMX"
+name = "D3DX::IsMMX"
 address = 0x44eeb9
 size = 0x31
 
 [[function]]
-name = "initial_setup"
+name = "D3DX::initial_setup"
 address = 0x44eeea
 size = 0x1bb
 
 [[function]]
-name = "per_scan_setup"
+name = "D3DX::per_scan_setup"
 address = 0x44f0a5
 size = 0x176
 
 [[function]]
-name = "latch_quant_tables"
+name = "D3DX::latch_quant_tables"
 address = 0x44f21b
 size = 0x92
 
 [[function]]
-name = "start_input_pass"
+name = "D3DX::start_input_pass"
 address = 0x44f2ad
 size = 0x3a
 
 [[function]]
-name = "reset_input_controller"
+name = "D3DX::consume_markers"
+address = 0x44f2e7
+size = 0x93
+
+[[function]]
+name = "D3DX::reset_input_controller"
 address = 0x44f37a
 size = 0x37
 
 [[function]]
-name = "jinit_input_controller"
+name = "D3DX::finish_input_pass"
+address = 0x44f3b1
+size = 0x11
+
+[[function]]
+name = "D3DX::jinit_input_controller"
 address = 0x44f3c2
 size = 0x41
 
 [[function]]
-name = "out_of_memory"
+name = "D3DX::out_of_memory"
 address = 0x44f403
 size = 0x15
 
 [[function]]
-name = "alloc_small"
+name = "D3DX::alloc_small"
 address = 0x44f418
 size = 0xfc
 
 [[function]]
-name = "alloc_large"
+name = "D3DX::alloc_large"
 address = 0x44f514
 size = 0x8e
 
 [[function]]
-name = "alloc_sarray"
+name = "D3DX::alloc_sarray"
 address = 0x44f5a2
 size = 0x92
 
 [[function]]
-name = "alloc_barray"
+name = "D3DX::alloc_barray"
 address = 0x44f634
 size = 0x9e
 
 [[function]]
-name = "request_virt_sarray"
+name = "D3DX::request_virt_sarray"
 address = 0x44f6d2
 size = 0x61
 
 [[function]]
-name = "request_virt_barray"
+name = "D3DX::request_virt_barray"
 address = 0x44f733
 size = 0x61
 
 [[function]]
-name = "realize_virt_arrays"
+name = "D3DX::realize_virt_arrays"
 address = 0x44f794
 size = 0x17f
 
 [[function]]
-name = "do_sarray_io"
+name = "D3DX::do_sarray_io"
 address = 0x44f913
 size = 0x88
 
 [[function]]
-name = "do_barray_io"
+name = "D3DX::do_barray_io"
 address = 0x44f99b
 size = 0x8b
 
 [[function]]
-name = "access_virt_sarray"
+name = "D3DX::access_virt_sarray"
 address = 0x44fa26
 size = 0x11e
 
 [[function]]
-name = "access_virt_barray"
+name = "D3DX::access_virt_barray"
 address = 0x44fb44
 size = 0x123
 
 [[function]]
-name = "free_pool"
+name = "D3DX::free_pool"
 address = 0x44fc67
 size = 0xe1
 
 [[function]]
-name = "self_destruct"
+name = "D3DX::self_destruct"
 address = 0x44fd48
 size = 0x30
 
 [[function]]
-name = "jinit_memory_mgr"
+name = "D3DX::jinit_memory_mgr"
 address = 0x44fd78
 size = 0xb4
 
 [[function]]
-name = "_jpeg_abort"
+name = "D3DX::jpeg_abort"
 address = 0x44fe2c
 size = 0x22
 
 [[function]]
-name = "_jpeg_destroy"
+name = "D3DX::jpeg_destroy"
 address = 0x44fe4e
 size = 0x1b
 
 [[function]]
-name = "_jpeg_alloc_quant_table"
+name = "D3DX::jpeg_alloc_quant_table"
 address = 0x44fe69
 size = 0x1c
 
 [[function]]
-name = "_jpeg_alloc_huff_table"
+name = "D3DX::jpeg_alloc_huff_table"
 address = 0x44fe85
 size = 0x1c
 
 [[function]]
-name = "use_merged_upsample"
+name = "D3DX::use_merged_upsample"
 address = 0x44fea1
 size = 0x71
 
 [[function]]
-name = "_jpeg_calc_output_dimensions"
+name = "D3DX::jpeg_calc_output_dimensions"
 address = 0x44ff12
 size = 0x1ef
 
 [[function]]
-name = "prepare_range_limit_table"
+name = "D3DX::prepare_range_limit_table"
 address = 0x450101
 size = 0x6f
 
 [[function]]
-name = "master_selection"
+name = "D3DX::master_selection"
 address = 0x450170
 size = 0x1ad
 
 [[function]]
-name = "jinit_master_decompress"
+name = "D3DX::prepare_for_output_pass"
+address = 0x45031d
+size = 0x12d
+
+[[function]]
+name = "D3DX::finish_output_pass"
+address = 0x45044a
+size = 0x21
+
+[[function]]
+name = "D3DX::jinit_master_decompress"
 address = 0x45046b
 size = 0x30
 
 [[function]]
-name = "_inflateReset"
+name = "D3DX::inflateReset"
 address = 0x45049b
 size = 0x3f
 
 [[function]]
-name = "_inflateEnd"
+name = "D3DX::inflateEnd"
 address = 0x4504da
 size = 0x3e
 
 [[function]]
-name = "_inflateInit2_"
+name = "D3DX::inflateInit2_"
 address = 0x450518
 size = 0xe5
 
 [[function]]
-name = "_inflateInit_"
+name = "D3DX::inflateInit_"
 address = 0x4505fd
 size = 0x17
 
 [[function]]
-name = "_inflate"
+name = "D3DX::inflate"
 address = 0x450614
 size = 0x329
 
 [[function]]
-name = "_png_create_struct"
+name = "D3DX::png_create_struct"
 address = 0x450975
 size = 0x42
 
 [[function]]
-name = "_png_destroy_struct"
+name = "D3DX::png_destroy_struct"
 address = 0x4509b7
 size = 0xd
 
 [[function]]
-name = "_png_malloc"
+name = "D3DX::png_malloc"
 address = 0x4509c4
 size = 0x36
 
 [[function]]
-name = "_png_free"
+name = "D3DX::png_free"
 address = 0x4509fa
 size = 0x19
 
 [[function]]
-name = "_png_memcpy_check"
+name = "D3DX::png_memcpy_check"
 address = 0x450a13
 size = 0x23
 
 [[function]]
-name = "_png_memset_check"
+name = "D3DX::png_memset_check"
 address = 0x450a36
 size = 0x33
 
 [[function]]
-name = "_png_get_uint_32"
+name = "D3DX::png_get_uint_32"
 address = 0x450a69
 size = 0x23
 
 [[function]]
-name = "_png_get_uint_16"
+name = "D3DX::png_get_uint_16"
 address = 0x450a8c
 size = 0x13
 
 [[function]]
-name = "_png_crc_read"
+name = "D3DX::png_crc_read"
 address = 0x450a9f
 size = 0x24
 
 [[function]]
-name = "_png_crc_error"
+name = "D3DX::png_crc_error"
 address = 0x450ac3
 size = 0x5e
 
 [[function]]
-name = "_png_check_chunk_name"
+name = "D3DX::png_check_chunk_name"
 address = 0x450b21
 size = 0x62
 
 [[function]]
-name = "_png_combine_row"
+name = "D3DX::png_combine_row"
 address = 0x450b83
 size = 0x214
 
 [[function]]
-name = "_png_do_read_interlace"
+name = "D3DX::png_do_read_interlace"
 address = 0x450d97
 size = 0x2c9
 
 [[function]]
-name = "_png_read_filter_row"
+name = "D3DX::png_read_filter_row"
 address = 0x451060
 size = 0x179
 
 [[function]]
-name = "_png_read_start_row"
+name = "D3DX::png_read_start_row"
 address = 0x4511d9
 size = 0x19c
 
 [[function]]
-name = "_png_crc_finish"
+name = "D3DX::png_crc_finish"
 address = 0x451375
 size = 0x8c
 
 [[function]]
-name = "_png_handle_IHDR"
+name = "D3DX::png_handle_IHDR"
 address = 0x451401
 size = 0x1f7
 
 [[function]]
-name = "_png_handle_PLTE"
+name = "D3DX::png_handle_PLTE"
 address = 0x4515f8
 size = 0x129
 
 [[function]]
-name = "_png_handle_IEND"
+name = "D3DX::png_handle_IEND"
 address = 0x451721
 size = 0x4a
 
 [[function]]
-name = "_png_handle_gAMA"
+name = "D3DX::png_handle_gAMA"
 address = 0x45176b
 size = 0x100
 
 [[function]]
-name = "_png_handle_sRGB"
+name = "D3DX::png_handle_sRGB"
 address = 0x45186b
 size = 0xef
 
 [[function]]
-name = "_png_handle_tRNS"
+name = "D3DX::png_handle_tRNS"
 address = 0x45195a
 size = 0x199
 
 [[function]]
-name = "_png_handle_unknown"
+name = "D3DX::png_handle_unknown"
 address = 0x451af3
 size = 0x4a
 
 [[function]]
-name = "_png_read_finish_row"
+name = "D3DX::png_read_finish_row"
 address = 0x451b3d
 size = 0x225
 
 [[function]]
-name = "_crc32"
+name = "D3DX::crc32"
 address = 0x451d62
 size = 0x109
 
 [[function]]
-name = "jpeg_get_small"
+name = "D3DX::jpeg_get_small"
 address = 0x451e6b
 size = 0xb
 
 [[function]]
-name = "jpeg_free_small"
+name = "D3DX::jpeg_free_small"
 address = 0x451e76
 size = 0xb
 
 [[function]]
-name = "FUN_00451e81"
+name = "D3DX::jpeg_mem_available"
 address = 0x451e81
 size = 0x5
 
 [[function]]
-name = "jpeg_open_backing_store"
+name = "D3DX::jpeg_open_backing_store"
 address = 0x451e86
 size = 0x14
 
 [[function]]
-name = "alloc_funny_pointers"
+name = "D3DX::alloc_funny_pointers"
 address = 0x451e9a
 size = 0xa8
 
 [[function]]
-name = "make_funny_pointers"
+name = "D3DX::make_funny_pointers"
 address = 0x451f42
 size = 0x131
 
 [[function]]
-name = "set_wraparound_pointers"
+name = "D3DX::set_wraparound_pointers"
 address = 0x452073
 size = 0xd4
 
 [[function]]
-name = "set_bottom_pointers"
+name = "D3DX::set_bottom_pointers"
 address = 0x452147
 size = 0x96
 
 [[function]]
-name = "process_data_simple_main"
+name = "D3DX::process_data_simple_main"
 address = 0x4521dd
 size = 0x68
 
 [[function]]
-name = "process_data_context_main"
+name = "D3DX::process_data_context_main"
 address = 0x452245
 size = 0x108
 
 [[function]]
-name = "jinit_d_main_controller"
+name = "D3DX::process_data_crank_post"
+address = 0x45234d
+size = 0x23
+
+[[function]]
+name = "D3DX::start_pass_main"
+address = 0x452370
+size = 0x68
+
+[[function]]
+name = "D3DX::jinit_d_main_controller"
 address = 0x4523d8
 size = 0xd3
 
 [[function]]
-name = "start_iMCU_row"
+name = "D3DX::start_iMCU_row"
 address = 0x4524ab
 size = 0x3f
 
 [[function]]
-name = "decompress_onepass"
+name = "D3DX::start_input_pass"
+address = 0x4524ea
+size = 0x10
+
+[[function]]
+name = "D3DX::decompress_onepass"
 address = 0x4524fa
 size = 0x1da
 
 [[function]]
-name = "consume_data"
+name = "D3DX::consume_data"
 address = 0x4526d4
 size = 0x19f
 
 [[function]]
-name = "decompress_data"
+name = "D3DX::decompress_data"
 address = 0x452873
 size = 0x166
 
 [[function]]
-name = "smoothing_ok"
+name = "D3DX::smoothing_ok"
 address = 0x4529d9
 size = 0xe3
 
 [[function]]
-name = "start_output_pass"
+name = "D3DX::decompress_smooth_data"
+address = 0x452abc
+size = 0x518
+
+[[function]]
+name = "D3DX::start_output_pass"
 address = 0x452fd4
 size = 0x3b
 
 [[function]]
-name = "jinit_d_coef_controller"
+name = "D3DX::jinit_d_coef_controller"
 address = 0x45300f
 size = 0xf8
 
 [[function]]
-name = "jpeg_make_d_derived_tbl"
+name = "D3DX::jpeg_make_d_derived_tbl"
 address = 0x453107
 size = 0x1a3
 
 [[function]]
-name = "jpeg_fill_bit_buffer"
+name = "D3DX::jpeg_fill_bit_buffer"
 address = 0x4532aa
 size = 0xea
 
 [[function]]
-name = "jpeg_huff_decode"
+name = "D3DX::jpeg_huff_decode"
 address = 0x453394
 size = 0xe6
 
 [[function]]
-name = "process_restart"
+name = "D3DX::process_restart"
 address = 0x45347a
 size = 0x5e
 
 [[function]]
-name = "decode_mcu"
+name = "D3DX::decode_mcu"
 address = 0x4534d8
 size = 0x3cd
 
 [[function]]
-name = "start_pass_huff_decoder"
+name = "D3DX::start_pass_huff_decoder"
 address = 0x4538a5
 size = 0x12f
 
 [[function]]
-name = "jinit_huff_decoder"
+name = "D3DX::jinit_huff_decoder"
 address = 0x4539d4
 size = 0x3a
 
@@ -4344,437 +4454,477 @@ address = 0x453a0e
 size = 0x5b
 
 [[function]]
-name = "decode_mcu_DC_first"
+name = "D3DX::decode_mcu_DC_first"
 address = 0x453a69
 size = 0x1fd
 
 [[function]]
-name = "decode_mcu_AC_first"
+name = "D3DX::decode_mcu_AC_first"
 address = 0x453c66
 size = 0x22d
 
 [[function]]
-name = "decode_mcu_DC_refine"
+name = "D3DX::decode_mcu_DC_refine"
 address = 0x453e93
 size = 0xe2
 
 [[function]]
-name = "decode_mcu_AC_refine"
+name = "D3DX::decode_mcu_AC_refine"
 address = 0x453f75
 size = 0x36e
 
 [[function]]
-name = "start_pass_phuff_decoder"
+name = "D3DX::start_pass_phuff_decoder"
 address = 0x4542e3
 size = 0x2a3
 
 [[function]]
-name = "jinit_phuff_decoder"
+name = "D3DX::jinit_phuff_decoder"
 address = 0x454586
 size = 0x61
 
 [[function]]
-name = "start_pass"
+name = "D3DX::start_pass"
 address = 0x4545e7
 size = 0x1b7
 
 [[function]]
-name = "jinit_inverse_dct"
+name = "D3DX::jinit_inverse_dct"
 address = 0x45479e
 size = 0x74
 
 [[function]]
-name = "post_process_1pass"
+name = "D3DX::post_process_1pass"
 address = 0x454812
 size = 0x65
 
 [[function]]
-name = "post_process_prepass"
+name = "D3DX::post_process_prepass"
 address = 0x454877
 size = 0x90
 
 [[function]]
-name = "post_process_2pass"
+name = "D3DX::post_process_2pass"
 address = 0x454907
 size = 0x8c
 
 [[function]]
-name = "jinit_d_post_controller"
+name = "D3DX::start_pass_dpost"
+address = 0x454993
+size = 0xa6
+
+[[function]]
+name = "D3DX::jinit_d_post_controller"
 address = 0x454a39
 size = 0x83
 
 [[function]]
-name = "sep_upsample"
+name = "D3DX::start_pass_upsample"
+address = 0x454abc
+size = 0x1a
+
+[[function]]
+name = "D3DX::sep_upsample"
 address = 0x454ad6
 size = 0xc6
 
 [[function]]
-name = "int_upsample"
+name = "D3DX::fullsize_upsample"
+address = 0x454b9c
+size = 0xb
+
+[[function]]
+name = "D3DX::noop_upsample"
+address = 0x454ba7
+size = 0x8
+
+[[function]]
+name = "D3DX::int_upsample"
 address = 0x454baf
 size = 0xdf
 
 [[function]]
-name = "h2v1_upsample"
+name = "D3DX::h2v1_upsample"
 address = 0x454c8e
 size = 0x57
 
 [[function]]
-name = "h2v2_upsample"
+name = "D3DX::h2v2_upsample"
 address = 0x454ce5
 size = 0x6a
 
 [[function]]
-name = "h2v1_fancy_upsample"
+name = "D3DX::h2v1_fancy_upsample"
 address = 0x454d4f
 size = 0xa3
 
 [[function]]
-name = "h2v2_fancy_upsample"
+name = "D3DX::h2v2_fancy_upsample"
 address = 0x454df2
 size = 0x107
 
 [[function]]
-name = "jinit_upsampler"
+name = "D3DX::jinit_upsampler"
 address = 0x454ef9
 size = 0x1c1
 
 [[function]]
-name = "build_ycc_rgb_table"
+name = "D3DX::build_ycc_rgb_table"
 address = 0x4550ba
 size = 0xb0
 
 [[function]]
-name = "null_convert"
+name = "D3DX::null_convert"
 address = 0x45516a
 size = 0x6a
 
 [[function]]
-name = "grayscale_convert"
+name = "D3DX::grayscale_convert"
 address = 0x4551d4
 size = 0x23
 
 [[function]]
-name = "ycck_cmyk_convert"
+name = "D3DX::ycck_cmyk_convert"
 address = 0x4551f7
 size = 0x132
 
 [[function]]
-name = "MYCbCr2RGB"
+name = "D3DX::MYCbCr2RGB"
 address = 0x455329
 size = 0x13d
 
 [[function]]
-name = "ycc_rgb_convert"
+name = "D3DX::ycc_rgb_convert"
 address = 0x455466
 size = 0x21e
 
 [[function]]
-name = "jinit_color_deconverter"
+name = "D3DX::jinit_color_deconverter"
 address = 0x455684
 size = 0x121
 
 [[function]]
-name = "build_ycc_rgb_table"
+name = "D3DX::build_ycc_rgb_table"
 address = 0x4557a5
 size = 0xb0
 
 [[function]]
-name = "merged_2v_upsample"
+name = "D3DX::start_pass_merged_upsample"
+address = 0x455855
+size = 0x15
+
+[[function]]
+name = "D3DX::merged_2v_upsample"
 address = 0x45586a
 size = 0xa6
 
 [[function]]
-name = "merged_1v_upsample"
+name = "D3DX::merged_1v_upsample"
 address = 0x455910
 size = 0x31
 
 [[function]]
-name = "h2v1_merged_upsample"
+name = "D3DX::h2v1_merged_upsample"
 address = 0x455941
 size = 0x156
 
 [[function]]
-name = "h2v2_merged_upsample"
+name = "D3DX::h2v2_merged_upsample"
 address = 0x455a97
 size = 0x1e6
 
 [[function]]
-name = "jinit_merged_upsampler"
+name = "D3DX::jinit_merged_upsampler"
 address = 0x455c7d
 size = 0x75
 
 [[function]]
-name = "prescan_quantize"
+name = "D3DX::prescan_quantize"
 address = 0x455cf2
 size = 0x6c
 
 [[function]]
-name = "find_biggest_color_pop"
+name = "D3DX::find_biggest_color_pop"
 address = 0x455d5e
 size = 0x29
 
 [[function]]
-name = "find_biggest_volume"
+name = "D3DX::find_biggest_volume"
 address = 0x455d87
 size = 0x23
 
 [[function]]
-name = "update_box"
+name = "D3DX::update_box"
 address = 0x455daa
 size = 0x338
 
 [[function]]
-name = "median_cut"
+name = "D3DX::median_cut"
 address = 0x4560e2
 size = 0x11a
 
 [[function]]
-name = "compute_color"
+name = "D3DX::compute_color"
 address = 0x4561fc
 size = 0x138
 
 [[function]]
-name = "select_colors"
+name = "D3DX::select_colors"
 address = 0x456334
 size = 0x8d
 
 [[function]]
-name = "find_nearby_colors"
+name = "D3DX::find_nearby_colors"
 address = 0x4563c1
 size = 0x180
 
 [[function]]
-name = "find_best_colors"
+name = "D3DX::find_best_colors"
 address = 0x456541
 size = 0x11a
 
 [[function]]
-name = "fill_inverse_cmap"
+name = "D3DX::fill_inverse_cmap"
 address = 0x45665b
 size = 0xd0
 
 [[function]]
-name = "pass2_no_dither"
+name = "D3DX::pass2_no_dither"
 address = 0x45672b
 size = 0xa9
 
 [[function]]
-name = "pass2_fs_dither"
+name = "D3DX::pass2_fs_dither"
 address = 0x4567d4
 size = 0x26e
 
 [[function]]
-name = "init_error_limit"
+name = "D3DX::init_error_limit"
 address = 0x456a42
 size = 0x90
 
 [[function]]
-name = "start_pass_2_quant"
+name = "FUN_00456ad2"
+address = 0x456ad2
+size = 0x22
+
+[[function]]
+name = "D3DX::start_pass_2_quant"
 address = 0x456af4
 size = 0x102
 
 [[function]]
-name = "jinit_2pass_quantizer"
+name = "D3DX::new_color_map_2_quant"
+address = 0x456bf6
+size = 0xf
+
+[[function]]
+name = "D3DX::jinit_2pass_quantizer"
 address = 0x456c05
 size = 0x113
 
 [[function]]
-name = "select_ncolors"
+name = "D3DX::select_ncolors"
 address = 0x456d18
 size = 0xcb
 
 [[function]]
-name = "output_value"
+name = "D3DX::output_value"
 address = 0x456de3
 size = 0x19
 
 [[function]]
-name = "largest_input_value"
+name = "D3DX::largest_input_value"
 address = 0x456dfc
 size = 0x13
 
 [[function]]
-name = "create_colormap"
+name = "D3DX::create_colormap"
 address = 0x456e0f
 size = 0x11d
 
 [[function]]
-name = "create_colorindex"
+name = "D3DX::create_colorindex"
 address = 0x456f2c
 size = 0x121
 
 [[function]]
-name = "make_odither_array"
+name = "D3DX::make_odither_array"
 address = 0x45704d
 size = 0x62
 
 [[function]]
-name = "create_odither_tables"
+name = "D3DX::create_odither_tables"
 address = 0x4570af
 size = 0x59
 
 [[function]]
-name = "color_quantize"
+name = "D3DX::color_quantize"
 address = 0x457108
 size = 0x88
 
 [[function]]
-name = "color_quantize3"
+name = "D3DX::color_quantize3"
 address = 0x457190
 size = 0x8d
 
 [[function]]
-name = "quantize_ord_dither"
+name = "D3DX::quantize_ord_dither"
 address = 0x45721d
 size = 0xeb
 
 [[function]]
-name = "quantize3_ord_dither"
+name = "D3DX::quantize3_ord_dither"
 address = 0x457308
 size = 0xff
 
 [[function]]
-name = "quantize_fs_dither"
+name = "D3DX::quantize_fs_dither"
 address = 0x457407
 size = 0x184
 
 [[function]]
-name = "alloc_fs_workspace"
+name = "D3DX::alloc_fs_workspace"
 address = 0x45758b
 size = 0x36
 
 [[function]]
-name = "start_pass_1_quant"
+name = "D3DX::start_pass_1_quant"
 address = 0x4575c1
 size = 0xc8
 
 [[function]]
-name = "jinit_1pass_quantizer"
+name = "D3DX::new_color_map_1_quant"
+address = 0x457689
+size = 0x14
+
+[[function]]
+name = "D3DX::jinit_1pass_quantizer"
 address = 0x45769d
 size = 0x89
 
 [[function]]
-name = "inflate_blocks_reset"
+name = "D3DX::inflate_blocks_reset"
 address = 0x457726
 size = 0x6b
 
 [[function]]
-name = "inflate_blocks_new"
+name = "D3DX::inflate_blocks_new"
 address = 0x457791
 size = 0x8b
 
 [[function]]
-name = "inflate_blocks"
+name = "D3DX::inflate_blocks"
 address = 0x45781c
 size = 0x8f1
 
 [[function]]
-name = "inflate_blocks_free"
+name = "D3DX::inflate_blocks_free"
 address = 0x458135
 size = 0x34
 
 [[function]]
-name = "_adler32"
+name = "D3DX::adler32"
 address = 0x458169
 size = 0x119
 
 [[function]]
-name = "zcalloc"
+name = "D3DX::zcalloc"
 address = 0x458282
 size = 0x10
 
 [[function]]
-name = "jpeg_idct_4x4"
+name = "D3DX::jpeg_idct_4x4"
 address = 0x458292
 size = 0x315
 
 [[function]]
-name = "jpeg_idct_2x2"
+name = "D3DX::jpeg_idct_2x2"
 address = 0x4585a7
 size = 0x1be
 
 [[function]]
-name = "jpeg_idct_1x1"
+name = "D3DX::jpeg_idct_1x1"
 address = 0x458765
 size = 0x3d
 
 [[function]]
-name = "jpeg_idct_islow"
+name = "D3DX::jpeg_idct_islow"
 address = 0x4587a2
 size = 0x4c
 
 [[function]]
-name = "jpeg_idct_ifast"
+name = "D3DX::jpeg_idct_ifast"
 address = 0x4587ee
 size = 0x4c
 
 [[function]]
-name = "jpeg_idct_float"
+name = "D3DX::jpeg_idct_float"
 address = 0x45883a
 size = 0x3e1
 
 [[function]]
-name = "inflate_codes_new"
+name = "D3DX::inflate_codes_new"
 address = 0x458c1b
 size = 0x34
 
 [[function]]
-name = "inflate_codes"
+name = "D3DX::inflate_codes"
 address = 0x458c4f
 size = 0x52e
 
 [[function]]
-name = "inflate_codes_free"
+name = "D3DX::inflate_codes_free"
 address = 0x4591a5
 size = 0x11
 
 [[function]]
-name = "huft_build"
+name = "D3DX::huft_build"
 address = 0x4591b6
 size = 0x385
 
 [[function]]
-name = "inflate_trees_bits"
+name = "D3DX::inflate_trees_bits"
 address = 0x45953b
 size = 0x7f
 
 [[function]]
-name = "inflate_trees_dynamic"
+name = "D3DX::inflate_trees_dynamic"
 address = 0x4595ba
 size = 0x103
 
 [[function]]
-name = "inflate_trees_fixed"
+name = "D3DX::inflate_trees_fixed"
 address = 0x4596bd
 size = 0x2f
 
 [[function]]
-name = "inflate_flush"
+name = "D3DX::inflate_flush"
 address = 0x4596ec
 size = 0x115
 
 [[function]]
-name = "pidct8x8llm"
+name = "D3DX::pidct8x8llm"
 address = 0x459801
 size = 0x4ed
 
 [[function]]
-name = "midct8x8llm"
+name = "D3DX::midct8x8llm"
 address = 0x459cee
 size = 0x78b
 
 [[function]]
-name = "pidct8x8aan"
+name = "D3DX::pidct8x8aan"
 address = 0x45a479
 size = 0x3a9
 
 [[function]]
-name = "midct8x8aan"
+name = "D3DX::midct8x8aan"
 address = 0x45a822
 size = 0xdd3
 
 [[function]]
-name = "inflate_fast"
+name = "D3DX::inflate_fast"
 address = 0x45b5f5
 size = 0x2aa
 
@@ -4914,9 +5064,24 @@ address = 0x45be40
 size = 0xa
 
 [[function]]
+name = "FUN_0045be4a"
+address = 0x45be4a
+size = 0x1
+
+[[function]]
 name = "FUN_0045be60"
 address = 0x45be60
 size = 0xa
+
+[[function]]
+name = "FUN_0045be6a"
+address = 0x45be6a
+size = 0x1
+
+[[function]]
+name = "FUN_0045be74"
+address = 0x45be74
+size = 0x1e
 
 [[function]]
 name = "_atol"
@@ -4947,6 +5112,11 @@ size = 0x52
 name = "___CxxFrameHandler"
 address = 0x45bfbb
 size = 0x36
+
+[[function]]
+name = "FUN_0045bff1"
+address = 0x45bff1
+size = 0x24
 
 [[function]]
 name = "FUN_0045c015"
@@ -4989,6 +5159,11 @@ address = 0x45c298
 size = 0x20
 
 [[function]]
+name = "FUN_0045c2b8"
+address = 0x45c2b8
+size = 0x22
+
+[[function]]
 name = "__local_unwind2"
 address = 0x45c2da
 size = 0x68
@@ -5029,7 +5204,7 @@ address = 0x45c4b0
 size = 0x14
 
 [[function]]
-name = "fload_withFB"
+name = "tan"
 address = 0x45c4c4
 size = 0x9
 
@@ -5239,6 +5414,11 @@ address = 0x45d920
 size = 0x14
 
 [[function]]
+name = "FUN_0045d934"
+address = 0x45d934
+size = 0x1
+
+[[function]]
 name = "start"
 address = 0x45d93d
 size = 0xae
@@ -5261,7 +5441,7 @@ size = 0x3a
 [[function]]
 name = "FUN_0045db00"
 address = 0x45db00
-size = 0x1f2
+size = 0x121
 
 [[function]]
 name = "__ftol"
@@ -5279,6 +5459,11 @@ address = 0x45dcc8
 size = 0x7b
 
 [[function]]
+name = "FUN_0045dd50"
+address = 0x45dd50
+size = 0x1
+
+[[function]]
 name = "FUN_0045dd90"
 address = 0x45dd90
 size = 0x54
@@ -5287,6 +5472,11 @@ size = 0x54
 name = "FUN_0045dded"
 address = 0x45dded
 size = 0x4e
+
+[[function]]
+name = "FUN_0045dfb2"
+address = 0x45dfb2
+size = 0x1
 
 [[function]]
 name = "___crtExitProcess"
@@ -5327,6 +5517,11 @@ size = 0x11
 name = "_cexit"
 address = 0x45e176
 size = 0xf
+
+[[function]]
+name = "FUN_0045e185"
+address = 0x45e185
+size = 0x1
 
 [[function]]
 name = "_calloc"
@@ -5372,6 +5567,16 @@ size = 0x11
 name = "__forcdecpt"
 address = 0x45e4c0
 size = 0x3c
+
+[[function]]
+name = "FUN_0045e4fc"
+address = 0x45e4fc
+size = 0x4b
+
+[[function]]
+name = "FUN_0045e547"
+address = 0x45e547
+size = 0x1a
 
 [[function]]
 name = "__fassign"
@@ -5549,9 +5754,44 @@ address = 0x4601a7
 size = 0x8c
 
 [[function]]
+name = "FUN_0046023c"
+address = 0x46023c
+size = 0x1
+
+[[function]]
+name = "FUN_00460244"
+address = 0x460244
+size = 0x7
+
+[[function]]
+name = "FUN_0046027d"
+address = 0x46027d
+size = 0x2a
+
+[[function]]
+name = "FUN_004602a7"
+address = 0x4602a7
+size = 0x3f
+
+[[function]]
+name = "FUN_004602e6"
+address = 0x4602e6
+size = 0x13
+
+[[function]]
+name = "FUN_004602f9"
+address = 0x4602f9
+size = 0xa
+
+[[function]]
 name = "FUN_00460303"
 address = 0x460303
-size = 0x7
+size = 0x6
+
+[[function]]
+name = "FUN_00460309"
+address = 0x460309
+size = 0x1
 
 [[function]]
 name = "FUN_00460310"
@@ -5562,6 +5802,11 @@ size = 0x17
 name = "__startOneArgErrorHandling"
 address = 0x460327
 size = 0x3c
+
+[[function]]
+name = "FUN_00460370"
+address = 0x460370
+size = 0x1
 
 [[function]]
 name = "__load_CW"
@@ -5589,9 +5834,59 @@ address = 0x46041b
 size = 0x2a
 
 [[function]]
+name = "FUN_00460445"
+address = 0x460445
+size = 0x1
+
+[[function]]
+name = "FUN_00460459"
+address = 0x460459
+size = 0x1
+
+[[function]]
+name = "FUN_00460500"
+address = 0x460500
+size = 0x1
+
+[[function]]
+name = "FUN_0046053b"
+address = 0x46053b
+size = 0x1
+
+[[function]]
+name = "FUN_0046053c"
+address = 0x46053c
+size = 0x1
+
+[[function]]
 name = "FUN_0046056c"
 address = 0x46056c
 size = 0x9
+
+[[function]]
+name = "FUN_00460575"
+address = 0x460575
+size = 0x10
+
+[[function]]
+name = "FUN_00460585"
+address = 0x460585
+size = 0x1
+
+[[function]]
+name = "FUN_00460586"
+address = 0x460586
+size = 0xb
+
+[[function]]
+name = "FUN_00460591"
+address = 0x460591
+size = 0x1
+
+[[function]]
+name = "FUN_00460598"
+address = 0x460598
+size = 0x10
 
 [[function]]
 name = "__cintrindisp2"
@@ -5629,6 +5924,76 @@ address = 0x4607f4
 size = 0x3c
 
 [[function]]
+name = "FUN_00460830"
+address = 0x460830
+size = 0x1
+
+[[function]]
+name = "FUN_00460947"
+address = 0x460947
+size = 0x1
+
+[[function]]
+name = "FUN_00460de6"
+address = 0x460de6
+size = 0x1
+
+[[function]]
+name = "FUN_00460df9"
+address = 0x460df9
+size = 0x1
+
+[[function]]
+name = "FUN_00460e0c"
+address = 0x460e0c
+size = 0x1
+
+[[function]]
+name = "FUN_00460e58"
+address = 0x460e58
+size = 0x1
+
+[[function]]
+name = "FUN_00460ea4"
+address = 0x460ea4
+size = 0x1
+
+[[function]]
+name = "FUN_00460ed8"
+address = 0x460ed8
+size = 0x1
+
+[[function]]
+name = "FUN_00460f0c"
+address = 0x460f0c
+size = 0x1
+
+[[function]]
+name = "FUN_00460f58"
+address = 0x460f58
+size = 0x1
+
+[[function]]
+name = "FUN_00460fa4"
+address = 0x460fa4
+size = 0x1
+
+[[function]]
+name = "FUN_00460fd8"
+address = 0x460fd8
+size = 0x1
+
+[[function]]
+name = "FUN_0046100c"
+address = 0x46100c
+size = 0x1
+
+[[function]]
+name = "FUN_00461021"
+address = 0x461021
+size = 0x1
+
+[[function]]
 name = "FUN_00461036"
 address = 0x461036
 size = 0x206
@@ -5637,6 +6002,36 @@ size = 0x206
 name = "FUN_0046123c"
 address = 0x46123c
 size = 0xb2
+
+[[function]]
+name = "FUN_004612ee"
+address = 0x4612ee
+size = 0x1
+
+[[function]]
+name = "FUN_004614f4"
+address = 0x4614f4
+size = 0x1
+
+[[function]]
+name = "FUN_004615a9"
+address = 0x4615a9
+size = 0x1
+
+[[function]]
+name = "FUN_004615af"
+address = 0x4615af
+size = 0x1
+
+[[function]]
+name = "FUN_004615b5"
+address = 0x4615b5
+size = 0x1
+
+[[function]]
+name = "FUN_004615b8"
+address = 0x4615b8
+size = 0x1
 
 [[function]]
 name = "FUN_004615bb"
@@ -5682,6 +6077,11 @@ size = 0x6f
 name = "TypeMatch"
 address = 0x4618f7
 size = 0x4f
+
+[[function]]
+name = "FUN_00461946"
+address = 0x461946
+size = 0x1
 
 [[function]]
 name = "___FrameUnwindToState"
@@ -5854,9 +6254,24 @@ address = 0x462c64
 size = 0x2e
 
 [[function]]
+name = "FUN_00462c92"
+address = 0x462c92
+size = 0x1
+
+[[function]]
+name = "FUN_00462d67"
+address = 0x462d67
+size = 0x1
+
+[[function]]
 name = "FUN_00462d70"
 address = 0x462d70
 size = 0xa9
+
+[[function]]
+name = "FUN_00462e19"
+address = 0x462e19
+size = 0x1
 
 [[function]]
 name = "__lock_file"
@@ -5974,6 +6389,11 @@ address = 0x463aec
 size = 0x13
 
 [[function]]
+name = "FUN_00463aff"
+address = 0x463aff
+size = 0x1
+
+[[function]]
 name = "__stbuf"
 address = 0x463b0c
 size = 0x88
@@ -6054,6 +6474,11 @@ address = 0x464708
 size = 0x57
 
 [[function]]
+name = "FUN_0046475f"
+address = 0x46475f
+size = 0xd1
+
+[[function]]
 name = "__rt_probe_read4@4"
 address = 0x464830
 size = 0x29
@@ -6069,6 +6494,106 @@ address = 0x464899
 size = 0xb2d
 
 [[function]]
+name = "FUN_004653d0"
+address = 0x4653d0
+size = 0x1
+
+[[function]]
+name = "FUN_00465448"
+address = 0x465448
+size = 0x1
+
+[[function]]
+name = "FUN_0046545a"
+address = 0x46545a
+size = 0x1
+
+[[function]]
+name = "FUN_00465474"
+address = 0x465474
+size = 0x1
+
+[[function]]
+name = "FUN_00465484"
+address = 0x465484
+size = 0x1
+
+[[function]]
+name = "FUN_00465489"
+address = 0x465489
+size = 0x1
+
+[[function]]
+name = "FUN_00465498"
+address = 0x465498
+size = 0x1
+
+[[function]]
+name = "FUN_0046549d"
+address = 0x46549d
+size = 0x1
+
+[[function]]
+name = "FUN_004654b7"
+address = 0x4654b7
+size = 0x1
+
+[[function]]
+name = "FUN_004654b8"
+address = 0x4654b8
+size = 0x1
+
+[[function]]
+name = "FUN_004654d2"
+address = 0x4654d2
+size = 0x1
+
+[[function]]
+name = "FUN_004654d9"
+address = 0x4654d9
+size = 0x1
+
+[[function]]
+name = "FUN_00465502"
+address = 0x465502
+size = 0x1
+
+[[function]]
+name = "FUN_0046550f"
+address = 0x46550f
+size = 0x1
+
+[[function]]
+name = "FUN_00465521"
+address = 0x465521
+size = 0x1
+
+[[function]]
+name = "FUN_0046552e"
+address = 0x46552e
+size = 0x1
+
+[[function]]
+name = "FUN_00465571"
+address = 0x465571
+size = 0x1
+
+[[function]]
+name = "FUN_00465596"
+address = 0x465596
+size = 0x1
+
+[[function]]
+name = "FUN_004655a5"
+address = 0x4655a5
+size = 0x1
+
+[[function]]
+name = "FUN_004655d6"
+address = 0x4655d6
+size = 0x1
+
+[[function]]
 name = "FUN_004655d7"
 address = 0x4655d7
 size = 0x6a
@@ -6077,6 +6602,11 @@ size = 0x6a
 name = "__powhlp"
 address = 0x465641
 size = 0x162
+
+[[function]]
+name = "FUN_004657ac"
+address = 0x4657ac
+size = 0xbd
 
 [[function]]
 name = "FUN_00465869"
@@ -6269,6 +6799,11 @@ address = 0x466a50
 size = 0x87
 
 [[function]]
+name = "FUN_00466ae0"
+address = 0x466ae0
+size = 0x1
+
+[[function]]
 name = "_strpbrk"
 address = 0x466ba0
 size = 0x40
@@ -6382,6 +6917,11 @@ size = 0xb1
 name = "FUN_00467566"
 address = 0x467566
 size = 0x8
+
+[[function]]
+name = "FUN_00467582"
+address = 0x467582
+size = 0x1
 
 [[function]]
 name = "FUN_0046761d"
@@ -6517,6 +7057,21 @@ size = 0x61
 name = "FUN_00468fc1"
 address = 0x468fc1
 size = 0x62
+
+[[function]]
+name = "FUN_00469030"
+address = 0x469030
+size = 0x1
+
+[[function]]
+name = "FUN_00469040"
+address = 0x469040
+size = 0x1
+
+[[function]]
+name = "FUN_00469046"
+address = 0x469046
+size = 0x1
 
 [[function]]
 name = "Unwind@00469110"
@@ -6859,7 +7414,7 @@ address = 0x469830
 size = 0x39
 
 [[function]]
-name = "FUN_00469870"
+name = "INIT_G_PrimitivesToDrawNoVertexBuf"
 address = 0x469870
 size = 0x39
 
