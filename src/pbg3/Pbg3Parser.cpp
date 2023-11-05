@@ -91,7 +91,8 @@ Pbg3Parser::Pbg3Parser() : IPbg3Parser(), fileAbstraction()
 
 i32 Pbg3Parser::Open(char *path)
 {
-    *this = Pbg3Parser();
+    this->fileAbstraction.Close();
+    this->Reset();
     if (this->fileAbstraction.Open(path, "r") == FALSE)
     {
         return FALSE;
