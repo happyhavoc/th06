@@ -130,7 +130,7 @@ i32 Pbg3Parser::ReadBit()
 
 u32 Pbg3Parser::ReadInt(u32 numBitsAsPowersOf2)
 {
-    u32 remainingBits = 1 << ((numBitsAsPowersOf2 - 1) % 32);
+    u32 remainingBits = 1 << (numBitsAsPowersOf2 - 1);
     u32 result = 0;
 
     if (!this->fileAbstraction.HasNonNullHandle())
@@ -151,7 +151,7 @@ u32 Pbg3Parser::ReadInt(u32 numBitsAsPowersOf2)
             this->crc += this->curByte;
         }
         u32 bitIdx = this->bitIdxInCurByte;
-        if (bitIdx && this->curByte != 0)
+        if ((bitIdx & this->curByte) != 0)
         {
             result |= remainingBits;
         }
@@ -161,7 +161,6 @@ u32 Pbg3Parser::ReadInt(u32 numBitsAsPowersOf2)
         {
             this->bitIdxInCurByte = 0x80;
         }
-        remainingBits >>= 1;
     }
 
     return result;
