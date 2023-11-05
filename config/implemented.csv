@@ -31,7 +31,7 @@ InitD3dDevice
 InitD3dRendering
 Clear
 SetViewport
-IPbg3Parser::IPbg3Parser
+IPbg3Parser::Reset
 IPbg3Parser::ReadVarInt
 IPbg3Parser::ReadMagic
 IPbg3Parser::ReadString

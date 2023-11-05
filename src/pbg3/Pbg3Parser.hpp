@@ -6,7 +6,7 @@
 class IPbg3Parser
 {
   public:
-    IPbg3Parser();
+    void Reset();
     u32 ReadVarInt();
     u32 ReadMagic();
     u32 ReadString(char *out, u32 maxSize);

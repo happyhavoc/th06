@@ -1,6 +1,6 @@
 #include "Pbg3Parser.hpp"
 
-IPbg3Parser::IPbg3Parser()
+void IPbg3Parser::Reset()
 {
     this->bitIdxInCurByte = 128;
     this->offsetInFile = 0;
@@ -84,7 +84,9 @@ u32 IPbg3Parser::ReadString(char *out, u32 maxSize)
 
 Pbg3Parser::Pbg3Parser() : IPbg3Parser(), fileAbstraction()
 {
+    this->Reset();
 }
+
 i32 Pbg3Parser::Open(char *path)
 {
     *this = Pbg3Parser();
