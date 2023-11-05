@@ -22,7 +22,7 @@ class IPbg3Parser
     u32 offsetInFile;
     u32 fileSize;
     u32 curByte;
-    u32 bitIdxInCurByte;
+    u8 bitIdxInCurByte;
     u32 crc;
 };
 
