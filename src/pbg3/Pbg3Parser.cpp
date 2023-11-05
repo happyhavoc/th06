@@ -119,13 +119,13 @@ i32 Pbg3Parser::ReadBit()
         this->crc += this->curByte;
     }
 
-    u32 bitIdx = this->bitIdxInCurByte;
+    i32 res = this->curByte & this->bitIdxInCurByte;
     this->bitIdxInCurByte >>= 1;
     if (this->bitIdxInCurByte == 0)
     {
         this->bitIdxInCurByte = 0x80;
     }
-    return this->curByte & bitIdx;
+    return res != 0;
 }
 
 u32 Pbg3Parser::ReadInt(u32 numBitsAsPowersOf2)
