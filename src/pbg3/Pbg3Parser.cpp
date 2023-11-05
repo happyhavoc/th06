@@ -59,12 +59,12 @@ end:
 
 u32 IPbg3Parser::ReadMagic()
 {
-    int b0 = this->ReadInt(8);
-    int b1 = this->ReadInt(8);
-    int b2 = this->ReadInt(8);
-    int b3 = this->ReadInt(8);
+    u32 b0 = this->ReadInt(8);
+    u32 b1 = b0 + (this->ReadInt(8) << 8);
+    u32 b2 = b1 + (this->ReadInt(8) << 16);
+    u32 b3 = b2 + (this->ReadInt(8) << 24);
 
-    return b0 << 0 + b1 << 8 + b2 << 16 + b3 << 24;
+    return b3;
 }
 
 u32 IPbg3Parser::ReadString(char *out, u32 maxSize)
