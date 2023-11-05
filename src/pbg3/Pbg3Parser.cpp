@@ -72,15 +72,12 @@ u32 IPbg3Parser::ReadString(char *out, u32 maxSize)
     if (out == NULL)
         return FALSE;
 
-    if (maxSize != 0)
+    for (u32 idx = 0; idx < maxSize; idx++)
     {
-        for (u32 idx = 0; idx < maxSize; idx++)
+        out[idx] = this->ReadInt(8);
+        if (out[idx] == '\0')
         {
-            out[idx] = this->ReadInt(8);
-            if (out[idx] == '\0')
-            {
-                return TRUE;
-            }
+            return TRUE;
         }
     }
 
