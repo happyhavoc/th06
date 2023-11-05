@@ -178,19 +178,24 @@ u8 Pbg3Parser::ReadByteAssumeAligned()
 
 i32 Pbg3Parser::SeekToOffset(u32 fileOffset)
 {
-    if (fileOffset < this->fileSize)
+    if (fileOffset >= this->fileSize)
     {
-        if (this->SeekToNextByte() != FALSE)
-        {
-            if (this->fileAbstraction.Seek(fileOffset, FILE_BEGIN) != FALSE)
-            {
-                this->offsetInFile = fileOffset;
-                this->crc = 0;
-                return TRUE;
-            }
-        }
+        return FALSE;
     }
-    return FALSE;
+
+    if (this->SeekToNextByte() == FALSE)
+    {
+        return FALSE;
+    }
+
+    if (this->fileAbstraction.Seek(fileOffset, FILE_BEGIN) == FALSE)
+    {
+        return FALSE;
+    }
+
+    this->offsetInFile = fileOffset;
+    this->crc = 0;
+    return TRUE;
 }
 
 i32 Pbg3Parser::SeekToNextByte()
