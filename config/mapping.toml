@@ -2354,7 +2354,7 @@ address = 0x43c2c0
 size = 0x2f
 
 [[function]]
-name = "IPbg3Parser::IPbg3Parser"
+name = "IPbg3Parser::Reset"
 address = 0x43c2f0
 size = 0x13
 
