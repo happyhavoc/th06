@@ -13,22 +13,22 @@ i32 FileAbstraction::Open(char *filename, char *mode)
 
     this->Close();
 
-    for (char m = *mode; m != '\0'; m++)
+    for (char *curMode = mode; *curMode != '\0'; curMode += 1)
     {
-        if (m == 'r')
+        if (*curMode == 'r')
         {
             this->access = GENERIC_READ;
             creationDisposition = OPEN_EXISTING;
             break;
         }
-        else if (m == 'w')
+        else if (*curMode == 'w')
         {
             DeleteFileA(filename);
             this->access = GENERIC_WRITE;
             creationDisposition = OPEN_ALWAYS;
             break;
         }
-        else if (m == 'a')
+        else if (*curMode == 'a')
         {
             goToEnd = true;
             this->access = GENERIC_WRITE;
@@ -37,20 +37,21 @@ i32 FileAbstraction::Open(char *filename, char *mode)
         }
     }
 
-    if (*mode != '\0')
+    if (*curMode == '\0')
     {
-        this->handle = CreateFileA(filename, this->access, FILE_SHARE_READ, NULL, creationDisposition,
-                                   FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-        if (this->handle != INVALID_HANDLE_VALUE)
-        {
-            if (goToEnd)
-            {
-                SetFilePointer(this->handle, 0, NULL, FILE_END);
-            }
-            return 1;
-        }
+        return 0;
     }
-    return 0;
+    this->handle = CreateFileA(filename, this->access, FILE_SHARE_READ, NULL, creationDisposition,
+                               FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+
+    if (this->handle == INVALID_HANDLE_VALUE)
+        return 0;
+
+    if (goToEnd)
+    {
+        SetFilePointer(this->handle, 0, NULL, FILE_END);
+    }
+    return 1;
 }
 
 void FileAbstraction::Close()
