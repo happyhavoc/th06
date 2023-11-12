@@ -27,8 +27,8 @@ i32 AddInputChain(void)
 #pragma var_order(fogVal, fogDensity, anm1, anm2, anm3, anm4)
 void InitD3dDevice(void)
 {
-    int fogVal;
-    int fogDensity;
+    f32 fogVal;
+    f32 fogDensity;
     AnmManager *anm1;
     AnmManager *anm2;
     AnmManager *anm3;
@@ -36,15 +36,15 @@ void InitD3dDevice(void)
 
     if (((g_GameContext.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZENABLE, 1);
+        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
     }
     else
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZENABLE, 0);
+        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
     }
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_LIGHTING, 0);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_CULLMODE, 1);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
     if (((g_GameContext.cfg.opts >> GCOS_SUPPRESS_USE_OF_GOROUD_SHADING) & 1) == 0)
     {
         g_GameContext.d3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
@@ -63,66 +63,66 @@ void InitD3dDevice(void)
     {
         g_GameContext.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
     }
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
     g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHAREF, 4);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHAFUNC, 7);
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
     if (((g_GameContext.cfg.opts >> GCOS_DONT_USE_FOG) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGENABLE, 1);
+        g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
     }
     else
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGENABLE, 0);
+        g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
     }
-    fogDensity = 0x3f800000;
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGDENSITY, fogDensity);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGTABLEMODE, 3);
+    fogDensity = 1.0;
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGDENSITY, *(u32 *)&fogDensity);
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);
     g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, 0xffa0a0a0);
-    fogVal = 0x447a0000;
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGSTART, fogVal);
-    fogVal = 0x459c4000;
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGEND, fogVal);
+    fogVal = 1000.0;
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&fogVal);
+    fogVal = 5000.0;
+    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&fogVal);
     if (((g_GameContext.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 4);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 2);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
     }
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, 2);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     if (((g_GameContext.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, 3);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, 0);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
     }
     if (((g_GameContext.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, 2);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     }
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, 2);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     if (((g_GameContext.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, 3);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, 0);
+        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     }
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, 0);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, 2);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, 2);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, 2);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSW, 3);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, 1);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, 1);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_NONE);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSW, D3DTADDRESS_CLAMP);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_WRAP);
+    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_WRAP);
     if (g_AnmManager != NULL)
     {
         anm1 = g_AnmManager;
