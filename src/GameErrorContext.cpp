@@ -21,7 +21,7 @@ const char *GameErrorContextFatal(GameErrorContext *ctx, const char *fmt, ...)
         strcpy(ctx->m_BufferEnd, tmpBuffer);
 
         ctx->m_BufferEnd += tmpBufferSize;
-        *ctx->m_BufferEnd = '¥0';
+        *ctx->m_BufferEnd = '\0';
     }
 
     va_end(args);
@@ -47,7 +47,7 @@ const char *GameErrorContextLog(GameErrorContext *ctx, const char *fmt, ...)
         strcpy(ctx->m_BufferEnd, tmpBuffer);
 
         ctx->m_BufferEnd += tmpBufferSize;
-        *ctx->m_BufferEnd = '¥0';
+        *ctx->m_BufferEnd = '\0';
     }
 
     va_end(args);
