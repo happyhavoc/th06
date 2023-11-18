@@ -1,24 +1,27 @@
 from argparse import ArgumentParser, Namespace
+from datetime import datetime
 import glob
+import hashlib
 from pathlib import Path
 import shutil
 import subprocess
 import sys
 from typing import Optional
+import urllib.request
 import os
 
 SCRIPTS_DIR = Path(__file__).parent
 
 def run_generic_extract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["7z", "x", "-y", msi_file_path], cwd=output_dir)
+    return subprocess.check_call(["7z", "x", "-y", str(msi_file_path)], cwd=output_dir)
 
 
 def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["msiextract", msi_file_path], cwd=output_dir)
+    return subprocess.check_call(["msiextract", str(msi_file_path)], cwd=output_dir)
 
 
 def run_msiextract_win32(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["msiexec", "/a", msi_file_path, "/qb", f"TARGETDIR={output_dir}"], cwd=output_dir)
+    return subprocess.check_call(["msiexec", "/a", str(msi_file_path), "/qb", f"TARGETDIR={output_dir}"], cwd=output_dir)
 
 
 def run_windows_program(args, add_env=None, cwd=None):
@@ -94,10 +97,97 @@ def check_file(path: Path, message: str) -> Path:
 def parse_arguments() -> Namespace:
     parser = ArgumentParser(description="Prepare devenv")
     parser.add_argument("--only", action='append', choices=['vs', 'dx8', 'py', 'pragma'], help="Only run certain steps. Possible values are vs, dx8, py and pragma.")
-    parser.add_argument("input_path", help="Path with required input files")
+    parser.add_argument("dl_cache_path", help="Path to download the requirements in")
     parser.add_argument("output_path", help="The output directory")
+    parser.add_argument("--download", action='store_true', help="Only download the components, don't install them.")
 
     return parser.parse_args()
+
+
+def get_sha256(path):
+    h = hashlib.new('sha256')
+    with open(path, "rb") as f:
+        h.update(f.read())
+    return h.hexdigest()
+
+
+units = {"GB": 1024**3, "MB": 1024**2, "KiB": 1024**1}
+def parse_size(size):
+    for unit, val in units.items():
+        if size > val:
+            return format(float(size) / val, '.2f') + unit
+
+    return str(size) + "B"
+
+clear_line_sequence = '' if sys.platform == 'win32' else '\033[2K'
+
+last_refresh = datetime.now()
+def progress_bar(blocks_transfered, block_size, total_bytes):
+    global last_refresh
+
+    if (datetime.now() - last_refresh).total_seconds() < 1:
+        return
+
+    # Progress bar size
+    size = 80
+
+    bytes_transfered = blocks_transfered * block_size
+
+    x = int(size * bytes_transfered / total_bytes)
+    clear_line_sequence = '' if sys.platform == 'win32' else '\033[2K'
+    print("{}[{}{}] {}/{}".format(clear_line_sequence, "#"*x, "."*(size-x), parse_size(bytes_transfered), parse_size(total_bytes)),
+            end='\r', file=sys.stdout, flush=True)
+    last_refresh = datetime.now()
+
+
+def download_requirement(dl_cache_path, requirement):
+    path = dl_cache_path / requirement['filename']
+    if path.exists() and get_sha256(path) == requirement['sha256']:
+        return
+
+    print("Downloading " + requirement['name'])
+    urllib.request.urlretrieve(requirement['url'], path, progress_bar)
+    print(clear_line_sequence, end='', flush=True, file=sys.stdout)
+    hash = get_sha256(path)
+    if hash != requirement['sha256']:
+        raise Exception("Download failed: Got hash " + hash + ", expected " + requirement['sha256'])
+
+
+def download_requirements(dl_cache_path, steps):
+    requirements = [
+        {
+            'name': 'Direct X 8.0',
+            'only': 'dx8',
+            'url': 'https://archive.org/download/dx8sdk/dx8sdk.exe',
+            'filename': 'dx8sdk.exe',
+            'sha256': '719f8fe4f02af5f435aac4a90bf9ef958210e6bd1d1e9715f26d13b10a73cb6c',
+        },
+        {
+            'name': 'Visual Studio .NET 2002 Professional Edition',
+            'only': 'vs',
+            'url': 'https://archive.org/download/en_vs.net_pro_full/en_vs.net_pro_full.exe',
+            'filename': 'en_vs.net_pro_full.exe',
+            'sha256': '440949f3d152ee0375050c2961fc3c94786780b5aae7f6a861a5837e03bf2dac',
+        },
+        {
+            'name': 'Python 3.4.4',
+            'only': 'py',
+            'url': 'https://www.python.org/ftp/python/3.4.4/python-3.4.4.msi',
+            'filename': 'python-3.4.4.msi',
+            'sha256': '46c8f9f63cf02987e8bf23934b2f471e1868b24748c5bb551efcf4863b43ca6c',
+        },
+        {
+            'name': 'Visual C++ 10.0 Runtime',
+            'only': 'py',
+            'url': 'https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe',
+            'filename': 'vcredist_x86.exe',
+            'sha256': '99dce3c841cc6028560830f7866c9ce2928c98cf3256892ef8e6cf755147b0d8',
+        },
+    ]
+
+    for requirement in requirements:
+        if requirement['only'] in steps:
+            download_requirement(dl_cache_path, requirement)
 
 
 def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
@@ -207,28 +297,8 @@ def install_pragma_var_order(tmp_dir, output_path):
 
 
 def main(args: Namespace) -> int:
-    input_path = Path(args.input_path).absolute()
+    dl_cache_path = Path(args.dl_cache_path).absolute()
     output_path = Path(args.output_path).absolute()
-
-    dx8sdk_installer_path = check_file(
-        input_path / "dx8sdk.exe",
-        "Missing installer for DirectX 8.0 SDK",
-    )
-    installer_path = check_file(
-        input_path / "en_vs.net_pro_full.exe",
-        "Missing installer for Visual Studio .NET 2002 Professional Edition",
-    )
-    python_installer_path = check_file(
-        input_path / "python-3.4.4.msi",
-        "Missing installer for Python 3.4.4",
-    )
-    vcredist_installer_path = check_file(
-        input_path / "vcredist_x86.exe",
-        "Missing installer for Visual C++ 2010 Runtime",
-    )
-
-    program_files = output_path / "PROGRAM FILES"
-    program_files.mkdir(parents=True, exist_ok=True)
 
     tmp_dir = output_path / "tmp"
     tmp2_dir = output_path / "tmp2"
@@ -237,14 +307,27 @@ def main(args: Namespace) -> int:
         steps = set(['vs', 'dx8', 'py', 'pragma'])
     else:
         steps = set(args.only)
-    if 'vs' in steps:
-        install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path)
-    if 'dx8' in steps:
-        install_directx8(dx8sdk_installer_path, tmp_dir, output_path)
-    if 'py' in steps:
-        install_python(python_installer_path, vcredist_installer_path, tmp_dir, output_path)
-    if 'pragma' in steps:
-        install_pragma_var_order(tmp_dir, output_path)
+
+    dl_cache_path.mkdir(exist_ok=True)
+    download_requirements(dl_cache_path, steps)
+
+    if not args.download:
+        program_files = output_path / "PROGRAM FILES"
+        program_files.mkdir(parents=True, exist_ok=True)
+
+        dx8sdk_installer_path = dl_cache_path / "dx8sdk.exe"
+        installer_path = dl_cache_path / "en_vs.net_pro_full.exe"
+        python_installer_path = dl_cache_path / "python-3.4.4.msi"
+        vcredist_installer_path = dl_cache_path / "vcredist_x86.exe"
+
+        if 'vs' in steps:
+            install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path)
+        if 'dx8' in steps:
+            install_directx8(dx8sdk_installer_path, tmp_dir, output_path)
+        if 'py' in steps:
+            install_python(python_installer_path, vcredist_installer_path, tmp_dir, output_path)
+        if 'pragma' in steps:
+            install_pragma_var_order(tmp_dir, output_path)
 
     return 0
 
