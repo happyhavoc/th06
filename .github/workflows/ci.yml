@@ -30,3 +30,26 @@ jobs:
         path: |
           build/th06e.exe
           build/th06e.pdb
+  build-diff:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Get toolchain from cache
+      id: cache-toolchain
+      uses: actions/cache@v1.2.1
+      with:
+        # A directory to store and save the cache
+        path: scripts/prefix
+        # An explicit key for restoring and saving the cache
+        key: prefix-${{hashFiles('scripts/create_devenv.py')}}
+    - if: ${{ steps.cache-toolchain.outputs.cache-hit != 'true' }}
+      name: Install prefix
+      run: python scripts/create_devenv.py scripts/dls scripts/prefix
+    - name: Build binary
+      run: scripts/build.bat DIFFBUILD=true
+    - uses: actions/upload-artifact@v3
+      with:
+        name: th06e-diff
+        path: |
+          build/th06e.exe
+          build/th06e.pdb
