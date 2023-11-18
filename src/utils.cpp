@@ -3,7 +3,7 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-HANDLE g_ExclusiveMutex;
+DIFFABLE_STATIC(HANDLE, g_ExclusiveMutex)
 
 i32 CheckForRunningGameInstance(void)
 {

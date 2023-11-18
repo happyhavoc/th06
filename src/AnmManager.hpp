@@ -3,6 +3,7 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+#include "diffbuild.hpp"
 #include "inttypes.hpp"
 
 struct AnmLoadedSprite
@@ -113,4 +114,4 @@ struct AnmManager
     i32 heightsMaybe;
 };
 
-extern AnmManager *g_AnmManager;
+DIFFABLE_EXTERN(AnmManager *, g_AnmManager)

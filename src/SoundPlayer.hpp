@@ -1,5 +1,6 @@
 #pragma once
 
+#include "diffbuild.hpp"
 #include <Windows.h>
 
 struct SoundPlayer
@@ -8,4 +9,4 @@ struct SoundPlayer
     void Release(void);
 };
 
-extern SoundPlayer g_SoundPlayer;
+DIFFABLE_EXTERN(SoundPlayer, g_SoundPlayer)

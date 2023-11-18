@@ -7,4 +7,4 @@ void SoundPlayer::Release(void)
 {
 }
 
-SoundPlayer g_SoundPlayer;
+DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)

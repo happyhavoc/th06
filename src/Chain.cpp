@@ -388,4 +388,4 @@ int Chain::AddToDrawChain(ChainElem *elem, int priority)
     }
 }
 
-Chain g_Chain;
+DIFFABLE_STATIC(Chain, g_Chain)

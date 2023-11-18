@@ -1,5 +1,6 @@
 #pragma once
 
+#include "diffbuild.hpp"
 #include "inttypes.hpp"
 
 struct Stage
@@ -7,4 +8,4 @@ struct Stage
     u8 skyFogNeedsSetup;
 };
 
-extern Stage g_Stage;
+DIFFABLE_EXTERN(Stage, g_Stage)
