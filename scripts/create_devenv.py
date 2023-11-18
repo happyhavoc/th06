@@ -13,15 +13,15 @@ import os
 SCRIPTS_DIR = Path(__file__).parent
 
 def run_generic_extract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["7z", "x", "-y", msi_file_path], cwd=output_dir)
+    return subprocess.check_call(["7z", "x", "-y", str(msi_file_path)], cwd=output_dir)
 
 
 def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["msiextract", msi_file_path], cwd=output_dir)
+    return subprocess.check_call(["msiextract", str(msi_file_path)], cwd=output_dir)
 
 
 def run_msiextract_win32(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["msiexec", "/a", msi_file_path, "/qb", f"TARGETDIR={output_dir}"], cwd=output_dir)
+    return subprocess.check_call(["msiexec", "/a", str(msi_file_path), "/qb", f"TARGETDIR={output_dir}"], cwd=output_dir)
 
 
 def run_windows_program(args, add_env=None, cwd=None):
