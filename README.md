@@ -24,21 +24,11 @@ Copy `東方紅魔郷.exe` to `resources/game.exe`.
 
 The build system has the following package requirements:
 - `python3` >= 3.9
-- `curl`
 - `msiextract`
 - `p7zip` (or 7-Zip on Windows)
 - `wine` (prefer CrossOver on macOS to avoid possible CL.EXE heap issues)
 
 The rest of the build system is constructed out of Visual Studio 2002 and DirectX 8.0 from the Web Archive.
-
-
-### Windows
-
-Run the following commands in PowerShell:
-```ps1
-.\scripts\download_requirements.ps1
-py -3 .\scripts\create_devenv.py .\scripts\dls\ .\scripts\prefix
-```
 
 #### Configure devenv
 
@@ -47,6 +37,13 @@ Run the following script:
 # NOTE: On macOS if you use CrossOver.
 # export WINE=<CrossOverPath>/wine
 ./scripts/create_th06_prefix
+```
+
+### Windows
+
+Run the following commands in PowerShell:
+```ps1
+py -3 .\scripts\create_devenv.py .\scripts\dls\ .\scripts\prefix
 ```
 
 ### Building

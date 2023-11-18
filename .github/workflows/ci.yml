@@ -18,19 +18,7 @@ jobs:
         # A directory to store and save the cache
         path: scripts/prefix
         # An explicit key for restoring and saving the cache
-        key: prefix-${{hashFiles('scripts/download_requirements.ps1')}}-${{hashFiles('scripts/create_devenv.py')}}
-    - if: ${{ steps.cache-toolchain.outputs.cache-hit != 'true' }}
-      name: Get toolchain dependencies from cache
-      id: cache-deps
-      uses: actions/cache@v1.2.1
-      with:
-        # A directory to store and save the cache
-        path: scripts/dls
-        # An explicit key for restoring and saving the cache
-        key: deps-${{hashFiles('scripts/download_requirements.ps1')}}
-    - if: ${{ steps.cache-toolchain.outputs.cache-hit != 'true' && steps.cache-deps.outputs.cache-hit != 'true' }}
-      name: Download dependencies
-      run: powershell scripts/download_requirements.ps1
+        key: prefix-${{hashFiles('scripts/create_devenv.py')}}
     - if: ${{ steps.cache-toolchain.outputs.cache-hit != 'true' }}
       name: Install prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix

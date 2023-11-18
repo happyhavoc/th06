@@ -15,9 +15,6 @@ export CX_BOTTLE=th06
 # Disable wine logs (comment me for debugging)
 export WINEDEBUG=-all
 
-echo "Downloading requirements"
-$SCRIPT_DIR/download_requirements
-
 MAIN_DRIVE_PATH=$SCRIPT_DIR/prefix
 
 $WINE wineboot --init
