@@ -2,7 +2,7 @@
 
 #include "Pbg3Archive.hpp"
 
-Pbg3Archive **g_Pbg3Archives;
+DIFFABLE_STATIC(Pbg3Archive **, g_Pbg3Archives)
 
 u32 Pbg3Archive::FindEntry(char *path)
 {

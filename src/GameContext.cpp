@@ -8,9 +8,9 @@
 #include <stdio.h>
 #include <string.h>
 
-GameContext g_GameContext;
-ControllerMapping g_ControllerMapping;
-JOYCAPSA g_JoystickCaps;
+DIFFABLE_STATIC(GameContext, g_GameContext)
+DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
+DIFFABLE_STATIC(JOYCAPSA, g_JoystickCaps)
 
 i32 InitD3dInterface(void)
 {
@@ -210,7 +210,7 @@ u32 SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest
     return inputButtons[controllerButtonToTest] & 0x80 ? touhouButton & 0xFFFF : 0;
 }
 
-u16 g_FocusButtonConflictState;
+DIFFABLE_STATIC(u16, g_FocusButtonConflictState)
 
 u16 GetControllerInput(u16 buttons)
 {

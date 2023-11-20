@@ -2,6 +2,7 @@
 
 #include <windows.h>
 
+#include "diffbuild.hpp"
 #include "i18n.hpp"
 #include "inttypes.hpp"
 
@@ -39,4 +40,4 @@ class GameErrorContext
     void Flush();
 };
 
-extern GameErrorContext g_GameErrorContext;
+DIFFABLE_EXTERN(GameErrorContext, g_GameErrorContext)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "diffbuild.hpp"
 #include <Windows.h>
 
 enum ChainElemFlag
@@ -72,4 +73,4 @@ class Chain
     int RunCalcChain(void);
 };
 
-extern Chain g_Chain;
+DIFFABLE_EXTERN(Chain, g_Chain)

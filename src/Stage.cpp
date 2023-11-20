@@ -1,3 +1,3 @@
 #include "Stage.hpp"
 
-Stage g_Stage;
+DIFFABLE_STATIC(Stage, g_Stage)

@@ -3,7 +3,7 @@
 #include "GameErrorContext.hpp"
 #include <stdio.h>
 
-GameErrorContext g_GameErrorContext;
+DIFFABLE_STATIC(GameErrorContext, g_GameErrorContext)
 
 const char *GameErrorContextFatal(GameErrorContext *ctx, const char *fmt, ...)
 {

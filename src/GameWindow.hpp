@@ -1,5 +1,6 @@
 #pragma once
 
+#include "diffbuild.hpp"
 #include "inttypes.hpp"
 #include <windows.h>
 
@@ -17,4 +18,4 @@ struct GameWindow
     i32 powerOffActive;
 };
 
-extern GameWindow g_GameWindow;
+DIFFABLE_EXTERN(GameWindow, g_GameWindow)

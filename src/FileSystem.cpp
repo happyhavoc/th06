@@ -5,7 +5,7 @@
 #include "Pbg3Archive.hpp"
 #include "utils.hpp"
 
-u32 g_LastFileSize;
+DIFFABLE_STATIC(u32, g_LastFileSize)
 
 #pragma var_order(pbg3Idx, entryname, entryIdx, fsize, data, file)
 u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)

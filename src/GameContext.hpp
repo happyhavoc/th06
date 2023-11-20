@@ -5,6 +5,7 @@
 #include <dinput.h>
 
 #include "MidiOutput.hpp"
+#include "diffbuild.hpp"
 #include "inttypes.hpp"
 
 enum GameConfigOptsShifts
@@ -129,5 +130,5 @@ unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerBut
 u16 GetControllerInput(u16 buttons);
 u16 GetInput(void);
 
-extern ControllerMapping g_ControllerMapping;
-extern GameContext g_GameContext;
+DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
+DIFFABLE_EXTERN(GameContext, g_GameContext)
