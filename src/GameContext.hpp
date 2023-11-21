@@ -52,7 +52,7 @@ struct GameConfiguration
     i8 lifeCount;
     i8 bombCount;
     u8 colorMode16bit;
-    MusicMode musicMode;
+    u8 musicMode;
     i8 playSounds;
     i8 defaultDifficulty;
     u8 windowed;
