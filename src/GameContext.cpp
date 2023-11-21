@@ -237,7 +237,7 @@ u16 GetControllerInput(u16 buttons)
         ac = SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.shootButton, TH_BUTTON_SHOOT,
                                            aa.dwButtons);
 
-        if (g_GameContext.cfg.controllerMapping.shootButton != g_GameContext.cfg.controllerMapping.focusButton)
+        if (g_ControllerMapping.shootButton != g_ControllerMapping.focusButton)
         {
             SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.focusButton, TH_BUTTON_FOCUS,
                                           aa.dwButtons);
