@@ -17,32 +17,37 @@ import SocketServer as ss
 # after disconnect.
 should_exit = False
 
+
 def halt():
     global should_exit
     print("Shutting down after all clients disconnect.")
     should_exit = True
 
+
 thread_scope = threading.local()
 original_stdout = sys.stdout
 
+
 class ThreadAwareStdout(object):
     """
-        This class acts as a file object and based on the thread it is used
-        from it uses to the appropriate stream. If it is called from the main
-        thread "wfile" will not be present and it will write to the original
-        stdou, which is the stdout of the server process.
+    This class acts as a file object and based on the thread it is used
+    from it uses to the appropriate stream. If it is called from the main
+    thread "wfile" will not be present and it will write to the original
+    stdou, which is the stdout of the server process.
     """
+
     def write(self, data):
         if hasattr(thread_scope, "wfile"):
-            thread_scope.wfile.write(data.encode('ascii'))
+            thread_scope.wfile.write(data.encode("ascii"))
         else:
-            original_stdout.write(data.encode('ascii'))
+            original_stdout.write(data.encode("ascii"))
 
     def flush(self):
         if hasattr(thread_scope, "wfile"):
             thread_scope.wfile.flush()
         else:
             original_stdout.flush()
+
 
 sys.stdout = ThreadAwareStdout()
 sys.stderr = ThreadAwareStdout()
@@ -55,28 +60,30 @@ sys.stderr = ThreadAwareStdout()
 class InteractiveSocket(code.InteractiveConsole):
     def __init__(self, rfile, wfile, locals=None):
         """
-            This class actually creates the interactive session and ties it
-            to the socket by reading input from the socket and writing output.
+        This class actually creates the interactive session and ties it
+        to the socket by reading input from the socket and writing output.
 
-            This class is always located in the thread that is created per
-            connection.
+        This class is always located in the thread that is created per
+        connection.
         """
         code.InteractiveConsole.__init__(self, locals)
         self.rfile = rfile
         self.wfile = wfile
 
-        print("Use Print() to print on the server thread, use halt() to close"
-              " the server after the last session terminates.")
+        print(
+            "Use Print() to print on the server thread, use halt() to close"
+            " the server after the last session terminates."
+        )
 
     def write(self, data):
         # Write data to the stream.
         if not self.wfile.closed:
-            self.wfile.write(data.encode('ascii'))
+            self.wfile.write(data.encode("ascii"))
             self.wfile.flush()
 
     def raw_input(self, prompt=""):
         # Try to read data from the stream.
-        if (self.wfile.closed):
+        if self.wfile.closed:
             raise EOFError("Socket closed.")
 
         # print the prompt.
@@ -88,8 +95,8 @@ class InteractiveSocket(code.InteractiveConsole):
 
         try:
             # Python 2 / 3 difference.
-            r = r.decode('ascii')
-        except:
+            r = r.decode("ascii")
+        except UnicodeError:
             pass
 
         # The default repl quits on control+d, control+d causes the line that
@@ -98,7 +105,7 @@ class InteractiveSocket(code.InteractiveConsole):
         # to be read into raw_value.
         # But when '' is read we know control+d has been sent, we raise
         # EOFError to gracefully close the connection.
-        if (len(raw_value) == 0):
+        if len(raw_value) == 0:
             raise EOFError("Empty line, disconnect requested with control-D.")
 
         return r
@@ -106,8 +113,9 @@ class InteractiveSocket(code.InteractiveConsole):
 
 class RequestPythonREPL(ss.StreamRequestHandler):
     """
-        THis is the entry point for connections from the socketserver.
+    THis is the entry point for connections from the socketserver.
     """
+
     def handle(self):
         # Actually handle the request from socketserver, every connection is
         # handled in a different thread.
@@ -116,10 +124,10 @@ class RequestPythonREPL(ss.StreamRequestHandler):
         def Print(f):
             f = str(f)
             try:
-                f = bytes(f, 'ascii')
-            except:
+                f = bytes(f, "ascii")
+            except UnicodeError:
                 pass
-            original_stdout.write(f.decode('ascii'))
+            original_stdout.write(f.decode("ascii"))
             original_stdout.write("\n")
             original_stdout.flush()
 
@@ -132,8 +140,7 @@ class RequestPythonREPL(ss.StreamRequestHandler):
         repl_scope = dict(globals(), **locals())
 
         # Create the console object and pass the stream's rfile and wfile.
-        self.console = InteractiveSocket(self.rfile, self.wfile,
-                                         locals=repl_scope)
+        self.console = InteractiveSocket(self.rfile, self.wfile, locals=repl_scope)
 
         # All errors except SystemExit are caught inside interact(), only
         # sys.exit() is escalated, in this situation we want to close the
@@ -152,6 +159,7 @@ class ThreadedTCPServer(ss.ThreadingMixIn, ss.TCPServer):
     def server_bind(self):
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(self.server_address)
+
 
 # Create the server object and a thread to serve.
 server = ThreadedTCPServer(("127.0.0.1", 1337), RequestPythonREPL)
