@@ -66,7 +66,7 @@ struct GameConfiguration
     u32 opts;
 };
 
-struct GameContext
+struct Supervisor
 {
     ZunResult Parse(char *path);
 
@@ -132,4 +132,4 @@ u16 GetControllerInput(u16 buttons);
 u16 GetInput(void);
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
-DIFFABLE_EXTERN(GameContext, g_GameContext)
+DIFFABLE_EXTERN(Supervisor, g_Supervisor)

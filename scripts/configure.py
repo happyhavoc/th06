@@ -67,7 +67,7 @@ def configure(build_type):
             "main",
             "Chain",
             "FileSystem",
-            "GameContext",
+            "Supervisor",
             "GameErrorContext",
             "GameWindow",
             "MidiOutput",

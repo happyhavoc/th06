@@ -1,4 +1,4 @@
-#include "GameContext.hpp"
+#include "Supervisor.hpp"
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 #include "i18n.hpp"
@@ -8,15 +8,15 @@
 #include <stdio.h>
 #include <string.h>
 
-DIFFABLE_STATIC(GameContext, g_GameContext)
+DIFFABLE_STATIC(Supervisor, g_Supervisor)
 DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
 DIFFABLE_STATIC(JOYCAPSA, g_JoystickCaps)
 
 i32 InitD3dInterface(void)
 {
-    g_GameContext.d3dIface = Direct3DCreate8(D3D_SDK_VERSION);
+    g_Supervisor.d3dIface = Direct3DCreate8(D3D_SDK_VERSION);
 
-    if (g_GameContext.d3dIface == NULL)
+    if (g_Supervisor.d3dIface == NULL)
     {
         GameErrorContextFatal(&g_GameErrorContext, TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ);
         return 1;
@@ -25,75 +25,75 @@ i32 InitD3dInterface(void)
 }
 
 // TODO: Not a perfect match.
-ZunResult GameContext::Parse(char *path)
+ZunResult Supervisor::Parse(char *path)
 {
     u8 *data;
     FILE *wavFile;
 
-    memset(&g_GameContext.cfg, 0, sizeof(GameConfiguration));
-    g_GameContext.cfg.opts = g_GameContext.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
+    memset(&g_Supervisor.cfg, 0, sizeof(GameConfiguration));
+    g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
     data = FileSystem::OpenPath(path, 1);
     if (data == NULL)
     {
-        g_GameContext.cfg.lifeCount = 2;
-        g_GameContext.cfg.bombCount = 3;
-        g_GameContext.cfg.colorMode16bit = 0xff;
-        g_GameContext.cfg.version = 0x102;
-        g_GameContext.cfg.padXAxis = 600;
-        g_GameContext.cfg.padYAxis = 600;
+        g_Supervisor.cfg.lifeCount = 2;
+        g_Supervisor.cfg.bombCount = 3;
+        g_Supervisor.cfg.colorMode16bit = 0xff;
+        g_Supervisor.cfg.version = 0x102;
+        g_Supervisor.cfg.padXAxis = 600;
+        g_Supervisor.cfg.padYAxis = 600;
         wavFile = fopen("bgm/th06_01.wav", "rb");
         if (wavFile == NULL)
         {
-            g_GameContext.cfg.musicMode = MIDI;
+            g_Supervisor.cfg.musicMode = MIDI;
             DebugPrint(TH_ERR_NO_WAVE_FILE);
         }
         else
         {
-            g_GameContext.cfg.musicMode = WAV;
+            g_Supervisor.cfg.musicMode = WAV;
             fclose(wavFile);
         }
-        g_GameContext.cfg.playSounds = 1;
-        g_GameContext.cfg.defaultDifficulty = 1;
-        g_GameContext.cfg.windowed = false;
-        g_GameContext.cfg.frameskipConfig = 0;
-        g_GameContext.cfg.controllerMapping = g_ControllerMapping;
+        g_Supervisor.cfg.playSounds = 1;
+        g_Supervisor.cfg.defaultDifficulty = 1;
+        g_Supervisor.cfg.windowed = false;
+        g_Supervisor.cfg.frameskipConfig = 0;
+        g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_CONFIG_NOT_FOUND);
     }
     else
     {
-        memcpy(&g_GameContext.cfg, data, sizeof(GameConfiguration));
-        if ((4 < g_GameContext.cfg.lifeCount) || (3 < g_GameContext.cfg.bombCount) ||
-            (1 < g_GameContext.cfg.colorMode16bit) || (MIDI < g_GameContext.cfg.musicMode) ||
-            (4 < g_GameContext.cfg.defaultDifficulty) || (1 < g_GameContext.cfg.playSounds) ||
-            (1 < g_GameContext.cfg.windowed) || (2 < g_GameContext.cfg.frameskipConfig) ||
-            (g_GameContext.cfg.version != 0x102) || (g_LastFileSize != 0x38))
+        memcpy(&g_Supervisor.cfg, data, sizeof(GameConfiguration));
+        if ((4 < g_Supervisor.cfg.lifeCount) || (3 < g_Supervisor.cfg.bombCount) ||
+            (1 < g_Supervisor.cfg.colorMode16bit) || (MIDI < g_Supervisor.cfg.musicMode) ||
+            (4 < g_Supervisor.cfg.defaultDifficulty) || (1 < g_Supervisor.cfg.playSounds) ||
+            (1 < g_Supervisor.cfg.windowed) || (2 < g_Supervisor.cfg.frameskipConfig) ||
+            (g_Supervisor.cfg.version != 0x102) || (g_LastFileSize != 0x38))
         {
-            g_GameContext.cfg.lifeCount = 2;
-            g_GameContext.cfg.bombCount = 3;
-            g_GameContext.cfg.colorMode16bit = 0xff;
-            g_GameContext.cfg.version = 0x102;
-            g_GameContext.cfg.padXAxis = 600;
-            g_GameContext.cfg.padYAxis = 600;
+            g_Supervisor.cfg.lifeCount = 2;
+            g_Supervisor.cfg.bombCount = 3;
+            g_Supervisor.cfg.colorMode16bit = 0xff;
+            g_Supervisor.cfg.version = 0x102;
+            g_Supervisor.cfg.padXAxis = 600;
+            g_Supervisor.cfg.padYAxis = 600;
             wavFile = fopen("bgm/th06_01.wav", "rb");
             if (wavFile == NULL)
             {
-                g_GameContext.cfg.musicMode = MIDI;
+                g_Supervisor.cfg.musicMode = MIDI;
                 DebugPrint(TH_ERR_NO_WAVE_FILE);
             }
             else
             {
-                g_GameContext.cfg.musicMode = WAV;
+                g_Supervisor.cfg.musicMode = WAV;
                 fclose(wavFile);
             }
-            g_GameContext.cfg.playSounds = 1;
-            g_GameContext.cfg.defaultDifficulty = 1;
-            g_GameContext.cfg.windowed = false;
-            g_GameContext.cfg.frameskipConfig = 0;
-            g_GameContext.cfg.controllerMapping = g_ControllerMapping;
-            g_GameContext.cfg.opts = g_GameContext.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
+            g_Supervisor.cfg.playSounds = 1;
+            g_Supervisor.cfg.defaultDifficulty = 1;
+            g_Supervisor.cfg.windowed = false;
+            g_Supervisor.cfg.frameskipConfig = 0;
+            g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
+            g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
             GameErrorContextLog(&g_GameErrorContext, TH_ERR_CONFIG_CORRUPTED);
         }
-        g_ControllerMapping = g_GameContext.cfg.controllerMapping;
+        g_ControllerMapping = g_Supervisor.cfg.controllerMapping;
         free(data);
     }
     if (((this->cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) != 0)
@@ -146,7 +146,7 @@ ZunResult GameContext::Parse(char *path)
     {
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_DO_NOT_USE_DIRECTINPUT);
     }
-    if (FileSystem::WriteDataToFile(path, &g_GameContext.cfg, sizeof(GameConfiguration)) == 0)
+    if (FileSystem::WriteDataToFile(path, &g_Supervisor.cfg, sizeof(GameConfiguration)) == 0)
     {
         return ZUN_SUCCESS;
     }
@@ -223,7 +223,7 @@ u16 GetControllerInput(u16 buttons)
     u32 a2;
     HRESULT aaa;
 
-    if (g_GameContext.controller == NULL)
+    if (g_Supervisor.controller == NULL)
     {
         memset(&aa, 0, sizeof(aa));
         aa.dwSize = sizeof(JOYINFOEX);
@@ -234,12 +234,12 @@ u16 GetControllerInput(u16 buttons)
             return buttons;
         }
 
-        ac = SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.shootButton, TH_BUTTON_SHOOT,
+        ac = SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.shootButton, TH_BUTTON_SHOOT,
                                            aa.dwButtons);
 
         if (g_ControllerMapping.shootButton != g_ControllerMapping.focusButton)
         {
-            SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.focusButton, TH_BUTTON_FOCUS,
+            SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.focusButton, TH_BUTTON_FOCUS,
                                           aa.dwButtons);
         }
         else
@@ -269,19 +269,19 @@ u16 GetControllerInput(u16 buttons)
             }
         }
 
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.bombButton, TH_BUTTON_BOMB,
+        SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.bombButton, TH_BUTTON_BOMB,
                                       aa.dwButtons);
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.menuButton, TH_BUTTON_MENU,
+        SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.menuButton, TH_BUTTON_MENU,
                                       aa.dwButtons);
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.upButton, TH_BUTTON_UP,
+        SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.upButton, TH_BUTTON_UP,
                                       aa.dwButtons);
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.downButton, TH_BUTTON_DOWN,
+        SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.downButton, TH_BUTTON_DOWN,
                                       aa.dwButtons);
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.leftButton, TH_BUTTON_LEFT,
+        SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.leftButton, TH_BUTTON_LEFT,
                                       aa.dwButtons);
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.rightButton, TH_BUTTON_RIGHT,
+        SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.rightButton, TH_BUTTON_RIGHT,
                                       aa.dwButtons);
-        SetButtonFromControllerInputs(&buttons, g_GameContext.cfg.controllerMapping.skipButton, TH_BUTTON_SKIP,
+        SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.skipButton, TH_BUTTON_SKIP,
                                       aa.dwButtons);
 
         ab = ((g_JoystickCaps.wXmax - g_JoystickCaps.wXmin) / 2 / 2);
@@ -302,17 +302,17 @@ u16 GetControllerInput(u16 buttons)
     else
     {
         // FIXME: Next if not matching.
-        aaa = g_GameContext.controller->Poll();
+        aaa = g_Supervisor.controller->Poll();
         if (FAILED(aaa))
         {
             i32 retryCount = 0;
 
             DebugPrint2("error : DIERR_INPUTLOST\n");
-            aaa = g_GameContext.controller->Acquire();
+            aaa = g_Supervisor.controller->Acquire();
 
             while (aaa == DIERR_INPUTLOST)
             {
-                aaa = g_GameContext.controller->Acquire();
+                aaa = g_Supervisor.controller->Acquire();
                 DebugPrint2("error : DIERR_INPUTLOST %d\n", retryCount);
 
                 retryCount++;
@@ -329,19 +329,19 @@ u16 GetControllerInput(u16 buttons)
         {
             memset(&a0, 0, sizeof(a0));
 
-            aaa = g_GameContext.controller->GetDeviceState(sizeof(a0), &a0);
+            aaa = g_Supervisor.controller->GetDeviceState(sizeof(a0), &a0);
 
             if (FAILED(aaa))
             {
                 return buttons;
             }
 
-            a2 = SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.shootButton,
+            a2 = SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.shootButton,
                                                   TH_BUTTON_SHOOT, a0.rgbButtons);
 
-            if (g_GameContext.cfg.controllerMapping.shootButton != g_GameContext.cfg.controllerMapping.focusButton)
+            if (g_Supervisor.cfg.controllerMapping.shootButton != g_Supervisor.cfg.controllerMapping.focusButton)
             {
-                SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.focusButton,
+                SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.focusButton,
                                                  TH_BUTTON_FOCUS, a0.rgbButtons);
             }
             else
@@ -371,25 +371,25 @@ u16 GetControllerInput(u16 buttons)
                 }
             }
 
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.bombButton, TH_BUTTON_BOMB,
+            SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.bombButton, TH_BUTTON_BOMB,
                                              a0.rgbButtons);
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.menuButton, TH_BUTTON_MENU,
+            SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.menuButton, TH_BUTTON_MENU,
                                              a0.rgbButtons);
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.upButton, TH_BUTTON_UP,
+            SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.upButton, TH_BUTTON_UP,
                                              a0.rgbButtons);
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.downButton, TH_BUTTON_DOWN,
+            SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.downButton, TH_BUTTON_DOWN,
                                              a0.rgbButtons);
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.leftButton, TH_BUTTON_LEFT,
+            SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.leftButton, TH_BUTTON_LEFT,
                                              a0.rgbButtons);
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.rightButton, TH_BUTTON_RIGHT,
+            SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.rightButton, TH_BUTTON_RIGHT,
                                              a0.rgbButtons);
-            SetButtonFromDirectInputJoystate(&buttons, g_GameContext.cfg.controllerMapping.skipButton, TH_BUTTON_SKIP,
+            SetButtonFromDirectInputJoystate(&buttons, g_Supervisor.cfg.controllerMapping.skipButton, TH_BUTTON_SKIP,
                                              a0.rgbButtons);
 
-            buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_RIGHT, a0.lX, g_GameContext.cfg.padXAxis);
-            buttons |= JOYSTICK_BUTTON_PRESSED_INVERT(TH_BUTTON_LEFT, a0.lX, -g_GameContext.cfg.padXAxis);
-            buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_DOWN, a0.lY, g_GameContext.cfg.padYAxis);
-            buttons |= JOYSTICK_BUTTON_PRESSED_INVERT(TH_BUTTON_UP, a0.lY, -g_GameContext.cfg.padYAxis);
+            buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_RIGHT, a0.lX, g_Supervisor.cfg.padXAxis);
+            buttons |= JOYSTICK_BUTTON_PRESSED_INVERT(TH_BUTTON_LEFT, a0.lX, -g_Supervisor.cfg.padXAxis);
+            buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_DOWN, a0.lY, g_Supervisor.cfg.padYAxis);
+            buttons |= JOYSTICK_BUTTON_PRESSED_INVERT(TH_BUTTON_UP, a0.lY, -g_Supervisor.cfg.padYAxis);
         }
     }
 
@@ -403,7 +403,7 @@ u16 GetInput(void)
 
     buttons = 0;
 
-    if (g_GameContext.keyboard == NULL)
+    if (g_Supervisor.keyboard == NULL)
     {
         GetKeyboardState(keyboardState);
 
@@ -431,13 +431,13 @@ u16 GetInput(void)
     }
     else
     {
-        HRESULT res = g_GameContext.keyboard->GetDeviceState(sizeof(keyboardState), keyboardState);
+        HRESULT res = g_Supervisor.keyboard->GetDeviceState(sizeof(keyboardState), keyboardState);
 
         buttons = 0;
 
         if (res == DIERR_INPUTLOST)
         {
-            g_GameContext.keyboard->Acquire();
+            g_Supervisor.keyboard->Acquire();
 
             return GetControllerInput(buttons);
         }
