@@ -20,11 +20,6 @@
 #define GAME_WINDOW_WIDTH 640
 #define GAME_WINDOW_HEIGHT 480
 
-ZunResult AddInputChain(void)
-{
-    return ZUN_ERROR;
-}
-
 #pragma var_order(fogVal, fogDensity, anm1, anm2, anm3, anm4)
 void InitD3dDevice(void)
 {
@@ -545,7 +540,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         anm = new AnmManager();
         g_AnmManager = anm;
 
-        if (AddInputChain() != ZUN_SUCCESS)
+        if (Supervisor::RegisterChain() != ZUN_SUCCESS)
         {
             goto exit;
         }

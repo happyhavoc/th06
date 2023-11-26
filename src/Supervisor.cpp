@@ -158,6 +158,11 @@ ZunResult Supervisor::Parse(char *path)
     }
 }
 
+ZunResult Supervisor::RegisterChain()
+{
+    return ZUN_ERROR;
+}
+
 u16 GetJoystickCaps(void)
 {
     JOYINFOEX pji;

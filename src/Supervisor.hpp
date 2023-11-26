@@ -68,6 +68,8 @@ struct GameConfiguration
 
 struct Supervisor
 {
+    static ZunResult RegisterChain();
+
     ZunResult Parse(char *path);
 
     HINSTANCE hInstance;
