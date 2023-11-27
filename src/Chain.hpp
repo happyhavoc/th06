@@ -42,8 +42,6 @@ class ChainElem
 
     ChainElem();
     ~ChainElem();
-
-    ChainElem *Allocate(ChainCallback callback);
 };
 
 class Chain
@@ -73,6 +71,8 @@ class Chain
     int AddToDrawChain(ChainElem *elem, int priority);
     int RunDrawChain(void);
     int RunCalcChain(void);
+
+    ChainElem *CreateElem(ChainCallback callback);
 };
 
 DIFFABLE_EXTERN(Chain, g_Chain)

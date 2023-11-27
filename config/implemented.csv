@@ -1,6 +1,6 @@
 ChainElem::ChainElem
 ChainElem::~ChainElem
-ChainElem::Allocate
+Chain::CreateElem
 Chain::ReleaseSingleChain
 Chain::Release
 Chain::Cut

@@ -35,7 +35,7 @@ ChainElem::~ChainElem()
     deletedCallback = NULL;
 }
 
-ChainElem *ChainElem::Allocate(ChainCallback callback)
+ChainElem *Chain::CreateElem(ChainCallback callback)
 {
     ChainElem *elem;
 
