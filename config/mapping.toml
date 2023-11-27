@@ -849,7 +849,7 @@ address = 0x41b5e1
 size = 0x82
 
 [[function]]
-name = "FUN_0041b663"
+name = "GameManager::Callback"
 address = 0x41b663
 size = 0x3e7
 
@@ -859,7 +859,7 @@ address = 0x41ba4a
 size = 0x20
 
 [[function]]
-name = "FUN_0041ba6a"
+name = "GameManager::RegisterChain"
 address = 0x41ba6a
 size = 0x98
 
@@ -874,7 +874,7 @@ address = 0x41c1f7
 size = 0x72
 
 [[function]]
-name = "FUN_0041c269"
+name = "GameManager::Deinitialize"
 address = 0x41c269
 size = 0x23
 
@@ -1034,17 +1034,17 @@ address = 0x41e620
 size = 0x155
 
 [[function]]
-name = "FUN_0041e780"
+name = "GetRandomU16"
 address = 0x41e780
 size = 0x63
 
 [[function]]
-name = "FUN_0041e7f0"
+name = "GetRandomU32"
 address = 0x41e7f0
 size = 0x30
 
 [[function]]
-name = "FUN_0041e820"
+name = "GetRandomF32ZeroToOne"
 address = 0x41e820
 size = 0x2e
 
@@ -1104,7 +1104,7 @@ address = 0x41ef11
 size = 0xf7
 
 [[function]]
-name = "FUN_0041f008"
+name = "Supervisor::CreateBackbuffer"
 address = 0x41f008
 size = 0x23
 
@@ -1349,12 +1349,12 @@ address = 0x423330
 size = 0xb
 
 [[function]]
-name = "InputChainCallback"
+name = "Supervisor::CalcCallback"
 address = 0x42333b
 size = 0x44a
 
 [[function]]
-name = "FUN_00423785"
+name = "Supervisor::DrawCallback"
 address = 0x423785
 size = 0x7c
 
@@ -1364,12 +1364,12 @@ address = 0x423801
 size = 0x6a
 
 [[function]]
-name = "AddInputChain"
+name = "Supervisor::RegisterChain"
 address = 0x42386b
 size = 0x9f
 
 [[function]]
-name = "InputChainAddedCallback"
+name = "Supervisor::AddedCallback"
 address = 0x42390a
 size = 0x20a
 
@@ -1384,12 +1384,12 @@ address = 0x423da0
 size = 0x3f
 
 [[function]]
-name = "InputChainRemovedCallback"
+name = "Supervisor::DeletedCallback"
 address = 0x423ddf
 size = 0x160
 
 [[function]]
-name = "FUN_00423f3f"
+name = "Supervisor::DrawFpsCounter"
 address = 0x423f3f
 size = 0x1b1
 
@@ -1414,22 +1414,22 @@ address = 0x4241e5
 size = 0xa0
 
 [[function]]
-name = "GameContext::FUN_00424285"
+name = "Supervisor::FUN_00424285"
 address = 0x424285
 size = 0x6e
 
 [[function]]
-name = "GameContext::RemovePbg3File"
+name = "Supervisor::RemovePbg3File"
 address = 0x4242f3
 size = 0x82
 
 [[function]]
-name = "GameContext::LoadPBG3"
+name = "Supervisor::LoadPBG3"
 address = 0x424375
 size = 0x2d8
 
 [[function]]
-name = "GameContext::Parse"
+name = "Supervisor::CreateFromConfig"
 address = 0x42464d
 size = 0x45f
 
@@ -1454,7 +1454,7 @@ address = 0x424b5d
 size = 0x1db
 
 [[function]]
-name = "GameContext::FUN_00424d38"
+name = "Supervisor::FUN_00424d38"
 address = 0x424d38
 size = 0x4a
 
@@ -1479,7 +1479,7 @@ address = 0x424ead
 size = 0x38d
 
 [[function]]
-name = "FUN_0042523a"
+name = "MusicRoom::RegisterChain"
 address = 0x42523a
 size = 0xde
 
@@ -1489,7 +1489,7 @@ address = 0x425318
 size = 0xc5
 
 [[function]]
-name = "FUN_004253dd"
+name = "MusicRoom::Callback"
 address = 0x4253dd
 size = 0x7d
 
@@ -1669,7 +1669,7 @@ address = 0x42a240
 size = 0x228
 
 [[function]]
-name = "FUN_0042a470"
+name = "ReplayManager::OnUpdate"
 address = 0x42a470
 size = 0x97
 
@@ -1689,7 +1689,7 @@ address = 0x42a670
 size = 0xa
 
 [[function]]
-name = "FUN_0042a680"
+name = "ReplayManager::OnAdd"
 address = 0x42a680
 size = 0x1bd
 
@@ -1699,7 +1699,7 @@ address = 0x42a840
 size = 0x1d5
 
 [[function]]
-name = "FUN_0042aa20"
+name = "ReplayManager::OnDelete"
 address = 0x42aa20
 size = 0x8c
 
@@ -1799,7 +1799,7 @@ address = 0x42d35a
 size = 0x419
 
 [[function]]
-name = "FUN_0042d773"
+name = "ResultScreen::RegisterChain"
 address = 0x42d773
 size = 0x12e
 
@@ -1929,7 +1929,7 @@ address = 0x430f80
 size = 0xfc
 
 [[function]]
-name = "SoundPlayer::FUN_00431080"
+name = "SoundPlayer::Initialize"
 address = 0x431080
 size = 0x156
 
@@ -1959,7 +1959,7 @@ address = 0x431470
 size = 0x1ed
 
 [[function]]
-name = "AnmManager::FUN_00431660"
+name = "AnmManager::SetupVertexBuffer"
 address = 0x431660
 size = 0x2bc
 
@@ -2054,12 +2054,12 @@ address = 0x433960
 size = 0x1103
 
 [[function]]
-name = "FUN_00434af0"
+name = "AnmManager::FUN_00434af0"
 address = 0x434af0
 size = 0x61
 
 [[function]]
-name = "FUN_00434b60"
+name = "AnmManager::FUN_00434b60"
 address = 0x434b60
 size = 0xdb
 
@@ -2184,7 +2184,7 @@ address = 0x43a1ec
 size = 0x14c
 
 [[function]]
-name = "FUN_0043a338"
+name = "MainMenu::RegisterChain"
 address = 0x43a338
 size = 0x12c
 
@@ -5219,7 +5219,7 @@ address = 0x45c562
 size = 0x4c
 
 [[function]]
-name = "_fclose"
+name = "fclose"
 address = 0x45c5ae
 size = 0x46
 
@@ -5234,7 +5234,7 @@ address = 0x45c5ff
 size = 0xe9
 
 [[function]]
-name = "_fread"
+name = "fread"
 address = 0x45c6e8
 size = 0x42
 
@@ -5249,7 +5249,7 @@ address = 0x45c734
 size = 0x162
 
 [[function]]
-name = "_ftell"
+name = "ftell"
 address = 0x45c896
 size = 0x37
 
@@ -5299,7 +5299,7 @@ address = 0x45ca4d
 size = 0x107
 
 [[function]]
-name = "_fwrite"
+name = "fwrite"
 address = 0x45cb54
 size = 0x42
 
