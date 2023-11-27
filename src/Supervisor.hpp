@@ -4,6 +4,7 @@
 #include <d3dx8math.h>
 #include <dinput.h>
 
+#include "Chain.hpp"
 #include "MidiOutput.hpp"
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
@@ -69,6 +70,10 @@ struct GameConfiguration
 struct Supervisor
 {
     static ZunResult RegisterChain();
+    static ChainCallbackResult CalcCallback(Supervisor *s);
+    static ChainCallbackResult DrawCallback(Supervisor *s);
+    static ZunResult AddedCallback(Supervisor *s);
+    static void DeletedCallback(Supervisor *s);
 
     ZunResult Parse(char *path);
 
@@ -85,6 +90,11 @@ struct Supervisor
     D3DVIEWPORT8 viewport;
     D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
+
+    i32 calcCount;
+    i32 wantedState;
+    i32 curState;
+    i32 wantedState2;
 
     i32 unk198;
     i32 vsyncEnabled;

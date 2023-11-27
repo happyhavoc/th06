@@ -1,4 +1,6 @@
 #include "Supervisor.hpp"
+#include "Chain.hpp"
+#include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 #include "i18n.hpp"
@@ -160,7 +162,48 @@ ZunResult Supervisor::Parse(char *path)
 
 ZunResult Supervisor::RegisterChain()
 {
+    g_Supervisor.wantedState = 0;
+    g_Supervisor.curState = -1;
+    g_Supervisor.calcCount = 0;
+
+    ChainElem *calcElem = g_Chain.CreateElem((ChainCallback)Supervisor::CalcCallback);
+    calcElem->arg = &g_Supervisor;
+    calcElem->addedCallback = (ChainAddedCallback)Supervisor::AddedCallback;
+    calcElem->deletedCallback = (ChainDeletedCallback)Supervisor::DeletedCallback;
+    if (g_Chain.AddToCalcChain(calcElem, TH_CHAIN_PRIO_CALC_SUPERVISOR) != 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    ChainElem *drawElem = g_Chain.CreateElem((ChainCallback)Supervisor::DrawCallback);
+    drawElem->arg = &g_Supervisor;
+    g_Chain.AddToDrawChain(drawElem, TH_CHAIN_PRIO_DRAW_SUPERVISOR);
+
+    return ZUN_SUCCESS;
+}
+
+ChainCallbackResult Supervisor::CalcCallback(Supervisor *s)
+{
+    // TODO: Stub
+    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+}
+
+ChainCallbackResult Supervisor::DrawCallback(Supervisor *s)
+{
+    // TODO: Stub
+    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+}
+
+ZunResult Supervisor::AddedCallback(Supervisor *s)
+{
+    // TODO: Stub
     return ZUN_ERROR;
+}
+
+void Supervisor::DeletedCallback(Supervisor *s)
+{
+    // TODO: Stub
+    return;
 }
 
 u16 GetJoystickCaps(void)

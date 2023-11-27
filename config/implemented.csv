@@ -26,6 +26,7 @@ DebugPrint
 DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
+Supervisor::RegisterChain
 Supervisor::Parse
 InitD3dDevice
 InitD3dRendering

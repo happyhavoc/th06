@@ -1,0 +1,5 @@
+#pragma once
+
+#define TH_CHAIN_PRIO_CALC_SUPERVISOR 0
+
+#define TH_CHAIN_PRIO_DRAW_SUPERVISOR 14
