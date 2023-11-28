@@ -3,6 +3,7 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
@@ -88,7 +89,14 @@ struct AnmManager
     AnmManager();
     ~AnmManager();
 
+    void SetupVertexBuffer();
+
     void ReleaseD3dSurfaces(void);
+    ZunResult LoadSurface(i32 surfaceIdx, char *path);
+    void ReleaseSurface(i32 surfaceIdx);
+    void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
+
+    ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
 
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;

@@ -6,6 +6,7 @@
 .global _g_Stage
 .global _g_JoystickCaps
 .global _g_FocusButtonConflictState
+.global _g_Rng
 .global _g_Pbg3Archives
 .global _g_LastFileSize
 .global _g_Chain
@@ -20,6 +21,7 @@ _g_ControllerMapping        = 0x004765a0
 _g_Stage                    = 0x00487af0
 _g_JoystickCaps             = 0x0069d760
 _g_FocusButtonConflictState = 0x0069d8f4
+_g_Rng                      = 0x0069d8f8
 _g_Pbg3Archives             = 0x0069d900
 _g_LastFileSize             = 0x0069d914
 _g_Chain                    = 0x0069d918

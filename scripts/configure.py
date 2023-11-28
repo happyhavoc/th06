@@ -64,6 +64,7 @@ def configure(build_type):
         )
 
         cxx_sources = [
+            "AsciiManager",
             "main",
             "Chain",
             "FileSystem",
@@ -74,6 +75,7 @@ def configure(build_type):
             "SoundPlayer",
             "Stage",
             "AnmManager",
+            "Rng",
             "utils",
         ]
 

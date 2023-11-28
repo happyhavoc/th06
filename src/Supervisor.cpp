@@ -1,8 +1,12 @@
 #include "Supervisor.hpp"
+#include "AnmManager.hpp"
+#include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
+#include "Rng.hpp"
+#include "SoundPlayer.hpp"
 #include "i18n.hpp"
 #include "inttypes.hpp"
 #include "utils.hpp"
@@ -196,14 +200,84 @@ ChainCallbackResult Supervisor::DrawCallback(Supervisor *s)
 
 ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
-    // TODO: Stub
-    return ZUN_ERROR;
+    for (i32 i = 0; i < (i32)(sizeof(s->pbg3Archives) / sizeof(s->pbg3Archives[0])); i++)
+    {
+        s->pbg3Archives[i] = NULL;
+    }
+
+    g_Pbg3Archives = s->pbg3Archives;
+    if (s->LoadPbg3(IN_PBG3_INDEX, TH_IN_DAT_FILE))
+    {
+        return ZUN_ERROR;
+    }
+    g_AnmManager->LoadSurface(0, "data/title/th06logo.jpg");
+    g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
+    if (g_Supervisor.d3dDevice->Present(0, 0, 0, 0) < 0)
+        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
+
+    g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
+    if (g_Supervisor.d3dDevice->Present(0, 0, 0, 0) < 0)
+        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
+
+    g_AnmManager->ReleaseSurface(0);
+
+    s->startupTimeBeforeMenuMusic = timeGetTime();
+    Supervisor::SetupDInput(s);
+
+    s->midiOutput = new MidiOutput();
+
+    u16 randomSeed = timeGetTime();
+    g_Rng.seed = randomSeed;
+    g_Rng.unk = 0;
+
+    g_SoundPlayer.InitSoundBuffers();
+    if (g_AnmManager->LoadAnm(0, "data/text.anm", 0x700) != 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (AsciiManager::RegisterChain() != 0)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_ASCIIMANAGER_INIT_FAILED);
+        return ZUN_ERROR;
+    }
+
+    s->unk198 = 0;
+    g_AnmManager->SetupVertexBuffer();
+    Supervisor::CreateBackBuffer();
+    s->ReleasePbg3(IN_PBG3_INDEX);
+    if (g_Supervisor.LoadPbg3(MD_PBG3_INDEX, TH_MD_DAT_FILE) != 0)
+        return ZUN_ERROR;
+
+    return ZUN_SUCCESS;
 }
 
 void Supervisor::DeletedCallback(Supervisor *s)
 {
     // TODO: Stub
     return;
+}
+
+void Supervisor::CreateBackBuffer()
+{
+    // TODO: Stub
+}
+
+ZunResult Supervisor::SetupDInput(Supervisor *s)
+{
+    // TODO: Stub
+    return ZUN_ERROR;
+}
+
+i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
+{
+    // TODO: Stub
+    return 1;
+}
+
+void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
+{
+    // TODO: Stub
 }
 
 u16 GetJoystickCaps(void)

@@ -9,6 +9,7 @@
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
+#include "pbg3/Pbg3Archive.hpp"
 
 enum GameConfigOptsShifts
 {
@@ -67,6 +68,9 @@ struct GameConfiguration
     u32 opts;
 };
 
+#define IN_PBG3_INDEX 0
+#define MD_PBG3_INDEX 1
+
 struct Supervisor
 {
     static ZunResult RegisterChain();
@@ -74,6 +78,13 @@ struct Supervisor
     static ChainCallbackResult DrawCallback(Supervisor *s);
     static ZunResult AddedCallback(Supervisor *s);
     static void DeletedCallback(Supervisor *s);
+
+    static void CreateBackBuffer();
+
+    static ZunResult SetupDInput(Supervisor *s);
+
+    i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
+    void ReleasePbg3(i32 pbg3FileIdx);
 
     ZunResult Parse(char *path);
 
@@ -103,10 +114,14 @@ struct Supervisor
 
     MidiOutput *midiOutput;
 
+    Pbg3Archive *pbg3Archives[16];
+    char pbg3ArchiveNames[32][16];
+
     u8 hasD3dHardwareVertexProcessing;
     u8 lockableBackbuffer;
     u8 colorMode16Bits;
 
+    u32 startupTimeBeforeMenuMusic;
     D3DCAPS8 d3dCaps;
 };
 

@@ -46,6 +46,9 @@
 #define TH_JP_ERR_FILE_CANNOT_BE_EXPORTED "ファイルが書き出せません %s\n"
 #define TH_JP_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL                                                                \
     "フォルダが書込み禁止属性になっているか、ディスクがいっぱいいっぱいになってませんか？\n"
+#define TH_JP_ERR_ASCIIMANAGER_INIT_FAILED "error : 文字の初期化に失敗しました\n"
+#define TH_JP_IN_DAT_FILE "紅魔郷IN.dat"
+#define TH_JP_MD_DAT_FILE "紅魔郷MD.dat"
 
 // EN
 #define TH_EN_CONFIG_FILE "th06.cfg"
@@ -89,7 +92,9 @@
 #define TH_EN_ERR_DO_NOT_USE_DIRECTINPUT "Do not use DirectInput for pad and keyboard input.\n"
 #define TH_EN_ERR_FILE_CANNOT_BE_EXPORTED "File cannot be exported %s.\n"
 #define TH_EN_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL "Folder has write protect attribute or disk full?\n"
-
+#define TH_EN_ERR_ASCIIMANAGER_INIT_FAILED "error: AsciiManager initialization failed\n"
+#define TH_EN_IN_DAT_FILE "KOUMAKYO_IN.dat"
+#define TH_EN_MD_DAT_FILE "KOUMAKYO_MD.dat"
 #define TH_CONCAT_HELPER(x, y) x##y
 
 #define TH_MAKE_LANG_STR(lang, id) TH_CONCAT_HELPER(lang, id)
@@ -134,3 +139,6 @@
 #define TH_ERR_FILE_CANNOT_BE_EXPORTED TH_MAKE_LANG_STR(TH_LANG, _ERR_FILE_CANNOT_BE_EXPORTED)
 #define TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL                                                                   \
     TH_MAKE_LANG_STR(TH_LANG, _ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL)
+#define TH_ERR_ASCIIMANAGER_INIT_FAILED TH_MAKE_LANG_STR(TH_LANG, _ERR_ASCIIMANAGER_INIT_FAILED)
+#define TH_IN_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _IN_DAT_FILE)
+#define TH_MD_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _MD_DAT_FILE)
