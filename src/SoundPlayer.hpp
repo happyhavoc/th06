@@ -8,7 +8,7 @@
 
 struct SoundPlayer
 {
-    void Init(HWND window);
+    void InitializeDSound(HWND window);
     ZunResult InitSoundBuffers();
     void Release(void);
 };

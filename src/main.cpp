@@ -533,7 +533,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             return 1;
         }
 
-        g_SoundPlayer.Init(g_GameWindow.window);
+        g_SoundPlayer.InitializeDSound(g_GameWindow.window);
         GetJoystickCaps();
         ResetKeyboard();
 
