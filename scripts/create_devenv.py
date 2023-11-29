@@ -384,11 +384,14 @@ def install_cygwin(cygwin_installer_path, tmp_dir, output_path):
 def install_pragma_var_order(tmp_dir, output_path):
     print("Installing pragma_var_order")
     tmp_dir.mkdir(parents=True, exist_ok=True)
+    win32_path_to_pragma_var_order = get_windows_path(
+        SCRIPTS_DIR / "pragma_var_order.cpp"
+    )
     run_windows_program(
         [
             str(SCRIPTS_DIR / "th06run.bat"),
             "CL.EXE",
-            str(SCRIPTS_DIR / "pragma_var_order.cpp"),
+            win32_path_to_pragma_var_order,
             "/ohackery.dll",
             "/link",
             "/DLL",
