@@ -1,4 +1,8 @@
 #include "AnmManager.hpp"
+#include "FileSystem.hpp"
+#include "GameErrorContext.hpp"
+#include "Supervisor.hpp"
+#include "i18n.hpp"
 
 AnmManager::AnmManager()
 {
@@ -18,7 +22,76 @@ void AnmManager::ReleaseD3dSurfaces(void)
 
 ZunResult AnmManager::LoadSurface(i32 surfaceIdx, char *path)
 {
-    // TODO: stub
+    if (this->surfaces[surfaceIdx] != NULL)
+    {
+        this->ReleaseSurface(surfaceIdx);
+    }
+    u8 *data = FileSystem::OpenPath(path, 0);
+    if (data == NULL)
+    {
+        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_CANNOT_BE_LOADED, path);
+        return ZUN_ERROR;
+    }
+
+    LPDIRECT3DSURFACE8 surface;
+    if (g_Supervisor.d3dDevice->CreateImageSurface(0x280, 0x400, g_Supervisor.presentParameters.BackBufferFormat,
+                                                   &surface) != D3D_OK)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (D3DXLoadSurfaceFromFileInMemory(surface, NULL, NULL, data, g_LastFileSize, NULL, D3DX_FILTER_NONE, 0,
+                                        &this->surfaceSourceInfo[surfaceIdx]) != D3D_OK)
+    {
+        goto fail;
+    }
+    if (g_Supervisor.d3dDevice->CreateRenderTarget(this->surfaceSourceInfo[surfaceIdx].Width,
+                                                   this->surfaceSourceInfo[surfaceIdx].Height,
+                                                   g_Supervisor.presentParameters.BackBufferFormat, D3DMULTISAMPLE_NONE,
+                                                   TRUE, &this->surfaces[surfaceIdx]) != D3D_OK)
+    {
+        goto fail;
+    }
+    if (g_Supervisor.d3dDevice->CreateImageSurface(
+            this->surfaceSourceInfo[surfaceIdx].Width, this->surfaceSourceInfo[surfaceIdx].Height,
+            g_Supervisor.presentParameters.BackBufferFormat, &this->surfaces[surfaceIdx]) != D3D_OK)
+    {
+        goto fail;
+    }
+    if (g_Supervisor.d3dDevice->CreateImageSurface(
+            this->surfaceSourceInfo[surfaceIdx].Width, this->surfaceSourceInfo[surfaceIdx].Height,
+            g_Supervisor.presentParameters.BackBufferFormat, &this->surfacesBis[surfaceIdx]) != D3D_OK)
+    {
+        goto fail;
+    }
+
+    if (D3DXLoadSurfaceFromSurface(this->surfaces[surfaceIdx], NULL, NULL, surface, NULL, NULL, D3DX_FILTER_NONE, 0) !=
+        D3D_OK)
+    {
+        goto fail;
+    }
+
+    if (D3DXLoadSurfaceFromSurface(this->surfacesBis[surfaceIdx], NULL, NULL, surface, NULL, NULL, D3DX_FILTER_NONE,
+                                   0) != D3D_OK)
+    {
+        goto fail;
+    }
+
+    if (surface != NULL)
+    {
+        surface->Release();
+        surface = NULL;
+    }
+    free(data);
+    return ZUN_SUCCESS;
+
+fail:
+    if (surface != NULL)
+    {
+        surface->Release();
+        surface = NULL;
+    }
+    free(data);
     return ZUN_ERROR;
 }
 

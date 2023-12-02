@@ -1,3 +1,4 @@
+AnmManager::LoadSurface
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem
