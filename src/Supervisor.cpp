@@ -271,8 +271,33 @@ ZunResult Supervisor::SetupDInput(Supervisor *s)
 
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
-    // TODO: Stub
-    return 1;
+    if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
+    {
+        this->ReleasePbg3(pbg3FileIdx);
+        Pbg3Archive *f = new Pbg3Archive();
+        this->pbg3Archives[pbg3FileIdx] = f;
+        DebugPrint("%s open ...\n", filename);
+        if (this->pbg3Archives[pbg3FileIdx]->Load(filename) != 0)
+        {
+            strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
+
+            char verPath[128];
+            sprintf(verPath, "ver%.4x.dat", 0x102);
+            i32 res = this->pbg3Archives[pbg3FileIdx]->FindEntry(verPath);
+            if (res < 0)
+            {
+                GameErrorContextFatal(&g_GameErrorContext, "error : データのバージョンが違います\n");
+                return 1;
+            }
+        }
+        else
+        {
+            delete this->pbg3Archives[pbg3FileIdx];
+            this->pbg3Archives[pbg3FileIdx] = NULL;
+            // TODO: wat?
+        }
+    }
+    return 0;
 }
 
 void Supervisor::ReleasePbg3(i32 pbg3FileIdx)

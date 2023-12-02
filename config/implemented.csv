@@ -27,6 +27,7 @@ DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
 Supervisor::AddedCallback
+Supervisor::LoadPbg3
 Supervisor::RegisterChain
 Supervisor::Parse
 InitD3dDevice
