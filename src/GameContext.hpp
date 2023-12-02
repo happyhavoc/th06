@@ -5,6 +5,7 @@
 #include <dinput.h>
 
 #include "MidiOutput.hpp"
+#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
@@ -67,7 +68,7 @@ struct GameConfiguration
 
 struct GameContext
 {
-    i32 Parse(char *path);
+    ZunResult Parse(char *path);
 
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
