@@ -1,6 +1,7 @@
 #pragma once
 #include "GameErrorContext.hpp"
+#include "ZunResult.hpp"
 
-i32 CheckForRunningGameInstance(void);
+ZunResult CheckForRunningGameInstance(void);
 void DebugPrint(const char *fmt, ...);
 void DebugPrint2(const char *fmt, ...);

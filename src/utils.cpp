@@ -5,21 +5,21 @@
 
 DIFFABLE_STATIC(HANDLE, g_ExclusiveMutex)
 
-i32 CheckForRunningGameInstance(void)
+ZunResult CheckForRunningGameInstance(void)
 {
     g_ExclusiveMutex = CreateMutex(NULL, TRUE, TEXT("Touhou Koumakyou App"));
 
     if (g_ExclusiveMutex == NULL)
     {
-        return -1;
+        return ZUN_ERROR;
     }
     else if (GetLastError() == ERROR_ALREADY_EXISTS)
     {
         GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ALREADY_RUNNING);
-        return -1;
+        return ZUN_ERROR;
     }
 
-    return 0;
+    return ZUN_SUCCESS;
 }
 
 void DebugPrint(const char *fmt, ...)

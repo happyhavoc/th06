@@ -25,7 +25,7 @@ i32 InitD3dInterface(void)
 }
 
 // TODO: Not a perfect match.
-i32 GameContext::Parse(char *path)
+ZunResult GameContext::Parse(char *path)
 {
     u8 *data;
     FILE *wavFile;
@@ -148,13 +148,13 @@ i32 GameContext::Parse(char *path)
     }
     if (FileSystem::WriteDataToFile(path, &g_GameContext.cfg, sizeof(GameConfiguration)) == 0)
     {
-        return 0;
+        return ZUN_SUCCESS;
     }
     else
     {
         GameErrorContextFatal(&g_GameErrorContext, TH_ERR_FILE_CANNOT_BE_EXPORTED, path);
         GameErrorContextFatal(&g_GameErrorContext, TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL);
-        return -1;
+        return ZUN_ERROR;
     }
 }
 

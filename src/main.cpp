@@ -13,15 +13,16 @@
 #include "GameWindow.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
+#include "ZunResult.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
 #define GAME_WINDOW_WIDTH 640
 #define GAME_WINDOW_HEIGHT 480
 
-i32 AddInputChain(void)
+ZunResult AddInputChain(void)
 {
-    return 0;
+    return ZUN_ERROR;
 }
 
 #pragma var_order(fogVal, fogDensity, anm1, anm2, anm3, anm4)
@@ -507,7 +508,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     g_GameContext.hInstance = hInstance;
 
-    if (g_GameContext.Parse(TH_CONFIG_FILE))
+    if (g_GameContext.Parse(TH_CONFIG_FILE) != ZUN_SUCCESS)
     {
         g_GameErrorContext.Flush();
         return -1;
@@ -543,7 +544,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         anm = new AnmManager();
         g_AnmManager = anm;
 
-        if (AddInputChain() != 0)
+        if (AddInputChain() != ZUN_SUCCESS)
         {
             goto exit;
         }

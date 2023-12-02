@@ -1,6 +1,8 @@
 #pragma once
 
+#include "ZunResult.hpp"
 #include "diffbuild.hpp"
+
 #include <Windows.h>
 
 enum ChainElemFlag
@@ -22,7 +24,7 @@ enum ChainCallbackResult
 
 // TODO
 typedef ChainCallbackResult (*ChainCallback)(void *);
-typedef int (*ChainAddedCallback)(void *);
+typedef ZunResult (*ChainAddedCallback)(void *);
 typedef void (*ChainDeletedCallback)(void *);
 
 class ChainElem

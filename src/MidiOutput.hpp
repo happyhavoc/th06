@@ -1,9 +1,10 @@
 #pragma once
 
+#include "ZunResult.hpp"
 #include "inttypes.hpp"
 #include <Windows.h>
 
 struct MidiOutput
 {
-    i32 UnprepareHeader(LPMIDIHDR param_1);
+    ZunResult UnprepareHeader(LPMIDIHDR param_1);
 };
