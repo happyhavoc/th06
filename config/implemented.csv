@@ -1,5 +1,6 @@
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadSurface
+AnmManager::ReleaseSurface
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem

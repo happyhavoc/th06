@@ -97,7 +97,17 @@ fail:
 
 void AnmManager::ReleaseSurface(i32 surfaceIdx)
 {
-    // TODO: stub
+    if (this->surfaces[surfaceIdx] != NULL)
+    {
+        this->surfaces[surfaceIdx]->Release();
+        this->surfaces[surfaceIdx] = NULL;
+    }
+    if (this->surfacesBis[surfaceIdx] != NULL)
+    {
+        this->surfacesBis[surfaceIdx]->Release();
+        this->surfacesBis[surfaceIdx] = NULL;
+    }
+    return;
 }
 
 void AnmManager::CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y)
