@@ -102,7 +102,49 @@ void AnmManager::ReleaseSurface(i32 surfaceIdx)
 
 void AnmManager::CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y)
 {
-    // TODO: stub
+    if (this->surfacesBis[surfaceIdx] == NULL)
+    {
+        return;
+    }
+
+    IDirect3DSurface8 *destSurface;
+    if (g_Supervisor.d3dDevice->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &destSurface) != D3D_OK)
+    {
+        return;
+    }
+    if (this->surfaces[surfaceIdx] == NULL)
+    {
+        if (g_Supervisor.d3dDevice->CreateRenderTarget(
+                this->surfaceSourceInfo[surfaceIdx].Width, this->surfaceSourceInfo[surfaceIdx].Height,
+                g_Supervisor.presentParameters.BackBufferFormat, D3DMULTISAMPLE_NONE, TRUE,
+                &this->surfaces[surfaceIdx]) != D3D_OK)
+        {
+            if (g_Supervisor.d3dDevice->CreateImageSurface(
+                    this->surfaceSourceInfo[surfaceIdx].Width, this->surfaceSourceInfo[surfaceIdx].Height,
+                    g_Supervisor.presentParameters.BackBufferFormat, &this->surfaces[surfaceIdx]) != D3D_OK)
+            {
+                destSurface->Release();
+                return;
+            }
+        }
+        if (D3DXLoadSurfaceFromSurface(this->surfaces[surfaceIdx], NULL, NULL, this->surfacesBis[surfaceIdx], NULL,
+                                       NULL, D3DX_FILTER_NONE, 0) != D3D_OK)
+        {
+            destSurface->Release();
+            return;
+        }
+    }
+
+    RECT sourceRect;
+    POINT destPoint;
+    sourceRect.left = left;
+    sourceRect.top = top;
+    sourceRect.right = this->surfaceSourceInfo[surfaceIdx].Width;
+    sourceRect.bottom = this->surfaceSourceInfo[surfaceIdx].Height;
+    destPoint.x = x;
+    destPoint.y = y;
+    g_Supervisor.d3dDevice->CopyRects(this->surfaces[surfaceIdx], &sourceRect, 1, destSurface, &destPoint);
+    destSurface->Release();
 }
 
 ZunResult AnmManager::LoadAnm(i32 surfaceIdx, char *path, i32 unk)

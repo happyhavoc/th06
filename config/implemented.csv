@@ -1,3 +1,4 @@
+AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadSurface
 ChainElem::ChainElem
 ChainElem::~ChainElem
