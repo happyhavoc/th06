@@ -14,6 +14,7 @@
 .global _g_GameContext
 .global _g_GameWindow
 .global _g_SoundPlayer
+.global _g_AnmManager
 
 _g_ControllerMapping        = 0x004765a0
 _g_Stage                    = 0x00487af0
@@ -27,3 +28,4 @@ _g_ExclusiveMutex           = 0x006c6c00
 _g_GameContext              = 0x006c6d18
 _g_GameWindow               = 0x006c6bd4
 _g_SoundPlayer              = 0x006d3f50
+_g_AnmManager               = 0x006d4588
