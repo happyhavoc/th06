@@ -569,7 +569,7 @@ address = 0x412240
 size = 0xd9
 
 [[function]]
-name = "FUN_00412320"
+name = "EnemyManager::RegisterChain"
 address = 0x412320
 size = 0xc0
 
@@ -819,7 +819,7 @@ address = 0x41b1b1
 size = 0xa1
 
 [[function]]
-name = "FUN_0041b252"
+name = "Gui::RegisterChain"
 address = 0x41b252
 size = 0xf9
 
@@ -954,7 +954,7 @@ address = 0x41cd10
 size = 0x26
 
 [[function]]
-name = "ChainElem::Allocate"
+name = "Chain::CreateElem"
 address = 0x41cd40
 size = 0xa0
 
@@ -1104,12 +1104,12 @@ address = 0x41ef11
 size = 0xf7
 
 [[function]]
-name = "Supervisor::CreateBackbuffer"
+name = "Supervisor::CreateBackBuffer"
 address = 0x41f008
 size = 0x23
 
 [[function]]
-name = "FUN_0041f02b"
+name = "Supervisor::ReleaseBackBuffer"
 address = 0x41f02b
 size = 0x25
 
@@ -1274,7 +1274,7 @@ address = 0x421df0
 size = 0x155
 
 [[function]]
-name = "FUN_00421f50"
+name = "MidiOutput::~MidiOutput"
 address = 0x421f50
 size = 0x93
 
@@ -1314,7 +1314,7 @@ address = 0x422490
 size = 0x44
 
 [[function]]
-name = "MidiOutput::~MidiOutput"
+name = "MidiOutput::StopPlayback"
 address = 0x4224e0
 size = 0x7c
 
@@ -1419,12 +1419,12 @@ address = 0x424285
 size = 0x6e
 
 [[function]]
-name = "Supervisor::RemovePbg3File"
+name = "Supervisor::ReleasePbg3"
 address = 0x4242f3
 size = 0x82
 
 [[function]]
-name = "Supervisor::LoadPBG3"
+name = "Supervisor::LoadPbg3"
 address = 0x424375
 size = 0x2d8
 
@@ -1889,7 +1889,7 @@ address = 0x430220
 size = 0x4b
 
 [[function]]
-name = "SoundPlayer::Init"
+name = "SoundPlayer::InitializeDSound"
 address = 0x430270
 size = 0x29d
 
@@ -1899,7 +1899,7 @@ address = 0x430510
 size = 0x1cd
 
 [[function]]
-name = "SoundPlayer::FUN_004306e0"
+name = "SoundPlayer::LoadSound"
 address = 0x4306e0
 size = 0x310
 
@@ -1929,7 +1929,7 @@ address = 0x430f80
 size = 0xfc
 
 [[function]]
-name = "SoundPlayer::Initialize"
+name = "SoundPlayer::InitSoundBuffers"
 address = 0x431080
 size = 0x156
 
