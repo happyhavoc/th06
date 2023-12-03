@@ -91,7 +91,7 @@ int FileSystem::WriteDataToFile(char *path, void *data, size_t size)
     FILE *f;
 
     f = fopen(path, "wb");
-    if (f == (FILE *)0x0)
+    if (f == NULL)
     {
         return -1;
     }
