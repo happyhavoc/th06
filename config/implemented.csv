@@ -1,4 +1,5 @@
 AsciiManager::RegisterChain
+AsciiManager::AddedCallback
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm
 AnmManager::LoadSurface

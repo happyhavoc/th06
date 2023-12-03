@@ -1,5 +1,6 @@
 #include "AsciiManager.hpp"
 
+#include "AnmManager.hpp"
 #include "ChainPriorities.hpp"
 
 DIFFABLE_STATIC(AsciiManager, g_AsciiManager)
@@ -54,9 +55,29 @@ ChainCallbackResult AsciiManager::OnDrawHighPrio(AsciiManager *s)
 }
 ZunResult AsciiManager::AddedCallback(AsciiManager *s)
 {
-    // TODO: Stub
-    return ZUN_ERROR;
+    int x, y, z;
+
+    if (g_AnmManager->LoadAnm(1, "data/ascii.anm", 0) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(2, "data/asciis.anm", 0x77) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(3, "data/capture.anm", 0x718) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    s->InitializeVms();
+    return ZUN_SUCCESS;
 }
+
+void AsciiManager::InitializeVms()
+{
+    // TODO: Stub
+}
+
 void AsciiManager::DeletedCallback(AsciiManager *s)
 {
     // TODO: Stub

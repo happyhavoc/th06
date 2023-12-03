@@ -13,4 +13,6 @@ struct AsciiManager
     static ChainCallbackResult OnDrawHighPrio(AsciiManager *s);
     static ZunResult AddedCallback(AsciiManager *s);
     static void DeletedCallback(AsciiManager *s);
+
+    void InitializeVms();
 };
