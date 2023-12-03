@@ -49,6 +49,8 @@
 #define TH_JP_ERR_ASCIIMANAGER_INIT_FAILED "error : 文字の初期化に失敗しました\n"
 #define TH_JP_ERR_WRONG_DATA_VERSION "error : データのバージョンが違います\n"
 #define TH_JP_ERR_CANNOT_BE_LOADED "%sが読み込めないです。\n"
+#define TH_JP_ERR_ANMMANAGER_SPRITE_CORRUPTED "スプライトアニメ %s が読み込めません。データが失われてるか壊れています\n"
+#define TH_JP_ERR_ANMMANAGER_TEXTURE_CORRUPTED "テクスチャ %s が読み込めません。データが失われてるか壊れています\n"
 #define TH_JP_IN_DAT_FILE "紅魔郷IN.dat"
 #define TH_JP_MD_DAT_FILE "紅魔郷MD.dat"
 
@@ -97,6 +99,8 @@
 #define TH_EN_ERR_ASCIIMANAGER_INIT_FAILED "error: AsciiManager initialization failed\n"
 #define TH_EN_ERR_WRONG_DATA_VERSION "error: Wrong data version\n"
 #define TH_EN_ERR_CANNOT_BE_LOADED "%s cannot be loaded.\n"
+#define TH_EN_ERR_ANMMANAGER_SPRITE_CORRUPTED "Unable to load sprite animation %s. Data is lost or corrupted.\n"
+#define TH_EN_ERR_ANMMANAGER_TEXTURE_CORRUPTED "Unable to load texture %s. Data is lost or corrupted.\n"
 #define TH_EN_IN_DAT_FILE "KOUMAKYO_IN.dat"
 #define TH_EN_MD_DAT_FILE "KOUMAKYO_MD.dat"
 #define TH_CONCAT_HELPER(x, y) x##y
@@ -146,5 +150,7 @@
 #define TH_ERR_ASCIIMANAGER_INIT_FAILED TH_MAKE_LANG_STR(TH_LANG, _ERR_ASCIIMANAGER_INIT_FAILED)
 #define TH_ERR_WRONG_DATA_VERSION TH_MAKE_LANG_STR(TH_LANG, _ERR_WRONG_DATA_VERSION)
 #define TH_ERR_CANNOT_BE_LOADED TH_MAKE_LANG_STR(TH_LANG, _ERR_CANNOT_BE_LOADED)
+#define TH_ERR_ANMMANAGER_SPRITE_CORRUPTED TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_SPRITE_CORRUPTED)
+#define TH_ERR_ANMMANAGER_TEXTURE_CORRUPTED TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_TEXTURE_CORRUPTED)
 #define TH_IN_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _IN_DAT_FILE)
 #define TH_MD_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _MD_DAT_FILE)

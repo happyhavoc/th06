@@ -157,7 +157,85 @@ void AnmManager::CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 
     destSurface->Release();
 }
 
-ZunResult AnmManager::LoadAnm(i32 surfaceIdx, char *path, i32 unk)
+ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
+{
+    this->ReleaseAnm(anmIdx);
+    this->anmFiles[anmIdx] = (AnmRawEntry *)FileSystem::OpenPath(path, 0);
+    AnmRawEntry *anmData = this->anmFiles[anmIdx];
+    if (anmData == NULL)
+    {
+        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ANMMANAGER_SPRITE_CORRUPTED, path);
+        return ZUN_ERROR;
+    }
+
+    anmData->textureIdx = anmIdx;
+    char *anmName = (char *)((u8 *)anmData + anmData->nameOffset);
+    if (*anmName == '@')
+    {
+        this->CreateEmptyTexture(anmData->textureIdx, anmData->width, anmData->height, anmData->format);
+    }
+    else
+    {
+        if (this->LoadTexture(anmData->textureIdx, anmName, anmData->format, anmData->colorKey) != 0)
+        {
+            GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ANMMANAGER_TEXTURE_CORRUPTED, anmName);
+            return ZUN_ERROR;
+        }
+    }
+    if (anmData->mipmapNameOffset != 0)
+    {
+        anmName = (char *)((u8 *)anmData + anmData->mipmapNameOffset);
+        if (this->LoadTextureMipmap(anmData->textureIdx, anmName, anmData->format, anmData->colorKey) != 0)
+        {
+            GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ANMMANAGER_TEXTURE_CORRUPTED, anmName);
+            return ZUN_ERROR;
+        }
+    }
+    anmData->spriteIdxOffset = spriteIdxOffset;
+    u32 *curSpriteOffset = (u32 *)anmData->data;
+    for (i32 i = 0; i < this->anmFiles[anmIdx]->numSprites; i++, curSpriteOffset++)
+    {
+        AnmRawSprite *rawSprite = (AnmRawSprite *)((u8 *)anmData + *curSpriteOffset);
+        AnmLoadedSprite loadedSprite;
+        loadedSprite.sourceFileIndex = this->anmFiles[anmIdx]->textureIdx;
+        loadedSprite.startPixelInclusive.x = rawSprite->offset.x;
+        loadedSprite.startPixelInclusive.y = rawSprite->offset.y;
+        loadedSprite.endPixelInclusive.x = rawSprite->offset.x + rawSprite->size.x;
+        loadedSprite.endPixelInclusive.y = rawSprite->offset.y + rawSprite->size.y;
+        loadedSprite.textureWidth = (float)anmData->width;
+        loadedSprite.textureHeight = (float)anmData->height;
+        this->LoadSprite(rawSprite->id + spriteIdxOffset, &loadedSprite);
+    }
+    for (i = 0; i < anmData->numScripts; i++, curSpriteOffset += 2)
+    {
+        this->scripts[curSpriteOffset[0] + spriteIdxOffset] = (AnmRawInstr *)((u8 *)anmData + curSpriteOffset[1]);
+        this->spriteIndices[curSpriteOffset[0] + spriteIdxOffset] = spriteIdxOffset;
+    }
+    this->anmFilesSpriteIndexOffsets[anmIdx] = spriteIdxOffset;
+    return ZUN_SUCCESS;
+}
+
+void AnmManager::ReleaseAnm(i32 anmIdx)
+{
+    // TODO: stub
+}
+
+ZunResult AnmManager::CreateEmptyTexture(u32 textureIdx, u32 width, u32 height, u32 textureFormat)
+{
+    // TODO: stub
+    return ZUN_ERROR;
+}
+ZunResult AnmManager::LoadTexture(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey)
+{
+    // TODO: stub
+    return ZUN_ERROR;
+}
+ZunResult AnmManager::LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey)
+{
+    // TODO: stub
+    return ZUN_ERROR;
+}
+ZunResult AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
 {
     // TODO: stub
     return ZUN_ERROR;
