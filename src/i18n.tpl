@@ -49,7 +49,7 @@
 
 // EN
 #define TH_EN_CONFIG_FILE "th06.cfg"
-#define TH_EN_WINDOW_TITLE "Touhou Koumakyou　〜 the Embodiment of Scarlet Devil"
+#define TH_EN_WINDOW_TITLE "Touhou Koumakyou ~ the Embodiment of Scarlet Devil"
 #define TH_EN_ERR_ALREADY_RUNNING "Touhou cannot be started\n"
 #define TH_EN_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D object could not be created for some reason\n"
 #define TH_EN_ERR_LOGGER_START "Logger started --------------------------------------------- \n"

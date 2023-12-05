@@ -1,3 +1,8 @@
+#ifdef DEBUG
+#include <cstdarg>
+#include <stdio.h>
+#endif
+
 #include <windows.h>
 
 #include "i18n.hpp"
@@ -26,10 +31,11 @@ void DebugPrint(const char *fmt, ...)
 {
 #ifdef DEBUG
     char tmpBuffer[512];
+    std::va_list args;
 
     va_start(args, fmt);
     vsprintf(tmpBuffer, fmt, args);
-    va_end(args, fmt);
+    va_end(args);
 
     printf("DEBUG2: %s\n", tmpBuffer);
 #endif
@@ -39,10 +45,11 @@ void DebugPrint2(const char *fmt, ...)
 {
 #ifdef DEBUG
     char tmpBuffer[512];
+    std::va_list args;
 
     va_start(args, fmt);
     vsprintf(tmpBuffer, fmt, args);
-    va_end(args, fmt);
+    va_end(args);
 
     printf("DEBUG2: %s\n", tmpBuffer);
 #endif

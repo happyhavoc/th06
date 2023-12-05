@@ -227,7 +227,7 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
     u32 expectedCsum;
     u8 *rawData = this->ReadEntryRaw(&size, &expectedCsum, entryIdx);
 
-    if (entryIdx == NULL)
+    if (rawData == NULL)
     {
         free(out);
         return NULL;

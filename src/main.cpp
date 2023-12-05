@@ -184,7 +184,7 @@ i32 InitD3dRendering(void)
 
     using_d3d_hal = 1;
     memset(&present_params, 0, sizeof(D3DPRESENT_PARAMETERS));
-    g_GameContext.d3dIface->GetAdapterDisplayMode(0, &display_mode);
+    g_GameContext.d3dIface->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &display_mode);
     if (!g_GameContext.cfg.windowed)
     {
         if ((((g_GameContext.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 1))
@@ -266,8 +266,9 @@ i32 InitD3dRendering(void)
                 {
                     GameErrorContextLog(&g_GameErrorContext, TH_ERR_HAL_UNAVAILABLE);
                 REFERENCE_RASTERIZER_MODE:
-                    if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_REF, g_GameWindow.window, 0x20,
-                                                             &present_params, &g_GameContext.d3dDevice) < 0)
+                    if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_REF, g_GameWindow.window,
+                                                             D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
+                                                             &g_GameContext.d3dDevice) < 0)
                     {
                         if (((g_GameContext.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0 && !g_GameContext.vsyncEnabled)
                         {
@@ -279,7 +280,7 @@ i32 InitD3dRendering(void)
                         }
                         else
                         {
-                            if (present_params.Flags == 1)
+                            if (present_params.Flags == D3DPRESENTFLAG_LOCKABLE_BACKBUFFER)
                             {
                                 GameErrorContextLog(&g_GameErrorContext, TH_ERR_BACKBUFFER_NONLOCKED);
                                 present_params.Flags = 0;

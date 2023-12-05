@@ -10,4 +10,4 @@ void AnmManager::ReleaseD3dSurfaces(void)
 {
 }
 
-AnmManager *g_AnmManager;
+DIFFABLE_STATIC(AnmManager *, g_AnmManager)
