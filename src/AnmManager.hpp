@@ -23,6 +23,8 @@ struct AnmLoadedSprite
 
 struct AnmTimer
 {
+    AnmTimer();
+
     i32 previous;
     f32 subFrame;
     i32 current;
@@ -33,6 +35,8 @@ struct AnmRawInstr
 };
 struct AnmVm
 {
+    AnmVm();
+
     D3DXVECTOR3 rotation;
     D3DXVECTOR3 angleVel;
     f32 scaleY;

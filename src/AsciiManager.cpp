@@ -8,6 +8,15 @@ DIFFABLE_STATIC(ChainElem, g_AsciiManagerCalcChain)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawLowPrioChain)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawHighPrioChain)
 
+AsciiManager::AsciiManager()
+{
+}
+
+StageMenu::StageMenu()
+{
+    // TODO: Stub
+}
+
 ZunResult AsciiManager::RegisterChain()
 {
     AsciiManager *mgr = &g_AsciiManager;

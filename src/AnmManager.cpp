@@ -4,6 +4,16 @@
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 
+AnmTimer::AnmTimer()
+{
+    // TODO: stub
+}
+
+AnmVm::AnmVm()
+{
+    // TODO: stub
+}
+
 AnmManager::AnmManager()
 {
 }
