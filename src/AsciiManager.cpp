@@ -2,6 +2,8 @@
 
 #include "AnmManager.hpp"
 #include "ChainPriorities.hpp"
+#include "GameManager.hpp"
+#include "Supervisor.hpp"
 
 DIFFABLE_STATIC(AsciiManager, g_AsciiManager)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerCalcChain)
@@ -15,6 +17,37 @@ AsciiManager::AsciiManager()
 StageMenu::StageMenu()
 {
     // TODO: Stub
+}
+
+ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
+{
+    if (!g_GameManager.isInGameMenu && !g_GameManager.isInRetryMenu)
+    {
+        AsciiManagerPopup *curPopup = &mgr->popups[0];
+        i32 i = 0;
+        for (; i < (int)(sizeof(mgr->popups) / sizeof(mgr->popups[0])); i++, curPopup++)
+        {
+            if (!curPopup->inUse)
+            {
+                continue;
+            }
+            curPopup->position.y -= 0.5 * g_Supervisor.effectiveFramerateMultiplier;
+            AnmTimer *timer = &curPopup->timer;
+            timer->previous = timer->current;
+            g_Supervisor.TickTimer(&timer->current, &timer->subFrame);
+            curPopup->inUse = curPopup->timer.current > 60;
+        }
+    }
+    if (g_GameManager.isInGameMenu)
+    {
+        mgr->gameMenu.OnUpdateGameMenu();
+    }
+    if (g_GameManager.isInRetryMenu)
+    {
+        mgr->retryMenu.OnUpdateRetryMenu();
+    }
+
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
 ZunResult AsciiManager::RegisterChain()
@@ -47,11 +80,6 @@ ZunResult AsciiManager::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *s)
-{
-    // TODO: Stub
-    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
-}
 ChainCallbackResult AsciiManager::OnDrawLowPrio(AsciiManager *s)
 {
     // TODO: Stub
@@ -90,4 +118,16 @@ void AsciiManager::InitializeVms()
 void AsciiManager::DeletedCallback(AsciiManager *s)
 {
     // TODO: Stub
+}
+
+i32 StageMenu::OnUpdateGameMenu()
+{
+    // TODO: Stub
+    return 1;
+}
+
+i32 StageMenu::OnUpdateRetryMenu()
+{
+    // TODO: Stub
+    return 1;
 }

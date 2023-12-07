@@ -75,6 +75,7 @@ def configure(build_type):
             "SoundPlayer",
             "Stage",
             "AnmManager",
+            "GameManager",
             "Rng",
             "utils",
         ]

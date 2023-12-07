@@ -88,6 +88,8 @@ struct Supervisor
 
     ZunResult Parse(char *path);
 
+    void TickTimer(i32 *frames, f32 *subframes);
+
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
     PDIRECT3DDEVICE8 d3dDevice;
@@ -110,7 +112,8 @@ struct Supervisor
     i32 unk198;
     i32 vsyncEnabled;
     i32 lastFrameTime;
-    float framerateMultiplier;
+    f32 effectiveFramerateMultiplier;
+    f32 framerateMultiplier;
 
     MidiOutput *midiOutput;
 

@@ -24,6 +24,9 @@ struct StageMenu
 {
     StageMenu();
 
+    i32 OnUpdateGameMenu();
+    i32 OnUpdateRetryMenu();
+
     // Current state of this menu.
     u32 curState;
     // Number of frames since last state change. Used to delay certain actions

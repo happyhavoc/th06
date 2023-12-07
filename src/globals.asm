@@ -8,6 +8,7 @@
 .global _g_AsciiManagerCalcChain
 .global _g_AsciiManagerOnDrawHighPrioChain
 .global _g_Stage
+.global _g_GameManager
 .global _g_JoystickCaps
 .global _g_FocusButtonConflictState
 .global _g_Rng
@@ -27,6 +28,7 @@ _g_AsciiManager                     = 0x0047b900
 _g_AsciiManagerCalcChain            = 0x00487aac
 _g_AsciiManagerOnDrawHighPrioChain  = 0x00487acc
 _g_Stage                            = 0x00487af0
+_g_GameManager                      = 0x0069d4bf
 _g_JoystickCaps                     = 0x0069d760
 _g_FocusButtonConflictState         = 0x0069d8f4
 _g_Rng                              = 0x0069d8f8

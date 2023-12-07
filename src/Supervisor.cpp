@@ -269,6 +269,11 @@ ZunResult Supervisor::SetupDInput(Supervisor *s)
     return ZUN_ERROR;
 }
 
+void Supervisor::TickTimer(i32 *frames, f32 *subframes)
+{
+    // TODO: Stub
+}
+
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
