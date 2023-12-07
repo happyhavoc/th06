@@ -4,7 +4,7 @@ address = 0x401000
 size = 0xe0
 
 [[function]]
-name = "AsciiManagerProbablyStageRelated::AsciiManagerProbablyStageRelated"
+name = "StageMenu::StageMenu"
 address = 0x4010e0
 size = 0x57
 
@@ -14,12 +14,12 @@ address = 0x401140
 size = 0x101
 
 [[function]]
-name = "AsciiManager::OnDrawLowPrio"
+name = "AsciiManager::OnDrawMenus"
 address = 0x401250
 size = 0x3b
 
 [[function]]
-name = "AsciiManager::OnDrawHighPrio"
+name = "AsciiManager::OnDrawPopups"
 address = 0x401290
 size = 0x27
 
@@ -34,7 +34,7 @@ address = 0x4013a0
 size = 0x6e
 
 [[function]]
-name = "AsciiManager::Initialize"
+name = "AsciiManager::InitializeVms"
 address = 0x401410
 size = 0xb9
 
@@ -49,57 +49,57 @@ address = 0x401500
 size = 0x23
 
 [[function]]
-name = "AsciiManager::DrawText"
+name = "AsciiManager::AddString"
 address = 0x401530
 size = 0x115
 
 [[function]]
-name = "AsciiManager::DrawFormatText"
+name = "AsciiManager::AddFormatText"
 address = 0x401650
 size = 0x5a
 
 [[function]]
-name = "AsciiManager::FUN_004016b0"
+name = "AsciiManager::DrawStrings"
 address = 0x4016b0
 size = 0x281
 
 [[function]]
-name = "FUN_00401940"
+name = "AsciiManager::CreatePopup1"
 address = 0x401940
 size = 0x11c
 
 [[function]]
-name = "FUN_00401a60"
+name = "AsciiManager::CreatePopup2"
 address = 0x401a60
 size = 0x11e
 
 [[function]]
-name = "AsciiManagerProbablyStageRelated::FUN_00401b80"
+name = "StageMenu::OnUpdateGameMenu"
 address = 0x401b80
 size = 0xb9d
 
 [[function]]
-name = "AsciiManagerProbablyStageRelated::FUN_00402740"
+name = "StageMenu::OnDrawGameMenu"
 address = 0x402740
 size = 0x126
 
 [[function]]
-name = "AsciiManagerProbablyStageRelated::FUN_00402870"
+name = "StageMenu::OnUpdateRetryMenu"
 address = 0x402870
 size = 0x7ce
 
 [[function]]
-name = "AsciiManagerProbablyStageRelated::FUN_00403060"
+name = "StageMenu::OnDrawRetryMenu"
 address = 0x403060
 size = 0x17c
 
 [[function]]
-name = "AsciiManager::FUN_004031e0"
+name = "AsciiManager::DrawPopupsWithHwVertexProcessing"
 address = 0x4031e0
 size = 0x1cc
 
 [[function]]
-name = "AsciiManager::FUN_004033b0"
+name = "AsciiManager::DrawPopupsWithoutHwVertexProcessing"
 address = 0x4033b0
 size = 0x1cc
 
@@ -629,7 +629,7 @@ address = 0x4135b0
 size = 0xb8b
 
 [[function]]
-name = "FUN_00414160"
+name = "BulletManager::FUN_00414160"
 address = 0x414160
 size = 0x1d2
 
@@ -639,7 +639,7 @@ address = 0x414340
 size = 0x15
 
 [[function]]
-name = "FUN_00414360"
+name = "BulletManager::FUN_00414360"
 address = 0x414360
 size = 0x25f
 
@@ -654,17 +654,17 @@ address = 0x414670
 size = 0x27b
 
 [[function]]
-name = "FUN_004148f0"
+name = "BulletManager::RegisterChain"
 address = 0x4148f0
 size = 0xd3
 
 [[function]]
-name = "FUN_004149d0"
+name = "BulletManager::OnUpdate"
 address = 0x4149d0
 size = 0x1b10
 
 [[function]]
-name = "FUN_00416500"
+name = "BulletManager::OnDraw"
 address = 0x416500
 size = 0x647
 
@@ -679,12 +679,12 @@ address = 0x416c50
 size = 0xf4
 
 [[function]]
-name = "FUN_00416d60"
+name = "BulletManager::AddedCallback"
 address = 0x416d60
 size = 0x509
 
 [[function]]
-name = "FUN_00417270"
+name = "BulletManager::DeletedCallback"
 address = 0x417270
 size = 0x31
 
@@ -849,12 +849,12 @@ address = 0x41b5e1
 size = 0x82
 
 [[function]]
-name = "GameManager::Callback"
+name = "GameManager::OnUpdate"
 address = 0x41b663
 size = 0x3e7
 
 [[function]]
-name = "FUN_0041ba4a"
+name = "GameManager::OnDraw"
 address = 0x41ba4a
 size = 0x20
 
@@ -864,12 +864,12 @@ address = 0x41ba6a
 size = 0x98
 
 [[function]]
-name = "FUN_0041bb02"
+name = "AddedCallback"
 address = 0x41bb02
 size = 0x6f5
 
 [[function]]
-name = "FUN_0041c1f7"
+name = "GameManager::DeletedCallback"
 address = 0x41c1f7
 size = 0x72
 
@@ -889,7 +889,7 @@ address = 0x41c3f3
 size = 0x18b
 
 [[function]]
-name = "FUN_0041c57e"
+name = "GameManager::FUN_0041c57e"
 address = 0x41c57e
 size = 0x7c
 
@@ -1199,7 +1199,7 @@ address = 0x4219d0
 size = 0x68
 
 [[function]]
-name = "FUN_00421a40"
+name = "AnmManager::FUN_00421a40"
 address = 0x421a40
 size = 0x5e
 
@@ -1404,17 +1404,17 @@ address = 0x424127
 size = 0x1e
 
 [[function]]
-name = "FUN_00424145"
+name = "AnmTimer::FUN_00424145"
 address = 0x424145
 size = 0xa0
 
 [[function]]
-name = "FUN_004241e5"
+name = "AnmTimer::FUN_004241e5"
 address = 0x4241e5
 size = 0xa0
 
 [[function]]
-name = "Supervisor::FUN_00424285"
+name = "Supervisor::TickTimer"
 address = 0x424285
 size = 0x6e
 
@@ -1489,12 +1489,12 @@ address = 0x425318
 size = 0xc5
 
 [[function]]
-name = "MusicRoom::Callback"
+name = "MusicRoom::OnUpdate"
 address = 0x4253dd
 size = 0x7d
 
 [[function]]
-name = "FUN_0042545a"
+name = "MusicRoom::OnDraw"
 address = 0x42545a
 size = 0x1f2
 
@@ -1859,7 +1859,7 @@ address = 0x42fc80
 size = 0xa8
 
 [[function]]
-name = "FUN_0042fd30"
+name = "ScreenEffect::RegisterChain"
 address = 0x42fd30
 size = 0x1ac
 
@@ -1934,7 +1934,7 @@ address = 0x431080
 size = 0x156
 
 [[function]]
-name = "FUN_004311e0"
+name = "SoundPlayer::FUN_004311e0"
 address = 0x4311e0
 size = 0x85
 
@@ -1974,7 +1974,7 @@ address = 0x431a10
 size = 0x35f
 
 [[function]]
-name = "FUN_00431d70"
+name = "AnmManager::CreateEmptyTexture"
 address = 0x431d70
 size = 0x42
 
@@ -1994,7 +1994,7 @@ address = 0x4321e0
 size = 0x7d
 
 [[function]]
-name = "FUN_00432260"
+name = "AnmManager::LoadSprite"
 address = 0x432260
 size = 0x13b
 
@@ -2009,7 +2009,7 @@ address = 0x432430
 size = 0x97
 
 [[function]]
-name = "FUN_004324d0"
+name = "SetRenderStateForVm"
 address = 0x4324d0
 size = 0x256
 
@@ -2024,7 +2024,7 @@ address = 0x432ad0
 size = 0x1af
 
 [[function]]
-name = "FUN_00432c80"
+name = "AnmManager::FUN_00432c80"
 address = 0x432c80
 size = 0x3c
 
@@ -2094,7 +2094,7 @@ address = 0x4354c0
 size = 0x1a8
 
 [[function]]
-name = "FUN_00435670"
+name = "AnmManager::FUN_00435670"
 address = 0x435670
 size = 0xed
 
@@ -2104,12 +2104,12 @@ address = 0x43575d
 size = 0x42
 
 [[function]]
-name = "FUN_0043579f"
+name = "MainMenu::OnUpdate"
 address = 0x43579f
 size = 0x1d31
 
 [[function]]
-name = "FUN_0043753c"
+name = "MainMenu::FUN_0043753c"
 address = 0x43753c
 size = 0x136
 
@@ -2129,12 +2129,12 @@ address = 0x4378a2
 size = 0x142
 
 [[function]]
-name = "FUN_004379e4"
+name = "MainMenu::FUN_004379e4"
 address = 0x4379e4
 size = 0x15d
 
 [[function]]
-name = "FUN_00437b41"
+name = "MainMenu::FUN_00437b41"
 address = 0x437b41
 size = 0x68b
 
@@ -2144,27 +2144,27 @@ address = 0x4381ec
 size = 0x9d5
 
 [[function]]
-name = "FUN_00438bc1"
+name = "MainMenu::FUN_00438bc1"
 address = 0x438bc1
 size = 0x337
 
 [[function]]
-name = "FUN_00438ef8"
+name = "MainMenu::FUN_00438ef8"
 address = 0x438ef8
 size = 0x23f
 
 [[function]]
-name = "FUN_00439137"
+name = "MainMenu::FUN_00439137"
 address = 0x439137
 size = 0x82e
 
 [[function]]
-name = "FUN_00439965"
+name = "MainMenu::FUN_00439965"
 address = 0x439965
 size = 0x171
 
 [[function]]
-name = "FUN_00439ad6"
+name = "MainMenu::OnDraw"
 address = 0x439ad6
 size = 0x2ca
 
@@ -2189,12 +2189,12 @@ address = 0x43a338
 size = 0x12c
 
 [[function]]
-name = "FUN_0043a464"
+name = "MainMenu::AddedCallback"
 address = 0x43a464
 size = 0x1f5
 
 [[function]]
-name = "FUN_0043a659"
+name = "MainMenu::DeletedCallback"
 address = 0x43a659
 size = 0xb1
 
@@ -7234,7 +7234,7 @@ address = 0x4693a8
 size = 0xa
 
 [[function]]
-name = "FUN_004693c0"
+name = "INIT_G_ASCII_MANAGER"
 address = 0x4693c0
 size = 0x17
 
