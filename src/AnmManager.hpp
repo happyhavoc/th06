@@ -37,6 +37,8 @@ struct AnmVm
 {
     AnmVm();
 
+    void Initialize();
+
     D3DXVECTOR3 rotation;
     D3DXVECTOR3 angleVel;
     f32 scaleY;
@@ -125,6 +127,7 @@ struct AnmManager
     ZunResult LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
 
     ZunResult LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
+    ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
 
     void ReleaseD3dSurfaces(void);
     ZunResult LoadSurface(i32 surfaceIdx, char *path);

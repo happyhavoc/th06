@@ -122,9 +122,28 @@ ZunResult AsciiManager::AddedCallback(AsciiManager *s)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(vm1, mgr1, mgr0)
 void AsciiManager::InitializeVms()
 {
-    // TODO: Stub
+    memset(this, 0, sizeof(AsciiManager));
+
+    this->color = 0xffffffff;
+    this->scale.x = 1.0;
+    this->scale.y = 1.0;
+
+    // TODO: What is this flag for?
+    this->vm1.flags = this->vm1.flags | 0x300;
+    AnmVm *vm1 = &this->vm1;
+    AnmManager *mgr1 = g_AnmManager;
+    vm1->Initialize();
+    mgr1->SetActiveSprite(vm1, 0);
+
+    AnmManager *mgr0 = g_AnmManager;
+    this->vm0.Initialize();
+    mgr0->SetActiveSprite(&this->vm0, 0x20);
+
+    this->vm1.pos.z = 0.1;
+    this->isSelected = 0;
 }
 
 void AsciiManager::DeletedCallback(AsciiManager *s)

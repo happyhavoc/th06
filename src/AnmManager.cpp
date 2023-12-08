@@ -9,6 +9,11 @@ AnmTimer::AnmTimer()
     // TODO: stub
 }
 
+void AnmVm::Initialize()
+{
+    // TODO: Stub
+}
+
 AnmVm::AnmVm()
 {
     // TODO: stub
@@ -246,6 +251,12 @@ ZunResult AnmManager::LoadTextureMipmap(u32 textureIdx, char *textureName, u32 t
     return ZUN_ERROR;
 }
 ZunResult AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
+{
+    // TODO: stub
+    return ZUN_ERROR;
+}
+
+ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 spriteIdx)
 {
     // TODO: stub
     return ZUN_ERROR;
