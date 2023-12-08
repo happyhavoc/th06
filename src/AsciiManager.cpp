@@ -8,7 +8,7 @@
 DIFFABLE_STATIC(AsciiManager, g_AsciiManager)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerCalcChain)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawMenusChain)
-DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawHighPrioChain)
+DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawPopupsChain)
 
 AsciiManager::AsciiManager()
 {
@@ -59,6 +59,19 @@ ChainCallbackResult AsciiManager::OnDrawMenus(AsciiManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
+ChainCallbackResult AsciiManager::OnDrawPopups(AsciiManager *mgr)
+{
+    if (g_Supervisor.hasD3dHardwareVertexProcessing)
+    {
+        mgr->DrawPopupsWithHwVertexProcessing();
+    }
+    else
+    {
+        mgr->DrawPopupsWithoutHwVertexProcessing();
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 ZunResult AsciiManager::RegisterChain()
 {
     AsciiManager *mgr = &g_AsciiManager;
@@ -80,20 +93,15 @@ ZunResult AsciiManager::RegisterChain()
     g_AsciiManagerOnDrawMenusChain.arg = mgr;
     g_Chain.AddToDrawChain(&g_AsciiManagerOnDrawMenusChain, TH_CHAIN_PRIO_DRAW_ASCIIMANAGER_MENUS);
 
-    g_AsciiManagerOnDrawHighPrioChain.callback = (ChainCallback)OnDrawHighPrio;
-    g_AsciiManagerOnDrawHighPrioChain.addedCallback = NULL;
-    g_AsciiManagerOnDrawHighPrioChain.deletedCallback = NULL;
-    g_AsciiManagerOnDrawHighPrioChain.arg = mgr;
-    g_Chain.AddToDrawChain(&g_AsciiManagerOnDrawHighPrioChain, TH_CHAIN_PRIO_DRAW_ASCIIMANAGER_HIGHPRIO);
+    g_AsciiManagerOnDrawPopupsChain.callback = (ChainCallback)OnDrawPopups;
+    g_AsciiManagerOnDrawPopupsChain.addedCallback = NULL;
+    g_AsciiManagerOnDrawPopupsChain.deletedCallback = NULL;
+    g_AsciiManagerOnDrawPopupsChain.arg = mgr;
+    g_Chain.AddToDrawChain(&g_AsciiManagerOnDrawPopupsChain, TH_CHAIN_PRIO_DRAW_ASCIIMANAGER_POPUPS);
 
     return ZUN_SUCCESS;
 }
 
-ChainCallbackResult AsciiManager::OnDrawHighPrio(AsciiManager *s)
-{
-    // TODO: Stub
-    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
-}
 ZunResult AsciiManager::AddedCallback(AsciiManager *s)
 {
     int x, y, z;
@@ -147,6 +155,16 @@ void StageMenu::OnDrawGameMenu()
 }
 
 void StageMenu::OnDrawRetryMenu()
+{
+    // TODO: Stub
+}
+
+void AsciiManager::DrawPopupsWithHwVertexProcessing()
+{
+    // TODO: Stub
+}
+
+void AsciiManager::DrawPopupsWithoutHwVertexProcessing()
 {
     // TODO: Stub
 }

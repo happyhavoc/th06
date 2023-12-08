@@ -6,7 +6,7 @@
 .global _g_AsciiManagerOnDrawMenusChain
 .global _g_AsciiManager
 .global _g_AsciiManagerCalcChain
-.global _g_AsciiManagerOnDrawHighPrioChain
+.global _g_AsciiManagerOnDrawPopupsChain
 .global _g_Stage
 .global _g_GameManager
 .global _g_JoystickCaps
@@ -26,7 +26,7 @@ _g_ControllerMapping                = 0x004765a0
 _g_AsciiManagerOnDrawMenusChain     = 0x0047b8e0
 _g_AsciiManager                     = 0x0047b900
 _g_AsciiManagerCalcChain            = 0x00487aac
-_g_AsciiManagerOnDrawHighPrioChain  = 0x00487acc
+_g_AsciiManagerOnDrawPopupsChain    = 0x00487acc
 _g_Stage                            = 0x00487af0
 _g_GameManager                      = 0x0069d4bf
 _g_JoystickCaps                     = 0x0069d760

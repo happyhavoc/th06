@@ -63,13 +63,15 @@ struct AsciiManager
 
     static ChainCallbackResult OnUpdate(AsciiManager *s);
     static ChainCallbackResult OnDrawMenus(AsciiManager *s);
-    static ChainCallbackResult OnDrawHighPrio(AsciiManager *s);
+    static ChainCallbackResult OnDrawPopups(AsciiManager *s);
     static ZunResult AddedCallback(AsciiManager *s);
     static void DeletedCallback(AsciiManager *s);
 
     void InitializeVms();
 
     void DrawStrings();
+    void DrawPopupsWithHwVertexProcessing();
+    void DrawPopupsWithoutHwVertexProcessing();
 
     AnmVm vm0;
     AnmVm vm1;

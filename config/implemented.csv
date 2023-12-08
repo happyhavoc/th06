@@ -1,6 +1,7 @@
 AsciiManager::AsciiManager
 AsciiManager::OnUpdate
 AsciiManager::OnDrawMenus
+AsciiManager::OnDrawPopups
 AsciiManager::RegisterChain
 AsciiManager::AddedCallback
 AnmManager::CopySurfaceToBackBuffer
