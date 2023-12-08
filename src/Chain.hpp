@@ -25,7 +25,7 @@ enum ChainCallbackResult
 // TODO
 typedef ChainCallbackResult (*ChainCallback)(void *);
 typedef ZunResult (*ChainAddedCallback)(void *);
-typedef void (*ChainDeletedCallback)(void *);
+typedef ZunResult (*ChainDeletedCallback)(void *);
 
 class ChainElem
 {

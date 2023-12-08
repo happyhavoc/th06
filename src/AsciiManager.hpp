@@ -65,7 +65,7 @@ struct AsciiManager
     static ChainCallbackResult OnDrawMenus(AsciiManager *s);
     static ChainCallbackResult OnDrawPopups(AsciiManager *s);
     static ZunResult AddedCallback(AsciiManager *s);
-    static void DeletedCallback(AsciiManager *s);
+    static ZunResult DeletedCallback(AsciiManager *s);
 
     void InitializeVms();
 

@@ -5,6 +5,7 @@ AsciiManager::OnDrawPopups
 AsciiManager::RegisterChain
 AsciiManager::AddedCallback
 AsciiManager::InitializeVms
+AsciiManager::DeletedCallback
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm
 AnmManager::LoadSurface

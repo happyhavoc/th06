@@ -146,9 +146,12 @@ void AsciiManager::InitializeVms()
     this->isSelected = 0;
 }
 
-void AsciiManager::DeletedCallback(AsciiManager *s)
+ZunResult AsciiManager::DeletedCallback(AsciiManager *s)
 {
-    // TODO: Stub
+    g_AnmManager->ReleaseAnm(1);
+    g_AnmManager->ReleaseAnm(2);
+    g_AnmManager->ReleaseAnm(3);
+    return ZUN_SUCCESS;
 }
 
 void AsciiManager::DrawStrings()
