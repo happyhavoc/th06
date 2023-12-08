@@ -154,6 +154,14 @@ ZunResult AsciiManager::DeletedCallback(AsciiManager *s)
     return ZUN_SUCCESS;
 }
 
+void AsciiManager::CutChain()
+{
+    g_Chain.Cut(&g_AsciiManagerCalcChain);
+    g_Chain.Cut(&g_AsciiManagerOnDrawMenusChain);
+    // What about g_AsciiManagerOnDrawPopupsChain? It looks like zun forgot
+    // to free it!
+}
+
 void AsciiManager::DrawStrings()
 {
     // TODO: Stub

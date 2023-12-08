@@ -52,7 +52,6 @@ class Chain
     unsigned int midiOutputDeviceCount;
     unsigned int unk;
 
-    void Cut(ChainElem *to_remove);
     void ReleaseSingleChain(ChainElem *root);
 
   public:
@@ -66,6 +65,7 @@ class Chain
     {
     }
 
+    void Cut(ChainElem *to_remove);
     void Release(void);
     int AddToCalcChain(ChainElem *elem, int priority);
     int AddToDrawChain(ChainElem *elem, int priority);

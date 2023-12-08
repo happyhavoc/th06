@@ -60,6 +60,7 @@ struct AsciiManager
     AsciiManager();
 
     static ZunResult RegisterChain();
+    static void CutChain();
 
     static ChainCallbackResult OnUpdate(AsciiManager *s);
     static ChainCallbackResult OnDrawMenus(AsciiManager *s);

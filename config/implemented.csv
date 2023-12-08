@@ -6,6 +6,7 @@ AsciiManager::RegisterChain
 AsciiManager::AddedCallback
 AsciiManager::InitializeVms
 AsciiManager::DeletedCallback
+AsciiManager::CutChain
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm
 AnmManager::LoadSurface
