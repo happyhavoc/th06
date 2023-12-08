@@ -27,6 +27,9 @@ struct StageMenu
     i32 OnUpdateGameMenu();
     i32 OnUpdateRetryMenu();
 
+    void OnDrawGameMenu();
+    void OnDrawRetryMenu();
+
     // Current state of this menu.
     u32 curState;
     // Number of frames since last state change. Used to delay certain actions
@@ -59,12 +62,14 @@ struct AsciiManager
     static ZunResult RegisterChain();
 
     static ChainCallbackResult OnUpdate(AsciiManager *s);
-    static ChainCallbackResult OnDrawLowPrio(AsciiManager *s);
+    static ChainCallbackResult OnDrawMenus(AsciiManager *s);
     static ChainCallbackResult OnDrawHighPrio(AsciiManager *s);
     static ZunResult AddedCallback(AsciiManager *s);
     static void DeletedCallback(AsciiManager *s);
 
     void InitializeVms();
+
+    void DrawStrings();
 
     AnmVm vm0;
     AnmVm vm1;

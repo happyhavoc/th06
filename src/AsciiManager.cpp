@@ -7,7 +7,7 @@
 
 DIFFABLE_STATIC(AsciiManager, g_AsciiManager)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerCalcChain)
-DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawLowPrioChain)
+DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawMenusChain)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawHighPrioChain)
 
 AsciiManager::AsciiManager()
@@ -50,6 +50,15 @@ ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
+ChainCallbackResult AsciiManager::OnDrawMenus(AsciiManager *mgr)
+{
+    mgr->DrawStrings();
+    mgr->numStrings = 0;
+    mgr->gameMenu.OnDrawGameMenu();
+    mgr->retryMenu.OnDrawRetryMenu();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 ZunResult AsciiManager::RegisterChain()
 {
     AsciiManager *mgr = &g_AsciiManager;
@@ -65,11 +74,11 @@ ZunResult AsciiManager::RegisterChain()
         return ZUN_ERROR;
     }
 
-    g_AsciiManagerOnDrawLowPrioChain.callback = (ChainCallback)OnDrawLowPrio;
-    g_AsciiManagerOnDrawLowPrioChain.addedCallback = NULL;
-    g_AsciiManagerOnDrawLowPrioChain.deletedCallback = NULL;
-    g_AsciiManagerOnDrawLowPrioChain.arg = mgr;
-    g_Chain.AddToDrawChain(&g_AsciiManagerOnDrawLowPrioChain, TH_CHAIN_PRIO_DRAW_ASCIIMANAGER_LOWPRIO);
+    g_AsciiManagerOnDrawMenusChain.callback = (ChainCallback)OnDrawMenus;
+    g_AsciiManagerOnDrawMenusChain.addedCallback = NULL;
+    g_AsciiManagerOnDrawMenusChain.deletedCallback = NULL;
+    g_AsciiManagerOnDrawMenusChain.arg = mgr;
+    g_Chain.AddToDrawChain(&g_AsciiManagerOnDrawMenusChain, TH_CHAIN_PRIO_DRAW_ASCIIMANAGER_MENUS);
 
     g_AsciiManagerOnDrawHighPrioChain.callback = (ChainCallback)OnDrawHighPrio;
     g_AsciiManagerOnDrawHighPrioChain.addedCallback = NULL;
@@ -80,11 +89,6 @@ ZunResult AsciiManager::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-ChainCallbackResult AsciiManager::OnDrawLowPrio(AsciiManager *s)
-{
-    // TODO: Stub
-    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
-}
 ChainCallbackResult AsciiManager::OnDrawHighPrio(AsciiManager *s)
 {
     // TODO: Stub
@@ -120,6 +124,11 @@ void AsciiManager::DeletedCallback(AsciiManager *s)
     // TODO: Stub
 }
 
+void AsciiManager::DrawStrings()
+{
+    // TODO: Stub
+}
+
 i32 StageMenu::OnUpdateGameMenu()
 {
     // TODO: Stub
@@ -130,4 +139,14 @@ i32 StageMenu::OnUpdateRetryMenu()
 {
     // TODO: Stub
     return 1;
+}
+
+void StageMenu::OnDrawGameMenu()
+{
+    // TODO: Stub
+}
+
+void StageMenu::OnDrawRetryMenu()
+{
+    // TODO: Stub
 }

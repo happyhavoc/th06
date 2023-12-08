@@ -3,7 +3,7 @@
 .intel_syntax
 
 .global _g_ControllerMapping
-.global _g_AsciiManagerOnDrawLowPrioChain
+.global _g_AsciiManagerOnDrawMenusChain
 .global _g_AsciiManager
 .global _g_AsciiManagerCalcChain
 .global _g_AsciiManagerOnDrawHighPrioChain
@@ -23,7 +23,7 @@
 .global _g_AnmManager
 
 _g_ControllerMapping                = 0x004765a0
-_g_AsciiManagerOnDrawLowPrioChain   = 0x0047b8e0
+_g_AsciiManagerOnDrawMenusChain     = 0x0047b8e0
 _g_AsciiManager                     = 0x0047b900
 _g_AsciiManagerCalcChain            = 0x00487aac
 _g_AsciiManagerOnDrawHighPrioChain  = 0x00487acc
