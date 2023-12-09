@@ -74,10 +74,12 @@ struct AsciiManager
     void DrawPopupsWithHwVertexProcessing();
     void DrawPopupsWithoutHwVertexProcessing();
 
+    void AddString(D3DXVECTOR3 *position, char *text);
+
     AnmVm vm0;
     AnmVm vm1;
     AsciiManagerString strings[256];
-    u32 numStrings;
+    i32 numStrings;
     D3DCOLOR color;
     D3DXVECTOR2 scale;
     // If true, we are drawing an element of the Gui class.

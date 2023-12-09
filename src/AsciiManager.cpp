@@ -162,6 +162,34 @@ void AsciiManager::CutChain()
     // to free it!
 }
 
+void AsciiManager::AddString(D3DXVECTOR3 *position, char *text)
+{
+    if (this->numStrings >= 0x100)
+    {
+        return;
+    }
+
+    AsciiManagerString *curString = &this->strings[this->numStrings];
+    this->numStrings += 1;
+    // Hello unguarded strcpy my old friend. If text is bigger than 64
+    // characters, kboom.
+    strcpy(curString->text, text);
+    curString->position = *position;
+    curString->color = this->color;
+    curString->scale.x = this->scale.x;
+    curString->scale.y = this->scale.y;
+    curString->isGui = this->isGui;
+    if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) |
+         (g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) != 0)
+    {
+        curString->isSelected = this->isSelected;
+    }
+    else
+    {
+        curString->isSelected = 0;
+    }
+}
+
 void AsciiManager::DrawStrings()
 {
     // TODO: Stub
