@@ -7,8 +7,32 @@ import ghidra.program.model.listing.FunctionIterator;
 import java.io.File;
 import java.nio.file.Files;
 
-public class GenerateMappingToml extends GhidraScript
+public class GenerateMapping extends GhidraScript
 {
+    public String generateCsv()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        FunctionIterator funcIter = currentProgram.getListing().getFunctions(true);
+        while (funcIter.hasNext())
+        {
+            Function func = funcIter.next();
+
+            if (func.isThunk())
+            {
+                continue;
+            }
+
+            builder.append(func.getName(true));
+            builder.append(",0x");
+            builder.append(Long.toHexString(func.getEntryPoint().getOffset()));
+            builder.append(",0x");
+            builder.append(Long.toHexString(func.getBody().getNumAddresses()));
+            builder.append("\n");
+        }
+
+        return builder.toString();
+    }
 
     // TODO: handle duplicated
     public String generateToml()
@@ -46,8 +70,8 @@ public class GenerateMappingToml extends GhidraScript
 
     @Override public void run() throws Exception
     {
-        String mappingData = generateToml();
-        File outputMapping = askFile("mapping.toml", "Save");
+        String mappingData = generateCsv();
+        File outputMapping = askFile("mapping.csv", "Save");
         Files.write(outputMapping.toPath(), mappingData.getBytes());
     }
 }
