@@ -23,7 +23,7 @@ jobs:
       name: Install prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
-      run: scripts/build.bat
+      run: python scripts/build.py
     - uses: actions/upload-artifact@v3
       with:
         name: th06e
@@ -46,7 +46,7 @@ jobs:
       name: Install prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
-      run: scripts/build.bat DIFFBUILD=true
+      run: python scripts/build.py --build-type diffbuild
     - uses: actions/upload-artifact@v3
       with:
         name: th06e-diff

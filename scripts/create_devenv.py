@@ -8,7 +8,8 @@ import subprocess
 import sys
 from typing import Optional
 import urllib.request
-import os
+
+from winhelpers import run_windows_program, get_windows_path
 
 SCRIPTS_DIR = Path(__file__).parent
 
@@ -26,27 +27,6 @@ def run_msiextract_win32(msi_file_path: Path, output_dir: Path) -> int:
         ["msiexec", "/a", str(msi_file_path), "/qb", f"TARGETDIR={output_dir}"],
         cwd=output_dir,
     )
-
-
-def run_windows_program(args, add_env=None, cwd=None):
-    env = dict(os.environ)
-    if add_env is not None:
-        for k, v in add_env.items():
-            env[k] = v
-
-    if sys.platform == "win32":
-        subprocess.check_call(args, env=env, cwd=cwd)
-    else:
-        subprocess.check_call([os.getenv("WINE", "wine")] + args, env=env, cwd=cwd)
-
-
-def get_windows_path(path):
-    if sys.platform == "win32":
-        return path
-    else:
-        return subprocess.check_output(
-            [os.getenv("WINE", "wine"), "winepath", "-w", str(path)], text=True
-        ).strip()
 
 
 def translate_msiextract_name(raw_name: str) -> Optional[str]:
@@ -113,8 +93,8 @@ def parse_arguments() -> Namespace:
     parser.add_argument(
         "--only",
         action="append",
-        choices=["vs", "dx8", "py", "pragma", "cygwin"],
-        help="Only run certain steps. Possible values are vs, dx8, py, pragma and cygwin.",
+        choices=["vs", "dx8", "py", "pragma", "cygwin", "ninja"],
+        help="Only run certain steps. Possible values are vs, dx8, py, pragma, cygwin and ninja.",
     )
     parser.add_argument("dl_cache_path", help="Path to download the requirements in")
     parser.add_argument("output_path", help="The output directory")
@@ -240,6 +220,13 @@ def download_requirements(dl_cache_path, steps):
             "url": "http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/setup/snapshots/setup-x86-2.874.exe",
             "filename": "cygwin-setup-2.874.exe",
             "sha256": "a79e4f57ce98a4d4bacb8fbb66fcea3de92ef30b34ab8b76e11c8bd3b426fd31",
+        },
+        {
+            "name": "Ninja",
+            "only": "ninja",
+            "url": "https://github.com/ninja-build/ninja/releases/download/v1.6.0/ninja-win.zip",
+            "filename": "ninja-win.zip",
+            "sha256": "18f55bc5de27c20092e86ace8ef3dd3311662dc6193157e3b65c6bc94ce006d5",
         },
     ]
 
@@ -406,6 +393,13 @@ def install_pragma_var_order(tmp_dir, output_path):
     shutil.rmtree(tmp_dir, ignore_errors=True)
 
 
+def install_ninja(ninja_zip_path, output_path):
+    print("Installing ninja")
+    install_path = output_path / "ninja"
+    install_path.mkdir(parents=True, exist_ok=True)
+    run_generic_extract(ninja_zip_path, install_path)
+
+
 def main(args: Namespace) -> int:
     dl_cache_path = Path(args.dl_cache_path).absolute()
     output_path = Path(args.output_path).absolute()
@@ -414,7 +408,7 @@ def main(args: Namespace) -> int:
     tmp2_dir = output_path / "tmp2"
 
     if args.only is None or len(args.only) == 0:
-        steps = set(["vs", "dx8", "py", "pragma", "cygwin"])
+        steps = set(["vs", "dx8", "py", "pragma", "cygwin", "ninja"])
     else:
         steps = set(args.only)
 
@@ -430,6 +424,7 @@ def main(args: Namespace) -> int:
         python_installer_path = dl_cache_path / "python-3.4.4.msi"
         vcredist_installer_path = dl_cache_path / "vcredist_x86.exe"
         cygwin_installer_path = dl_cache_path / "cygwin-setup-2.874.exe"
+        ninja_zip_path = dl_cache_path / "ninja-win.zip"
 
         if "vs" in steps:
             install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path)
@@ -443,6 +438,8 @@ def main(args: Namespace) -> int:
             install_pragma_var_order(tmp_dir, output_path)
         if "cygwin" in steps:
             install_cygwin(cygwin_installer_path, tmp_dir, output_path)
+        if "ninja" in steps:
+            install_ninja(ninja_zip_path, output_path)
 
     return 0
 

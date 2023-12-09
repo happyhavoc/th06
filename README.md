@@ -18,15 +18,14 @@ This project requires the original `東方紅魔郷.exe` version 1.02h (9f76483c
 
 Copy `東方紅魔郷.exe` to `resources/game.exe`.
 
-### Linux/macOS
-
-#### Dependencies
+### Dependencies
 
 The build system has the following package requirements:
-- `python3` >= 3.9
-- `msiextract`
+
+- `python3` >= 3.6
+- `msiextract` (On linux/macos only)
 - `p7zip` (or 7-Zip on Windows)
-- `wine` (prefer CrossOver on macOS to avoid possible CL.EXE heap issues)
+- `wine` (on linux/macos only, prefer CrossOver on macOS to avoid possible CL.EXE heap issues)
 
 The rest of the build system is constructed out of Visual Studio 2002 and DirectX 8.0 from the Web Archive.
 
@@ -39,16 +38,16 @@ Run the following script:
 ./scripts/create_th06_prefix
 ```
 
-### Windows
+#### Building
 
-Run the following commands in PowerShell:
-```ps1
-py -3 .\scripts\create_devenv.py .\scripts\dls\ .\scripts\prefix
+Run the following script:
+
+```
+python3 ./scripts/build.py
 ```
 
-### Building
-
-On Windows, run `scripts/build.bat` otherwise `./scripts/wineth06 scripts/build.bat`.
+This will automatically generate a ninja build script `build.ninja`, and run
+ninja on it.
 
 ## Reverse Engineering
 
