@@ -1,12 +1,17 @@
 from argparse import ArgumentParser, Namespace
 from datetime import datetime
-import glob
 import hashlib
+import os
+import os.path
 from pathlib import Path
 import shutil
 import subprocess
 import sys
-from typing import Optional
+
+try:
+    from typing import Optional
+except ImportError:
+    pass
 import urllib.request
 
 from winhelpers import run_windows_program, get_windows_path
@@ -15,21 +20,25 @@ SCRIPTS_DIR = Path(__file__).parent
 
 
 def run_generic_extract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["7z", "x", "-y", str(msi_file_path)], cwd=output_dir)
+    return subprocess.check_call(
+        ["7z", "x", "-y", str(msi_file_path)], cwd=str(output_dir)
+    )
 
 
 def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(["msiextract", str(msi_file_path)], cwd=output_dir)
+    return subprocess.check_call(
+        ["msiextract", str(msi_file_path)], cwd=str(output_dir)
+    )
 
 
 def run_msiextract_win32(msi_file_path: Path, output_dir: Path) -> int:
     return subprocess.check_call(
         ["msiexec", "/a", str(msi_file_path), "/qb", f"TARGETDIR={output_dir}"],
-        cwd=output_dir,
+        cwd=str(output_dir),
     )
 
 
-def translate_msiextract_name(raw_name: str) -> Optional[str]:
+def translate_msiextract_name(raw_name: str) -> "Optional[str]":
     name = raw_name.split(":")[0]
 
     if name == ".":
@@ -39,7 +48,7 @@ def translate_msiextract_name(raw_name: str) -> Optional[str]:
 
 
 def msiextract(msi_file_path: Path, output_dir: Path) -> int:
-    output_dir.mkdir(parents=True, exist_ok=True)
+    os.makedirs(str(output_dir), exist_ok=True)
     if sys.platform == "win32":
         run_msiextract_win32(msi_file_path, output_dir)
 
@@ -47,13 +56,12 @@ def msiextract(msi_file_path: Path, output_dir: Path) -> int:
 
     run_msiextract(msi_file_path, output_dir)
 
-    for dir in glob.iglob(f"{output_dir}/**/.:*", recursive=True):
-        dir = Path(dir)
+    for dir in output_dir.glob("**/.:*"):
         parent_dir = dir.parent
 
         for entry in dir.glob("*"):
             new_entry = parent_dir / entry.name
-            shutil.move(entry, new_entry)
+            shutil.move(str(entry), str(new_entry))
 
         dir.rmdir()
 
@@ -61,9 +69,7 @@ def msiextract(msi_file_path: Path, output_dir: Path) -> int:
     while should_continue:
         renamed_something = False
 
-        for entry in glob.iglob(f"{output_dir}/**", recursive=True):
-            entry = Path(entry)
-
+        for entry in output_dir.glob("**"):
             if entry.is_dir():
                 new_name = translate_msiextract_name(entry.name)
 
@@ -73,16 +79,25 @@ def msiextract(msi_file_path: Path, output_dir: Path) -> int:
                 new_entry = entry.parent / new_name
 
                 if entry != new_entry:
-                    shutil.move(entry, new_entry)
+                    shutil.move(str(entry), str(new_entry))
                     renamed_something = True
                     break
 
         should_continue = renamed_something
 
 
+def copytree_exist_ok(src: Path, dst: Path):
+    if sys.version_info >= (3, 8):
+        shutil.copytree(src, dst, dirs_exist_ok=True)
+    else:
+        import distutils.dir_util
+
+        distutils.dir_util.copy_tree(str(src), str(dst))
+
+
 def check_file(path: Path, message: str) -> Path:
     if not path.exists():
-        sys.stderr.write(f"{message}\n")
+        sys.stderr.write(message + "\n")
         sys.exit(1)
 
     return path.absolute()
@@ -164,7 +179,7 @@ def download_requirement(dl_cache_path, requirement):
         return
 
     print("Downloading " + requirement["name"])
-    urllib.request.urlretrieve(requirement["url"], path, progress_bar)
+    urllib.request.urlretrieve(requirement["url"], str(path), progress_bar)
     print(clear_line_sequence, end="", flush=True, file=sys.stdout)
     hash = get_sha256(path)
     if hash != requirement["sha256"]:
@@ -246,45 +261,39 @@ def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
     ]
 
     sdk_directories = ["Program Files/Microsoft Visual Studio .NET/Vc7/PlatformSDK"]
-    shutil.rmtree(tmp_dir, ignore_errors=True)
-    tmp_dir.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
+    os.makedirs(str(tmp_dir), exist_ok=True)
     run_generic_extract(installer_path, tmp_dir)
 
     for compiler_directory_part in compiler_directories:
         dst_required_directory_path = output_path / compiler_directory_part
         src_required_directory_path = tmp_dir / compiler_directory_part
-        shutil.copytree(
-            src_required_directory_path, dst_required_directory_path, dirs_exist_ok=True
-        )
+        copytree_exist_ok(src_required_directory_path, dst_required_directory_path)
 
     msvcr70_dll_src_path = tmp_dir / "MSVCR70.DLL"
     shutil.copy(
-        msvcr70_dll_src_path,
-        output_path / "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7/BIN",
+        str(msvcr70_dll_src_path),
+        str(output_path / "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7/BIN"),
     )
 
     # Extract and grab Windows SDK
-    tmp2_dir.mkdir(parents=True, exist_ok=True)
+    os.makedirs(str(tmp2_dir), exist_ok=True)
     msiextract(tmp_dir / "VS_SETUP.MSI", tmp2_dir)
-    shutil.rmtree(tmp_dir, ignore_errors=True)
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
     for sdk_directory_part in sdk_directories:
         dst_required_directory_path = output_path / sdk_directory_part
         src_required_directory_path = tmp2_dir / sdk_directory_part
-        shutil.copytree(
-            src_required_directory_path, dst_required_directory_path, dirs_exist_ok=True
-        )
+        copytree_exist_ok(src_required_directory_path, dst_required_directory_path)
 
-    shutil.rmtree(tmp2_dir, ignore_errors=True)
+    shutil.rmtree(str(tmp2_dir), ignore_errors=True)
 
     # Unifromalise everything
     should_continue = True
     while should_continue:
         renamed_something = False
 
-        for entry in glob.iglob(f"{output_path}/**", recursive=True):
-            entry = Path(entry)
-
+        for entry in output_path.glob("**"):
             new_name = entry.name.upper()
 
             if new_name == entry.name or entry == output_path:
@@ -292,15 +301,19 @@ def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
 
             new_entry = entry.parent / new_name
 
-            if entry.exists() and new_entry.exists() and entry.samefile(new_entry):
+            if (
+                entry.exists()
+                and new_entry.exists()
+                and os.path.samefile(str(entry), str(new_entry))
+            ):
                 continue
 
             if entry.is_file():
-                shutil.copy(entry, new_entry)
+                shutil.copy(str(entry), str(new_entry))
                 entry.unlink()
             else:
-                shutil.copytree(entry, new_entry, dirs_exist_ok=True)
-                shutil.rmtree(entry)
+                copytree_exist_ok(entry, new_entry)
+                shutil.rmtree(str(entry))
 
             renamed_something = True
             break
@@ -310,42 +323,51 @@ def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
 
 def install_directx8(dx8sdk_installer_path, tmp_dir, output_path):
     print("Installing DirectX 8.0 SDK")
-    shutil.rmtree(tmp_dir, ignore_errors=True)
-    tmp_dir.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
+    os.makedirs(str(tmp_dir), exist_ok=True)
     run_generic_extract(dx8sdk_installer_path, tmp_dir)
     dx8sdk_dst_dir = output_path / "mssdk"
-    shutil.move(tmp_dir, dx8sdk_dst_dir)
-    shutil.rmtree(tmp_dir, ignore_errors=True)
+    shutil.rmtree(str(dx8sdk_dst_dir), ignore_errors=True)
+    shutil.move(str(tmp_dir), str(dx8sdk_dst_dir))
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
 def install_python(
     python_installer_path, vcredist_installer_path, tmp_dir, output_path
 ):
     print("Installing Python")
-    shutil.rmtree(tmp_dir, ignore_errors=True)
-    tmp_dir.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
+    os.makedirs(str(tmp_dir), exist_ok=True)
     msiextract(python_installer_path, tmp_dir)
     python_dst_dir = output_path / "python"
-    shutil.move(tmp_dir, python_dst_dir)
-    shutil.rmtree(tmp_dir, ignore_errors=True)
+    shutil.rmtree(str(python_dst_dir), ignore_errors=True)
+    shutil.move(str(tmp_dir), str(python_dst_dir))
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
     print("Installing MSVCR100.DLL for Python")
-    shutil.rmtree(tmp_dir, ignore_errors=True)
-    tmp_dir.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
+    os.makedirs(str(tmp_dir), exist_ok=True)
     run_generic_extract(vcredist_installer_path, tmp_dir)
     run_generic_extract(tmp_dir / "vc_red.cab", tmp_dir)
-    shutil.move(tmp_dir / "F_CENTRAL_msvcr100_x86", python_dst_dir / "msvcr100.dll")
-    shutil.rmtree(tmp_dir, ignore_errors=True)
+    try:
+        shutil.move(
+            str(tmp_dir / "F_CENTRAL_msvcr100_x86"),
+            str(python_dst_dir / "msvcr100.dll"),
+        )
+    except OSError:
+        if not (python_dst_dir / "msvcr100.dll").is_file():
+            raise
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
 def install_cygwin(cygwin_installer_path, tmp_dir, output_path):
     print("Installing cygwin")
-    tmp_dir.mkdir(parents=True, exist_ok=True)
+    os.makedirs(str(tmp_dir), exist_ok=True)
     local_package_dir_win32 = get_windows_path(tmp_dir / "cygwin_cache")
     cygwin_dir_win32 = get_windows_path(output_path / "cygwin")
     run_windows_program(
         [
-            cygwin_installer_path,
+            str(cygwin_installer_path),
             "--quiet-mode",
             "--only-site",
             "--site",
@@ -365,12 +387,12 @@ def install_cygwin(cygwin_installer_path, tmp_dir, output_path):
         ],
         cwd=str(tmp_dir),
     )
-    shutil.rmtree(tmp_dir, ignore_errors=True)
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
 def install_pragma_var_order(tmp_dir, output_path):
     print("Installing pragma_var_order")
-    tmp_dir.mkdir(parents=True, exist_ok=True)
+    os.makedirs(str(tmp_dir), exist_ok=True)
     win32_path_to_pragma_var_order = get_windows_path(
         SCRIPTS_DIR / "pragma_var_order.cpp"
     )
@@ -379,24 +401,23 @@ def install_pragma_var_order(tmp_dir, output_path):
             str(SCRIPTS_DIR / "th06run.bat"),
             "CL.EXE",
             win32_path_to_pragma_var_order,
-            "/ohackery.dll",
+            "/o" + str(tmp_dir / "hackery.dll"),
             "/link",
             "/DLL",
         ],
         add_env={"DEVENV_PREFIX": str(output_path)},
-        cwd=str(tmp_dir),
     )
     VC7 = output_path / "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7"
     if not (VC7 / "BIN/C1XXOrig.DLL").exists():
-        shutil.move(VC7 / "BIN/C1XX.DLL", VC7 / "BIN/C1XXOrig.DLL")
-    shutil.move(tmp_dir / "hackery.dll", VC7 / "BIN/C1XX.DLL")
-    shutil.rmtree(tmp_dir, ignore_errors=True)
+        shutil.move(str(VC7 / "BIN/C1XX.DLL"), str(VC7 / "BIN/C1XXOrig.DLL"))
+    shutil.move(str(tmp_dir / "hackery.dll"), str(VC7 / "BIN/C1XX.DLL"))
+    shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
 def install_ninja(ninja_zip_path, output_path):
     print("Installing ninja")
     install_path = output_path / "ninja"
-    install_path.mkdir(parents=True, exist_ok=True)
+    os.makedirs(str(install_path), exist_ok=True)
     run_generic_extract(ninja_zip_path, install_path)
 
 
@@ -412,12 +433,12 @@ def main(args: Namespace) -> int:
     else:
         steps = set(args.only)
 
-    dl_cache_path.mkdir(exist_ok=True)
+    os.makedirs(str(dl_cache_path), exist_ok=True)
     download_requirements(dl_cache_path, steps)
 
     if not args.download:
         program_files = output_path / "PROGRAM FILES"
-        program_files.mkdir(parents=True, exist_ok=True)
+        os.makedirs(str(program_files), exist_ok=True)
 
         dx8sdk_installer_path = dl_cache_path / "dx8sdk.exe"
         installer_path = dl_cache_path / "en_vs.net_pro_full.exe"

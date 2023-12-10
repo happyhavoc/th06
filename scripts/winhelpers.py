@@ -17,7 +17,7 @@ def run_windows_program(args, add_env=None, cwd=None):
 
 def get_windows_path(path):
     if sys.platform == "win32":
-        return path
+        return str(path)
     else:
         return subprocess.check_output(
             [os.getenv("WINE", "wine"), "winepath", "-w", str(path)], text=True

@@ -22,7 +22,7 @@ Copy `東方紅魔郷.exe` to `resources/game.exe`.
 
 The build system has the following package requirements:
 
-- `python3` >= 3.6
+- `python3` >= 3.4
 - `msiextract` (On linux/macos only)
 - `p7zip` (or 7-Zip on Windows)
 - `wine` (on linux/macos only, prefer CrossOver on macOS to avoid possible CL.EXE heap issues)
