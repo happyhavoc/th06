@@ -135,8 +135,12 @@ def parse_arguments() -> Namespace:
 
 def get_sha256(path):
     h = hashlib.new("sha256")
-    with open(path, "rb") as f:
-        h.update(f.read())
+    with path.open("rb") as f:
+        while True:
+            data = f.read(16 * 4096 * 4096)
+            if not data:
+                break
+            h.update(data)
     return h.hexdigest()
 
 
