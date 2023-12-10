@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v3
     - name: Get toolchain from cache
       id: cache-toolchain
-      uses: actions/cache@v1.2.1
+      uses: actions/cache/restore@v3
       with:
         # A directory to store and save the cache
         path: scripts/prefix
@@ -21,6 +21,7 @@ jobs:
         key: prefix-${{hashFiles('scripts/create_devenv.py')}}
     - if: ${{ steps.cache-toolchain.outputs.cache-hit != 'true' }}
       name: Install prefix
+      id: install_prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
       run: python scripts/build.py
@@ -30,13 +31,22 @@ jobs:
         path: |
           build/th06e.exe
           build/th06e.pdb
+    - if: always() && steps.cache-toolchain.outputs.cache-hit != 'true' && steps.install_prefix.outcome == 'success'
+      name: Save toolchain to cache
+      uses: actions/cache/save@v3
+      with:
+        # A directory to store and save the cache
+        path: scripts/prefix
+        # An explicit key for restoring and saving the cache
+        key: ${{ steps.cache-toolchain.outputs.cache-primary-key }}
+
   build-diff:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
     - name: Get toolchain from cache
       id: cache-toolchain
-      uses: actions/cache@v1.2.1
+      uses: actions/cache/restore@v3
       with:
         # A directory to store and save the cache
         path: scripts/prefix
@@ -44,6 +54,7 @@ jobs:
         key: prefix-${{hashFiles('scripts/create_devenv.py')}}
     - if: ${{ steps.cache-toolchain.outputs.cache-hit != 'true' }}
       name: Install prefix
+      id: install_prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
       run: python scripts/build.py --build-type diffbuild
@@ -53,3 +64,11 @@ jobs:
         path: |
           build/th06e.exe
           build/th06e.pdb
+    - if: always() && steps.cache-toolchain.outputs.cache-hit != 'true' && steps.install_prefix.outcome == 'success'
+      name: Save toolchain to cache
+      uses: actions/cache/save@v3
+      with:
+        # A directory to store and save the cache
+        path: scripts/prefix
+        # An explicit key for restoring and saving the cache
+        key: ${{ steps.cache-toolchain.outputs.cache-primary-key }}
