@@ -31,10 +31,21 @@ def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
     )
 
 
+def cmd_quote(s):
+    if " " not in s:
+        return s
+    return '"' + s.replace("\\", "\\\\").replace('"', '"') + '"'
+
+
 def run_msiextract_win32(msi_file_path: Path, output_dir: Path) -> int:
     return subprocess.check_call(
-        ["msiexec", "/a", str(msi_file_path), "/qb", f"TARGETDIR={output_dir}"],
+        "msiexec /a "
+        + cmd_quote(str(msi_file_path))
+        + " /qb TARGETDIR="
+        + cmd_quote(str(output_dir)),
         cwd=str(output_dir),
+        # We need to use shell=True as msiexec does some very funky parsing of the command line arguments.
+        shell=True,
     )
 
 
