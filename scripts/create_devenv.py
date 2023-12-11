@@ -278,7 +278,7 @@ def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
     sdk_directories = ["Program Files/Microsoft Visual Studio .NET/Vc7/PlatformSDK"]
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
     os.makedirs(str(tmp_dir), exist_ok=True)
-    run_generic_extract(installer_path, tmp_dir)
+    shutil.unpack_archive(str(installer_path), str(tmp_dir), format="zip")
 
     for compiler_directory_part in compiler_directories:
         dst_required_directory_path = output_path / compiler_directory_part
@@ -340,7 +340,7 @@ def install_directx8(dx8sdk_installer_path, tmp_dir, output_path):
     print("Installing DirectX 8.0 SDK")
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
     os.makedirs(str(tmp_dir), exist_ok=True)
-    run_generic_extract(dx8sdk_installer_path, tmp_dir)
+    shutil.unpack_archive(str(dx8sdk_installer_path), str(tmp_dir), format="zip")
     dx8sdk_dst_dir = output_path / "mssdk"
     shutil.rmtree(str(dx8sdk_dst_dir), ignore_errors=True)
     shutil.move(str(tmp_dir), str(dx8sdk_dst_dir))
@@ -433,7 +433,7 @@ def install_ninja(ninja_zip_path, output_path):
     print("Installing ninja")
     install_path = output_path / "ninja"
     os.makedirs(str(install_path), exist_ok=True)
-    run_generic_extract(ninja_zip_path, install_path)
+    shutil.unpack_archive(str(ninja_zip_path), str(install_path))
 
 
 def main(args: Namespace) -> int:
