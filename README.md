@@ -24,7 +24,6 @@ The build system has the following package requirements:
 
 - `python3` >= 3.4
 - `msiextract` (On linux/macos only)
-- `p7zip` (or 7-Zip on Windows)
 - `wine` (on linux/macos only, prefer CrossOver on macOS to avoid possible CL.EXE heap issues)
 
 The rest of the build system is constructed out of Visual Studio 2002 and DirectX 8.0 from the Web Archive.

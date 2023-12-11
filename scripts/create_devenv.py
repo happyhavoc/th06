@@ -19,12 +19,6 @@ from winhelpers import run_windows_program, get_windows_path
 SCRIPTS_DIR = Path(__file__).parent
 
 
-def run_generic_extract(msi_file_path: Path, output_dir: Path) -> int:
-    return subprocess.check_call(
-        ["7z", "x", "-y", str(msi_file_path)], cwd=str(output_dir)
-    )
-
-
 def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
     return subprocess.check_call(
         ["msiextract", str(msi_file_path)], cwd=str(output_dir)
@@ -227,13 +221,6 @@ def download_requirements(dl_cache_path, steps):
             "sha256": "46c8f9f63cf02987e8bf23934b2f471e1868b24748c5bb551efcf4863b43ca6c",
         },
         {
-            "name": "Visual C++ 10.0 Runtime",
-            "only": "py",
-            "url": "https://download.microsoft.com/download/1/6/5/165255E7-1014-4D0A-B094-B6A430A6BFFC/vcredist_x86.exe",
-            "filename": "vcredist_x86.exe",
-            "sha256": "99dce3c841cc6028560830f7866c9ce2928c98cf3256892ef8e6cf755147b0d8",
-        },
-        {
             "name": "Cygwin",
             "only": "cygwin",
             # On darwin, for whatever reason, the 32-bit installer fails. Let's
@@ -347,9 +334,7 @@ def install_directx8(dx8sdk_installer_path, tmp_dir, output_path):
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
-def install_python(
-    python_installer_path, vcredist_installer_path, tmp_dir, output_path
-):
+def install_python(python_installer_path, tmp_dir, output_path):
     print("Installing Python")
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
     os.makedirs(str(tmp_dir), exist_ok=True)
@@ -357,21 +342,6 @@ def install_python(
     python_dst_dir = output_path / "python"
     shutil.rmtree(str(python_dst_dir), ignore_errors=True)
     shutil.move(str(tmp_dir), str(python_dst_dir))
-    shutil.rmtree(str(tmp_dir), ignore_errors=True)
-
-    print("Installing MSVCR100.DLL for Python")
-    shutil.rmtree(str(tmp_dir), ignore_errors=True)
-    os.makedirs(str(tmp_dir), exist_ok=True)
-    run_generic_extract(vcredist_installer_path, tmp_dir)
-    run_generic_extract(tmp_dir / "vc_red.cab", tmp_dir)
-    try:
-        shutil.move(
-            str(tmp_dir / "F_CENTRAL_msvcr100_x86"),
-            str(python_dst_dir / "msvcr100.dll"),
-        )
-    except OSError:
-        if not (python_dst_dir / "msvcr100.dll").is_file():
-            raise
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
@@ -458,7 +428,6 @@ def main(args: Namespace) -> int:
         dx8sdk_installer_path = dl_cache_path / "dx8sdk.exe"
         installer_path = dl_cache_path / "en_vs.net_pro_full.exe"
         python_installer_path = dl_cache_path / "python-3.4.4.msi"
-        vcredist_installer_path = dl_cache_path / "vcredist_x86.exe"
         cygwin_installer_path = dl_cache_path / "cygwin-setup-2.874.exe"
         ninja_zip_path = dl_cache_path / "ninja-win.zip"
 
@@ -467,9 +436,7 @@ def main(args: Namespace) -> int:
         if "dx8" in steps:
             install_directx8(dx8sdk_installer_path, tmp_dir, output_path)
         if "py" in steps:
-            install_python(
-                python_installer_path, vcredist_installer_path, tmp_dir, output_path
-            )
+            install_python(python_installer_path, tmp_dir, output_path)
         if "pragma" in steps:
             install_pragma_var_order(tmp_dir, output_path)
         if "cygwin" in steps:
