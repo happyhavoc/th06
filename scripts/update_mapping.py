@@ -35,7 +35,7 @@ def runAnalyze(args, extraArgs):
 
 
 def updateMapping(args, mapping_path):
-    runAnalyze(args, ["-preScript", "GenerateMappingToml.java", mapping_path])
+    runAnalyze(args, ["-preScript", "GenerateMapping.java", mapping_path])
 
 
 def main():
@@ -55,7 +55,7 @@ def main():
     parser.add_argument("--program", help="Program to export")
     args = parser.parse_args()
 
-    mapping_path = SCRIPT_PATH.parent / "config" / "mapping.toml"
+    mapping_path = SCRIPT_PATH.parent / "config" / "mapping.csv"
 
     updateMapping(args, mapping_path)
 

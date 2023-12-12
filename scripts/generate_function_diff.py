@@ -23,8 +23,8 @@ def generate_function_diff(fn_name):
         out = subprocess.run(
             [
                 "satsuki",
-                "--mapping-file",
-                str(config_dir / "mapping.toml"),
+                "--mapping-file-csv",
+                str(config_dir / "mapping.csv"),
                 "disassemble",
                 str(resource_dir / "game.exe"),
                 "--resolve-names",
@@ -36,8 +36,8 @@ def generate_function_diff(fn_name):
         out = subprocess.run(
             [
                 "satsuki",
-                "--mapping-file",
-                str(config_dir / "mapping.toml"),
+                "--mapping-file-csv",
+                str(config_dir / "mapping.csv"),
                 "disassemble",
                 str(build_dir / "th06e.exe"),
                 "--pdb-file",
