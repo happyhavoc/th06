@@ -25,7 +25,7 @@ enum ChainCallbackResult
 // TODO
 typedef ChainCallbackResult (*ChainCallback)(void *);
 typedef ZunResult (*ChainAddedCallback)(void *);
-typedef void (*ChainDeletedCallback)(void *);
+typedef ZunResult (*ChainDeletedCallback)(void *);
 
 class ChainElem
 {
@@ -42,8 +42,6 @@ class ChainElem
 
     ChainElem();
     ~ChainElem();
-
-    ChainElem *Allocate(ChainCallback callback);
 };
 
 class Chain
@@ -54,7 +52,6 @@ class Chain
     unsigned int midiOutputDeviceCount;
     unsigned int unk;
 
-    void Cut(ChainElem *to_remove);
     void ReleaseSingleChain(ChainElem *root);
 
   public:
@@ -68,11 +65,14 @@ class Chain
     {
     }
 
+    void Cut(ChainElem *to_remove);
     void Release(void);
     int AddToCalcChain(ChainElem *elem, int priority);
     int AddToDrawChain(ChainElem *elem, int priority);
     int RunDrawChain(void);
     int RunCalcChain(void);
+
+    ChainElem *CreateElem(ChainCallback callback);
 };
 
 DIFFABLE_EXTERN(Chain, g_Chain)

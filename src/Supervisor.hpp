@@ -4,10 +4,12 @@
 #include <d3dx8math.h>
 #include <dinput.h>
 
+#include "Chain.hpp"
 #include "MidiOutput.hpp"
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
+#include "pbg3/Pbg3Archive.hpp"
 
 enum GameConfigOptsShifts
 {
@@ -66,9 +68,27 @@ struct GameConfiguration
     u32 opts;
 };
 
-struct GameContext
+#define IN_PBG3_INDEX 0
+#define MD_PBG3_INDEX 1
+
+struct Supervisor
 {
+    static ZunResult RegisterChain();
+    static ChainCallbackResult CalcCallback(Supervisor *s);
+    static ChainCallbackResult DrawCallback(Supervisor *s);
+    static ZunResult AddedCallback(Supervisor *s);
+    static void DeletedCallback(Supervisor *s);
+
+    static void CreateBackBuffer();
+
+    static ZunResult SetupDInput(Supervisor *s);
+
+    i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
+    void ReleasePbg3(i32 pbg3FileIdx);
+
     ZunResult Parse(char *path);
+
+    void TickTimer(i32 *frames, f32 *subframes);
 
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
@@ -84,17 +104,27 @@ struct GameContext
     D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
 
+    i32 calcCount;
+    i32 wantedState;
+    i32 curState;
+    i32 wantedState2;
+
     i32 unk198;
     i32 vsyncEnabled;
     i32 lastFrameTime;
-    float framerateMultiplier;
+    f32 effectiveFramerateMultiplier;
+    f32 framerateMultiplier;
 
     MidiOutput *midiOutput;
+
+    Pbg3Archive *pbg3Archives[16];
+    char pbg3ArchiveNames[32][16];
 
     u8 hasD3dHardwareVertexProcessing;
     u8 lockableBackbuffer;
     u8 colorMode16Bits;
 
+    u32 startupTimeBeforeMenuMusic;
     D3DCAPS8 d3dCaps;
 };
 
@@ -132,4 +162,4 @@ u16 GetControllerInput(u16 buttons);
 u16 GetInput(void);
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
-DIFFABLE_EXTERN(GameContext, g_GameContext)
+DIFFABLE_EXTERN(Supervisor, g_Supervisor)

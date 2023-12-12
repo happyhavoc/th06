@@ -1,8 +1,14 @@
 #include "SoundPlayer.hpp"
 
-void SoundPlayer::Init(HWND window)
+void SoundPlayer::InitializeDSound(HWND window)
 {
 }
+
+ZunResult SoundPlayer::InitSoundBuffers()
+{
+    return ZUN_ERROR;
+}
+
 void SoundPlayer::Release(void)
 {
 }

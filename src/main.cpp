@@ -8,22 +8,17 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "FileSystem.hpp"
-#include "GameContext.hpp"
 #include "GameErrorContext.hpp"
 #include "GameWindow.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
+#include "Supervisor.hpp"
 #include "ZunResult.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
 #define GAME_WINDOW_WIDTH 640
 #define GAME_WINDOW_HEIGHT 480
-
-ZunResult AddInputChain(void)
-{
-    return ZUN_ERROR;
-}
 
 #pragma var_order(fogVal, fogDensity, anm1, anm2, anm3, anm4)
 void InitD3dDevice(void)
@@ -35,95 +30,95 @@ void InitD3dDevice(void)
     AnmManager *anm3;
     AnmManager *anm4;
 
-    if (((g_GameContext.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
+    if (((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZENABLE, TRUE);
     }
     else
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZENABLE, FALSE);
     }
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    if (((g_GameContext.cfg.opts >> GCOS_SUPPRESS_USE_OF_GOROUD_SHADING) & 1) == 0)
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+    if (((g_Supervisor.cfg.opts >> GCOS_SUPPRESS_USE_OF_GOROUD_SHADING) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
-    }
-    else
-    {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
-    }
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
-    if (((g_GameContext.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
-    {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
     }
     else
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_FLAT);
     }
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHAREF, 4);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-    if (((g_GameContext.cfg.opts >> GCOS_DONT_USE_FOG) & 1) == 0)
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+    if (((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     }
     else
     {
-        g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+    }
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ALPHAREF, 4);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
+    if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_FOG) & 1) == 0)
+    {
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGENABLE, TRUE);
+    }
+    else
+    {
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGENABLE, FALSE);
     }
     fogDensity = 1.0;
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGDENSITY, *(u32 *)&fogDensity);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, 0xffa0a0a0);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGDENSITY, *(u32 *)&fogDensity);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_LINEAR);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, 0xffa0a0a0);
     fogVal = 1000.0;
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&fogVal);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&fogVal);
     fogVal = 5000.0;
-    g_GameContext.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&fogVal);
-    if (((g_GameContext.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&fogVal);
+    if (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
     }
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-    if (((g_GameContext.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+    if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TFACTOR);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
     }
-    if (((g_GameContext.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
+    if (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     }
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-    if (((g_GameContext.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+    if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
     }
     else
     {
-        g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     }
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_NONE);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSW, D3DTADDRESS_CLAMP);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_WRAP);
-    g_GameContext.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_WRAP);
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTEXF_NONE);
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_MAGFILTER, D3DTEXF_LINEAR);
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_MINFILTER, D3DTEXF_LINEAR);
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_TEXTURETRANSFORMFLAGS, D3DTTFF_COUNT2);
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSW, D3DTADDRESS_CLAMP);
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSU, D3DTADDRESS_WRAP);
+    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ADDRESSV, D3DTADDRESS_WRAP);
     if (g_AnmManager != NULL)
     {
         anm1 = g_AnmManager;
@@ -141,28 +136,28 @@ void InitD3dDevice(void)
 
 void Clear(D3DCOLOR color)
 {
-    g_GameContext.d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0, 0);
-    if (g_GameContext.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
+    g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0, 0);
+    if (g_Supervisor.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
     {
-        g_GameContext.d3dDevice->Reset(&g_GameContext.presentParameters);
+        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
     }
-    g_GameContext.d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0, 0);
-    if (g_GameContext.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
+    g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0, 0);
+    if (g_Supervisor.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
     {
-        g_GameContext.d3dDevice->Reset(&g_GameContext.presentParameters);
+        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
     }
     return;
 }
 
 void SetViewport(D3DCOLOR color)
 {
-    g_GameContext.viewport.X = 0;
-    g_GameContext.viewport.Y = 0;
-    g_GameContext.viewport.Width = GAME_WINDOW_WIDTH;
-    g_GameContext.viewport.Height = GAME_WINDOW_HEIGHT;
-    g_GameContext.viewport.MinZ = 0.0;
-    g_GameContext.viewport.MaxZ = 1.0;
-    g_GameContext.d3dDevice->SetViewport(&g_GameContext.viewport);
+    g_Supervisor.viewport.X = 0;
+    g_Supervisor.viewport.Y = 0;
+    g_Supervisor.viewport.Width = GAME_WINDOW_WIDTH;
+    g_Supervisor.viewport.Height = GAME_WINDOW_HEIGHT;
+    g_Supervisor.viewport.MinZ = 0.0;
+    g_Supervisor.viewport.MaxZ = 1.0;
+    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
     Clear(color);
 }
 
@@ -184,30 +179,30 @@ i32 InitD3dRendering(void)
 
     using_d3d_hal = 1;
     memset(&present_params, 0, sizeof(D3DPRESENT_PARAMETERS));
-    g_GameContext.d3dIface->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &display_mode);
-    if (!g_GameContext.cfg.windowed)
+    g_Supervisor.d3dIface->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &display_mode);
+    if (!g_Supervisor.cfg.windowed)
     {
-        if ((((g_GameContext.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 1))
+        if ((((g_Supervisor.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 1))
         {
             present_params.BackBufferFormat = D3DFMT_R5G6B5;
-            g_GameContext.cfg.colorMode16bit = 1;
+            g_Supervisor.cfg.colorMode16bit = 1;
         }
-        else if (g_GameContext.cfg.colorMode16bit == 0xff)
+        else if (g_Supervisor.cfg.colorMode16bit == 0xff)
         {
             if ((display_mode.Format == D3DFMT_X8R8G8B8) || (display_mode.Format == D3DFMT_A8R8G8B8))
             {
                 present_params.BackBufferFormat = D3DFMT_X8R8G8B8;
-                g_GameContext.cfg.colorMode16bit = 0;
+                g_Supervisor.cfg.colorMode16bit = 0;
                 GameErrorContextLog(&g_GameErrorContext, TH_ERR_SCREEN_INIT_32BITS);
             }
             else
             {
                 present_params.BackBufferFormat = D3DFMT_R5G6B5;
-                g_GameContext.cfg.colorMode16bit = 1;
+                g_Supervisor.cfg.colorMode16bit = 1;
                 GameErrorContextLog(&g_GameErrorContext, TH_ERR_SCREEN_INIT_16BITS);
             }
         }
-        else if (g_GameContext.cfg.colorMode16bit == 0)
+        else if (g_Supervisor.cfg.colorMode16bit == 0)
         {
             present_params.BackBufferFormat = D3DFMT_X8R8G8B8;
         }
@@ -215,7 +210,7 @@ i32 InitD3dRendering(void)
         {
             present_params.BackBufferFormat = D3DFMT_R5G6B5;
         }
-        if (!((g_GameContext.cfg.opts >> GCOS_FORCE_60FPS) & 1))
+        if (!((g_Supervisor.cfg.opts >> GCOS_FORCE_60FPS) & 1))
         {
             present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
         }
@@ -225,7 +220,7 @@ i32 InitD3dRendering(void)
             present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
             GameErrorContextLog(&g_GameErrorContext, TH_ERR_SET_REFRESH_RATE_60HZ);
         }
-        if (g_GameContext.cfg.frameskipConfig == 0)
+        if (g_Supervisor.cfg.frameskipConfig == 0)
         {
             present_params.SwapEffect = D3DSWAPEFFECT_FLIP;
         }
@@ -245,36 +240,36 @@ i32 InitD3dRendering(void)
     present_params.EnableAutoDepthStencil = true;
     present_params.AutoDepthStencilFormat = D3DFMT_D16;
     present_params.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-    g_GameContext.lockableBackbuffer = 1;
-    memcpy(&g_GameContext.presentParameters, &present_params, sizeof(D3DPRESENT_PARAMETERS));
+    g_Supervisor.lockableBackbuffer = 1;
+    memcpy(&g_Supervisor.presentParameters, &present_params, sizeof(D3DPRESENT_PARAMETERS));
     for (;;)
     {
-        if (((g_GameContext.cfg.opts >> GCOS_REFERENCE_RASTERIZER_MODE) & 1) != 0)
+        if (((g_Supervisor.cfg.opts >> GCOS_REFERENCE_RASTERIZER_MODE) & 1) != 0)
         {
             goto REFERENCE_RASTERIZER_MODE;
         }
         else
         {
-            if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_HAL, g_GameWindow.window,
-                                                     D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_params,
-                                                     &g_GameContext.d3dDevice) < 0)
+            if (g_Supervisor.d3dIface->CreateDevice(0, D3DDEVTYPE_HAL, g_GameWindow.window,
+                                                    D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_params,
+                                                    &g_Supervisor.d3dDevice) < 0)
             {
                 GameErrorContextLog(&g_GameErrorContext, TH_ERR_TL_HAL_UNAVAILABLE);
-                if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_HAL, g_GameWindow.window,
-                                                         D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
-                                                         &g_GameContext.d3dDevice) < 0)
+                if (g_Supervisor.d3dIface->CreateDevice(0, D3DDEVTYPE_HAL, g_GameWindow.window,
+                                                        D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
+                                                        &g_Supervisor.d3dDevice) < 0)
                 {
                     GameErrorContextLog(&g_GameErrorContext, TH_ERR_HAL_UNAVAILABLE);
                 REFERENCE_RASTERIZER_MODE:
-                    if (g_GameContext.d3dIface->CreateDevice(0, D3DDEVTYPE_REF, g_GameWindow.window,
-                                                             D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
-                                                             &g_GameContext.d3dDevice) < 0)
+                    if (g_Supervisor.d3dIface->CreateDevice(0, D3DDEVTYPE_REF, g_GameWindow.window,
+                                                            D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
+                                                            &g_Supervisor.d3dDevice) < 0)
                     {
-                        if (((g_GameContext.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0 && !g_GameContext.vsyncEnabled)
+                        if (((g_Supervisor.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0 && !g_Supervisor.vsyncEnabled)
                         {
                             GameErrorContextLog(&g_GameErrorContext, TH_ERR_CANT_CHANGE_REFRESH_RATE_FORCE_VSYNC);
                             present_params.FullScreen_RefreshRateInHz = 0;
-                            g_GameContext.vsyncEnabled = 1;
+                            g_Supervisor.vsyncEnabled = 1;
                             present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
                             continue;
                         }
@@ -284,16 +279,16 @@ i32 InitD3dRendering(void)
                             {
                                 GameErrorContextLog(&g_GameErrorContext, TH_ERR_BACKBUFFER_NONLOCKED);
                                 present_params.Flags = 0;
-                                g_GameContext.lockableBackbuffer = 0;
+                                g_Supervisor.lockableBackbuffer = 0;
                                 continue;
                             }
                             else
                             {
                                 GameErrorContextFatal(&g_GameErrorContext, TH_ERR_D3D_INIT_FAILED);
-                                if (g_GameContext.d3dIface != NULL)
+                                if (g_Supervisor.d3dIface != NULL)
                                 {
-                                    g_GameContext.d3dIface->Release();
-                                    g_GameContext.d3dIface = NULL;
+                                    g_Supervisor.d3dIface->Release();
+                                    g_Supervisor.d3dIface = NULL;
                                 }
                                 return 1;
                             }
@@ -302,20 +297,20 @@ i32 InitD3dRendering(void)
                     else
                     {
                         GameErrorContextLog(&g_GameErrorContext, TH_USING_REF_MODE);
-                        g_GameContext.hasD3dHardwareVertexProcessing = 0;
+                        g_Supervisor.hasD3dHardwareVertexProcessing = 0;
                         using_d3d_hal = 0;
                     }
                 }
                 else
                 {
                     GameErrorContextLog(&g_GameErrorContext, TH_USING_HAL_MODE);
-                    g_GameContext.hasD3dHardwareVertexProcessing = 0;
+                    g_Supervisor.hasD3dHardwareVertexProcessing = 0;
                 }
             }
             else
             {
                 GameErrorContextLog(&g_GameErrorContext, TH_USING_TL_HAL_MODE);
-                g_GameContext.hasD3dHardwareVertexProcessing = 1;
+                g_Supervisor.hasD3dHardwareVertexProcessing = 1;
             }
             break;
         }
@@ -335,20 +330,20 @@ i32 InitD3dRendering(void)
     eye.x = half_width;
     eye.y = -half_height;
     eye.z = -camera_distance;
-    D3DXMatrixLookAtLH(&g_GameContext.viewMatrix, &eye, &at, &up);
-    D3DXMatrixPerspectiveFovLH(&g_GameContext.projectionMatrix, field_of_view_y, aspect_ratio, 100.0, 10000.0);
-    g_GameContext.d3dDevice->SetTransform(D3DTS_VIEW, &g_GameContext.viewMatrix);
-    g_GameContext.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_GameContext.projectionMatrix);
-    g_GameContext.d3dDevice->GetViewport(&g_GameContext.viewport);
-    g_GameContext.d3dDevice->GetDeviceCaps(&g_GameContext.d3dCaps);
-    if (((((g_GameContext.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0) &&
-         ((g_GameContext.d3dCaps.TextureOpCaps & D3DTEXOPCAPS_ADD) == 0)))
+    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eye, &at, &up);
+    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, field_of_view_y, aspect_ratio, 100.0, 10000.0);
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
+    g_Supervisor.d3dDevice->GetViewport(&g_Supervisor.viewport);
+    g_Supervisor.d3dDevice->GetDeviceCaps(&g_Supervisor.d3dCaps);
+    if (((((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0) &&
+         ((g_Supervisor.d3dCaps.TextureOpCaps & D3DTEXOPCAPS_ADD) == 0)))
     {
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_SUPPORT_FOR_D3DTEXOPCAPS_ADD);
-        g_GameContext.cfg.opts = g_GameContext.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
+        g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
     }
     u32 should_run_at_60_fps;
-    if ((((g_GameContext.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0) && (g_GameContext.vsyncEnabled != 0))
+    if ((((g_Supervisor.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0) && (g_Supervisor.vsyncEnabled != 0))
     {
         should_run_at_60_fps = true;
     }
@@ -356,30 +351,30 @@ i32 InitD3dRendering(void)
     {
         should_run_at_60_fps = false;
     }
-    if (should_run_at_60_fps && ((g_GameContext.d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) == 0))
+    if (should_run_at_60_fps && ((g_Supervisor.d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) == 0))
     {
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_CANT_FORCE_60FPS_NO_ASYNC_FLIP);
-        g_GameContext.cfg.opts = g_GameContext.cfg.opts & ~(1 << GCOS_FORCE_60FPS);
+        g_Supervisor.cfg.opts = g_Supervisor.cfg.opts & ~(1 << GCOS_FORCE_60FPS);
     }
-    if ((((g_GameContext.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 0) && (using_d3d_hal != 0))
+    if ((((g_Supervisor.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 0) && (using_d3d_hal != 0))
     {
-        if (g_GameContext.d3dIface->CheckDeviceFormat(0, D3DDEVTYPE_HAL, present_params.BackBufferFormat, 0,
-                                                      D3DRTYPE_TEXTURE, D3DFMT_A8R8G8B8) == 0)
+        if (g_Supervisor.d3dIface->CheckDeviceFormat(0, D3DDEVTYPE_HAL, present_params.BackBufferFormat, 0,
+                                                     D3DRTYPE_TEXTURE, D3DFMT_A8R8G8B8) == 0)
         {
-            g_GameContext.colorMode16Bits = 1;
+            g_Supervisor.colorMode16Bits = 1;
         }
         else
         {
-            g_GameContext.colorMode16Bits = 0;
-            g_GameContext.cfg.opts = g_GameContext.cfg.opts | (1 << GCOS_FORCE_16BIT_COLOR_MODE);
+            g_Supervisor.colorMode16Bits = 0;
+            g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_FORCE_16BIT_COLOR_MODE);
             GameErrorContextLog(&g_GameErrorContext, TH_ERR_D3DFMT_A8R8G8B8_UNSUPPORTED);
         }
     }
     InitD3dDevice();
     SetViewport(0);
     g_GameWindow.isAppClosing = 0;
-    g_GameContext.lastFrameTime = 0;
-    g_GameContext.framerateMultiplier = 0.0;
+    g_Supervisor.lastFrameTime = 0;
+    g_Supervisor.framerateMultiplier = 0.0;
     return 0;
 }
 
@@ -415,9 +410,9 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     switch (uMsg)
     {
     case 0x3c9:
-        if (g_GameContext.midiOutput != NULL)
+        if (g_Supervisor.midiOutput != NULL)
         {
-            g_GameContext.midiOutput->UnprepareHeader((LPMIDIHDR)lParam);
+            g_Supervisor.midiOutput->UnprepareHeader((LPMIDIHDR)lParam);
         }
         break;
     case WM_ACTIVATEAPP:
@@ -432,7 +427,7 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_SETCURSOR:
-        if (!g_GameContext.cfg.windowed)
+        if (!g_Supervisor.cfg.windowed)
         {
             if (g_GameWindow.isAppActive != 0)
             {
@@ -475,7 +470,7 @@ void CreateGameWindow(HINSTANCE hInstance)
     g_GameWindow.isAppActive = 0;
     base_class.lpszClassName = "BASE";
     RegisterClass(&base_class);
-    if (g_GameContext.cfg.windowed == 0)
+    if (g_Supervisor.cfg.windowed == 0)
     {
         width = GAME_WINDOW_WIDTH;
         height = GAME_WINDOW_HEIGHT;
@@ -489,7 +484,7 @@ void CreateGameWindow(HINSTANCE hInstance)
         g_GameWindow.window = CreateWindowEx(0, "BASE", TH_WINDOW_TITLE, WS_VISIBLE | WS_MINIMIZEBOX | WS_SYSMENU,
                                              CW_USEDEFAULT, CW_USEDEFAULT, width, height, 0, 0, hInstance, 0);
     }
-    g_GameContext.hwndGameWindow = g_GameWindow.window;
+    g_Supervisor.hwndGameWindow = g_GameWindow.window;
 }
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -507,9 +502,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         return 1;
     }
 
-    g_GameContext.hInstance = hInstance;
+    g_Supervisor.hInstance = hInstance;
 
-    if (g_GameContext.Parse(TH_CONFIG_FILE) != ZUN_SUCCESS)
+    if (g_Supervisor.Parse(TH_CONFIG_FILE) != ZUN_SUCCESS)
     {
         g_GameErrorContext.Flush();
         return -1;
@@ -538,18 +533,18 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             return 1;
         }
 
-        g_SoundPlayer.Init(g_GameWindow.window);
+        g_SoundPlayer.InitializeDSound(g_GameWindow.window);
         GetJoystickCaps();
         ResetKeyboard();
 
         anm = new AnmManager();
         g_AnmManager = anm;
 
-        if (AddInputChain() != ZUN_SUCCESS)
+        if (Supervisor::RegisterChain() != ZUN_SUCCESS)
         {
             goto exit;
         }
-        if (!g_GameContext.cfg.windowed)
+        if (!g_Supervisor.cfg.windowed)
         {
             ShowCursor(FALSE);
         }
@@ -565,7 +560,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
             }
             else
             {
-                testCoopLevelRes = g_GameContext.d3dDevice->TestCooperativeLevel();
+                testCoopLevelRes = g_Supervisor.d3dDevice->TestCooperativeLevel();
                 if (testCoopLevelRes == D3D_OK)
                 {
                     renderResult = g_GameWindow.Render();
@@ -577,13 +572,13 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
                 else if (testCoopLevelRes == D3DERR_DEVICENOTRESET)
                 {
                     g_AnmManager->ReleaseD3dSurfaces();
-                    testResetRes = g_GameContext.d3dDevice->Reset(&g_GameContext.presentParameters);
+                    testResetRes = g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
                     if (testResetRes != 0)
                     {
                         break;
                     }
                     InitD3dDevice();
-                    g_GameContext.unk198 = 3;
+                    g_Supervisor.unk198 = 3;
                 }
             }
         }
@@ -595,10 +590,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     delete g_AnmManager;
     g_AnmManager = NULL;
-    if (g_GameContext.d3dDevice != NULL)
+    if (g_Supervisor.d3dDevice != NULL)
     {
-        g_GameContext.d3dDevice->Release();
-        g_GameContext.d3dDevice = NULL;
+        g_Supervisor.d3dDevice->Release();
+        g_Supervisor.d3dDevice = NULL;
     }
 
     ShowWindow(g_GameWindow.window, 0);
@@ -610,22 +605,22 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         g_GameErrorContext.RstContext();
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_OPTION_CHANGED_RESTART);
 
-        if (!g_GameContext.cfg.windowed)
+        if (!g_Supervisor.cfg.windowed)
         {
             ShowCursor(TRUE);
         }
     }
     else
     {
-        FileSystem::WriteDataToFile(TH_CONFIG_FILE, &g_GameContext.cfg, sizeof(g_GameContext.cfg));
+        FileSystem::WriteDataToFile(TH_CONFIG_FILE, &g_Supervisor.cfg, sizeof(g_Supervisor.cfg));
         SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, g_GameWindow.screenSaveActive, NULL, SPIF_SENDCHANGE);
         SystemParametersInfo(SPI_SETLOWPOWERACTIVE, g_GameWindow.lowPowerActive, NULL, SPIF_SENDCHANGE);
         SystemParametersInfo(SPI_SETPOWEROFFACTIVE, g_GameWindow.powerOffActive, NULL, SPIF_SENDCHANGE);
 
-        if (g_GameContext.d3dIface != NULL)
+        if (g_Supervisor.d3dIface != NULL)
         {
-            g_GameContext.d3dIface->Release();
-            g_GameContext.d3dIface = NULL;
+            g_Supervisor.d3dIface->Release();
+            g_Supervisor.d3dIface = NULL;
         }
     }
 

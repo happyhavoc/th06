@@ -64,16 +64,19 @@ def configure(build_type):
         )
 
         cxx_sources = [
+            "AsciiManager",
             "main",
             "Chain",
             "FileSystem",
-            "GameContext",
+            "Supervisor",
             "GameErrorContext",
             "GameWindow",
             "MidiOutput",
             "SoundPlayer",
             "Stage",
             "AnmManager",
+            "GameManager",
+            "Rng",
             "utils",
         ]
 

@@ -6,5 +6,8 @@
 
 struct MidiOutput
 {
+    MidiOutput();
+    ~MidiOutput();
+
     ZunResult UnprepareHeader(LPMIDIHDR param_1);
 };

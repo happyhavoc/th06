@@ -3,6 +3,7 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
@@ -22,6 +23,8 @@ struct AnmLoadedSprite
 
 struct AnmTimer
 {
+    AnmTimer();
+
     i32 previous;
     f32 subFrame;
     i32 current;
@@ -32,6 +35,10 @@ struct AnmRawInstr
 };
 struct AnmVm
 {
+    AnmVm();
+
+    void Initialize();
+
     D3DXVECTOR3 rotation;
     D3DXVECTOR3 angleVel;
     f32 scaleY;
@@ -72,8 +79,33 @@ struct AnmVm
     u8 fontHeight;
     // Two final padding bytes
 };
+
+struct AnmRawSprite
+{
+    u32 id;
+    D3DXVECTOR2 offset;
+    D3DXVECTOR2 size;
+};
+
 struct AnmRawEntry
 {
+    i32 numSprites;
+    i32 numScripts;
+    u32 textureIdx;
+    u32 width;
+    u32 height;
+    u32 format;
+    u32 colorKey;
+    u32 nameOffset;
+    u32 spriteIdxOffset;
+    u32 mipmapNameOffset;
+    u32 version;
+    u32 unk1;
+    u32 textureOffset;
+    u32 hasData;
+    u32 nextOffset;
+    u32 unk2;
+    u8 data[0];
 };
 
 struct RenderVertexInfo
@@ -88,7 +120,22 @@ struct AnmManager
     AnmManager();
     ~AnmManager();
 
+    void SetupVertexBuffer();
+
+    ZunResult CreateEmptyTexture(u32 textureIdx, u32 width, u32 height, u32 textureFormat);
+    ZunResult LoadTexture(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
+    ZunResult LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
+
+    ZunResult LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
+    ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
+
     void ReleaseD3dSurfaces(void);
+    ZunResult LoadSurface(i32 surfaceIdx, char *path);
+    void ReleaseSurface(i32 surfaceIdx);
+    void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
+
+    void ReleaseAnm(i32 anmIdx);
+    ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
 
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;
