@@ -221,6 +221,13 @@ def download_requirements(dl_cache_path, steps):
             "sha256": "46c8f9f63cf02987e8bf23934b2f471e1868b24748c5bb551efcf4863b43ca6c",
         },
         {
+            "name": "WiRunSQL",
+            "only": "py",
+            "url": "https://raw.githubusercontent.com/microsoft/Windows-classic-samples/44d192fd7ec6f2422b7d023891c5f805ada2c811/Samples/Win7Samples/sysmgmt/msi/scripts/WiRunSQL.vbs",
+            "filename": "WiRunSQL.vbs",
+            "sha256": "ef18c6d0b0163e371daaa1dd3fdf08030bc0b0999e4b2b90a1a736f7eb12784b",
+        },
+        {
             "name": "Cygwin",
             "only": "cygwin",
             # On darwin, for whatever reason, the 32-bit installer fails. Let's
@@ -334,14 +341,27 @@ def install_directx8(dx8sdk_installer_path, tmp_dir, output_path):
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
-def install_python(python_installer_path, tmp_dir, output_path):
+def install_python(python_installer_path, wirunsql_path, tmp_dir, output_path):
     print("Installing Python")
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
     os.makedirs(str(tmp_dir), exist_ok=True)
-    msiextract(python_installer_path, tmp_dir)
+    shutil.copyfile(str(python_installer_path), str(tmp_dir / "python.msi"))
+
+    # On windows, make sure we extract the msvcrt100.dll properly
+    run_windows_program(
+        [
+            "cscript",
+            str(wirunsql_path),
+            str(tmp_dir / "python.msi"),
+            "UPDATE Feature SET Level=1 WHERE Feature='PrivateCRT'",
+        ]
+    )
+
+    os.makedirs(str(tmp_dir / "python"), exist_ok=True)
+    msiextract(tmp_dir / "python.msi", tmp_dir / "python")
     python_dst_dir = output_path / "python"
     shutil.rmtree(str(python_dst_dir), ignore_errors=True)
-    shutil.move(str(tmp_dir), str(python_dst_dir))
+    shutil.move(str(tmp_dir / "python"), str(python_dst_dir))
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
@@ -428,6 +448,7 @@ def main(args: Namespace) -> int:
         dx8sdk_installer_path = dl_cache_path / "dx8sdk.exe"
         installer_path = dl_cache_path / "en_vs.net_pro_full.exe"
         python_installer_path = dl_cache_path / "python-3.4.4.msi"
+        wirunsql_path = dl_cache_path / "WiRunSQL.vbs"
         cygwin_installer_path = dl_cache_path / "cygwin-setup-2.874.exe"
         ninja_zip_path = dl_cache_path / "ninja-win.zip"
 
@@ -436,7 +457,7 @@ def main(args: Namespace) -> int:
         if "dx8" in steps:
             install_directx8(dx8sdk_installer_path, tmp_dir, output_path)
         if "py" in steps:
-            install_python(python_installer_path, tmp_dir, output_path)
+            install_python(python_installer_path, wirunsql_path, tmp_dir, output_path)
         if "pragma" in steps:
             install_pragma_var_order(tmp_dir, output_path)
         if "cygwin" in steps:
