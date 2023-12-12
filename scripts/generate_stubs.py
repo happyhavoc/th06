@@ -1,0 +1,72 @@
+import argparse
+import csv
+import sys
+
+parser = argparse.ArgumentParser(
+    prog="generate_stubs", description="Generate stubs based on the stubs.csv file."
+)
+parser.add_argument(
+    "-o", "--output", action="store", help="File to store the generated stubs in"
+)
+args = parser.parse_args()
+
+with open("config/mapping.csv") as f:
+    mapping_csv = csv.reader(f)
+    mapping_obj = {}
+    for func in mapping_csv:
+        fun_name = func[0]
+        fun_addr = int(func[1], 16)
+        mapping_obj[fun_name] = {
+            "fun_addr": int(func[1], 16),
+            "fun_size": int(func[2], 16),
+            "calling_convention": func[3],
+            "ret_type": func[4],
+            "arg_types": func[5:],
+        }
+
+f = open("config/stubbed.csv")
+stubbed_csv = csv.reader(f)
+
+output = sys.stdout
+if args.output:
+    output = open(args.output, "w")
+
+ret_vals = {
+    "void": "",
+    "u8": "0",
+    "i8": "0",
+    "u16": "0",
+    "i16": "0",
+    "short": "0",
+    "unsigned short": "0",
+    "u32": "0",
+    "i32": "0",
+    "unsigned int": "0",
+    "int": "0",
+    "unsigned long": "0",
+    "long": "0",
+    "f32": "0.0",
+    "float": "0.0",
+    "ZunResult": "ZUN_ERROR",
+    "ChainCallbackResult": "CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS",
+}
+
+for stub in stubbed_csv:
+    fun_name = stub[0]
+    fun = mapping_obj[fun_name]
+    calling_convention = fun["calling_convention"]
+    ret_type = fun["ret_type"]
+    ret_val = ret_vals[ret_type]
+    args_types = fun["arg_types"]
+
+    if calling_convention == "__thiscall":
+        this_type = args_types.pop(0)
+
+    fun_sig = ret_type + " " + fun_name + "("
+    fun_sig += ", ".join(
+        [arg_type + " " + "a" + str(idx) for idx, arg_type in enumerate(args_types)]
+    )
+    fun_sig += ")"
+    print(fun_sig + " {", file=output)
+    print("    return " + ret_val + ";", file=output)
+    print("}", file=output)
