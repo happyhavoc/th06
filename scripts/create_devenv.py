@@ -348,14 +348,15 @@ def install_python(python_installer_path, wirunsql_path, tmp_dir, output_path):
     shutil.copyfile(str(python_installer_path), str(tmp_dir / "python.msi"))
 
     # On windows, make sure we extract the msvcrt100.dll properly
-    run_windows_program(
-        [
-            "cscript",
-            str(wirunsql_path),
-            str(tmp_dir / "python.msi"),
-            "UPDATE Feature SET Level=1 WHERE Feature='PrivateCRT'",
-        ]
-    )
+    if sys.platform == "win32":
+        run_windows_program(
+            [
+                "cscript",
+                str(wirunsql_path),
+                str(tmp_dir / "python.msi"),
+                "UPDATE Feature SET Level=1 WHERE Feature='PrivateCRT'",
+            ]
+        )
 
     os.makedirs(str(tmp_dir / "python"), exist_ok=True)
     msiextract(tmp_dir / "python.msi", tmp_dir / "python")
