@@ -111,7 +111,6 @@ struct AnmRawEntry
 struct RenderVertexInfo
 {
     D3DXVECTOR3 position;
-    D3DCOLOR diffuseColor;
     D3DXVECTOR2 textureUV;
 };
 
@@ -158,7 +157,11 @@ struct AnmManager
     AnmLoadedSprite *currentSprite;
     IDirect3DVertexBuffer8 *vertexBuffer;
     RenderVertexInfo vertexBufferContents[4];
-    i32 heightsMaybe;
+    i32 screenshotTextureId;
+    i32 screenshotLeft;
+    i32 screenshotTop;
+    i32 screenshotWidth;
+    i32 screenshotHeight;
 };
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager)
