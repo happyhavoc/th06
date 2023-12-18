@@ -2,3 +2,6 @@
 	path = 3rdparty/munit
 	url = https://github.com/roblabla/munit
 	branch = msvc2002
+[submodule "3rdparty/Detours"]
+	path = 3rdparty/Detours
+	url = https://github.com/roblabla/Detours

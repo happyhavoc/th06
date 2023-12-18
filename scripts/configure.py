@@ -26,6 +26,10 @@ def configure(build_type):
         )
         writer.variable("cl_flags", "$cl_common_flags /Od /Oi /Ob1 /Op")
         writer.variable("cl_flags_pbg3", "$cl_common_flags /O2")
+        writer.variable(
+            "cl_flags_detours",
+            "/W4 /WX /we4777 /we4800 /Zi /MT /Gy /Gm- /Zl /Od /DDETOUR_DEBUG=0 /DWIN32_LEAN_AND_MEAN /D_WIN32_WINNT=0x501",
+        )
         if build_type == BuildType.DIFFBUILD:
             writer.variable("cl_flags", "$cl_flags /DDIFFBUILD")
             writer.variable("cl_flags_pbg3", "$cl_flags /DDIFFBUILD")
@@ -48,6 +52,11 @@ def configure(build_type):
         writer.rule(
             "cc_pbg3",
             "$cl /showIncludes $cl_flags_pbg3 /c $in /Fd$out.pdb /Fo$out",
+            deps="msvc",
+        )
+        writer.rule(
+            "cc_detours",
+            "$cl /nologo /showIncludes $cl_flags_detours /Fd$out.pdb /Fo$out /c $in",
             deps="msvc",
         )
         writer.rule("as", "$gas -o $out $in")
@@ -101,6 +110,19 @@ def configure(build_type):
             "test_Pbg3Archive",
         ]
 
+        detours_sources = [
+            "detours",
+            "modules",
+            "disasm",
+            "image",
+            "creatwth",
+            "disolx86",
+            "disolx64",
+            "disolia64",
+            "disolarm",
+            "disolarm64",
+        ]
+
         for rule in main_sources + cxx_sources:
             writer.build(
                 "$builddir/" + rule + ".obj",
@@ -129,6 +151,13 @@ def configure(build_type):
                 "$builddir/" + rule + ".obj",
                 "cc",
                 "tests/" + rule + ".cpp",
+            )
+
+        for rule in detours_sources:
+            writer.build(
+                "$builddir/" + rule + ".obj",
+                "cc_detours",
+                "3rdparty/Detours/src/" + rule + ".cpp",
             )
 
         writer.build(
@@ -190,6 +219,13 @@ def configure(build_type):
             "link",
             inputs=["$builddir/" + s + ".obj" for s in munit_sources],
             variables={"link_flags": "/lib", "link_libs": ""},
+        )
+
+        writer.build(
+            "$builddir/detours.lib",
+            "link",
+            inputs=["$builddir/" + s + ".obj" for s in detours_sources],
+            variables={"link_flags": "/lib"},
         )
 
         writer.close()
