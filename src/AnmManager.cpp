@@ -18,7 +18,7 @@ void AnmVm::Initialize()
 
 AnmVm::AnmVm()
 {
-    // TODO: stub
+    this->spriteNumber = -1;
 }
 
 AnmManager::AnmManager()

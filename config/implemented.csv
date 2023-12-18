@@ -9,6 +9,7 @@ AsciiManager::DeletedCallback
 AsciiManager::CutChain
 AsciiManager::AddString
 AnmTimer::AnmTimer
+AnmVm::AnmVm
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm
 AnmManager::LoadSurface
