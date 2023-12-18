@@ -86,7 +86,7 @@ struct Supervisor
     i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
     void ReleasePbg3(i32 pbg3FileIdx);
 
-    ZunResult Parse(char *path);
+    ZunResult LoadConfig(char *path);
 
     void TickTimer(i32 *frames, f32 *subframes);
 

@@ -504,7 +504,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     g_Supervisor.hInstance = hInstance;
 
-    if (g_Supervisor.Parse(TH_CONFIG_FILE) != ZUN_SUCCESS)
+    if (g_Supervisor.LoadConfig(TH_CONFIG_FILE) != ZUN_SUCCESS)
     {
         g_GameErrorContext.Flush();
         return -1;

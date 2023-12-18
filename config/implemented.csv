@@ -43,7 +43,7 @@ FileSystem::WriteDataToFile
 Supervisor::AddedCallback
 Supervisor::LoadPbg3
 Supervisor::RegisterChain
-Supervisor::Parse
+Supervisor::LoadConfig
 InitD3dDevice
 InitD3dRendering
 Clear
