@@ -8,6 +8,7 @@ AsciiManager::InitializeVms
 AsciiManager::DeletedCallback
 AsciiManager::CutChain
 AsciiManager::AddString
+AnmTimer::AnmTimer
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm
 AnmManager::LoadSurface
