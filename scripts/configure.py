@@ -74,6 +74,10 @@ def configure(build_type):
             "genstubs",
             "python scripts/generate_stubs.py --output $out",
         )
+        writer.rule(
+            "gendef",
+            "python scripts/gendef.py --output $out $in",
+        )
 
         cxx_sources = [
             "AsciiManager",
@@ -161,6 +165,15 @@ def configure(build_type):
             "rc",
             inputs="resources/th06.rc",
             implicit="$builddir/icon.ico",
+        )
+        writer.build(
+            "$builddir/th06.def",
+            "gendef",
+            inputs=[
+                "$builddir/" + x + ".obj"
+                for x in (cxx_sources + pbg3_sources + ["stubs"])
+            ],
+            implicit=["scripts/gendef.py"],
         )
         objfiles = (
             ["$builddir/" + src + ".obj" for src in cxx_sources]
