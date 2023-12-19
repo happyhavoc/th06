@@ -11,11 +11,6 @@ AnmTimer::AnmTimer()
     this->subFrame = 0.0;
 }
 
-void AnmVm::Initialize()
-{
-    // TODO: Stub
-}
-
 AnmVm::AnmVm()
 {
     this->spriteNumber = -1;
@@ -91,15 +86,6 @@ AnmManager::AnmManager()
     this->screenshotTextureId = -1;
 }
 AnmManager::~AnmManager()
-{
-}
-
-void AnmManager::SetupVertexBuffer()
-{
-    // TODO: stub
-}
-
-void AnmManager::ReleaseSurfaces(void)
 {
 }
 
@@ -296,38 +282,6 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
     }
     this->anmFilesSpriteIndexOffsets[anmIdx] = spriteIdxOffset;
     return ZUN_SUCCESS;
-}
-
-void AnmManager::ReleaseAnm(i32 anmIdx)
-{
-    // TODO: stub
-}
-
-ZunResult AnmManager::CreateEmptyTexture(u32 textureIdx, u32 width, u32 height, u32 textureFormat)
-{
-    // TODO: stub
-    return ZUN_ERROR;
-}
-ZunResult AnmManager::LoadTexture(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey)
-{
-    // TODO: stub
-    return ZUN_ERROR;
-}
-ZunResult AnmManager::LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey)
-{
-    // TODO: stub
-    return ZUN_ERROR;
-}
-void AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
-{
-    // TODO: stub
-    return;
-}
-
-ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 spriteIdx)
-{
-    // TODO: stub
-    return ZUN_ERROR;
 }
 
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)
