@@ -126,7 +126,7 @@ struct AnmManager
     ZunResult LoadTexture(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
     ZunResult LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
 
-    ZunResult LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
+    void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
 
     void ReleaseSurfaces(void);

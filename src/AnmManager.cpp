@@ -250,10 +250,10 @@ ZunResult AnmManager::LoadTextureMipmap(u32 textureIdx, char *textureName, u32 t
     // TODO: stub
     return ZUN_ERROR;
 }
-ZunResult AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
+void AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
 {
     // TODO: stub
-    return ZUN_ERROR;
+    return;
 }
 
 ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 spriteIdx)
