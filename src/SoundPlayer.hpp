@@ -10,7 +10,7 @@ struct SoundPlayer
 {
     void InitializeDSound(HWND window);
     ZunResult InitSoundBuffers();
-    void Release(void);
+    ZunResult Release(void);
 };
 
 DIFFABLE_EXTERN(SoundPlayer, g_SoundPlayer)

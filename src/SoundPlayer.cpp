@@ -9,8 +9,9 @@ ZunResult SoundPlayer::InitSoundBuffers()
     return ZUN_ERROR;
 }
 
-void SoundPlayer::Release(void)
+ZunResult SoundPlayer::Release(void)
 {
+    return ZUN_ERROR;
 }
 
 DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
