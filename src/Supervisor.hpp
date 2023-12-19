@@ -74,7 +74,7 @@ struct GameConfiguration
 struct Supervisor
 {
     static ZunResult RegisterChain();
-    static ChainCallbackResult CalcCallback(Supervisor *s);
+    static ChainCallbackResult OnUpdate(Supervisor *s);
     static ChainCallbackResult DrawCallback(Supervisor *s);
     static ZunResult AddedCallback(Supervisor *s);
     static void DeletedCallback(Supervisor *s);

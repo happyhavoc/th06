@@ -170,7 +170,7 @@ ZunResult Supervisor::RegisterChain()
     g_Supervisor.curState = -1;
     g_Supervisor.calcCount = 0;
 
-    ChainElem *calcElem = g_Chain.CreateElem((ChainCallback)Supervisor::CalcCallback);
+    ChainElem *calcElem = g_Chain.CreateElem((ChainCallback)Supervisor::OnUpdate);
     calcElem->arg = &g_Supervisor;
     calcElem->addedCallback = (ChainAddedCallback)Supervisor::AddedCallback;
     calcElem->deletedCallback = (ChainDeletedCallback)Supervisor::DeletedCallback;
@@ -186,7 +186,7 @@ ZunResult Supervisor::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-ChainCallbackResult Supervisor::CalcCallback(Supervisor *s)
+ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {
     // TODO: Stub
     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
