@@ -186,18 +186,6 @@ ZunResult Supervisor::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
-{
-    // TODO: Stub
-    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
-}
-
-ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
-{
-    // TODO: Stub
-    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
-}
-
 ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
     for (i32 i = 0; i < (i32)(sizeof(s->pbg3Archives) / sizeof(s->pbg3Archives[0])); i++)
@@ -252,28 +240,6 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
     return ZUN_SUCCESS;
 }
 
-ZunResult Supervisor::DeletedCallback(Supervisor *s)
-{
-    // TODO: Stub
-    return ZUN_ERROR;
-}
-
-void Supervisor::CreateBackBuffer()
-{
-    // TODO: Stub
-}
-
-ZunResult Supervisor::SetupDInput(Supervisor *s)
-{
-    // TODO: Stub
-    return ZUN_ERROR;
-}
-
-void Supervisor::TickTimer(i32 *frames, f32 *subframes)
-{
-    // TODO: Stub
-}
-
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
@@ -303,11 +269,6 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
         }
     }
     return 0;
-}
-
-void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
-{
-    // TODO: Stub
 }
 
 u16 GetJoystickCaps(void)
