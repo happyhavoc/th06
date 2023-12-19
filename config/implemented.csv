@@ -43,6 +43,7 @@ DebugPrint
 DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
+StageMenu::StageMenu
 Supervisor::AddedCallback
 Supervisor::LoadPbg3
 Supervisor::RegisterChain

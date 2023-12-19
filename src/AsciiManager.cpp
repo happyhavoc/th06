@@ -16,7 +16,6 @@ AsciiManager::AsciiManager()
 
 StageMenu::StageMenu()
 {
-    // TODO: Stub
 }
 
 ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
