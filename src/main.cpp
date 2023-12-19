@@ -571,7 +571,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
                 }
                 else if (testCoopLevelRes == D3DERR_DEVICENOTRESET)
                 {
-                    g_AnmManager->ReleaseD3dSurfaces();
+                    g_AnmManager->ReleaseSurfaces();
                     testResetRes = g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
                     if (testResetRes != 0)
                     {

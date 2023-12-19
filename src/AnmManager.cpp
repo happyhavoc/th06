@@ -31,7 +31,7 @@ void AnmManager::SetupVertexBuffer()
     // TODO: stub
 }
 
-void AnmManager::ReleaseD3dSurfaces(void)
+void AnmManager::ReleaseSurfaces(void)
 {
 }
 

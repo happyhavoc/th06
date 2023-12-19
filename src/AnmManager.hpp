@@ -129,7 +129,7 @@ struct AnmManager
     ZunResult LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
 
-    void ReleaseD3dSurfaces(void);
+    void ReleaseSurfaces(void);
     ZunResult LoadSurface(i32 surfaceIdx, char *path);
     void ReleaseSurface(i32 surfaceIdx);
     void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
