@@ -252,10 +252,10 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
     return ZUN_SUCCESS;
 }
 
-void Supervisor::DeletedCallback(Supervisor *s)
+ZunResult Supervisor::DeletedCallback(Supervisor *s)
 {
     // TODO: Stub
-    return;
+    return ZUN_ERROR;
 }
 
 void Supervisor::CreateBackBuffer()

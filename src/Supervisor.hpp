@@ -77,7 +77,7 @@ struct Supervisor
     static ChainCallbackResult OnUpdate(Supervisor *s);
     static ChainCallbackResult OnDraw(Supervisor *s);
     static ZunResult AddedCallback(Supervisor *s);
-    static void DeletedCallback(Supervisor *s);
+    static ZunResult DeletedCallback(Supervisor *s);
 
     static void CreateBackBuffer();
 
