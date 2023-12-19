@@ -21,6 +21,8 @@
 .global _g_GameWindow
 .global _g_SoundPlayer
 .global _g_AnmManager
+.global _g_PrimitivesToDrawNoVertexBuf
+.global _g_PrimitivesToDrawVertexBuf
 
 _g_ControllerMapping                = 0x004765a0
 _g_AsciiManagerOnDrawMenusChain     = 0x0047b8e0
@@ -41,3 +43,5 @@ _g_Supervisor                       = 0x006c6d18
 _g_GameWindow                       = 0x006c6bd4
 _g_SoundPlayer                      = 0x006d3f50
 _g_AnmManager                       = 0x006d4588
+_g_PrimitivesToDrawNoVertexBuf      = 0x006d4590
+_g_PrimitivesToDrawVertexBuf        = 0x006d4660
