@@ -20,6 +20,7 @@ struct AnmLoadedSprite
     f32 widthPx;
     i32 spriteId;
 };
+C_ASSERT(sizeof(AnmLoadedSprite) == 0x38);
 
 struct AnmTimer
 {
@@ -29,6 +30,7 @@ struct AnmTimer
     f32 subFrame;
     i32 current;
 };
+C_ASSERT(sizeof(AnmTimer) == 0xc);
 
 struct AnmRawInstr
 {
@@ -79,6 +81,7 @@ struct AnmVm
     u8 fontHeight;
     // Two final padding bytes
 };
+C_ASSERT(sizeof(AnmVm) == 0x110);
 
 struct AnmRawSprite
 {
@@ -113,6 +116,7 @@ struct RenderVertexInfo
     D3DXVECTOR3 position;
     D3DXVECTOR2 textureUV;
 };
+C_ASSERT(sizeof(RenderVertexInfo) == 0x14);
 
 struct AnmManager
 {
@@ -163,5 +167,6 @@ struct AnmManager
     i32 screenshotWidth;
     i32 screenshotHeight;
 };
+C_ASSERT(sizeof(AnmManager) == 0x2112c);
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager)

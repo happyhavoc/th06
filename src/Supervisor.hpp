@@ -140,6 +140,7 @@ struct Supervisor
     u32 startupTimeBeforeMenuMusic;
     D3DCAPS8 d3dCaps;
 };
+C_ASSERT(sizeof(Supervisor) == 0x4d8);
 
 enum TouhouButton
 {

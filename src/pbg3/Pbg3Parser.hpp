@@ -44,3 +44,4 @@ class Pbg3Parser : public IPbg3Parser
   private:
     FileAbstraction fileAbstraction;
 };
+C_ASSERT(sizeof(Pbg3Parser) == 0x24);

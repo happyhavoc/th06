@@ -53,3 +53,4 @@ class FileAbstraction : public IFileAbstraction
     HANDLE handle;
     DWORD access;
 };
+C_ASSERT(sizeof(FileAbstraction) == 0xc);

@@ -10,6 +10,7 @@ struct StageCameraSky
     f32 farPlane;
     D3DCOLOR color;
 };
+C_ASSERT(sizeof(StageCameraSky) == 0xc);
 
 struct Stage
 {
@@ -48,5 +49,6 @@ struct Stage
     D3DXVECTOR3 positionInterpInitial;
     i32 positionInterpStartTime;
 };
+C_ASSERT(sizeof(Stage) == 0x2f4);
 
 DIFFABLE_EXTERN(Stage, g_Stage)

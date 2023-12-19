@@ -16,6 +16,7 @@ struct MidiTimer
     u32 timerId;
     TIMECAPS timeCaps;
 };
+C_ASSERT(sizeof(MidiTimer) == 0x10);
 
 struct MidiTrack
 {
@@ -28,6 +29,7 @@ struct MidiTrack
     void *unk5;
     u32 unk6;
 };
+C_ASSERT(sizeof(MidiTrack) == 0x20);
 
 struct MidiDevice
 {
@@ -39,6 +41,7 @@ struct MidiDevice
     HMIDIOUT handle;
     u32 deviceId;
 };
+C_ASSERT(sizeof(MidiDevice) == 0x8);
 
 struct MidiOutput : MidiTimer
 {
@@ -84,3 +87,4 @@ struct MidiOutput : MidiTimer
     u32 unk2f8;
     u32 unk2fc;
 };
+C_ASSERT(sizeof(MidiOutput) == 0x300);
