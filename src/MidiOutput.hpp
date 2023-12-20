@@ -6,6 +6,8 @@
 
 struct MidiTimer
 {
+    MidiTimer();
+
     u32 timerId;
     TIMECAPS timeCaps;
 };

@@ -1,5 +1,10 @@
 #include "MidiOutput.hpp"
 
+MidiTimer::MidiTimer()
+{
+    timeGetDevCaps(&this->timeCaps, sizeof(TIMECAPS));
+    this->timerId = 0;
+}
 MidiOutput::MidiOutput()
 {
     // TODO: Stub
