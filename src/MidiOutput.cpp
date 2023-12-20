@@ -36,7 +36,28 @@ ZunResult MidiDevice::Close()
 
 MidiOutput::MidiOutput()
 {
-    // TODO: Stub
+    this->tracks = NULL;
+    this->division = 0;
+    this->unk120 = 0;
+    this->numTracks = 0;
+    this->unk2c4 = 0;
+    this->unk2c8 = 0;
+    this->unk2cc = 0;
+    this->unk2d0 = 0;
+    this->unk2d4 = 0;
+    this->unk2d8 = 0;
+    this->unk2dc = 0;
+    this->unk2e0 = 0;
+
+    for (int i = 0; i < sizeof(this->midiFileData) / sizeof(this->midiFileData[0]); i++)
+    {
+        this->midiFileData[i] = 0;
+    }
+    for (int i = 0; i < sizeof(this->midiHeaders) / sizeof(this->midiHeaders[0]); i++)
+    {
+        this->midiHeaders[i] = 0;
+    }
+    this->midiHeadersCursor = 0;
 }
 
 MidiOutput::~MidiOutput()
