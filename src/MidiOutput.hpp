@@ -7,8 +7,11 @@
 struct MidiTimer
 {
     MidiTimer();
+    ~MidiTimer();
 
     virtual void OnTimerElapsed();
+
+    i32 StopTimer();
 
     u32 timerId;
     TIMECAPS timeCaps;

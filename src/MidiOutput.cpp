@@ -8,6 +8,17 @@ MidiTimer::MidiTimer()
 void MidiTimer::OnTimerElapsed()
 {
 }
+MidiTimer::~MidiTimer()
+{
+    this->StopTimer();
+    timeEndPeriod(this->timeCaps.wPeriodMin);
+}
+i32 MidiTimer::StopTimer()
+{
+    // TODO: Stub
+    return 0;
+}
+
 MidiOutput::MidiOutput()
 {
     // TODO: Stub

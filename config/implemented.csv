@@ -44,6 +44,7 @@ DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MidiTimer::MidiTimer
+MidiTimer::~MidiTimer
 StageMenu::StageMenu
 Supervisor::AddedCallback
 Supervisor::LoadPbg3
