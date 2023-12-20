@@ -44,6 +44,7 @@ DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MidiDevice::MidiDevice
+MidiDevice::~MidiDevice
 MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 StageMenu::StageMenu

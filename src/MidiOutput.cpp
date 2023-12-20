@@ -24,6 +24,15 @@ MidiDevice::MidiDevice()
     this->handle = NULL;
     this->deviceId = 0;
 }
+MidiDevice::~MidiDevice()
+{
+    this->Close();
+}
+ZunResult MidiDevice::Close()
+{
+    // TODO: Stub
+    return ZUN_ERROR;
+}
 
 MidiOutput::MidiOutput()
 {
