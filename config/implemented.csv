@@ -46,6 +46,7 @@ FileSystem::WriteDataToFile
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput
+MidiOutput::~MidiOutput
 MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 StageMenu::StageMenu

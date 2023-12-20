@@ -47,6 +47,10 @@ struct MidiOutput : MidiTimer
 
     ZunResult UnprepareHeader(LPMIDIHDR param_1);
 
+    ZunResult StopPlayback();
+    void ClearTracks();
+    void UnloadFile(u32 idx);
+
     MIDIHDR *midiHeaders[32];
     i32 midiHeadersCursor;
     u8 *midiFileData[32];

@@ -62,6 +62,25 @@ MidiOutput::MidiOutput()
 
 MidiOutput::~MidiOutput()
 {
+    this->StopPlayback();
+    this->ClearTracks();
+    for (i32 i = 0; i < 32; i++)
+    {
+        this->UnloadFile(i);
+    }
+}
+ZunResult MidiOutput::StopPlayback()
+{
+    // TODO: Stub
+    return ZUN_ERROR;
+}
+void MidiOutput::ClearTracks()
+{
+    // TODO: Stub
+}
+void MidiOutput::UnloadFile(u32 idx)
+{
+    // TODO: Stub
 }
 
 ZunResult MidiOutput::UnprepareHeader(LPMIDIHDR param_1)
