@@ -45,6 +45,8 @@ struct MidiOutput : MidiTimer
     MidiOutput();
     ~MidiOutput();
 
+    void OnTimerElapsed();
+
     ZunResult UnprepareHeader(LPMIDIHDR param_1);
 
     ZunResult StopPlayback();

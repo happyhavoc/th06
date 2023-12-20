@@ -82,6 +82,10 @@ void MidiOutput::UnloadFile(u32 idx)
 {
     // TODO: Stub
 }
+void MidiOutput::OnTimerElapsed()
+{
+    // TODO: Stub
+}
 
 ZunResult MidiOutput::UnprepareHeader(LPMIDIHDR param_1)
 {
