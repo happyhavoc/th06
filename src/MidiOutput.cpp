@@ -5,6 +5,9 @@ MidiTimer::MidiTimer()
     timeGetDevCaps(&this->timeCaps, sizeof(TIMECAPS));
     this->timerId = 0;
 }
+void MidiTimer::OnTimerElapsed()
+{
+}
 MidiOutput::MidiOutput()
 {
     // TODO: Stub

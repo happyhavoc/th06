@@ -8,6 +8,8 @@ struct MidiTimer
 {
     MidiTimer();
 
+    virtual void OnTimerElapsed();
+
     u32 timerId;
     TIMECAPS timeCaps;
 };
