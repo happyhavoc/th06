@@ -31,6 +31,8 @@ struct MidiTrack
 
 struct MidiDevice
 {
+    MidiDevice();
+
     HMIDIOUT handle;
     u32 deviceId;
 };

@@ -19,6 +19,12 @@ i32 MidiTimer::StopTimer()
     return 0;
 }
 
+MidiDevice::MidiDevice()
+{
+    this->handle = NULL;
+    this->deviceId = 0;
+}
+
 MidiOutput::MidiOutput()
 {
     // TODO: Stub
