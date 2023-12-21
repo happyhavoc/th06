@@ -13,6 +13,7 @@ struct Pbg3Entry
     u32 checksum;
     char filename[256];
 };
+C_ASSERT(sizeof(Pbg3Entry) == 0x114);
 
 class Pbg3Archive
 {
@@ -34,5 +35,6 @@ class Pbg3Archive
     u32 fileTableOffset;
     Pbg3Entry *entries;
 };
+C_ASSERT(sizeof(Pbg3Archive) == 0x14);
 
 DIFFABLE_EXTERN(Pbg3Archive **, g_Pbg3Archives)

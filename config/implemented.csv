@@ -8,6 +8,9 @@ AsciiManager::InitializeVms
 AsciiManager::DeletedCallback
 AsciiManager::CutChain
 AsciiManager::AddString
+AnmTimer::AnmTimer
+AnmVm::AnmVm
+AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm
 AnmManager::LoadSurface
@@ -40,6 +43,13 @@ DebugPrint
 DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
+MidiDevice::MidiDevice
+MidiDevice::~MidiDevice
+MidiOutput::MidiOutput
+MidiOutput::~MidiOutput
+MidiTimer::MidiTimer
+MidiTimer::~MidiTimer
+StageMenu::StageMenu
 Supervisor::AddedCallback
 Supervisor::LoadPbg3
 Supervisor::RegisterChain

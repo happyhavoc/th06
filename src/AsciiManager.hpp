@@ -19,6 +19,7 @@ struct AsciiManagerString
     // If true, we are drawing an element of the Gui class.
     u32 isGui;
 };
+C_ASSERT(sizeof(AsciiManagerString) == 0x60);
 
 struct StageMenu
 {
@@ -38,6 +39,7 @@ struct StageMenu
     AnmVm vms0[6];
     AnmVm vm1;
 };
+C_ASSERT(sizeof(StageMenu) == 0x778);
 
 struct AsciiManagerPopup
 {
@@ -48,6 +50,7 @@ struct AsciiManagerPopup
     u8 inUse;
     u8 characterCount;
 };
+C_ASSERT(sizeof(AsciiManagerPopup) == 0x28);
 
 // The AsciiManager is responsible for drawing various textual elements on the
 // screen:
@@ -97,3 +100,4 @@ struct AsciiManager
     StageMenu retryMenu;
     AsciiManagerPopup popups[515];
 };
+C_ASSERT(sizeof(AsciiManager) == 0xc1ac);

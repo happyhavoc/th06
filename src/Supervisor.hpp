@@ -74,10 +74,10 @@ struct GameConfiguration
 struct Supervisor
 {
     static ZunResult RegisterChain();
-    static ChainCallbackResult CalcCallback(Supervisor *s);
-    static ChainCallbackResult DrawCallback(Supervisor *s);
+    static ChainCallbackResult OnUpdate(Supervisor *s);
+    static ChainCallbackResult OnDraw(Supervisor *s);
     static ZunResult AddedCallback(Supervisor *s);
-    static void DeletedCallback(Supervisor *s);
+    static ZunResult DeletedCallback(Supervisor *s);
 
     static void CreateBackBuffer();
 
@@ -104,18 +104,31 @@ struct Supervisor
     D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
 
+    u8 padding[0x18];
+
+    i8 lifeCount;
+    i8 bombCount;
+
+    u8 padding2[0x1d];
+
     i32 calcCount;
     i32 wantedState;
     i32 curState;
     i32 wantedState2;
 
+    i32 unk194;
     i32 unk198;
+    i32 unk19c;
+
     i32 vsyncEnabled;
     i32 lastFrameTime;
     f32 effectiveFramerateMultiplier;
     f32 framerateMultiplier;
 
     MidiOutput *midiOutput;
+
+    f32 unk1b4;
+    f32 unk1b8;
 
     Pbg3Archive *pbg3Archives[16];
     char pbg3ArchiveNames[32][16];
@@ -127,6 +140,7 @@ struct Supervisor
     u32 startupTimeBeforeMenuMusic;
     D3DCAPS8 d3dCaps;
 };
+C_ASSERT(sizeof(Supervisor) == 0x4d8);
 
 enum TouhouButton
 {

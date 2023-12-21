@@ -20,6 +20,7 @@ struct AnmLoadedSprite
     f32 widthPx;
     i32 spriteId;
 };
+C_ASSERT(sizeof(AnmLoadedSprite) == 0x38);
 
 struct AnmTimer
 {
@@ -29,6 +30,7 @@ struct AnmTimer
     f32 subFrame;
     i32 current;
 };
+C_ASSERT(sizeof(AnmTimer) == 0xc);
 
 struct AnmRawInstr
 {
@@ -79,6 +81,7 @@ struct AnmVm
     u8 fontHeight;
     // Two final padding bytes
 };
+C_ASSERT(sizeof(AnmVm) == 0x110);
 
 struct AnmRawSprite
 {
@@ -111,9 +114,9 @@ struct AnmRawEntry
 struct RenderVertexInfo
 {
     D3DXVECTOR3 position;
-    D3DCOLOR diffuseColor;
     D3DXVECTOR2 textureUV;
 };
+C_ASSERT(sizeof(RenderVertexInfo) == 0x14);
 
 struct AnmManager
 {
@@ -126,10 +129,10 @@ struct AnmManager
     ZunResult LoadTexture(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
     ZunResult LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
 
-    ZunResult LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
+    void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
 
-    void ReleaseD3dSurfaces(void);
+    void ReleaseSurfaces(void);
     ZunResult LoadSurface(i32 surfaceIdx, char *path);
     void ReleaseSurface(i32 surfaceIdx);
     void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
@@ -158,7 +161,12 @@ struct AnmManager
     AnmLoadedSprite *currentSprite;
     IDirect3DVertexBuffer8 *vertexBuffer;
     RenderVertexInfo vertexBufferContents[4];
-    i32 heightsMaybe;
+    i32 screenshotTextureId;
+    i32 screenshotLeft;
+    i32 screenshotTop;
+    i32 screenshotWidth;
+    i32 screenshotHeight;
 };
+C_ASSERT(sizeof(AnmManager) == 0x2112c);
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager)

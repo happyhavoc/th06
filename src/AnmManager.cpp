@@ -6,7 +6,9 @@
 
 AnmTimer::AnmTimer()
 {
-    // TODO: stub
+    this->current = 0;
+    this->previous = -1;
+    this->subFrame = 0.0;
 }
 
 void AnmVm::Initialize()
@@ -16,11 +18,77 @@ void AnmVm::Initialize()
 
 AnmVm::AnmVm()
 {
-    // TODO: stub
+    this->spriteNumber = -1;
 }
+
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRWH
+struct VertexTex1Xyzrwh
+{
+    D3DXVECTOR4 pos;
+    D3DXVECTOR2 textureUV;
+};
+
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRWH
+struct VertexTex1DiffuseXyzrwh
+{
+    D3DXVECTOR4 pos;
+    D3DCOLOR diffuse;
+    D3DXVECTOR2 textureUV;
+};
+
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ
+struct VertexTex1DiffuseXyz
+{
+    D3DXVECTOR3 pos;
+    D3DCOLOR diffuse;
+    D3DXVECTOR2 textureUV;
+};
+
+DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
+DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 
 AnmManager::AnmManager()
 {
+    memset(this, 0, sizeof(AnmManager));
+    for (size_t i = 0; i < sizeof(this->sprites) / sizeof(this->sprites[0]); i++)
+    {
+        this->sprites[i].sourceFileIndex = -1;
+    }
+
+    g_PrimitivesToDrawVertexBuf[3].pos.w = 1.0;
+    g_PrimitivesToDrawVertexBuf[2].pos.w = 1.0;
+    g_PrimitivesToDrawVertexBuf[1].pos.w = 1.0;
+    g_PrimitivesToDrawVertexBuf[0].pos.w = 1.0;
+    g_PrimitivesToDrawVertexBuf[0].textureUV.x = 0.0;
+    g_PrimitivesToDrawVertexBuf[0].textureUV.y = 0.0;
+    g_PrimitivesToDrawVertexBuf[1].textureUV.x = 1.0;
+    g_PrimitivesToDrawVertexBuf[1].textureUV.y = 0.0;
+    g_PrimitivesToDrawVertexBuf[2].textureUV.x = 0.0;
+    g_PrimitivesToDrawVertexBuf[2].textureUV.y = 1.0;
+    g_PrimitivesToDrawVertexBuf[3].textureUV.x = 1.0;
+    g_PrimitivesToDrawVertexBuf[3].textureUV.y = 1.0;
+
+    g_PrimitivesToDrawNoVertexBuf[3].pos.w = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[2].pos.w = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[1].pos.w = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[0].pos.w = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[0].textureUV.x = 0.0;
+    g_PrimitivesToDrawNoVertexBuf[0].textureUV.y = 0.0;
+    g_PrimitivesToDrawNoVertexBuf[1].textureUV.x = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[1].textureUV.y = 0.0;
+    g_PrimitivesToDrawNoVertexBuf[2].textureUV.x = 0.0;
+    g_PrimitivesToDrawNoVertexBuf[2].textureUV.y = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[3].textureUV.x = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[3].textureUV.y = 1.0;
+
+    this->vertexBuffer = NULL;
+    this->currentTexture = NULL;
+    this->currentBlendMode = 0;
+    this->currentColorOp = 0;
+    this->currentTextureFactor = 1;
+    this->currentVertexShader = 0;
+    this->currentZWriteDisable = 0;
+    this->screenshotTextureId = -1;
 }
 AnmManager::~AnmManager()
 {
@@ -31,7 +99,7 @@ void AnmManager::SetupVertexBuffer()
     // TODO: stub
 }
 
-void AnmManager::ReleaseD3dSurfaces(void)
+void AnmManager::ReleaseSurfaces(void)
 {
 }
 
@@ -250,10 +318,10 @@ ZunResult AnmManager::LoadTextureMipmap(u32 textureIdx, char *textureName, u32 t
     // TODO: stub
     return ZUN_ERROR;
 }
-ZunResult AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
+void AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
 {
     // TODO: stub
-    return ZUN_ERROR;
+    return;
 }
 
 ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 spriteIdx)
