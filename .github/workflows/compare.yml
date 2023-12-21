@@ -30,7 +30,15 @@ jobs:
       run: |
         echo $pwd.Path >> $env:GITHUB_PATH
     - name: Download original game binary for comparison
-      run: curl -L $env:ORIGINAL_URL -o resources/game.exe
+      run: |
+        curl -L $env:ORIGINAL_URL -o resources/game.exe
+        $hash = (Get-FileHash resources/game.exe).Hash
+        if ($hash -ne "9f76483c46256804792399296619c1274363c31cd8f1775fafb55106fb852245") {
+          Write-Host "Downloaded file with unexpected hash."
+          Write-Host "Expected: 9f76483c46256804792399296619c1274363c31cd8f1775fafb55106fb852245"
+          Write-Host "Got: $hash"
+          exit 1
+        }
       env:
         ORIGINAL_URL: ${{ secrets.ORIGINAL_URL }}
     - name: Download reimplemented game binary for comparison (1/2)
