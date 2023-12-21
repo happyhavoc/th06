@@ -31,6 +31,7 @@ def generate_function_diff(fn_name):
                 fn_name,
             ],
             stdout=out,
+            check=True,
         )
     with open(reimpl_asm_path, "w") as out:
         out = subprocess.run(
@@ -46,6 +47,7 @@ def generate_function_diff(fn_name):
                 fn_name,
             ],
             stdout=out,
+            check=True,
         )
 
     return orig_asm_path.read_text(), reimpl_asm_path.read_text()
