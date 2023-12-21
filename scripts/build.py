@@ -7,10 +7,12 @@ from winhelpers import run_windows_program
 SCRIPTS_DIR = Path(__file__).parent
 
 
-def build(build_type):
+def build(build_type, verbose=False):
     configure(build_type)
 
     ninja_args = []
+    if verbose:
+        ninja_args += ["-v"]
 
     if build_type == BuildType.TESTS:
         ninja_args += ["build/th06e-tests.exe"]
@@ -35,6 +37,7 @@ def main():
         choices=["normal", "diffbuild", "tests", "dllbuild"],
         default="normal",
     )
+    parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
     # First, create the build.ninja file that will be used to build.
@@ -47,7 +50,7 @@ def main():
     elif args.build_type == "dllbuild":
         build_type = BuildType.DLLBUILD
 
-    build(build_type)
+    build(build_type, args.verbose)
 
 
 if __name__ == "__main__":
