@@ -12,6 +12,7 @@ def main():
     parser.add_argument(
         "--build-type", choices=["normal", "diffbuild", "dllbuild"], default="normal"
     )
+    parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
     # First, create the build.ninja file that will be used to build.
@@ -24,6 +25,8 @@ def main():
     configure(build_type)
 
     ninja_args = []
+    if args.verbose:
+        ninja_args += ["-v"]
 
     if args.build_type == "dllbuild":
         ninja_args += ["build/th06e.dll"]
