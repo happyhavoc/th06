@@ -52,7 +52,8 @@ def configure(build_type):
         writer.rule("as", "$gas -o $out $in")
         writer.rule("rc", "$rc /fo $out $in")
         writer.rule(
-            "link", "$link /out:$out $link_flags /debug /pdb:$out.pdb $link_libs $in"
+            "link",
+            """cmd /c "for %F in ("$out") do $link /out:%F $link_flags /debug /pdb:%~pdnF.pdb $link_libs $in" """,
         )
         writer.rule(
             "copyicon",

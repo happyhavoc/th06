@@ -31,7 +31,7 @@ i32 InitD3dInterface(void)
 }
 
 // TODO: Not a perfect match.
-ZunResult Supervisor::Parse(char *path)
+ZunResult Supervisor::LoadConfig(char *path)
 {
     u8 *data;
     FILE *wavFile;
