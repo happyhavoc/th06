@@ -190,9 +190,9 @@ class BitStream
             }
             if ((this->curByte & this->curBitIdx) != 0)
             {
-                ret |= this->curBitIdx;
+                ret |= (1 << (numBits - 1));
             }
-            numBits >>= 1;
+            numBits--;
             this->curBitIdx >>= 1;
             if (this->curBitIdx == 0)
             {
@@ -245,7 +245,7 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
     u32 bytesWritten = 0;
 
     BitStream bs = BitStream(rawData, size);
-    while (bytesWritten < size)
+    while (TRUE)
     {
         if (bs.Read(1) != 0)
         {
