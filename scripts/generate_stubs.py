@@ -24,6 +24,12 @@ with open("config/mapping.csv") as f:
             "arg_types": func[5:],
         }
 
+with open("config/implemented.csv") as f:
+    implemented_csv = csv.reader(f)
+    for func in implemented_csv:
+        mapping_obj[func[0]]["implemented"] = True
+
+
 f = open("config/stubbed.csv")
 stubbed_csv = csv.reader(f)
 
@@ -54,6 +60,10 @@ ret_vals = {
 for stub in stubbed_csv:
     fun_name = stub[0]
     fun = mapping_obj[fun_name]
+    if fun.get("implemented", False):
+        # We don't need to generate a stub for implemented functions.
+        continue
+
     calling_convention = fun["calling_convention"]
     ret_type = fun["ret_type"]
     ret_val = ret_vals[ret_type]
