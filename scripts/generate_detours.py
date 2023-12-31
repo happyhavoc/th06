@@ -41,10 +41,6 @@ def get_path_of_mangled_symbol(symbol):
         raise Exception("Unknown symbol kind " + symbol)
 
 
-output = sys.stdout
-if args.output:
-    output = open(args.output, "w")
-
 fun_to_mangled_map = {}
 with open(args.input_def) as f:
     for line in f:
@@ -78,48 +74,61 @@ with open("config/mapping.csv") as f:
         fun_addr = int(func[1], 16)
         mapping_obj[fun_name] = fun_addr
 
+detours = {}
 f = open("config/implemented.csv")
 implemented_csv = csv.reader(f)
 
-print("Detouring detours[] = {", file=output)
-first = True
 for implemented in implemented_csv:
-    if not first:
-        print(",", file=output)
-
     fun_name = implemented[0]
     fun_mangled_name = fun_to_mangled_map[fun_name]
     fun_addr = mapping_obj[fun_name]
-    print(
-        "    { " + hex(fun_addr) + ', "' + fun_mangled_name + '", FALSE }',
-        end="",
-        file=output,
-    )
-    first = False
+    detours[fun_name] = {
+        "fun_addr": fun_addr,
+        "fun_mangled_name": fun_mangled_name,
+        "stub": False,
+    }
 
 f = open("config/stubbed.csv")
 stubbed_csv = csv.reader(f)
-first = True
 for implemented in stubbed_csv:
-    print(",", file=output)
-
     fun_name = implemented[0]
     fun_mangled_name = fun_to_mangled_map[fun_name]
     fun_addr = mapping_obj[fun_name]
-    print(
-        "    { " + hex(fun_addr) + ', "' + fun_mangled_name + '", TRUE }',
-        end="",
-        file=output,
-    )
+    detours[fun_name] = {
+        "fun_addr": fun_addr,
+        "fun_mangled_name": fun_mangled_name,
+        "stub": True,
+    }
 
 # Add some necessary detouring to share MSVCRT heap with the main executable
 for fun_name in ["_malloc", "_calloc", "_realloc", "operator_new", "_free", "__msize"]:
-    print(",", file=output)
-
     fun_mangled_name = fun_to_mangled_map[fun_name]
     fun_addr = mapping_obj[fun_name]
+    detours[fun_name] = {
+        "fun_addr": fun_addr,
+        "fun_mangled_name": fun_mangled_name,
+        "stub": False,
+    }
+
+output = sys.stdout
+if args.output:
+    output = open(args.output, "w")
+
+print("Detouring detours[] = {", file=output)
+
+first = True
+for detour in detours.values():
+    if not first:
+        print(",", file=output)
+    first = False
     print(
-        "    { " + hex(fun_addr) + ', "' + fun_mangled_name + '", FALSE }',
+        "    { "
+        + hex(detour["fun_addr"])
+        + ', "'
+        + detour["fun_mangled_name"]
+        + '", '
+        + str(detour["stub"]).upper()
+        + " }",
         end="",
         file=output,
     )
