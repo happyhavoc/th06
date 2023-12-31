@@ -150,7 +150,7 @@ i32 Pbg3Archive::Load(char *path)
         return FALSE;
     }
 
-    if (this->parser->Open(path) == FALSE)
+    if (this->parser->OpenArchive(path) == FALSE)
     {
         delete this->parser;
         return FALSE;

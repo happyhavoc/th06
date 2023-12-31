@@ -63,7 +63,8 @@ IPbg3Parser::ReadVarInt
 IPbg3Parser::ReadMagic
 IPbg3Parser::ReadString
 Pbg3Parser::Pbg3Parser
-Pbg3Parser::Open
+Pbg3Parser::OpenArchive
+Pbg3Parser::Close
 Pbg3Parser::ReadBit
 Pbg3Parser::ReadInt
 Pbg3Parser::ReadByteAssumeAligned
@@ -71,6 +72,7 @@ Pbg3Parser::SeekToOffset
 Pbg3Parser::SeekToNextByte
 Pbg3Parser::ReadByteAlignedData
 Pbg3Parser::GetLastWriteTime
+Pbg3Parser::ReadByte
 Pbg3Parser::~Pbg3Parser
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::ParseHeader
