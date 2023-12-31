@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import difflib
 from pathlib import Path
 import sys
 import os
@@ -57,7 +58,27 @@ def generate_function_diff(fn_name):
 
 def main():
     fn_name = sys.argv[1]
-    generate_function_diff(fn_name)
+    orig, reimpl = generate_function_diff(fn_name)
+
+    base_dir = Path(__file__).parent.parent
+    diff_dir = base_dir / "diff"
+    fs_fn_name = fn_name.replace(":", "__")
+
+    diff = "\n".join(
+        difflib.unified_diff(
+            orig.split("\n"),
+            reimpl.split("\n"),
+            "Original",
+            "Reimplementation",
+            n=20,
+            lineterm="",
+        )
+    )
+
+    print(diff)
+
+    with open(diff_dir / fs_fn_name / "diff.diff", "w") as f:
+        f.write(diff)
 
 
 if __name__ == "__main__":
