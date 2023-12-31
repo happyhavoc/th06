@@ -44,4 +44,4 @@ _g_GameWindow                       = 0x006c6bd4
 _g_SoundPlayer                      = 0x006d3f50
 _g_AnmManager                       = 0x006d4588
 _g_PrimitivesToDrawNoVertexBuf      = 0x006d4590
-_g_PrimitivesToDrawVertexBuf        = 0x006d4660
+_g_PrimitivesToDrawVertexBuf        = 0x006d4600

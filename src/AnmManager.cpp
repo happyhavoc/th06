@@ -42,7 +42,7 @@ struct VertexTex1DiffuseXyz
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 
-AnmManager::AnmManager()
+AnmManager::AnmManager() : virtualMachine()
 {
     memset(this, 0, sizeof(AnmManager));
     for (size_t i = 0; i < sizeof(this->sprites) / sizeof(this->sprites[0]); i++)
@@ -51,9 +51,9 @@ AnmManager::AnmManager()
     }
 
     g_PrimitivesToDrawVertexBuf[3].pos.w = 1.0;
-    g_PrimitivesToDrawVertexBuf[2].pos.w = 1.0;
-    g_PrimitivesToDrawVertexBuf[1].pos.w = 1.0;
-    g_PrimitivesToDrawVertexBuf[0].pos.w = 1.0;
+    g_PrimitivesToDrawVertexBuf[2].pos.w = g_PrimitivesToDrawVertexBuf[3].pos.w;
+    g_PrimitivesToDrawVertexBuf[1].pos.w = g_PrimitivesToDrawVertexBuf[2].pos.w;
+    g_PrimitivesToDrawVertexBuf[0].pos.w = g_PrimitivesToDrawVertexBuf[1].pos.w;
     g_PrimitivesToDrawVertexBuf[0].textureUV.x = 0.0;
     g_PrimitivesToDrawVertexBuf[0].textureUV.y = 0.0;
     g_PrimitivesToDrawVertexBuf[1].textureUV.x = 1.0;
@@ -64,9 +64,9 @@ AnmManager::AnmManager()
     g_PrimitivesToDrawVertexBuf[3].textureUV.y = 1.0;
 
     g_PrimitivesToDrawNoVertexBuf[3].pos.w = 1.0;
-    g_PrimitivesToDrawNoVertexBuf[2].pos.w = 1.0;
-    g_PrimitivesToDrawNoVertexBuf[1].pos.w = 1.0;
-    g_PrimitivesToDrawNoVertexBuf[0].pos.w = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[2].pos.w = g_PrimitivesToDrawNoVertexBuf[3].pos.w;
+    g_PrimitivesToDrawNoVertexBuf[1].pos.w = g_PrimitivesToDrawNoVertexBuf[2].pos.w;
+    g_PrimitivesToDrawNoVertexBuf[0].pos.w = g_PrimitivesToDrawNoVertexBuf[1].pos.w;
     g_PrimitivesToDrawNoVertexBuf[0].textureUV.x = 0.0;
     g_PrimitivesToDrawNoVertexBuf[0].textureUV.y = 0.0;
     g_PrimitivesToDrawNoVertexBuf[1].textureUV.x = 1.0;
