@@ -66,7 +66,12 @@ def msiextract(msi_file_path: Path, output_dir: Path) -> int:
 
         for entry in dir.glob("*"):
             new_entry = parent_dir / entry.name
-            shutil.move(str(entry), str(new_entry))
+            print(f"Renaming {entry} -> {new_entry}")
+            if not new_entry.exists():
+                shutil.move(str(entry), str(new_entry))
+            else:
+                copytree_exist_ok(str(entry), str(new_entry))
+                shutil.rmtree(str(entry))
 
         dir.rmdir()
 
@@ -84,9 +89,16 @@ def msiextract(msi_file_path: Path, output_dir: Path) -> int:
                 new_entry = entry.parent / new_name
 
                 if entry != new_entry:
-                    shutil.move(str(entry), str(new_entry))
-                    renamed_something = True
-                    break
+                    print(f"Renaming {entry} -> {new_entry}")
+                    if not new_entry.exists():
+                        shutil.move(str(entry), str(new_entry))
+                        renamed_something = True
+                        break
+                    else:
+                        copytree_exist_ok(str(entry), str(new_entry))
+                        shutil.rmtree(str(entry))
+                        renamed_something = True
+                        break
 
         should_continue = renamed_something
 
@@ -297,7 +309,7 @@ def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
 
     shutil.rmtree(str(tmp2_dir), ignore_errors=True)
 
-    # Unifromalise everything
+    # Uniformalize everything
     should_continue = True
     while should_continue:
         renamed_something = False
