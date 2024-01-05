@@ -1,6 +1,9 @@
 import os
+from pathlib import Path
 import subprocess
 import sys
+
+SCRIPTS_DIR = Path(__file__).parent
 
 
 def run_windows_program(args, add_env=None, cwd=None):
@@ -12,7 +15,7 @@ def run_windows_program(args, add_env=None, cwd=None):
     if sys.platform == "win32":
         subprocess.check_call(args, env=env, cwd=cwd)
     else:
-        subprocess.check_call([os.getenv("WINE", "wine")] + args, env=env, cwd=cwd)
+        subprocess.check_call([str(SCRIPTS_DIR / "wineth06")] + args, env=env, cwd=cwd)
 
 
 def get_windows_path(path):
@@ -20,5 +23,5 @@ def get_windows_path(path):
         return str(path)
     else:
         return subprocess.check_output(
-            [os.getenv("WINE", "wine"), "winepath", "-w", str(path)], text=True
+            [str(SCRIPTS_DIR / "wineth06"), "winepath", "-w", str(path)], text=True
         ).strip()
