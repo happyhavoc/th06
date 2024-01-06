@@ -11,11 +11,6 @@ AnmTimer::AnmTimer()
     this->subFrame = 0.0;
 }
 
-void AnmVm::Initialize()
-{
-    // TODO: Stub
-}
-
 AnmVm::AnmVm()
 {
     this->spriteNumber = -1;
@@ -47,7 +42,7 @@ struct VertexTex1DiffuseXyz
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 
-AnmManager::AnmManager()
+AnmManager::AnmManager() : virtualMachine()
 {
     memset(this, 0, sizeof(AnmManager));
     for (size_t i = 0; i < sizeof(this->sprites) / sizeof(this->sprites[0]); i++)
@@ -56,9 +51,9 @@ AnmManager::AnmManager()
     }
 
     g_PrimitivesToDrawVertexBuf[3].pos.w = 1.0;
-    g_PrimitivesToDrawVertexBuf[2].pos.w = 1.0;
-    g_PrimitivesToDrawVertexBuf[1].pos.w = 1.0;
-    g_PrimitivesToDrawVertexBuf[0].pos.w = 1.0;
+    g_PrimitivesToDrawVertexBuf[2].pos.w = g_PrimitivesToDrawVertexBuf[3].pos.w;
+    g_PrimitivesToDrawVertexBuf[1].pos.w = g_PrimitivesToDrawVertexBuf[2].pos.w;
+    g_PrimitivesToDrawVertexBuf[0].pos.w = g_PrimitivesToDrawVertexBuf[1].pos.w;
     g_PrimitivesToDrawVertexBuf[0].textureUV.x = 0.0;
     g_PrimitivesToDrawVertexBuf[0].textureUV.y = 0.0;
     g_PrimitivesToDrawVertexBuf[1].textureUV.x = 1.0;
@@ -69,9 +64,9 @@ AnmManager::AnmManager()
     g_PrimitivesToDrawVertexBuf[3].textureUV.y = 1.0;
 
     g_PrimitivesToDrawNoVertexBuf[3].pos.w = 1.0;
-    g_PrimitivesToDrawNoVertexBuf[2].pos.w = 1.0;
-    g_PrimitivesToDrawNoVertexBuf[1].pos.w = 1.0;
-    g_PrimitivesToDrawNoVertexBuf[0].pos.w = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[2].pos.w = g_PrimitivesToDrawNoVertexBuf[3].pos.w;
+    g_PrimitivesToDrawNoVertexBuf[1].pos.w = g_PrimitivesToDrawNoVertexBuf[2].pos.w;
+    g_PrimitivesToDrawNoVertexBuf[0].pos.w = g_PrimitivesToDrawNoVertexBuf[1].pos.w;
     g_PrimitivesToDrawNoVertexBuf[0].textureUV.x = 0.0;
     g_PrimitivesToDrawNoVertexBuf[0].textureUV.y = 0.0;
     g_PrimitivesToDrawNoVertexBuf[1].textureUV.x = 1.0;
@@ -91,15 +86,6 @@ AnmManager::AnmManager()
     this->screenshotTextureId = -1;
 }
 AnmManager::~AnmManager()
-{
-}
-
-void AnmManager::SetupVertexBuffer()
-{
-    // TODO: stub
-}
-
-void AnmManager::ReleaseSurfaces(void)
 {
 }
 
@@ -296,38 +282,6 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
     }
     this->anmFilesSpriteIndexOffsets[anmIdx] = spriteIdxOffset;
     return ZUN_SUCCESS;
-}
-
-void AnmManager::ReleaseAnm(i32 anmIdx)
-{
-    // TODO: stub
-}
-
-ZunResult AnmManager::CreateEmptyTexture(u32 textureIdx, u32 width, u32 height, u32 textureFormat)
-{
-    // TODO: stub
-    return ZUN_ERROR;
-}
-ZunResult AnmManager::LoadTexture(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey)
-{
-    // TODO: stub
-    return ZUN_ERROR;
-}
-ZunResult AnmManager::LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey)
-{
-    // TODO: stub
-    return ZUN_ERROR;
-}
-void AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
-{
-    // TODO: stub
-    return;
-}
-
-ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 spriteIdx)
-{
-    // TODO: stub
-    return ZUN_ERROR;
 }
 
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)

@@ -13,11 +13,6 @@ MidiTimer::~MidiTimer()
     this->StopTimer();
     timeEndPeriod(this->timeCaps.wPeriodMin);
 }
-i32 MidiTimer::StopTimer()
-{
-    // TODO: Stub
-    return 0;
-}
 
 MidiDevice::MidiDevice()
 {
@@ -27,11 +22,6 @@ MidiDevice::MidiDevice()
 MidiDevice::~MidiDevice()
 {
     this->Close();
-}
-ZunResult MidiDevice::Close()
-{
-    // TODO: Stub
-    return ZUN_ERROR;
 }
 
 MidiOutput::MidiOutput()
@@ -68,27 +58,4 @@ MidiOutput::~MidiOutput()
     {
         this->UnloadFile(i);
     }
-}
-ZunResult MidiOutput::StopPlayback()
-{
-    // TODO: Stub
-    return ZUN_ERROR;
-}
-void MidiOutput::ClearTracks()
-{
-    // TODO: Stub
-}
-void MidiOutput::UnloadFile(u32 idx)
-{
-    // TODO: Stub
-}
-void MidiOutput::OnTimerElapsed()
-{
-    // TODO: Stub
-}
-
-ZunResult MidiOutput::UnprepareHeader(LPMIDIHDR param_1)
-{
-    // TODO: Unimplemented
-    return ZUN_ERROR;
 }

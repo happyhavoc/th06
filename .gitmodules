@@ -1,0 +1,6 @@
+[submodule "Detours"]
+	path = Detours
+	url = https://github.com/roblabla/Detours
+[submodule "3rdparty/munit"]
+	path = 3rdparty/munit
+	url = https://github.com/nemequ/munit
