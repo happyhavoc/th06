@@ -21,7 +21,7 @@ jobs:
         python-version: '3.11'
     - name: Get ghidra
       run: |
-        curl -L https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_10.3.3_build/ghidra_10.3.3_PUBLIC_20230829.zip -o /tmp/ghidra.zip
+        curl -L https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0_build/ghidra_11.0_PUBLIC_20231222.zip -o /tmp/ghidra.zip
         unzip -d /tmp /tmp/ghidra.zip
         echo /tmp/ghidra_*/support >> $GITHUB_PATH
     - name: Update mapping
