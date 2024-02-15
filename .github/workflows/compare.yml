@@ -18,6 +18,21 @@ jobs:
       statuses: write
 
     steps:
+    - name: Report tests check
+      if: ${{ github.event_name == 'workflow_run' }}
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.workflow_run.head_sha,
+            state: 'pending',
+            target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            description: 'Comparison checks',
+            context: 'comparison-checks',
+          })
     - uses: actions/checkout@v3
     - name: Install satsuki
       uses: robinraju/release-downloader@v1.8
@@ -70,7 +85,7 @@ jobs:
     - name: Create diff summary
       run: python scripts/diff_all_functions.py > $env:GITHUB_STEP_SUMMARY
     - name: Report tests check
-      if: ${{ github.event_name == 'workflow_run' }}
+      if: ${{ github.event_name == 'workflow_run' && always() }}
       uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -79,7 +94,7 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             sha: context.payload.workflow_run.head_sha,
-            state: 'success',
+            state: ${{ success() }} ? 'success' : 'failure',
             target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             description: 'Comparison checks',
             context: 'comparison-checks',
