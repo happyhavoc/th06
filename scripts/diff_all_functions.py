@@ -52,7 +52,7 @@ def main():
             id = val["name"].lower().replace(":", "__")
             if "error" in val:
                 name = f"[{name}](#user-content-{id})"
-                print(f"{name} | 💥")
+                sys.stdout.buffer.write(f"{name} | 💥\n".encode("utf8"))
             else:
                 if val["ratio"] != 1:
                     name = f"[{name}](#user-content-{id})"
