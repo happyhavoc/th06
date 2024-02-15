@@ -85,7 +85,7 @@ jobs:
     - name: Create diff summary
       run: python scripts/diff_all_functions.py > $env:GITHUB_STEP_SUMMARY
     - name: Report tests check
-      if: ${{ github.event_name == 'workflow_run' && always() }}
+      if: ${{ github.event_name == 'workflow_run' && success() }}
       uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -94,7 +94,22 @@ jobs:
             owner: context.repo.owner,
             repo: context.repo.repo,
             sha: context.payload.workflow_run.head_sha,
-            state: ${{ success() }} ? 'success' : 'failure',
+            state: 'success',
+            target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            description: 'Comparison checks',
+            context: 'comparison-checks',
+          })
+    - name: Report tests check
+      if: ${{ github.event_name == 'workflow_run' && failure() }}
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          github.rest.repos.createCommitStatus({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            sha: context.payload.workflow_run.head_sha,
+            state: 'failure',
             target_url: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             description: 'Comparison checks',
             context: 'comparison-checks',
