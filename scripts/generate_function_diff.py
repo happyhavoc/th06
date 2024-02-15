@@ -31,6 +31,7 @@ def generate_function_diff(fn_name):
                 fn_name,
             ],
             stdout=out,
+            stderr=subprocess.PIPE,
             check=True,
         )
     with open(reimpl_asm_path, "w") as out:
@@ -47,6 +48,7 @@ def generate_function_diff(fn_name):
                 fn_name,
             ],
             stdout=out,
+            stderr=subprocess.PIPE,
             check=True,
         )
 

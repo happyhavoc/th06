@@ -3,6 +3,8 @@
 import csv
 import difflib
 from pathlib import Path
+import subprocess
+import sys
 
 from generate_function_diff import generate_function_diff
 
@@ -13,25 +15,33 @@ def main():
 
     implemented_csv = config_dir / "implemented.csv"
 
+    success = True
+
     with open(implemented_csv) as f:
         vals = []
         for row in csv.reader(f):
-            orig, reimpl = generate_function_diff(row[0])
-            vals.append(
-                {
-                    "name": row[0],
-                    "diff": "\n".join(
-                        difflib.unified_diff(
-                            orig.split("\n"),
-                            reimpl.split("\n"),
-                            "Original",
-                            "Reimplementation",
-                            lineterm="",
-                        )
-                    ),
-                    "ratio": difflib.SequenceMatcher(None, orig, reimpl).ratio(),
-                }
-            )
+            try:
+                orig, reimpl = generate_function_diff(row[0])
+                ratio = difflib.SequenceMatcher(None, orig, reimpl).ratio()
+                diff = "\n".join(
+                    difflib.unified_diff(
+                        orig.split("\n"),
+                        reimpl.split("\n"),
+                        "Original",
+                        "Reimplementation",
+                        lineterm="",
+                    )
+                )
+                vals.append(
+                    {
+                        "name": row[0],
+                        "diff": diff,
+                        "ratio": ratio,
+                    }
+                )
+            except subprocess.CalledProcessError as e:
+                success = False
+                vals.append({"name": row[0], "error": str(e.stderr, "utf8").strip()})
 
         print("# Report")
         print("")
@@ -40,22 +50,32 @@ def main():
         for val in vals:
             name = val["name"]
             id = val["name"].lower().replace(":", "__")
-            if val["ratio"] != 1:
+            if "error" in val:
                 name = f"[{name}](#user-content-{id})"
-            print(f"{name} | {val['ratio'] * 100:.2f}%")
+                print(f"{name} | 💥")
+            else:
+                if val["ratio"] != 1:
+                    name = f"[{name}](#user-content-{id})"
+                print(f"{name} | {val['ratio'] * 100:.2f}%")
 
         for val in vals:
-            if val["ratio"] != 1:
+            print("")
+            print("")
+            print(f'<details id="{id}"><summary><h2>{val["name"]}</h2></summary>')
+            print("")
+            if "error" in val:
+                print("Failed to generate diff:")
+                print(val["error"])
+            elif val["ratio"] != 1:
                 id = val["name"].lower().replace(":", "__")
-                print("")
-                print("")
-                print(f'<details id="{id}"><summary><h2>{val["name"]}</h2></summary>')
-                print("")
                 print("```diff")
                 print(val["diff"])
                 print("```")
-                print("")
-                print("</details>")
+            print("")
+            print("</details>")
+
+    if not success:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
