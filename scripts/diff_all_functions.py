@@ -52,6 +52,7 @@ def main():
             id = val["name"].lower().replace(":", "__")
             if "error" in val:
                 name = f"[{name}](#user-content-{id})"
+                sys.stdout.flush()
                 sys.stdout.buffer.write(f"{name} | 💥\n".encode("utf8"))
             else:
                 if val["ratio"] != 1:
