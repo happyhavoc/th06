@@ -89,7 +89,7 @@ Pbg3Parser::Pbg3Parser() : IPbg3Parser(), fileAbstraction()
     this->Reset();
 }
 
-i32 Pbg3Parser::Open(char *path)
+i32 Pbg3Parser::OpenArchive(char *path)
 {
     this->fileAbstraction.Close();
     this->Reset();

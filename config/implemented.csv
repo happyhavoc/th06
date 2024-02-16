@@ -63,7 +63,7 @@ IPbg3Parser::ReadVarInt
 IPbg3Parser::ReadMagic
 IPbg3Parser::ReadString
 Pbg3Parser::Pbg3Parser
-Pbg3Parser::Open
+Pbg3Parser::OpenArchive
 Pbg3Parser::ReadBit
 Pbg3Parser::ReadInt
 Pbg3Parser::ReadByteAssumeAligned

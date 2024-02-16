@@ -30,7 +30,7 @@ class Pbg3Parser : public IPbg3Parser
 {
   public:
     Pbg3Parser();
-    i32 Open(char *path);
+    i32 OpenArchive(char *path);
     i32 ReadBit();
     u32 ReadInt(u32 numBitsAsPowersOf2);
     u8 ReadByteAssumeAligned();
