@@ -166,7 +166,7 @@ i32 Pbg3Archive::Load(char *path)
 class BitStream
 {
   public:
-    BitStream(u8 *data, u32 size) : data(data), size(size), curByte(0), curByteIdx(0), curBitIdx(0x80), checksum(0)
+    BitStream(u8 *data, u32 size) : data(data), size(size), curByte(0), curByteIdx(0), curBitIdx(0x80), m_checksum(0)
     {
     }
     u32 Read(u32 numBits)
@@ -186,7 +186,7 @@ class BitStream
                 {
                     this->curByte = 0;
                 }
-                this->checksum += this->curByte;
+                this->m_checksum += this->curByte;
             }
             if ((this->curByte & this->curBitIdx) != 0)
             {
@@ -202,13 +202,18 @@ class BitStream
         return ret;
     }
 
+    u32 checksum()
+    {
+        return this->m_checksum;
+    }
+
   private:
     u8 *data;
     u8 curByte;
     u32 curByteIdx;
     u32 curBitIdx;
     u32 size;
-    u32 checksum;
+    u32 m_checksum;
 };
 
 u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
@@ -267,6 +272,12 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
                 dictHead = (dictHead + 1) & LZSS_DICTSIZE_MASK;
             }
         }
+    }
+
+    if (this->entries[entryIdx].checksum != bs.checksum())
+    {
+        free(out);
+        out = NULL;
     }
 
     free(rawData);
