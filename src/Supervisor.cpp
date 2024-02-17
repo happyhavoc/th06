@@ -228,7 +228,7 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     u16 randomSeed = timeGetTime();
     g_Rng.seed = randomSeed;
-    g_Rng.unk = 0;
+    g_Rng.generationCount = 0;
 
     g_SoundPlayer.InitSoundBuffers();
     if (g_AnmManager->LoadAnm(0, "data/text.anm", 0x700) != 0)
