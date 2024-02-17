@@ -120,6 +120,7 @@ class CStreamingSound : public CSound
     CStreamingSound(LPDIRECTSOUNDBUFFER pDSBuffer, DWORD dwDSBufferSize, CWaveFile *pWaveFile, DWORD dwNotifySize);
     ~CStreamingSound();
 
+    HRESULT UpdateFadeOut();
     HRESULT HandleWaveStreamNotification(BOOL bLoopedPlay);
     HRESULT Reset();
 };

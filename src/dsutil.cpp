@@ -486,6 +486,27 @@ CStreamingSound::~CStreamingSound()
 }
 
 //-----------------------------------------------------------------------------
+// Name: CStreamingSound::UpdateFadeOut()
+// Desc: Handle the notification that tell us to put more wav data in the
+//       circular buffer
+//-----------------------------------------------------------------------------
+HRESULT CStreamingSound::UpdateFadeOut()
+{
+    if (this->m_dwIsFadingOut == 0)
+        return 0;
+
+    this->m_dwCurFadeoutProgress = this->m_dwCurFadeoutProgress + -1;
+    if (this->m_dwCurFadeoutProgress < 1)
+    {
+        this->m_dwIsFadingOut = 0;
+        this->m_apDSBuffer[0]->Stop();
+        return 1;
+    }
+    this->m_apDSBuffer[0]->SetVolume(((this->m_dwCurFadeoutProgress / this->m_dwTotalFadeout) * 5000) - 5000);
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
 // Name: CStreamingSound::HandleWaveStreamNotification()
 // Desc: Handle the notification that tell us to put more wav data in the
 //       circular buffer
