@@ -38,3 +38,4 @@ jobs:
         branch: update-mapping
         title: Update mapping from ghidra
         body: Updates the mapping to the latest changes in the ghidra database.
+        token: ${{ secrets.GH_TOKEN_PAT }}

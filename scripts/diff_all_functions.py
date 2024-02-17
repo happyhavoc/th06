@@ -60,6 +60,10 @@ def main():
                 print(f"{name} | {val['ratio'] * 100:.2f}%")
 
         for val in vals:
+            if "error" not in val and val["ratio"] == 1:
+                # 100% matching, nothing to see here.
+                continue
+
             print("")
             print("")
             print(f'<details id="{id}"><summary><h2>{val["name"]}</h2></summary>')
