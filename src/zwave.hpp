@@ -82,8 +82,8 @@ class CSound
     DWORD m_dwNumBuffers;
 
     // th06 extensions for fadeout
-    DWORD m_dwCurFadeoutProgress;
-    DWORD m_dwTotalFadeout;
+    i32 m_dwCurFadeoutProgress;
+    i32 m_dwTotalFadeout;
     DWORD m_dwIsFadingOut;
 
     HRESULT RestoreBuffer(LPDIRECTSOUNDBUFFER pDSB, BOOL *pbWasRestored);

@@ -492,17 +492,18 @@ CStreamingSound::~CStreamingSound()
 //-----------------------------------------------------------------------------
 HRESULT CStreamingSound::UpdateFadeOut()
 {
-    if (this->m_dwIsFadingOut == 0)
-        return 0;
-
-    this->m_dwCurFadeoutProgress = this->m_dwCurFadeoutProgress + -1;
-    if (this->m_dwCurFadeoutProgress < 1)
+    if (this->m_dwIsFadingOut != 0)
     {
-        this->m_dwIsFadingOut = 0;
-        this->m_apDSBuffer[0]->Stop();
-        return 1;
+        this->m_dwCurFadeoutProgress = this->m_dwCurFadeoutProgress - 1;
+        if (this->m_dwCurFadeoutProgress <= 0)
+        {
+            this->m_dwIsFadingOut = 0;
+            this->m_apDSBuffer[0]->Stop();
+            return 1;
+        }
+        DWORD vol = ((this->m_dwCurFadeoutProgress * 5000) / this->m_dwTotalFadeout) - 5000;
+        HRESULT res = this->m_apDSBuffer[0]->SetVolume(vol);
     }
-    this->m_apDSBuffer[0]->SetVolume(((this->m_dwCurFadeoutProgress / this->m_dwTotalFadeout) * 5000) - 5000);
     return 0;
 }
 
