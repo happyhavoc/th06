@@ -10,6 +10,7 @@
 #define STRICT
 #include "dsutil.hpp"
 #include "dxutil.hpp"
+#include "utils.hpp"
 #include <dsound.h>
 #include <dxerr8.h>
 #include <mmsystem.h>
@@ -425,8 +426,17 @@ HRESULT CSound::Stop()
 
     HRESULT hr = 0;
 
+    DebugPrint2("CSound::Stop ");
+
     for (DWORD i = 0; i < m_dwNumBuffers; i++)
+    {
+        DebugPrint2("%d ", i);
         hr |= m_apDSBuffer[i]->Stop();
+    }
+
+    DebugPrint2("\n");
+
+    this->m_dwIsFadingOut = 0;
 
     return hr;
 }
