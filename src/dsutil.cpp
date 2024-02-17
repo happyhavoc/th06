@@ -517,8 +517,8 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
     DWORD dwCurrentPlayPos;
     DWORD dwPlayDelta;
     DWORD dwBytesWrittenToBuffer;
-    VOID *pDSLockedBuffer = NULL;
-    VOID *pDSLockedBuffer2 = NULL;
+    VOID *pDSLockedBuffer;
+    VOID *pDSLockedBuffer2;
     DWORD dwDSLockedBufferSize;
     DWORD dwDSLockedBufferSize2;
 
@@ -528,20 +528,31 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
     // Restore the buffer if it was lost
     BOOL bRestored;
     if (FAILED(hr = RestoreBuffer(m_apDSBuffer[0], &bRestored)))
+    {
+        DebugPrint2("error : RetoreBuffer in HandleWaveStreamNotification\n");
         return DXTRACE_ERR(TEXT("RestoreBuffer"), hr);
+    }
 
     if (bRestored)
     {
         // The buffer was restored, so we need to fill it with new data
         if (FAILED(hr = FillBufferWithSound(m_apDSBuffer[0], FALSE)))
+        {
+            DebugPrint2("error : FillBufferWithSound in HandleWaveStreamNotification\n");
             return DXTRACE_ERR(TEXT("FillBufferWithSound"), hr);
+        }
         return S_OK;
     }
 
     // Lock the DirectSound buffer
+    pDSLockedBuffer = NULL;
+    pDSLockedBuffer2 = NULL;
     if (FAILED(hr = m_apDSBuffer[0]->Lock(m_dwNextWriteOffset, m_dwNotifySize, &pDSLockedBuffer, &dwDSLockedBufferSize,
                                           &pDSLockedBuffer2, &dwDSLockedBufferSize2, 0L)))
+    {
+        DebugPrint2("error : Buffer->Lock in HandleWaveStreamNotification\n");
         return DXTRACE_ERR(TEXT("Lock"), hr);
+    }
 
     // m_dwDSBufferSize and m_dwNextWriteOffset are both multiples of m_dwNotifySize,
     // it should the second buffer should never be valid
@@ -552,7 +563,10 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
     {
         // Fill the DirectSound buffer with wav data
         if (FAILED(hr = m_pWaveFile->Read((BYTE *)pDSLockedBuffer, dwDSLockedBufferSize, &dwBytesWrittenToBuffer)))
+        {
+            DebugPrint2("error : m_pWaveFile->Read in HandleWaveStreamNotification\n");
             return DXTRACE_ERR(TEXT("Read"), hr);
+        }
     }
     else
     {
@@ -582,11 +596,17 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
             {
                 // This will keep reading in until the buffer is full (for very short files).
                 if (FAILED(hr = m_pWaveFile->ResetFile()))
+                {
+                    DebugPrint2("error : m_pWaveFile->ResetFile in HandleWaveStreamNotification\n");
                     return DXTRACE_ERR(TEXT("ResetFile"), hr);
+                }
 
                 if (FAILED(hr = m_pWaveFile->Read((BYTE *)pDSLockedBuffer + dwReadSoFar,
                                                   dwDSLockedBufferSize - dwReadSoFar, &dwBytesWrittenToBuffer)))
+                {
+                    DebugPrint2("error : m_pWaveFile->Read(+) in HandleWaveStreamNotification\n");
                     return DXTRACE_ERR(TEXT("Read"), hr);
+                }
 
                 dwReadSoFar += dwBytesWrittenToBuffer;
             }
@@ -601,7 +621,10 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
     // buffer with silence or starting reading from the beginning of the file,
     // depending if the user wants to loop the sound
     if (FAILED(hr = m_apDSBuffer[0]->GetCurrentPosition(&dwCurrentPlayPos, NULL)))
+    {
+        DebugPrint2("error : m_apDSBuffer[0]->GetCurrentPosition in HandleWaveStreamNotification\n");
         return DXTRACE_ERR(TEXT("GetCurrentPosition"), hr);
+    }
 
     // Check to see if the position counter looped
     if (dwCurrentPlayPos < m_dwLastPlayPos)
