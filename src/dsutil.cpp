@@ -1070,47 +1070,5 @@ HRESULT CWaveFile::Close()
         mmioClose(m_hmmio, 0);
         m_hmmio = NULL;
     }
-    else
-    {
-        m_mmioinfoOut.dwFlags |= MMIO_DIRTY;
-
-        if (m_hmmio == NULL)
-            return CO_E_NOTINITIALIZED;
-
-        if (0 != mmioSetInfo(m_hmmio, &m_mmioinfoOut, 0))
-            return DXTRACE_ERR(TEXT("mmioSetInfo"), E_FAIL);
-
-        // Ascend the output file out of the 'data' chunk -- this will cause
-        // the chunk size of the 'data' chunk to be written.
-        if (0 != mmioAscend(m_hmmio, &m_ck, 0))
-            return DXTRACE_ERR(TEXT("mmioAscend"), E_FAIL);
-
-        // Do this here instead...
-        if (0 != mmioAscend(m_hmmio, &m_ckRiff, 0))
-            return DXTRACE_ERR(TEXT("mmioAscend"), E_FAIL);
-
-        mmioSeek(m_hmmio, 0, SEEK_SET);
-
-        if (0 != (INT)mmioDescend(m_hmmio, &m_ckRiff, NULL, 0))
-            return DXTRACE_ERR(TEXT("mmioDescend"), E_FAIL);
-
-        m_ck.ckid = mmioFOURCC('f', 'a', 'c', 't');
-
-        if (0 == mmioDescend(m_hmmio, &m_ck, &m_ckRiff, MMIO_FINDCHUNK))
-        {
-            DWORD dwSamples = 0;
-            mmioWrite(m_hmmio, (HPSTR)&dwSamples, sizeof(DWORD));
-            mmioAscend(m_hmmio, &m_ck, 0);
-        }
-
-        // Ascend the output file out of the 'RIFF' chunk -- this will cause
-        // the chunk size of the 'RIFF' chunk to be written.
-        if (0 != mmioAscend(m_hmmio, &m_ckRiff, 0))
-            return DXTRACE_ERR(TEXT("mmioAscend"), E_FAIL);
-
-        mmioClose(m_hmmio, 0);
-        m_hmmio = NULL;
-    }
-
     return S_OK;
 }
