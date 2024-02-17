@@ -8,7 +8,7 @@
 // Copyright (c) 1999-2000 Microsoft Corp. All rights reserved.
 //-----------------------------------------------------------------------------
 #define STRICT
-#include "dsutil.hpp"
+#include "zwave.hpp"
 #include "dxutil.hpp"
 #include "utils.hpp"
 #include <dsound.h>

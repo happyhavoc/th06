@@ -79,7 +79,7 @@ def configure(build_type):
             "GameManager",
             "Rng",
             "utils",
-            "dsutil",
+            "zwave",
         ]
 
         pbg3_sources = [
