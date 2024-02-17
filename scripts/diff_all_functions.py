@@ -66,13 +66,13 @@ def main():
 
             print("")
             print("")
+            id = val["name"].lower().replace(":", "__")
             print(f'<details id="{id}"><summary><h2>{val["name"]}</h2></summary>')
             print("")
             if "error" in val:
                 print("Failed to generate diff:")
                 print(val["error"])
             elif val["ratio"] != 1:
-                id = val["name"].lower().replace(":", "__")
                 print("```diff")
                 print(val["diff"])
                 print("```")
