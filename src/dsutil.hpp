@@ -153,7 +153,6 @@ class CWaveFile
 
   protected:
     HRESULT ReadMMIO();
-    HRESULT WriteMMIO(WAVEFORMATEX *pwfxDest);
 
   public:
     CWaveFile();
@@ -164,7 +163,6 @@ class CWaveFile
     HRESULT Close();
 
     HRESULT Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead);
-    HRESULT Write(UINT nSizeToWrite, BYTE *pbData, UINT *pnSizeWrote);
 
     DWORD GetSize();
     HRESULT ResetFile(bool loop);
