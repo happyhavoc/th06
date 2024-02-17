@@ -116,11 +116,9 @@ HRESULT CSoundManager::CreateStreaming(CStreamingSound **ppStreamingSound, LPTST
 
     if (m_pDS == NULL)
         return CO_E_NOTINITIALIZED;
-    if (strWaveFileName == NULL || ppStreamingSound == NULL || hNotifyEvent == NULL)
-        return E_INVALIDARG;
 
     LPDIRECTSOUNDBUFFER pDSBuffer = NULL;
-    DWORD dwDSBufferSize = NULL;
+    DWORD dwDSBufferSize;
     CWaveFile *pWaveFile = NULL;
     DSBPOSITIONNOTIFY *aPosNotify = NULL;
     LPDIRECTSOUNDNOTIFY pDSNotify = NULL;
@@ -137,27 +135,22 @@ HRESULT CSoundManager::CreateStreaming(CStreamingSound **ppStreamingSound, LPTST
     DSBUFFERDESC dsbd;
     ZeroMemory(&dsbd, sizeof(DSBUFFERDESC));
     dsbd.dwSize = sizeof(DSBUFFERDESC);
-    dsbd.dwFlags = dwCreationFlags | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GETCURRENTPOSITION2;
+    dsbd.dwFlags = dwCreationFlags | DSBCAPS_CTRLPOSITIONNOTIFY | DSBCAPS_GLOBALFOCUS | DSBCAPS_GETCURRENTPOSITION2 |
+                   DSBCAPS_CTRLVOLUME | DSBCAPS_LOCSOFTWARE;
     dsbd.dwBufferBytes = dwDSBufferSize;
     dsbd.guid3DAlgorithm = guid3DAlgorithm;
     dsbd.lpwfxFormat = pWaveFile->m_pwfx;
 
     if (FAILED(hr = m_pDS->CreateSoundBuffer(&dsbd, &pDSBuffer, NULL)))
     {
-        // If wave format isn't then it will return
-        // either DSERR_BADFORMAT or E_INVALIDARG
-        if (hr == DSERR_BADFORMAT || hr == E_INVALIDARG)
-            return DXTRACE_ERR_NOMSGBOX(TEXT("CreateSoundBuffer"), hr);
-
-        return DXTRACE_ERR(TEXT("CreateSoundBuffer"), hr);
+        return E_FAIL;
     }
 
     // Create the notification events, so that we know when to fill
     // the buffer as the sound plays.
     if (FAILED(hr = pDSBuffer->QueryInterface(IID_IDirectSoundNotify, (VOID **)&pDSNotify)))
     {
-        SAFE_DELETE(aPosNotify);
-        return DXTRACE_ERR(TEXT("QueryInterface"), hr);
+        return E_FAIL;
     }
 
     aPosNotify = new DSBPOSITIONNOTIFY[dwNotifyCount];
@@ -176,7 +169,7 @@ HRESULT CSoundManager::CreateStreaming(CStreamingSound **ppStreamingSound, LPTST
     {
         SAFE_RELEASE(pDSNotify);
         SAFE_DELETE(aPosNotify);
-        return DXTRACE_ERR(TEXT("SetNotificationPositions"), hr);
+        return E_FAIL;
     }
 
     SAFE_RELEASE(pDSNotify);
