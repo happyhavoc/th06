@@ -407,6 +407,10 @@ HRESULT CSound::Play(DWORD dwPriority, DWORD dwFlags)
         Reset();
     }
 
+    this->m_dwIsFadingOut = 0;
+    this->m_dwCurFadeoutProgress = 0;
+    this->m_dwTotalFadeout = 0;
+
     return pDSB->Play(0, dwPriority, dwFlags);
 }
 
