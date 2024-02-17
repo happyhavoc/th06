@@ -698,6 +698,8 @@ CWaveFile::CWaveFile()
     m_hmmio = NULL;
     m_dwSize = 0;
     m_bIsReadingFromMemory = FALSE;
+    m_loopEndPoint = 0;
+    m_loopStartPoint = 0;
 }
 
 //-----------------------------------------------------------------------------

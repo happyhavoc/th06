@@ -144,6 +144,12 @@ class CWaveFile
     BYTE *m_pbDataCur;
     ULONG m_ulDataSize;
 
+    // Zun extensions
+    ULONG m_loopStartPoint; // Start of the loop. When the wave file reaches the
+                            // loop end point, it will restart playback from this
+                            // point.
+    ULONG m_loopEndPoint;   // End of the loop
+
   protected:
     HRESULT ReadMMIO();
     HRESULT WriteMMIO(WAVEFORMATEX *pwfxDest);
