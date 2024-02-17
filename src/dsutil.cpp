@@ -731,72 +731,52 @@ HRESULT CWaveFile::Open(LPTSTR strFileName, WAVEFORMATEX *pwfx, DWORD dwFlags)
             return E_INVALIDARG;
         SAFE_DELETE_ARRAY(m_pwfx);
 
-        m_hmmio = mmioOpen(strFileName, NULL, MMIO_ALLOCBUF | MMIO_READ);
+        MMIOINFO mmioInfo;
 
+        ZeroMemory(&mmioInfo, sizeof(mmioInfo));
+        m_hmmio = mmioOpen(strFileName, &mmioInfo, MMIO_ALLOCBUF | MMIO_READ);
         if (NULL == m_hmmio)
         {
-            HRSRC hResInfo;
-            HGLOBAL hResData;
-            DWORD dwSize;
-            VOID *pvRes;
-
-            // Loading it as a file failed, so try it as a resource
-            if (NULL == (hResInfo = FindResource(NULL, strFileName, TEXT("WAVE"))))
+            switch (mmioInfo.wErrorRet)
             {
-                if (NULL == (hResInfo = FindResource(NULL, strFileName, TEXT("WAV"))))
-                    return DXTRACE_ERR_NOMSGBOX(TEXT("FindResource"), E_FAIL);
+            case MMIOERR_PATHNOTFOUND:
+                DebugPrint2("The directory specification is incorrect. \n");
+                break;
+            case MMIOERR_ACCESSDENIED:
+                DebugPrint2("The file is protected and cannot be opened. \n");
+                break;
+            case MMIOERR_SHARINGVIOLATION:
+                DebugPrint2("The file is being used by another application and is unavailable. \n");
+                break;
+            case MMIOERR_TOOMANYOPENFILES:
+                DebugPrint2("too Meny Open Files \n");
+                break;
+            case MMIOERR_INVALIDFILE:
+                DebugPrint2(
+                    "Another failure condition occurred. This is the default error for an open-file failure. \n");
+                break;
             }
-
-            if (NULL == (hResData = LoadResource(NULL, hResInfo)))
-                return DXTRACE_ERR(TEXT("LoadResource"), E_FAIL);
-
-            if (0 == (dwSize = SizeofResource(NULL, hResInfo)))
-                return DXTRACE_ERR(TEXT("SizeofResource"), E_FAIL);
-
-            if (NULL == (pvRes = LockResource(hResData)))
-                return DXTRACE_ERR(TEXT("LockResource"), E_FAIL);
-
-            CHAR *pData = new CHAR[dwSize];
-            memcpy(pData, pvRes, dwSize);
-
-            MMIOINFO mmioInfo;
-            ZeroMemory(&mmioInfo, sizeof(mmioInfo));
-            mmioInfo.fccIOProc = FOURCC_MEM;
-            mmioInfo.cchBuffer = dwSize;
-            mmioInfo.pchBuffer = (CHAR *)pData;
-
-            m_hmmio = mmioOpen(NULL, &mmioInfo, MMIO_ALLOCBUF | MMIO_READ);
+            DebugPrint2("error : mmioOpen in CWaveFile::Open()\n");
+            return E_FAIL;
         }
 
         if (FAILED(hr = ReadMMIO()))
         {
             // ReadMMIO will fail if its an not a wave file
             mmioClose(m_hmmio, 0);
-            return DXTRACE_ERR_NOMSGBOX(TEXT("ReadMMIO"), hr);
+            DebugPrint2("error : ReadOpen in CWaveFile::Open()\n");
+            return E_FAIL;
         }
 
         if (FAILED(hr = ResetFile()))
-            return DXTRACE_ERR(TEXT("ResetFile"), hr);
+        {
+            DebugPrint2("error : ResetFile in CWaveFile::Open()\n");
+            return E_FAIL;
+        }
 
         // After the reset, the size of the wav file is m_ck.cksize so store it now
         m_dwSize = m_ck.cksize;
     }
-    else
-    {
-        m_hmmio = mmioOpen(strFileName, NULL, MMIO_ALLOCBUF | MMIO_READWRITE | MMIO_CREATE);
-        if (NULL == m_hmmio)
-            return DXTRACE_ERR(TEXT("mmioOpen"), E_FAIL);
-
-        if (FAILED(hr = WriteMMIO(pwfx)))
-        {
-            mmioClose(m_hmmio, 0);
-            return DXTRACE_ERR(TEXT("WriteMMIO"), hr);
-        }
-
-        if (FAILED(hr = ResetFile()))
-            return DXTRACE_ERR(TEXT("ResetFile"), hr);
-    }
-
     return hr;
 }
 
