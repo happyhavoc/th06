@@ -244,7 +244,7 @@ HRESULT CSound::FillBufferWithSound(LPDIRECTSOUNDBUFFER pDSB, BOOL bRepeatWavIfB
         return DXTRACE_ERR(TEXT("Lock"), hr);
 
     // Reset the wave file to the beginning
-    m_pWaveFile->ResetFile();
+    m_pWaveFile->ResetFile(false);
 
     if (FAILED(hr = m_pWaveFile->Read((BYTE *)pDSLockedBuffer, dwDSLockedBufferSize, &dwWavDataRead)))
         return DXTRACE_ERR(TEXT("Read"), hr);
@@ -267,7 +267,7 @@ HRESULT CSound::FillBufferWithSound(LPDIRECTSOUNDBUFFER pDSB, BOOL bRepeatWavIfB
             {
                 // This will keep reading in until the buffer is full
                 // for very short files
-                if (FAILED(hr = m_pWaveFile->ResetFile()))
+                if (FAILED(hr = m_pWaveFile->ResetFile(false)))
                     return DXTRACE_ERR(TEXT("ResetFile"), hr);
 
                 hr = m_pWaveFile->Read((BYTE *)pDSLockedBuffer + dwReadSoFar, dwDSLockedBufferSize - dwReadSoFar,
@@ -595,7 +595,7 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
             while (dwReadSoFar < dwDSLockedBufferSize)
             {
                 // This will keep reading in until the buffer is full (for very short files).
-                if (FAILED(hr = m_pWaveFile->ResetFile()))
+                if (FAILED(hr = m_pWaveFile->ResetFile(true)))
                 {
                     DebugPrint2("error : m_pWaveFile->ResetFile in HandleWaveStreamNotification\n");
                     return DXTRACE_ERR(TEXT("ResetFile"), hr);
@@ -681,7 +681,7 @@ HRESULT CStreamingSound::Reset()
             return DXTRACE_ERR(TEXT("FillBufferWithSound"), hr);
     }
 
-    m_pWaveFile->ResetFile();
+    m_pWaveFile->ResetFile(false);
 
     return m_apDSBuffer[0]->SetCurrentPosition(0L);
 }
@@ -768,7 +768,7 @@ HRESULT CWaveFile::Open(LPTSTR strFileName, WAVEFORMATEX *pwfx, DWORD dwFlags)
             return E_FAIL;
         }
 
-        if (FAILED(hr = ResetFile()))
+        if (FAILED(hr = ResetFile(false)))
         {
             DebugPrint2("error : ResetFile in CWaveFile::Open()\n");
             return E_FAIL;
@@ -891,7 +891,7 @@ DWORD CWaveFile::GetSize()
 // Desc: Resets the internal m_ck pointer so reading starts from the
 //       beginning of the file again
 //-----------------------------------------------------------------------------
-HRESULT CWaveFile::ResetFile()
+HRESULT CWaveFile::ResetFile(bool loop)
 {
     if (m_bIsReadingFromMemory)
     {
@@ -900,30 +900,66 @@ HRESULT CWaveFile::ResetFile()
     else
     {
         if (m_hmmio == NULL)
+        {
+            DebugPrint2("error : m_hmmio\t== NULL in CWaveFile::ResetFile\n");
             return CO_E_NOTINITIALIZED;
+        }
 
         if (m_dwFlags == WAVEFILE_READ)
         {
             // Seek to the data
             if (-1 == mmioSeek(m_hmmio, m_ckRiff.dwDataOffset + sizeof(FOURCC), SEEK_SET))
+            {
+                DebugPrint2("error : mmioSeek in CWaveFile::ResetFile\n");
                 return DXTRACE_ERR(TEXT("mmioSeek"), E_FAIL);
+            }
 
             // Search the input file for the 'data' chunk.
             m_ck.ckid = mmioFOURCC('d', 'a', 't', 'a');
-            if (0 != mmioDescend(m_hmmio, &m_ck, &m_ckRiff, MMIO_FINDCHUNK))
+            MMRESULT res = mmioDescend(m_hmmio, &m_ck, &m_ckRiff, MMIO_FINDCHUNK);
+            if (0 != res)
+            {
+                DebugPrint2("error : mmioDescend in CWaveFile::ResetFile\n");
                 return DXTRACE_ERR(TEXT("mmioDescend"), E_FAIL);
-        }
-        else
-        {
-            // Create the 'data' chunk that holds the waveform samples.
-            m_ck.ckid = mmioFOURCC('d', 'a', 't', 'a');
-            m_ck.cksize = 0;
+            }
 
-            if (0 != mmioCreateChunk(m_hmmio, &m_ck, 0))
-                return DXTRACE_ERR(TEXT("mmioCreateChunk"), E_FAIL);
-
-            if (0 != mmioGetInfo(m_hmmio, &m_mmioinfoOut, 0))
-                return DXTRACE_ERR(TEXT("mmioGetInfo"), E_FAIL);
+            if (0 < m_loopEndPoint)
+            {
+                m_ck.cksize = m_loopEndPoint;
+            }
+            if (loop && 0 < this->m_loopStartPoint)
+            {
+                MMIOINFO mmioinfoIn;
+                if (0 != mmioGetInfo(this->m_hmmio, &mmioinfoIn, 0))
+                {
+                    DebugPrint2("error : mmioGetInfo in CWaveFile::ResetFile\n");
+                    return E_FAIL;
+                }
+                for (int i = 0; i < this->m_loopStartPoint; i++)
+                {
+                    if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead)
+                    {
+                        if (0 != mmioAdvance(this->m_hmmio, &mmioinfoIn, 0))
+                        {
+                            DebugPrint2("error : mmioAdvance in CWaveFile::ResetFile\n");
+                            return E_FAIL;
+                        }
+                        if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead)
+                        {
+                            DebugPrint2(
+                                "error : mmioinfoIn.pchNext == mmioinfoIn.pchEndRead in CWaveFile::ResetFile\n");
+                            return E_FAIL;
+                        }
+                    }
+                    mmioinfoIn.pchNext = mmioinfoIn.pchNext + 1;
+                }
+                this->m_ck.cksize = this->m_ck.cksize - this->m_loopStartPoint;
+                if (mmioSetInfo(this->m_hmmio, &mmioinfoIn, 0) != 0)
+                {
+                    DebugPrint2("error : mmioSetInfo in CWaveFile::ResetFile\n");
+                    return 0x80004005;
+                }
+            }
         }
     }
 

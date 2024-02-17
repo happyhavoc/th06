@@ -8,6 +8,7 @@
 #ifndef DSUTIL_H
 #define DSUTIL_H
 
+#include "inttypes.hpp"
 #include <dsound.h>
 #include <mmreg.h>
 #include <mmsystem.h>
@@ -145,10 +146,10 @@ class CWaveFile
     ULONG m_ulDataSize;
 
     // Zun extensions
-    ULONG m_loopStartPoint; // Start of the loop. When the wave file reaches the
-                            // loop end point, it will restart playback from this
-                            // point.
-    ULONG m_loopEndPoint;   // End of the loop
+    i32 m_loopStartPoint; // Start of the loop. When the wave file reaches the
+                          // loop end point, it will restart playback from this
+                          // point.
+    i32 m_loopEndPoint;   // End of the loop
 
   protected:
     HRESULT ReadMMIO();
@@ -166,7 +167,7 @@ class CWaveFile
     HRESULT Write(UINT nSizeToWrite, BYTE *pbData, UINT *pnSizeWrote);
 
     DWORD GetSize();
-    HRESULT ResetFile();
+    HRESULT ResetFile(bool loop);
     WAVEFORMATEX *GetFormat()
     {
         return m_pwfx;
