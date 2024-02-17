@@ -1008,7 +1008,10 @@ HRESULT CWaveFile::Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead)
             *pdwSizeRead = 0;
 
         if (0 != mmioGetInfo(m_hmmio, &mmioinfoIn, 0))
+        {
+            DebugPrint2("error :\t%s(%s)\n", __FILE__, 1060);
             return DXTRACE_ERR(TEXT("mmioGetInfo"), E_FAIL);
+        }
 
         UINT cbDataIn = dwSizeToRead;
         if (cbDataIn > m_ck.cksize)
@@ -1022,10 +1025,20 @@ HRESULT CWaveFile::Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead)
             if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead)
             {
                 if (0 != mmioAdvance(m_hmmio, &mmioinfoIn, MMIO_READ))
+                {
+                    // Note: 1075 here is _probably_ the line number. I'm not
+                    // using __LINE__ to avoid mismatches due to reformatting.
+                    DebugPrint2("error :\t%s(%s)\n", __FILE__, 1075);
                     return DXTRACE_ERR(TEXT("mmioAdvance"), E_FAIL);
+                }
 
                 if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead)
+                {
+                    // Note: 1075 here is _probably_ the line number. I'm not
+                    // using __LINE__ to avoid mismatches due to reformatting.
+                    DebugPrint2("error :\t%s(%s)\n", __FILE__, 1079);
                     return DXTRACE_ERR(TEXT("mmioinfoIn.pchNext"), E_FAIL);
+                }
             }
 
             // Actual copy.
@@ -1034,7 +1047,10 @@ HRESULT CWaveFile::Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead)
         }
 
         if (0 != mmioSetInfo(m_hmmio, &mmioinfoIn, 0))
+        {
+            DebugPrint2("error :\t%s(%s)\n", __FILE__, 1088);
             return DXTRACE_ERR(TEXT("mmioSetInfo"), E_FAIL);
+        }
 
         if (pdwSizeRead != NULL)
             *pdwSizeRead = cbDataIn;
