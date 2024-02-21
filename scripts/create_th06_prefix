@@ -22,6 +22,7 @@ $WINE wineboot --init
 mkdir -p $MAIN_DRIVE_PATH
 
 echo "Creating devenv in $MAIN_DRIVE_PATH"
-python3 $SCRIPT_DIR/create_devenv.py $SCRIPT_DIR/dls $MAIN_DRIVE_PATH
+# #@ is used to pass all arguments to the python script
+python3 $SCRIPT_DIR/create_devenv.py $SCRIPT_DIR/dls $MAIN_DRIVE_PATH $@
 
 echo "DONE"
