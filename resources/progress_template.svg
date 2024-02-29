@@ -1,0 +1,15 @@
+<svg height="175" width="330" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" height="175" width="330" fill="black" />
+  <rect x="0" y="0" height="174" width="329" fill="white" />
+
+  <text x="5" y="30" font-size="35">Decomp Progress</text>
+  <text x="50" y="64" font-size="16" fill="black" font-weight="bold">Functions implimented:</text>
+  <rect width="322" height="28" x="4" y="80" fill="grey"/>
+  <rect width="{FUNC_PROG_WIDTH}" height="26" x="5" y="81" fill="white"/>
+  <text x="155" y="100" font-size="16" fill="black" font-weight="bold">{FUNC_PROG_PERCENT}%</text>
+
+  <text x="50" y="128" font-size="16" fill="black" font-weight="bold">Bytes implimented:</text>
+  <rect width="322" height="28" x="4" y="140" fill="grey"/>
+  <rect width="{BYTES_PROG_WIDTH}" height="26" x="5" y="141" fill="white"/>
+  <text x="155" y="160" font-size="16" fill="black" font-weight="bold">{BYTES_PROG_PERCENT}%</text>
+</svg>
