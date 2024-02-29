@@ -1,6 +1,6 @@
 # 東方紅魔郷　～ the Embodiment of Scarlet Devil
 
-[Decomp-progress]: https://github.com/happyhavoc/th06/blob/master/resources/progress.svg
+![Decomp-progress](./resources/progress.svg)
 
 [![Discord][discord-badge]][discord]
 
