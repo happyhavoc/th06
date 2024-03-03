@@ -32,7 +32,7 @@ jobs:
       env: # Or as an environment variable
         GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
     - name: Create PR to TH06 with updated mapping
-      uses: peter-evans/create-pull-request@v5
+      uses: peter-evans/create-pull-request@v6
       with:
         commit-message: Update mapping to latest ghidra changes
         branch: update-mapping
