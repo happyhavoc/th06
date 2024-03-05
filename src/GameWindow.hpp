@@ -6,7 +6,7 @@
 
 struct GameWindow
 {
-    i32 Render(void);
+    u32 Render();
 
     HWND window;
     i32 isAppClosing;
