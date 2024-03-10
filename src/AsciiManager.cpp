@@ -31,7 +31,7 @@ ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
                 continue;
             }
             curPopup->position.y -= 0.5 * g_Supervisor.effectiveFramerateMultiplier;
-            AnmTimer *timer = &curPopup->timer;
+            ZunTimer *timer = &curPopup->timer;
             timer->previous = timer->current;
             g_Supervisor.TickTimer(&timer->current, &timer->subFrame);
             curPopup->inUse = curPopup->timer.current > 60;

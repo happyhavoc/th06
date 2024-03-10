@@ -4,7 +4,7 @@
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 
-AnmTimer::AnmTimer()
+ZunTimer::ZunTimer()
 {
     this->current = 0;
     this->previous = -1;

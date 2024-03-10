@@ -22,15 +22,15 @@ struct AnmLoadedSprite
 };
 C_ASSERT(sizeof(AnmLoadedSprite) == 0x38);
 
-struct AnmTimer
+struct ZunTimer
 {
-    AnmTimer();
+    ZunTimer();
 
     i32 previous;
     f32 subFrame;
     i32 current;
 };
-C_ASSERT(sizeof(AnmTimer) == 0xc);
+C_ASSERT(sizeof(ZunTimer) == 0xc);
 
 struct AnmRawInstr
 {
@@ -48,7 +48,7 @@ struct AnmVm
     f32 scaleInterpFinalY;
     f32 scaleInterpFinalX;
     D3DXVECTOR2 uvScrollPos;
-    AnmTimer currentTimeInScript;
+    ZunTimer currentTimeInScript;
     D3DMATRIX matrix;
     D3DCOLOR color;
     u32 flags;
@@ -61,7 +61,7 @@ struct AnmVm
     D3DXVECTOR3 pos;
     f32 scaleInterpInitialY;
     f32 scaleInterpInitialX;
-    AnmTimer scaleInterpTime;
+    ZunTimer scaleInterpTime;
     i16 spriteNumber;
     i16 anotherSpriteNumber;
     i16 anmFileIndex;
@@ -74,9 +74,9 @@ struct AnmVm
     D3DXVECTOR3 posInterpInitial;
     D3DXVECTOR3 posInterpFinal;
     D3DXVECTOR3 pos2;
-    AnmTimer posInterpTime;
+    ZunTimer posInterpTime;
     i32 timeOfLastSpriteSet;
-    AnmTimer alphaInterpTime;
+    ZunTimer alphaInterpTime;
     u8 fontWidth;
     u8 fontHeight;
     // Two final padding bytes

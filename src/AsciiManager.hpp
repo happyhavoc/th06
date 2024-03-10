@@ -46,7 +46,7 @@ struct AsciiManagerPopup
     char digits[8];
     D3DXVECTOR3 position;
     D3DCOLOR color;
-    AnmTimer timer;
+    ZunTimer timer;
     u8 inUse;
     u8 characterCount;
 };

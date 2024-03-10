@@ -24,16 +24,16 @@ struct Stage
     void *objectInstances;
     // TODO: This has type StdRawInstr*
     void *beginningOfScript;
-    AnmTimer scriptTime;
+    ZunTimer scriptTime;
     i32 instructionIndex;
-    AnmTimer timer;
+    ZunTimer timer;
     u32 stage;
     D3DXVECTOR3 position;
     StageCameraSky skyFog;
     StageCameraSky skyFogInterpInitial;
     StageCameraSky skyFogInterpFinal;
     i32 skyFogInterpDuration;
-    AnmTimer skyFogInterpTimer;
+    ZunTimer skyFogInterpTimer;
     u8 skyFogNeedsSetup;
     i32 spellcardEclRelated0;
     i32 spellcardEclRelated1;
@@ -43,7 +43,7 @@ struct Stage
     D3DXVECTOR3 facingDirInterpInitial;
     D3DXVECTOR3 facingDirInterpFinal;
     i32 facingDirInterpDuration;
-    AnmTimer facingDirInterpTimer;
+    ZunTimer facingDirInterpTimer;
     D3DXVECTOR3 positionInterpFinal;
     i32 positionInterpEndTime;
     D3DXVECTOR3 positionInterpInitial;
