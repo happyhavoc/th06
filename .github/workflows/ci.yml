@@ -24,7 +24,7 @@ jobs:
       id: install_prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
-      run: python scripts/build.py
+      run: python scripts/build.py -j0
     - uses: actions/upload-artifact@v3
       with:
         name: th06e
@@ -57,7 +57,7 @@ jobs:
       id: install_prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
-      run: python scripts/build.py --build-type diffbuild
+      run: python scripts/build.py -j0 --build-type diffbuild
     - uses: actions/upload-artifact@v3
       with:
         name: th06e-diff
@@ -92,7 +92,7 @@ jobs:
       id: install_prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
-      run: python scripts/build.py --build-type dllbuild
+      run: python scripts/build.py -j0 --build-type dllbuild
     - uses: actions/upload-artifact@v3
       with:
         name: th06e-dll
