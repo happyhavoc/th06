@@ -7,7 +7,7 @@
 
   <text x="80" y="40" font-size="40">TH06.EXE</text>
 
-  <image x="105" y="55" href="placeholder.ico" width="150px"></image>
+  <image x="105" y="55" href="{ICON_URL}" width="150px"></image>
 
   <text xml:space="preserve">
     <tspan x="80" y="240">Implemented:   {FUNC_PROG_PERCENT}%</tspan>

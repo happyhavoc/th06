@@ -1,3 +1,4 @@
+import base64
 import os.path
 from pathlib import Path
 import sys
@@ -45,8 +46,16 @@ def update_svg():
 
     func_impl, bytes_impl = create_status_profile()
 
-    new_svg = svg_data.replace("{FUNC_PROG_PERCENT}", str(round(func_impl, 2))).replace(
-        "{BYTES_PROG_PERCENT}", str(round(bytes_impl, 2))
+    with open(script_path / "resources" / "placeholder.png", "rb") as f:
+        placeholder_png = f.read()
+    icon_url = "data:image/png;base64," + base64.b64encode(placeholder_png).decode(
+        "ascii"
+    )
+
+    new_svg = (
+        svg_data.replace("{FUNC_PROG_PERCENT}", str(round(func_impl, 2)))
+        .replace("{BYTES_PROG_PERCENT}", str(round(bytes_impl, 2)))
+        .replace("{ICON_URL}", icon_url)
     )
 
     with open(script_path / "resources" / "progress_dark.svg", "w") as f:
