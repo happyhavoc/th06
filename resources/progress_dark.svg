@@ -10,8 +10,8 @@
   <image x="105" y="55" href="placeholder.ico" width="150px"></image>
 
   <text xml:space="preserve">
-    <tspan x="80" y="240">Implemented:   {FUNC_PROG_PERCENT}%</tspan>
-    <tspan x="80" y="260">Byte Accuracy: {BYTES_PROG_PERCENT}%</tspan>
+    <tspan x="80" y="240">Implemented:   8.29%</tspan>
+    <tspan x="80" y="260">Byte Accuracy: 11.86%</tspan>
   </text>
 
   <g width="300px" height="20px">
@@ -19,7 +19,7 @@
     <rect class="inner-rect" width="300px" height="30px" x="25" y="275" />
     <rect class="progress-rect" height="25px" x="27" y="277.5" />
     <text xml:space="preserve">
-      <tspan class="progress-text" x="45%" y="296">{FUNC_PROG_PERCENT}%</tspan>
+      <tspan class="progress-text" x="45%" y="296">8.29%</tspan>
     </text>
     <defs>
       <filter id="blendMode">
@@ -37,8 +37,8 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&amp;display=swap');
     :root {
-      --text-color: {TEXT_COLOR};
-      --percentage: {FUNC_PROG_PERCENT};
+      --text-color: white;
+      --percentage: 8.29;
 
       --progress: calc(var(--percentage) * 3px);
       --outer-rect-width: 300px;

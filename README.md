@@ -1,6 +1,9 @@
 # 東方紅魔郷　～ the Embodiment of Scarlet Devil
 
-![Decomp-progress](./resources/progress.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="resources/progress_dark.svg">
+  <img alt="Decomp Progress" src="resources/progress.svg">
+</picture>
 
 [![Discord][discord-badge]][discord]
 

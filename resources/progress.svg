@@ -37,9 +37,11 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&amp;display=swap');
     :root {
-      --outer-rect-width: 300px;
+      --text-color: black;
       --percentage: 8.29;
+
       --progress: calc(var(--percentage) * 3px);
+      --outer-rect-width: 300px;
     }
     text {
       font-style:normal;
@@ -47,10 +49,11 @@
       font-family: "Roboto Mono", monospace;
       text-align:start;
       text-anchor:start;
+      fill: var(--text-color);
     }
     .outer-rect {
       display: inline;
-      stroke: #000;
+      stroke: var(--text-color);
       stroke-width: 3;
       stroke-dasharray: none;
       stroke-opacity: 1;

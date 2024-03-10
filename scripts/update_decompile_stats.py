@@ -49,8 +49,11 @@ def update_svg():
         "{BYTES_PROG_PERCENT}", str(round(bytes_impl, 2))
     )
 
+    with open(script_path / "resources" / "progress_dark.svg", "w") as f:
+        f.write(new_svg.replace("{TEXT_COLOR}", "white"))
+
     with open(script_path / "resources" / "progress.svg", "w") as f:
-        f.write(new_svg)
+        f.write(new_svg.replace("{TEXT_COLOR}", "black"))
 
 
 def main():
