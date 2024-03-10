@@ -1,14 +1,14 @@
 #include "ZunTimer.hpp"
 #include "Supervisor.hpp"
 
-ZunTimer::ZunTimer()
+#pragma optimize("s", on)
+void ZunTimer::Initialize()
 {
     this->current = 0;
     this->previous = -1;
-    this->subFrame = 0.0;
+    this->subFrame = 0;
 }
 
-#pragma optimize("s", on)
 void ZunTimer::Increment(i32 value)
 {
     if (g_Supervisor.framerateMultiplier > 0.99f)

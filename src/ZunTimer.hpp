@@ -5,12 +5,16 @@
 
 struct ZunTimer
 {
-    ZunTimer();
-
     i32 previous;
     f32 subFrame;
     i32 current;
 
+    ZunTimer()
+    {
+        this->Initialize();
+    }
+
+    void Initialize();
     void Increment(i32 value);
     void Decrement(i32 value);
 };

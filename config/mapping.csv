@@ -278,7 +278,7 @@ EnumGameControllersCb,0x423da0,0x3f,__stdcall,u32,i32
 Supervisor::DeletedCallback,0x423ddf,0x160,__stdcall,ZunResult,Supervisor*
 Supervisor::DrawFpsCounter,0x423f3f,0x1b1,__stdcall,void
 AnmManager::FUN_004240f0,0x4240f0,0x37,__thiscall,void,AnmManager*
-ZunTimer::ZunTimer,0x424127,0x1e,__thiscall,void,ZunTimer*
+ZunTimer::Initialize,0x424127,0x1e,__thiscall,void,ZunTimer*
 ZunTimer::Increment,0x424145,0xa0,__thiscall,void,ZunTimer*,i32
 ZunTimer::Decrement,0x4241e5,0xa0,__thiscall,void,ZunTimer*,i32
 Supervisor::TickTimer,0x424285,0x6e,__thiscall,void,Supervisor*,i32*,f32*

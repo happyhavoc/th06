@@ -8,7 +8,7 @@ AsciiManager::InitializeVms
 AsciiManager::DeletedCallback
 AsciiManager::CutChain
 AsciiManager::AddString
-ZunTimer::ZunTimer
+ZunTimer::Initialize
 ZunTimer::Increment
 ZunTimer::Decrement
 AnmVm::AnmVm
