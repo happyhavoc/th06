@@ -1,5 +1,10 @@
 # 東方紅魔郷　～ the Embodiment of Scarlet Devil
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="resources/progress_dark.svg">
+  <img alt="Decomp Progress" src="resources/progress.svg">
+</picture>
+
 [![Discord][discord-badge]][discord]
 
 [discord]: https://discord.gg/VyGwAjrh9a
