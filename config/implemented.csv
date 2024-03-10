@@ -8,7 +8,7 @@ AsciiManager::InitializeVms
 AsciiManager::DeletedCallback
 AsciiManager::CutChain
 AsciiManager::AddString
-AnmTimer::AnmTimer
+ZunTimer::ZunTimer
 AnmVm::AnmVm
 AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
