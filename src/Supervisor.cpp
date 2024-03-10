@@ -5,6 +5,7 @@
 #include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
+#include "GameManager.hpp"
 #include "Rng.hpp"
 #include "SoundPlayer.hpp"
 #include "i18n.hpp"
@@ -239,6 +240,55 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     return ZUN_SUCCESS;
 }
+
+#pragma optimize("s", on)
+#pragma var_order(curTime, framerate, fps, elapsed, fpsCounterPos)
+void Supervisor::DrawFpsCounter()
+{
+    DWORD curTime;
+    float framerate;
+    float elapsed;
+    float fps;
+    D3DXVECTOR3 fpsCounterPos;
+
+    static u32 g_NumFramesSinceLastTime = 0;
+    static DWORD g_LastTime = timeGetTime();
+    static char g_FpsCounterBuffer[256];
+
+    curTime = timeGetTime();
+    g_NumFramesSinceLastTime = g_NumFramesSinceLastTime + 1 + (u32)g_Supervisor.cfg.frameskipConfig;
+    if (500 <= curTime - g_LastTime)
+    {
+        elapsed = (curTime - g_LastTime) / 1000.f;
+        fps = g_NumFramesSinceLastTime / elapsed;
+        g_LastTime = curTime;
+        g_NumFramesSinceLastTime = 0;
+        sprintf(g_FpsCounterBuffer, "%.02ffps", fps);
+        if (g_GameManager.isInMenu != 0)
+        {
+            framerate = 60.f / g_Supervisor.framerateMultiplier;
+            g_Supervisor.unk1b8 = g_Supervisor.unk1b8 + framerate;
+
+            if (framerate * .89999998f < fps)
+                g_Supervisor.unk1b4 = g_Supervisor.unk1b4 + framerate;
+            else if (framerate * 0.69999999f < fps)
+                g_Supervisor.unk1b4 = framerate * .8f + g_Supervisor.unk1b4;
+            else if (framerate * 0.5f < fps)
+                g_Supervisor.unk1b4 = framerate * .6f + g_Supervisor.unk1b4;
+            else
+                g_Supervisor.unk1b4 = framerate * .5f + g_Supervisor.unk1b4;
+        }
+    }
+    if (g_Supervisor.unk19c == 0)
+    {
+        fpsCounterPos.x = 512.0;
+        fpsCounterPos.y = 464.0;
+        fpsCounterPos.z = 0.0;
+        g_AsciiManager.AddString(&fpsCounterPos, g_FpsCounterBuffer);
+    }
+    return;
+}
+#pragma optimize("", on)
 
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
