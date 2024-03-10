@@ -7,12 +7,15 @@ from winhelpers import run_windows_program
 SCRIPTS_DIR = Path(__file__).parent
 
 
-def build(build_type, verbose=False):
+def build(build_type, verbose=False, jobs=1):
     configure(build_type)
 
     ninja_args = []
     if verbose:
         ninja_args += ["-v"]
+
+    if jobs != 0:
+        ninja_args += ["-j" + str(jobs)]
 
     if build_type == BuildType.TESTS:
         ninja_args += ["build/th06e-tests.exe"]
@@ -37,6 +40,14 @@ def main():
         choices=["normal", "diffbuild", "tests", "dllbuild"],
         default="normal",
     )
+    parser.add_argument(
+        "-j",
+        "--jobs",
+        type=int,
+        default=1,
+        help="""Number of jobs to run in parallel. Set to 0 to run one job per CPU core. Defaults to 1.
+        Note that parallel builds may not work when running through wine. See https://github.com/happyhavoc/th06/issues/79 for more information.""",
+    )
     parser.add_argument("--verbose", action="store_true")
     args = parser.parse_args()
 
@@ -50,7 +61,7 @@ def main():
     elif args.build_type == "dllbuild":
         build_type = BuildType.DLLBUILD
 
-    build(build_type, args.verbose)
+    build(build_type, args.verbose, args.jobs)
 
 
 if __name__ == "__main__":
