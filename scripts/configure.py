@@ -100,6 +100,7 @@ def configure(build_type):
             "GameManager",
             "Rng",
             "utils",
+            "ZunTimer",
             "zwave",
         ]
 

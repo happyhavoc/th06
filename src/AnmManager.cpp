@@ -4,13 +4,6 @@
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 
-ZunTimer::ZunTimer()
-{
-    this->current = 0;
-    this->previous = -1;
-    this->subFrame = 0.0;
-}
-
 AnmVm::AnmVm()
 {
     this->spriteNumber = -1;
