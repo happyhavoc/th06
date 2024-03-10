@@ -21,37 +21,46 @@ def generate_function_diff(fn_name):
 
     os.makedirs(diff_dir / fs_fn_name, exist_ok=True)
     with open(orig_asm_path, "w") as out:
-        out = subprocess.run(
-            [
-                "satsuki",
-                "--mapping-file-csv",
-                str(config_dir / "mapping.csv"),
-                "disassemble",
-                str(resource_dir / "game.exe"),
-                "--resolve-names",
-                fn_name,
-            ],
-            stdout=out,
-            stderr=subprocess.PIPE,
-            check=True,
-        )
+        try:
+            out = subprocess.run(
+                [
+                    "satsuki",
+                    "--mapping-file-csv",
+                    str(config_dir / "mapping.csv"),
+                    "disassemble",
+                    str(resource_dir / "game.exe"),
+                    "--resolve-names",
+                    fn_name,
+                ],
+                stdout=out,
+                stderr=subprocess.PIPE,
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            e.stderr = b"original: " + e.stderr
+            raise
+
     with open(reimpl_asm_path, "w") as out:
-        out = subprocess.run(
-            [
-                "satsuki",
-                "--mapping-file-csv",
-                str(config_dir / "mapping.csv"),
-                "disassemble",
-                str(build_dir / "th06e.exe"),
-                "--pdb-file",
-                str(build_dir / "th06e.pdb"),
-                "--resolve-names",
-                fn_name,
-            ],
-            stdout=out,
-            stderr=subprocess.PIPE,
-            check=True,
-        )
+        try:
+            out = subprocess.run(
+                [
+                    "satsuki",
+                    "--mapping-file-csv",
+                    str(config_dir / "mapping.csv"),
+                    "disassemble",
+                    str(build_dir / "th06e.exe"),
+                    "--pdb-file",
+                    str(build_dir / "th06e.pdb"),
+                    "--resolve-names",
+                    fn_name,
+                ],
+                stdout=out,
+                stderr=subprocess.PIPE,
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            e.stderr = b"reimpl: " + e.stderr
+            raise
 
     return orig_asm_path.read_text(), reimpl_asm_path.read_text()
 
