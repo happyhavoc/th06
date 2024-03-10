@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Windows.h>
 #include "inttypes.hpp"
+#include <Windows.h>
 
 struct ZunTimer
 {
@@ -10,5 +10,8 @@ struct ZunTimer
     i32 previous;
     f32 subFrame;
     i32 current;
+
+    void Increment(i32 value);
+    void Decrement(i32 value);
 };
 C_ASSERT(sizeof(ZunTimer) == 0xc);
