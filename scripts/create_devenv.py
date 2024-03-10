@@ -4,7 +4,9 @@ import hashlib
 import os
 import os.path
 from pathlib import Path
+import platform
 import shutil
+import stat
 import subprocess
 import sys
 
@@ -125,8 +127,8 @@ def parse_arguments() -> Namespace:
     parser.add_argument(
         "--only",
         action="append",
-        choices=["vs", "dx8", "py", "pragma", "cygwin", "ninja"],
-        help="Only run certain steps. Possible values are vs, dx8, py, pragma, cygwin and ninja.",
+        choices=["vs", "dx8", "py", "pragma", "cygwin", "ninja", "satsuki"],
+        help="Only run certain steps. Possible values are vs, dx8, py, pragma, cygwin, ninja and satsuki.",
     )
     parser.add_argument("dl_cache_path", help="Path to download the requirements in")
     parser.add_argument("output_path", help="The output directory")
@@ -209,6 +211,18 @@ def download_requirement(dl_cache_path, requirement):
         )
 
 
+def is_win():
+    return sys.platform in ["win32", "cygwin"]
+
+
+def is_x86_64():
+    return platform.machine() in ["AMD64", "x86_64"]
+
+
+def is_x86():
+    return platform.machine() in ["i686", "x86"]
+
+
 def download_requirements(dl_cache_path, steps):
     requirements = [
         {
@@ -263,6 +277,46 @@ def download_requirements(dl_cache_path, steps):
             "url": "https://github.com/ninja-build/ninja/releases/download/v1.6.0/ninja-win.zip",
             "filename": "ninja-win.zip",
             "sha256": "18f55bc5de27c20092e86ace8ef3dd3311662dc6193157e3b65c6bc94ce006d5",
+        },
+        {
+            "name": "satsuki",
+            "only": "satsuki",
+            "condition": is_win() and is_x86_64(),
+            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-windows-satsuki.exe",
+            "filename": "satsuki.exe",
+            "sha256": "93baba162813f291f9975bce2440fb4c709bb40c5b120c2188852309a2025908",
+        },
+        {
+            "name": "satsuki",
+            "only": "satsuki",
+            "condition": is_win() and is_x86(),
+            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/i686-windows-satsuki.exe",
+            "filename": "satsuki.exe",
+            "sha256": "fabda8be8b6c927d4f98f44aad80f5eaac9b8f6bc81eea7d834c1cea0b877a91",
+        },
+        {
+            "name": "satsuki",
+            "only": "satsuki",
+            "condition": sys.platform == "darwin" and is_x86_64(),
+            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-macos-satsuki",
+            "filename": "satsuki",
+            "sha256": "6ebe6df938767443e78103f2188dc3ea6fb2955a5c7cc91ff22c841cdcbc2a9f",
+        },
+        {
+            "name": "satsuki",
+            "only": "satsuki",
+            "condition": sys.platform == "darwin" and platform.machine() == "arm64",
+            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/aarch64-macos-satsuki",
+            "filename": "satsuki",
+            "sha256": "410b520173cf2897b1414eee96bad089f4d9d24f18f697e3f6546786eb27702d",
+        },
+        {
+            "name": "satsuki",
+            "only": "satsuki",
+            "condition": sys.platform == "linux" and is_x86_64(),
+            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-linux-satsuki",
+            "filename": "satsuki",
+            "sha256": "e7a5f586b0f8febe5a1a6a3a0178486ec124c5dabc8ffb17bf0b892194dd8116",
         },
     ]
 
@@ -439,6 +493,20 @@ def install_ninja(ninja_zip_path, output_path):
     shutil.unpack_archive(str(ninja_zip_path), str(install_path))
 
 
+def install_satsuki(dl_cache_path, output_path):
+    print("Installing satsuki")
+    if sys.platform in ["win32", "cygwin"]:
+        satsuki_name = "satsuki.exe"
+    else:
+        satsuki_name = "satsuki"
+
+    install_path = output_path / "satsuki"
+    os.makedirs(str(install_path), exist_ok=True)
+    shutil.copyfile(str(dl_cache_path / satsuki_name), str(install_path / satsuki_name))
+    mode = os.stat(str(install_path / satsuki_name)).st_mode | stat.S_IXUSR
+    os.chmod(str(install_path / satsuki_name), mode)
+
+
 def main(args: Namespace) -> int:
     dl_cache_path = Path(args.dl_cache_path).absolute()
     output_path = Path(args.output_path).absolute()
@@ -447,7 +515,7 @@ def main(args: Namespace) -> int:
     tmp2_dir = output_path / "tmp2"
 
     if args.only is None or len(args.only) == 0:
-        steps = set(["vs", "dx8", "py", "pragma", "cygwin", "ninja"])
+        steps = set(["vs", "dx8", "py", "pragma", "cygwin", "ninja", "satsuki"])
     else:
         steps = set(args.only)
 
@@ -477,6 +545,8 @@ def main(args: Namespace) -> int:
             install_cygwin(cygwin_installer_path, tmp_dir, output_path)
         if "ninja" in steps:
             install_ninja(ninja_zip_path, output_path)
+        if "satsuki" in steps:
+            install_satsuki(dl_cache_path, output_path)
 
     return 0
 
