@@ -39,10 +39,11 @@ jobs:
       with:
         repository: happyhavoc/satsuki
         latest: false
-        tag: v0.1.1
-        fileName: satsuki.exe
+        tag: v0.1.2
+        fileName: x86_64-windows-satsuki.exe
     - name: Add satsuki to PATH
       run: |
+        move x86_64-windows-satsuki.exe satsuki.exe
         echo $pwd.Path >> $env:GITHUB_PATH
     - name: Download original game binary for comparison
       run: |

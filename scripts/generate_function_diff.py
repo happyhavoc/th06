@@ -24,7 +24,7 @@ def generate_function_diff(fn_name):
         try:
             out = subprocess.run(
                 [
-                    "satsuki",
+                    str(base_dir / "scripts/prefix/satsuki/satsuki"),
                     "--mapping-file-csv",
                     str(config_dir / "mapping.csv"),
                     "disassemble",
@@ -44,7 +44,7 @@ def generate_function_diff(fn_name):
         try:
             out = subprocess.run(
                 [
-                    "satsuki",
+                    str(base_dir / "scripts/prefix/satsuki/satsuki"),
                     "--mapping-file-csv",
                     str(config_dir / "mapping.csv"),
                     "disassemble",
