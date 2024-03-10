@@ -1,15 +1,74 @@
-<svg height="175" width="330" xmlns="http://www.w3.org/2000/svg">
-  <rect x="0" y="0" height="175" width="330" fill="black" />
-  <rect x="0" y="0" height="174" width="329" fill="white" />
+<svg height="350" width="350" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="progressClip">
+      <rect x="27" y="277.5" width="296px" height="25px" />
+    </clipPath>
+  </defs>
 
-  <text x="5" y="30" font-size="35">Decomp Progress</text>
-  <text x="50" y="64" font-size="16" fill="black" font-weight="bold">Functions implimented:</text>
-  <rect width="322" height="28" x="4" y="80" fill="grey"/>
-  <rect width="26.69" height="26" x="5" y="81" fill="white"/>
-  <text x="155" y="100" font-size="16" fill="black" font-weight="bold">8.29%</text>
+  <text x="80" y="40" font-size="40">TH06.EXE</text>
 
-  <text x="50" y="128" font-size="16" fill="black" font-weight="bold">Bytes implimented:</text>
-  <rect width="322" height="28" x="4" y="140" fill="grey"/>
-  <rect width="26.69" height="26" x="5" y="141" fill="white"/>
-  <text x="155" y="160" font-size="16" fill="black" font-weight="bold">11.86%</text>
+  <image x="105" y="55" href="placeholder.ico" width="150px"></image>
+
+  <text xml:space="preserve">
+    <tspan x="80" y="240">Implemented:   8.29%</tspan>
+    <tspan x="80" y="260">Byte Accuracy: 11.86%</tspan>
+  </text>
+
+  <g width="300px" height="20px">
+    <rect class="outer-rect" width="300px" height="30px" x="25" y="275" />
+    <rect class="inner-rect" width="300px" height="30px" x="25" y="275" />
+    <rect class="progress-rect" height="25px" x="27" y="277.5" />
+    <text xml:space="preserve">
+      <tspan class="progress-text" x="45%" y="296">8.29%</tspan>
+    </text>
+    <defs>
+      <filter id="blendMode">
+        <feBlend mode="difference" in2="SourceGraphic" />
+      </filter>
+    </defs>
+    <defs>
+      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ff0000" />
+        <stop offset="100%" stop-color="#0000ff" />
+      </linearGradient>
+    </defs>
+  </g>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&amp;display=swap');
+    :root {
+      --outer-rect-width: 300px;
+      --percentage: 8.29;
+      --progress: calc(var(--percentage) * 3px);
+    }
+    text {
+      font-style:normal;
+      font-variant:normal;
+      font-family: "Roboto Mono", monospace;
+      text-align:start;
+      text-anchor:start;
+    }
+    .outer-rect {
+      display: inline;
+      stroke: #000;
+      stroke-width: 3;
+      stroke-dasharray: none;
+      stroke-opacity: 1;
+      fill: none;
+    }
+    .inner-rect {
+      fill: #fff;
+    }
+    .progress-rect {
+      display: inline;
+      width: var(--progress);
+      clip-path: url(#progressClip);
+      fill: #42ff75;
+    }
+    .progress-text {
+      fill: black;
+      font-weight :bold;
+    }
+  </style>
 </svg>
+

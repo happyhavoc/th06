@@ -25,7 +25,7 @@ def create_status_profile():
     total_func_bytes = 246112  # number of function bytes
     impl_bytes = 0
 
-    for f_name, location, size in (line.split(",") for line in maps):
+    for f_name, location, size, *rest in (line.split(",") for line in maps):
         if (
             int(location.removeprefix("0x"), 16) > 4444512
         ):  # 0x0043d160 is where 3rd party lib functions start
@@ -45,11 +45,8 @@ def update_svg():
 
     func_impl, bytes_impl = create_status_profile()
 
-    new_svg = svg_data.format(
-        FUNC_PROG_PERCENT=round(func_impl, 2),
-        BYTES_PROG_PERCENT=round(bytes_impl, 2),
-        FUNC_PROG_WIDTH=round((322 * func_impl / 100), 2),
-        BYTES_PROG_WIDTH=round((322 * func_impl / 100), 2),
+    new_svg = svg_data.replace("{FUNC_PROG_PERCENT}", str(round(func_impl, 2))).replace(
+        "{BYTES_PROG_PERCENT}", str(round(bytes_impl, 2))
     )
 
     with open(script_path / "resources" / "progress.svg", "w") as f:
