@@ -5,6 +5,7 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ZunResult.hpp"
+#include "ZunTimer.hpp"
 #include "inttypes.hpp"
 
 struct AsciiManagerString

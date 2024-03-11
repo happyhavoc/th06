@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AnmManager.hpp"
+#include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 

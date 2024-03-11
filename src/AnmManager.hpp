@@ -4,6 +4,7 @@
 #include <d3dx8math.h>
 
 #include "ZunResult.hpp"
+#include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
@@ -21,16 +22,6 @@ struct AnmLoadedSprite
     i32 spriteId;
 };
 C_ASSERT(sizeof(AnmLoadedSprite) == 0x38);
-
-struct ZunTimer
-{
-    ZunTimer();
-
-    i32 previous;
-    f32 subFrame;
-    i32 current;
-};
-C_ASSERT(sizeof(ZunTimer) == 0xc);
 
 struct AnmRawInstr
 {
