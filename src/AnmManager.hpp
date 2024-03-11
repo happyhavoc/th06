@@ -63,8 +63,7 @@ struct AnmVm
     ZunTimer currentTimeInScript;
     D3DXMATRIX matrix;
     D3DCOLOR color;
-    u16 flags;
-    u16 unk;
+    u32 flags;
     u16 alphaInterpEndTime;
     u16 scaleInterpEndTime;
     u16 autoRotate;
