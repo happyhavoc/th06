@@ -81,6 +81,8 @@ jobs:
         unzip th06e.zip -d build
     - name: Use implemented.csv from target repo
       run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/implemented.csv -o config/implemented.csv
+    - name: Use mapping.csv from target repo
+      run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/mapping.csv -o config/mapping.csv
     - name: Create diff summary
       run: python scripts/diff_all_functions.py > $env:GITHUB_STEP_SUMMARY
     - name: Report tests check
