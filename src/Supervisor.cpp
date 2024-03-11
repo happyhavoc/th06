@@ -187,6 +187,33 @@ ZunResult Supervisor::RegisterChain()
     return ZUN_SUCCESS;
 }
 
+#pragma optimize("s", on)
+#pragma var_order(anmm0, anmm1, anmm2, anmm3, anmm4, anmm5)
+ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
+{
+    AnmManager *anmm0 = g_AnmManager;
+    anmm0->currentVertexShader = 0xff;
+
+    AnmManager *anmm1 = g_AnmManager;
+    anmm1->currentSprite = NULL;
+
+    AnmManager *anmm2 = g_AnmManager;
+    anmm2->currentTexture = NULL;
+
+    AnmManager *anmm3 = g_AnmManager;
+    anmm3->currentColorOp = 0xff;
+
+    AnmManager *anmm4 = g_AnmManager;
+    anmm4->currentBlendMode = 0xff;
+
+    AnmManager *anmm5 = g_AnmManager;
+    anmm5->currentZWriteDisable = 0xff;
+
+    Supervisor::DrawFpsCounter();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
 ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
     for (i32 i = 0; i < (i32)(sizeof(s->pbg3Archives) / sizeof(s->pbg3Archives[0])); i++)
