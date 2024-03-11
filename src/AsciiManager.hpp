@@ -101,3 +101,4 @@ struct AsciiManager
     AsciiManagerPopup popups[515];
 };
 C_ASSERT(sizeof(AsciiManager) == 0xc1ac);
+DIFFABLE_EXTERN(AsciiManager, g_AsciiManager);

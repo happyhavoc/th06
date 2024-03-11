@@ -78,6 +78,7 @@ struct Supervisor
     static ChainCallbackResult OnDraw(Supervisor *s);
     static ZunResult AddedCallback(Supervisor *s);
     static ZunResult DeletedCallback(Supervisor *s);
+    static void DrawFpsCounter();
 
     static void CreateBackBuffer();
 
