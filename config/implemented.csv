@@ -55,6 +55,7 @@ Supervisor::LoadPbg3
 Supervisor::RegisterChain
 Supervisor::LoadConfig
 Supervisor::DrawFpsCounter
+Supervisor::OnDraw
 InitD3dDevice
 InitD3dRendering
 Clear
