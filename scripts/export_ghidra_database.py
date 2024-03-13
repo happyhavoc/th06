@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 import tomllib
 from typing import Optional
+import shutil
 
 SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
 
@@ -51,24 +52,38 @@ def fetchVersions(args):
     return versions
 
 
-def exportXmlVersion(args, version: dict):
-    xmlFileInRepo = args.program + ".xml"
-    verFileInRepo = args.program + ".version"
-    outXml = args.GIT_REPO_PATH / str(xmlFileInRepo)
-    outVer = args.GIT_REPO_PATH / str(verFileInRepo)
-    if not outXml.exists():
-        outXml.touch()
-    runAnalyze(
-        args, ["-preScript", "ExportToXML.java", str(outXml), str(version["version"])]
-    )
+XML = "xml"
+DECOMP = "decomp"
 
-    # The XML contains the timestamp of when the export was done. This is kinda
-    # annoying as it introduces some noise in the diff. Let's patch it out.
-    text = outXml.read_text()
-    text = re.sub(
-        '<INFO_SOURCE (.*) TIMESTAMP="(.*)" (.*)/>', "<INFO_SOURCE \1 \2/>", text
-    )
-    outXml.write_text(text)
+
+def export(args, version: dict):
+    verFileInRepo = args.program + ".version"
+    outVer = args.GIT_REPO_PATH / str(verFileInRepo)
+
+    if args.EXPORT_TYPE == XML:
+        srcInRepo = args.program + ".xml"
+        out = args.GIT_REPO_PATH / str(srcInRepo)
+        if not out.exists():
+            out.touch()
+        script = "ExportToXML.java"
+    else:
+        srcInRepo = "src/" + args.program
+        out = args.GIT_REPO_PATH / str(srcInRepo)
+        if out.exists():
+            shutil.rmtree(out)
+        out.mkdir(parents=True, exist_ok=True)
+        script = "ExportDecomp.java"
+
+    runAnalyze(args, ["-preScript", script, str(out), str(version["version"])])
+
+    if args.EXPORT_TYPE == XML:
+        # The XML contains the timestamp of when the export was done. This is kinda
+        # annoying as it introduces some noise in the diff. Let's patch it out.
+        text = out.read_text()
+        text = re.sub(
+            '<INFO_SOURCE (.*) TIMESTAMP="(.*)" (.*)/>', "<INFO_SOURCE \1 \2/>", text
+        )
+        out.write_text(text)
 
     # Add a file, verFileInRepo, which contains the current version number. This
     # is used so the next run of export_ghidra_database.py knows from which
@@ -77,7 +92,7 @@ def exportXmlVersion(args, version: dict):
 
     # Add the files to the git repo.
     subprocess.run(
-        ["git", "-C", args.GIT_REPO_PATH, "add", xmlFileInRepo, verFileInRepo],
+        ["git", "-C", args.GIT_REPO_PATH, "add", srcInRepo, verFileInRepo],
         check=True,
     )
 
@@ -148,6 +163,7 @@ def main():
     )
     parser.add_argument("GHIDRA_REPO_NAME")
     parser.add_argument("GIT_REPO_PATH", type=Path)
+    parser.add_argument("EXPORT_TYPE", choices=[XML, DECOMP])
     parser.add_argument(
         "--username", help="Username to use when connecting to the ghidra server."
     )
@@ -173,7 +189,7 @@ def main():
     for version in versions:
         if versionInRepo is not None and version["version"] <= versionInRepo:
             continue
-        exportXmlVersion(args, version)
+        export(args, version)
 
 
 if __name__ == "__main__":
