@@ -15,6 +15,7 @@ ZunTimer::Initialize
 ZunTimer::Increment
 ZunTimer::Decrement
 AnmVm::AnmVm
+AnmVm::Initialize
 AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm

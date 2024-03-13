@@ -4,6 +4,7 @@
 #include "ChainPriorities.hpp"
 #include "GameManager.hpp"
 #include "Supervisor.hpp"
+#include "utils.hpp"
 #include <stdio.h>
 
 DIFFABLE_STATIC(AsciiManager, g_AsciiManager)
