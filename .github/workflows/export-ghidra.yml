@@ -9,6 +9,14 @@ jobs:
   export-ghidra:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        include:
+          - branch: xml
+            type: xml
+          - branch: main
+            type: decomp
+
     permissions:
       contents: write
 
@@ -19,7 +27,7 @@ jobs:
       run: |
         echo "$GHIDRA_SSH_AUTH" > ssh_key
         chmod 0600 ssh_key
-        GIT_SSH_COMMAND="ssh -i $PWD/ssh_key -o IdentitiesOnly=yes" git clone git@github.com:happyhavoc/th06-re th06-re
+        GIT_SSH_COMMAND="ssh -i $PWD/ssh_key -o IdentitiesOnly=yes" git clone git@github.com:happyhavoc/th06-re th06-re --branch ${{ matrix.branch }}
         rm ssh_key
       env:
         GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
@@ -35,7 +43,7 @@ jobs:
     - name: Export ghidra
       run: |
         echo "$GHIDRA_SSH_AUTH" > ssh_key
-        python scripts/export_ghidra_database.py --user-mappings config/ghidra-user-maps.toml --username github-action --ssh-key ssh_key --program th06_102h.exe 'ghidra://roblab.la/Touhou 06' th06-re
+        python scripts/export_ghidra_database.py --user-mappings config/ghidra-user-maps.toml --username github-action --ssh-key ssh_key --program th06_102h.exe 'ghidra://roblab.la/Touhou 06' th06-re ${{ matrix.type }}
         rm ssh_key
       env: # Or as an environment variable
         GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
