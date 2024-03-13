@@ -8,10 +8,14 @@ AsciiManager::InitializeVms
 AsciiManager::DeletedCallback
 AsciiManager::CutChain
 AsciiManager::AddString
+AsciiManager::AddFormatText
+AsciiManager::CreatePopup1
+AsciiManager::CreatePopup2
 ZunTimer::Initialize
 ZunTimer::Increment
 ZunTimer::Decrement
 AnmVm::AnmVm
+AnmVm::Initialize
 AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::LoadAnm

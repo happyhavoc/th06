@@ -1,4 +1,3 @@
-AnmVm::Initialize
 AnmManager::CreateEmptyTexture
 AnmManager::ReleaseSurfaces
 AnmManager::ReleaseAnm

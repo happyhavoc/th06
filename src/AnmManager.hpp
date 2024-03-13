@@ -26,6 +26,27 @@ C_ASSERT(sizeof(AnmLoadedSprite) == 0x38);
 struct AnmRawInstr
 {
 };
+
+enum AnmVmFlags
+{
+    AnmVmFlags_0 = 1 << 0,
+    AnmVmFlags_1 = 1 << 1,
+    AnmVmFlags_2 = 1 << 2,
+    AnmVmFlags_3 = 1 << 3,
+    AnmVmFlags_4 = 1 << 4,
+    AnmVmFlags_5 = 1 << 5,
+    AnmVmFlags_6 = 1 << 6,
+    AnmVmFlags_7 = 1 << 7,
+    AnmVmFlags_8 = 1 << 8,
+    AnmVmFlags_9 = 1 << 9,
+    AnmVmFlags_10 = 1 << 10,
+    AnmVmFlags_11 = 1 << 11,
+    AnmVmFlags_12 = 1 << 12,
+    AnmVmFlags_13 = 1 << 13,
+    AnmVmFlags_14 = 1 << 14,
+    AnmVmFlags_15 = 1 << 15,
+};
+
 struct AnmVm
 {
     AnmVm();
@@ -40,7 +61,7 @@ struct AnmVm
     f32 scaleInterpFinalX;
     D3DXVECTOR2 uvScrollPos;
     ZunTimer currentTimeInScript;
-    D3DMATRIX matrix;
+    D3DXMATRIX matrix;
     D3DCOLOR color;
     u32 flags;
     u16 alphaInterpEndTime;

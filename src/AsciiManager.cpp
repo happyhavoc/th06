@@ -4,6 +4,8 @@
 #include "ChainPriorities.hpp"
 #include "GameManager.hpp"
 #include "Supervisor.hpp"
+#include "utils.hpp"
+#include <stdio.h>
 
 DIFFABLE_STATIC(AsciiManager, g_AsciiManager)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerCalcChain)
@@ -24,13 +26,14 @@ ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
     {
         AsciiManagerPopup *curPopup = &mgr->popups[0];
         i32 i = 0;
-        for (; i < (int)(sizeof(mgr->popups) / sizeof(mgr->popups[0])); i++, curPopup++)
+        for (; i < ARRAY_SIZE_SIGNED(mgr->popups); i++, curPopup++)
         {
             if (!curPopup->inUse)
             {
                 continue;
             }
-            curPopup->position.y -= 0.5 * g_Supervisor.effectiveFramerateMultiplier;
+
+            curPopup->position.y -= 0.5f * g_Supervisor.effectiveFramerateMultiplier;
             ZunTimer *timer = &curPopup->timer;
             timer->previous = timer->current;
             g_Supervisor.TickTimer(&timer->current, &timer->subFrame);
@@ -131,7 +134,7 @@ void AsciiManager::InitializeVms()
     this->scale.y = 1.0;
 
     // TODO: What is this flag for?
-    this->vm1.flags = this->vm1.flags | 0x300;
+    this->vm1.flags |= AnmVmFlags_9 | AnmVmFlags_8;
     AnmVm *vm1 = &this->vm1;
     AnmManager *mgr1 = g_AnmManager;
     vm1->Initialize();
@@ -187,4 +190,98 @@ void AsciiManager::AddString(D3DXVECTOR3 *position, char *text)
     {
         curString->isSelected = 0;
     }
+}
+
+void AsciiManager::AddFormatText(D3DXVECTOR3 *position, const char *fmt, ...)
+{
+    char tmpBuffer[512];
+    va_list args;
+
+    va_start(args, fmt);
+    vsprintf(tmpBuffer, fmt, args);
+    AddString(position, tmpBuffer);
+
+    va_end(args);
+}
+
+void AsciiManager::CreatePopup1(D3DXVECTOR3 *position, i32 value, D3DCOLOR color)
+{
+    AsciiManagerPopup *popup;
+    i32 characterCount;
+
+    if (this->nextPopupIndex1 >= (ARRAY_SIZE_SIGNED(this->popups) - 3))
+    {
+        this->nextPopupIndex1 = 0;
+    }
+
+    popup = &this->popups[this->nextPopupIndex1];
+    popup->inUse = 1;
+    characterCount = 0;
+
+    if (value >= 0)
+    {
+        while (value)
+        {
+            popup->digits[characterCount++] = (char)(value % 10);
+
+            value /= 10;
+        }
+    }
+    else
+    {
+        popup->digits[characterCount++] = '\n';
+    }
+
+    if (characterCount == 0)
+    {
+        popup->digits[characterCount++] = '\0';
+    }
+
+    popup->characterCount = characterCount;
+    popup->color = color;
+    popup->timer.InitializeForPopup();
+    popup->position = *position;
+
+    this->nextPopupIndex1++;
+}
+
+void AsciiManager::CreatePopup2(D3DXVECTOR3 *position, i32 value, D3DCOLOR color)
+{
+    AsciiManagerPopup *popup;
+    i32 characterCount;
+
+    if (this->nextPopupIndex2 >= 3)
+    {
+        this->nextPopupIndex2 = 0;
+    }
+
+    popup = &this->popups[0x200 + this->nextPopupIndex2];
+    popup->inUse = 1;
+    characterCount = 0;
+
+    if (value >= 0)
+    {
+        while (value)
+        {
+            popup->digits[characterCount++] = (char)(value % 10);
+
+            value /= 10;
+        }
+    }
+    else
+    {
+        popup->digits[characterCount++] = '\n';
+    }
+
+    if (characterCount == 0)
+    {
+        popup->digits[characterCount++] = '\0';
+    }
+
+    popup->characterCount = characterCount;
+    popup->color = color;
+    popup->timer.InitializeForPopup();
+    popup->position = *position;
+
+    this->nextPopupIndex2++;
 }

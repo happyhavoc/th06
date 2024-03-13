@@ -79,6 +79,9 @@ struct AsciiManager
     void DrawPopupsWithoutHwVertexProcessing();
 
     void AddString(D3DXVECTOR3 *position, char *text);
+    void AddFormatText(D3DXVECTOR3 *position, const char *fmt, ...);
+    void CreatePopup1(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);
+    void CreatePopup2(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);
 
     AnmVm vm0;
     AnmVm vm1;
@@ -91,8 +94,8 @@ struct AsciiManager
     // If true, we are drawing the currently selected element of the MainMenu
     // class.
     u32 isSelected;
-    u32 nextPopupIndex1;
-    u32 nextPopupIndex2;
+    i32 nextPopupIndex1;
+    i32 nextPopupIndex2;
     // Seems unused
     u32 unk3;
     // Menu that shows up when the player presses the menu button while in-game.
