@@ -1,10 +1,7 @@
-AnmManager::CreateEmptyTexture
-AnmManager::ReleaseSurfaces
-AnmManager::ReleaseAnm
 AnmManager::LoadTexture
+AnmManager::ReleaseAnm
 AnmManager::LoadTextureMipmap
 AnmManager::LoadSprite
-AnmManager::SetActiveSprite
 AnmManager::SetupVertexBuffer
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu

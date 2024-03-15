@@ -11,7 +11,7 @@
 
 struct AnmLoadedSprite
 {
-    u32 sourceFileIndex;
+    i32 sourceFileIndex;
     ZunVec2 startPixelInclusive;
     ZunVec2 endPixelInclusive;
     f32 textureHeight;

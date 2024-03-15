@@ -51,9 +51,10 @@ struct AnmManager
 
     void SetupVertexBuffer();
 
-    ZunResult CreateEmptyTexture(u32 textureIdx, u32 width, u32 height, u32 textureFormat);
+    ZunResult CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat);
     ZunResult LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
     ZunResult LoadTextureMipmap(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
+    void ReleaseTexture(i32 textureIdx);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
@@ -95,4 +96,5 @@ struct AnmManager
 };
 C_ASSERT(sizeof(AnmManager) == 0x2112c);
 
-DIFFABLE_EXTERN(AnmManager *, g_AnmManager)
+DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
+DIFFABLE_EXTERN(D3DFORMAT, g_TextureFormatD3D8Mapping[6]);

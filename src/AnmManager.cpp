@@ -31,6 +31,12 @@ struct VertexTex1DiffuseXyz
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 
+#ifndef DIFFBUILD
+D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
+    D3DFMT_UNKNOWN, D3DFMT_A8R8G8B8, D3DFMT_A1R5G5B5, D3DFMT_R5G6B5, D3DFMT_R8G8B8, D3DFMT_A4R4G4B4,
+};
+#endif
+
 // Stack layout here doesn't match because of extra unused stack slot.
 // This might mean that some empty constructors are called and inlined here.
 AnmManager::AnmManager()
@@ -81,6 +87,30 @@ AnmManager::AnmManager()
 }
 AnmManager::~AnmManager()
 {
+}
+
+ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat)
+{
+    D3DXCreateTexture(g_Supervisor.d3dDevice, width, height, 1, 0, g_TextureFormatD3D8Mapping[textureFormat],
+                      D3DPOOL_MANAGED, this->textures + textureIdx);
+
+    return ZUN_SUCCESS;
+}
+
+ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 sprite_index)
+{
+    if (this->sprites[sprite_index].sourceFileIndex < 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    vm->spriteNumber = (i16)sprite_index;
+    vm->sprite = this->sprites + sprite_index;
+    D3DXMatrixIdentity(&vm->matrix);
+    vm->matrix.m[0][0] = vm->sprite->widthPx / vm->sprite->textureWidth;
+    vm->matrix.m[1][1] = vm->sprite->heightPx / vm->sprite->textureHeight;
+
+    return ZUN_SUCCESS;
 }
 
 ZunResult AnmManager::LoadSurface(i32 surfaceIdx, char *path)
@@ -170,7 +200,32 @@ void AnmManager::ReleaseSurface(i32 surfaceIdx)
         this->surfacesBis[surfaceIdx]->Release();
         this->surfacesBis[surfaceIdx] = NULL;
     }
-    return;
+}
+
+void AnmManager::ReleaseSurfaces(void)
+{
+    for (int idx = 0; idx < ARRAY_SIZE_SIGNED(this->surfaces); idx++)
+    {
+        if (this->surfaces[idx] != NULL)
+        {
+            this->surfaces[idx]->Release();
+            this->surfaces[idx] = NULL;
+        }
+    }
+}
+
+void AnmManager::ReleaseTexture(i32 textureIdx)
+{
+    if (this->textures[textureIdx] != NULL)
+    {
+        this->textures[textureIdx]->Release();
+        this->textures[textureIdx] = NULL;
+    }
+
+    void *imageDataArray = this->imageDataArray[textureIdx];
+    free(imageDataArray);
+
+    this->imageDataArray[textureIdx] = NULL;
 }
 
 void AnmManager::CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y)
