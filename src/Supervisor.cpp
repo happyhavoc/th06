@@ -3,9 +3,14 @@
 #include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "Ending.hpp"
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"
+#include "MainMenu.hpp"
+#include "MusicRoom.hpp"
+#include "Replay.hpp"
+#include "ResultScreen.hpp"
 #include "Rng.hpp"
 #include "SoundPlayer.hpp"
 #include "i18n.hpp"
@@ -186,6 +191,201 @@ ZunResult Supervisor::RegisterChain()
 
     return ZUN_SUCCESS;
 }
+
+#pragma optimize("s", on)
+ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
+{
+    static u16 g_LastFrameInput = 0;
+    static u16 g_CurFrameInput = 0;
+    static u16 g_IsEigthFrameOfHeldInput = 0;
+    static u16 g_NumOfFramesInputsWereHeld = 0;
+
+    if (g_SoundPlayer.streamingSound != NULL)
+    {
+        g_SoundPlayer.streamingSound->UpdateFadeOut();
+    }
+    g_LastFrameInput = g_CurFrameInput;
+    g_CurFrameInput = GetInput();
+    g_IsEigthFrameOfHeldInput = 0;
+    if (g_LastFrameInput == g_CurFrameInput)
+    {
+        if (0x1e <= g_NumOfFramesInputsWereHeld)
+        {
+            if (g_NumOfFramesInputsWereHeld % 8 == 0)
+            {
+                g_IsEigthFrameOfHeldInput = 1;
+            }
+            if (0x26 <= g_NumOfFramesInputsWereHeld)
+            {
+                g_NumOfFramesInputsWereHeld = 0x1e;
+            }
+        }
+        g_NumOfFramesInputsWereHeld++;
+    }
+    else
+    {
+        g_NumOfFramesInputsWereHeld = 0;
+    }
+
+    if (s->wantedState != s->curState)
+    {
+        s->wantedState2 = s->wantedState;
+        switch (s->wantedState)
+        {
+        case SUPERVISOR_STATE_INIT:
+        REINIT_MAINMENU:
+            s->curState = SUPERVISOR_STATE_MAINMENU;
+            g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+            if (MainMenu::RegisterChain(0) != ZUN_SUCCESS)
+            {
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+            }
+            break;
+        case SUPERVISOR_STATE_MAINMENU:
+            switch (s->curState)
+            {
+            case SUPERVISOR_STATE_EXITSUCCESS:
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+            case SUPERVISOR_STATE_GAMEMANAGER:
+                if (GameManager::RegisterChain() != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                break;
+            case SUPERVISOR_STATE_EXITERROR:
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_ERROR;
+            case SUPERVISOR_STATE_RESULTSCREEN:
+                if (ResultScreen::RegisterChain(NULL) != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                break;
+            case SUPERVISOR_STATE_MUSICROOM:
+                if (MusicRoom::RegisterChain() != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                break;
+            case SUPERVISOR_STATE_ENDING:
+                GameManager::CutChain();
+                if (Ending::RegisterChain() != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                break;
+            }
+            break;
+
+        case SUPERVISOR_STATE_RESULTSCREEN:
+            switch (s->curState)
+            {
+            case SUPERVISOR_STATE_EXITSUCCESS:
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+            case SUPERVISOR_STATE_MAINMENU:
+                s->curState = SUPERVISOR_STATE_INIT;
+                goto REINIT_MAINMENU;
+            }
+            break;
+        case SUPERVISOR_STATE_GAMEMANAGER:
+            switch (s->curState)
+            {
+            case SUPERVISOR_STATE_EXITSUCCESS:
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+
+            case SUPERVISOR_STATE_MAINMENU:
+            RETURN_TO_MENU_FROM_GAME:
+                GameManager::CutChain();
+                s->curState = SUPERVISOR_STATE_INIT;
+                ReplayDoStuff(NULL, NULL);
+                goto REINIT_MAINMENU;
+
+            case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
+                GameManager::CutChain();
+                if (ResultScreen::RegisterChain(TRUE) != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                break;
+            case SUPERVISOR_STATE_GAMEMANAGER_REINIT:
+                GameManager::CutChain();
+                if (GameManager::RegisterChain() != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                if (s->curState == SUPERVISOR_STATE_MAINMENU)
+                {
+                    goto RETURN_TO_MENU_FROM_GAME;
+                }
+                s->curState = SUPERVISOR_STATE_GAMEMANAGER;
+                break;
+            case SUPERVISOR_STATE_MAINMENU_REPLAY:
+                GameManager::CutChain();
+                s->curState = SUPERVISOR_STATE_INIT;
+                ReplayDoStuff(NULL, NULL);
+                s->curState = SUPERVISOR_STATE_MAINMENU;
+                g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+                if (MainMenu::RegisterChain(1) != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                break;
+
+            case 10:
+                GameManager::CutChain();
+                if (Ending::RegisterChain() != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+                break;
+            }
+            break;
+        case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
+            switch (s->curState)
+            {
+            case SUPERVISOR_STATE_EXITSUCCESS:
+                ReplayDoStuff(NULL, NULL);
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+            case SUPERVISOR_STATE_MAINMENU:
+                s->curState = SUPERVISOR_STATE_INIT;
+                ReplayDoStuff(NULL, NULL);
+                goto REINIT_MAINMENU;
+            }
+            break;
+        case SUPERVISOR_STATE_MUSICROOM:
+            switch (s->curState)
+            {
+            case SUPERVISOR_STATE_EXITSUCCESS:
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+
+            case SUPERVISOR_STATE_MAINMENU:
+                s->curState = SUPERVISOR_STATE_INIT;
+                goto REINIT_MAINMENU;
+            }
+            break;
+        case SUPERVISOR_STATE_ENDING:
+            switch (s->curState)
+            {
+            case SUPERVISOR_STATE_EXITSUCCESS:
+                return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+            case SUPERVISOR_STATE_MAINMENU:
+                s->curState = SUPERVISOR_STATE_INIT;
+                goto REINIT_MAINMENU;
+            case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
+                if (ResultScreen::RegisterChain(TRUE) != ZUN_SUCCESS)
+                {
+                    return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
+                }
+            }
+            break;
+        }
+        g_CurFrameInput = g_LastFrameInput = g_IsEigthFrameOfHeldInput = 0;
+    }
+
+    s->wantedState = s->curState;
+    s->calcCount++;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 #pragma var_order(anmm0, anmm1, anmm2, anmm3, anmm4, anmm5)

@@ -2,11 +2,15 @@
 
 #include <Windows.h>
 
+#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
 struct GameManager
 {
+    static ZunResult RegisterChain();
+    static void CutChain();
+
     u8 padding[0x181f];
     bool isInGameMenu;
     bool isInRetryMenu;
