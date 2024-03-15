@@ -138,8 +138,8 @@ struct AnmManager
     void SetupVertexBuffer();
 
     ZunResult CreateEmptyTexture(u32 textureIdx, u32 width, u32 height, u32 textureFormat);
-    ZunResult LoadTexture(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
-    ZunResult LoadTextureMipmap(u32 textureIdx, char *textureName, u32 textureFormat, D3DCOLOR colorKey);
+    ZunResult LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
+    ZunResult LoadTextureMipmap(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
