@@ -3,11 +3,11 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+#include "AnmVm.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include "AnmVm.hpp"
 
 struct AnmRawSprite
 {

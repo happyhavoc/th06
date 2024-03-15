@@ -3,6 +3,7 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+#include "ZunMath.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "diffbuild.hpp"
@@ -11,18 +12,15 @@
 struct AnmLoadedSprite
 {
     u32 sourceFileIndex;
-    D3DXVECTOR2 startPixelInclusive;
-    D3DXVECTOR2 endPixelInclusive;
+    ZunVec2 startPixelInclusive;
+    ZunVec2 endPixelInclusive;
     f32 textureHeight;
     f32 textureWidth;
-    D3DXVECTOR2 uvStart;
-    D3DXVECTOR2 uvEnd;
+    ZunVec2 uvStart;
+    ZunVec2 uvEnd;
     f32 heightPx;
     f32 widthPx;
     i32 spriteId;
-
-
-    AnmLoadedSprite() {}
 };
 C_ASSERT(sizeof(AnmLoadedSprite) == 0x38);
 
