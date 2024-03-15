@@ -31,12 +31,17 @@ struct VertexTex1DiffuseXyz
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 
+// Stack layout here doesn't match because of extra unused stack slot.
+// This might mean that some empty constructors are called and inlined here.
 AnmManager::AnmManager()
 {
+    this->maybeLoadedSpriteCount = 0;
+
     memset(this, 0, sizeof(AnmManager));
-    for (int i = 0; i < ARRAY_SIZE_SIGNED(this->sprites); i++)
+
+    for (int spriteIndex = 0; spriteIndex < ARRAY_SIZE_SIGNED(this->sprites); spriteIndex++)
     {
-        this->sprites[i].sourceFileIndex = -1;
+        this->sprites[spriteIndex].sourceFileIndex = -1;
     }
 
     g_PrimitivesToDrawVertexBuf[3].pos.w = 1.0;
