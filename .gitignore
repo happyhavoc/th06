@@ -6,3 +6,4 @@ log.txt
 scripts/dls
 scripts/prefix
 build.ninja
+__pycache__

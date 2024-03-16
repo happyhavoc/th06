@@ -137,6 +137,11 @@ def parse_arguments() -> Namespace:
         action="store_true",
         help="Only download the components, don't install them.",
     )
+    parser.add_argument(
+        "--torrent",
+        action="store_true",
+        help="Use torrent downloads where possible. Requires aria2 to already be installed on *nix systems.",
+    )
 
     return parser.parse_args()
 
@@ -223,7 +228,36 @@ def is_x86():
     return platform.machine() in ["i686", "x86"]
 
 
-def download_requirements(dl_cache_path, steps):
+def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
+    path = dl_cache_path / requirement["filename"]
+    if path.exists() and get_sha256(path) == requirement["sha256"]:
+        return
+
+    print("Downloading " + requirement["name"] + " using torrent")
+    # Run aria2c to download the torrent, make sure to save only the file we want.
+    subprocess.check_call(
+        str(aria2c_path)
+        + " --dir "
+        + str(dl_cache_path)
+        + " --summary-interval=0 --seed-time=0 --select-file=4 "
+        + str(requirement["torrent"]),
+        shell=True,
+    )
+    # After downloading, take the target file in the torrent_directory and move it back to the root of the dl_cache_path
+    shutil.move(
+        str(dl_cache_path / requirement["torrent_dirname"] / requirement["filename"]),
+        str(path),
+    )
+    print(clear_line_sequence, end="", flush=True, file=sys.stdout)
+    hash = get_sha256(path)
+    if hash != requirement["sha256"]:
+        raise Exception(
+            "Download failed: Got hash " + hash + ", expected " + requirement["sha256"]
+        )
+    os.removedirs(str(dl_cache_path / requirement["torrent_dirname"]))
+
+
+def download_requirements(dl_cache_path, steps, should_torrent):
     requirements = [
         {
             "name": "Direct X 8.0",
@@ -236,7 +270,9 @@ def download_requirements(dl_cache_path, steps):
             "name": "Visual Studio .NET 2002 Professional Edition",
             "only": "vs",
             "url": "https://archive.org/download/en_vs.net_pro_full/en_vs.net_pro_full.exe",
+            "torrent": "https://archive.org/download/en_vs.net_pro_full/en_vs.net_pro_full_archive.torrent",
             "filename": "en_vs.net_pro_full.exe",
+            "torrent_dirname": "en_vs.net_pro_full",
             "sha256": "440949f3d152ee0375050c2961fc3c94786780b5aae7f6a861a5837e03bf2dac",
         },
         {
@@ -319,6 +355,42 @@ def download_requirements(dl_cache_path, steps):
             "sha256": "e7a5f586b0f8febe5a1a6a3a0178486ec124c5dabc8ffb17bf0b892194dd8116",
         },
     ]
+
+    if should_torrent:
+        # Download aria2c
+        if sys.platform == "win32":
+            aria2c_path = dl_cache_path / "aria2c.exe"
+            if not aria2c_path.exists():
+                print("Downloading aria2c")
+                urllib.request.urlretrieve(
+                    "https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0-win-64bit-build1.zip",
+                    str(dl_cache_path / "aria2.zip"),
+                )
+                shutil.unpack_archive(
+                    str(dl_cache_path / "aria2.zip"), str(dl_cache_path), format="zip"
+                )
+                os.remove(str(dl_cache_path / "aria2.zip"))
+                # Move aria2c to the correct location
+                shutil.move(
+                    str(dl_cache_path / "aria2-1.37.0-win-64bit-build1" / "aria2c.exe"),
+                    str(aria2c_path),
+                )
+                shutil.rmtree(
+                    str(dl_cache_path / "aria2-1.37.0-win-64bit-build1"),
+                    ignore_errors=True,
+                )
+        else:
+            # assuming its already in their PATH, because it should be installed before selecting torrent downloads on linux.
+            aria2c_path = "aria2c"
+            if not shutil.which(aria2c_path):
+                # throw an error if aria2c is not installed
+                raise Exception(
+                    "aria2c is not installed, please install it before selecting torrent downloads!"
+                )
+
+        for requirement in requirements:
+            if "torrent" in requirement:
+                download_requirement_torrent(dl_cache_path, requirement, aria2c_path)
 
     for requirement in requirements:
         if requirement["only"] in steps:
@@ -520,7 +592,7 @@ def main(args: Namespace) -> int:
         steps = set(args.only)
 
     os.makedirs(str(dl_cache_path), exist_ok=True)
-    download_requirements(dl_cache_path, steps)
+    download_requirements(dl_cache_path, steps, args.torrent)
 
     if not args.download:
         program_files = output_path / "PROGRAM FILES"
