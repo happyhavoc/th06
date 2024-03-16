@@ -31,3 +31,10 @@ Supervisor::CreateBackBuffer
 Supervisor::SetupDInput
 Supervisor::TickTimer
 Supervisor::ReleasePbg3
+GameManager::RegisterChain
+GameManager::CutChain
+Ending::RegisterChain
+MusicRoom::RegisterChain
+ResultScreen::RegisterChain
+MainMenu::RegisterChain
+ReplayDoStuff
