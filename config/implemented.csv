@@ -24,7 +24,9 @@ AnmManager::LoadSurface
 AnmManager::ReleaseTexture
 AnmManager::ReleaseSurface
 AnmManager::ReleaseSurfaces
+AnmManager::ReleaseVertexBuffer
 AnmManager::SetActiveSprite
+AnmManager::SetupVertexBuffer
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem

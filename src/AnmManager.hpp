@@ -49,6 +49,7 @@ struct AnmManager
     AnmManager();
     ~AnmManager();
 
+    void ReleaseVertexBuffer();
     void SetupVertexBuffer();
 
     ZunResult CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat);

@@ -2,7 +2,6 @@ AnmManager::LoadTexture
 AnmManager::ReleaseAnm
 AnmManager::LoadTextureMipmap
 AnmManager::LoadSprite
-AnmManager::SetupVertexBuffer
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
