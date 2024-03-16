@@ -192,13 +192,14 @@ ZunResult Supervisor::RegisterChain()
     return ZUN_SUCCESS;
 }
 
+DIFFABLE_STATIC(u16, g_LastFrameInput);
+DIFFABLE_STATIC(u16, g_CurFrameInput);
+DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
+DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
+
 #pragma optimize("s", on)
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {
-    static u16 g_LastFrameInput = 0;
-    static u16 g_CurFrameInput = 0;
-    static u16 g_IsEigthFrameOfHeldInput = 0;
-    static u16 g_NumOfFramesInputsWereHeld = 0;
 
     if (g_SoundPlayer.streamingSound != NULL)
     {
