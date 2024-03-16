@@ -127,8 +127,8 @@ def parse_arguments() -> Namespace:
     parser.add_argument(
         "--only",
         action="append",
-        choices=["vs", "dx8", "py", "pragma", "cygwin", "ninja", "satsuki"],
-        help="Only run certain steps. Possible values are vs, dx8, py, pragma, cygwin, ninja and satsuki.",
+        choices=["vs", "dx8", "py", "pragma", "ninja", "satsuki"],
+        help="Only run certain steps. Possible values are vs, dx8, py, pragma, ninja and satsuki.",
     )
     parser.add_argument("dl_cache_path", help="Path to download the requirements in")
     parser.add_argument("output_path", help="The output directory")
@@ -288,24 +288,6 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "url": "https://raw.githubusercontent.com/microsoft/Windows-classic-samples/44d192fd7ec6f2422b7d023891c5f805ada2c811/Samples/Win7Samples/sysmgmt/msi/scripts/WiRunSQL.vbs",
             "filename": "WiRunSQL.vbs",
             "sha256": "ef18c6d0b0163e371daaa1dd3fdf08030bc0b0999e4b2b90a1a736f7eb12784b",
-        },
-        {
-            "name": "Cygwin",
-            "only": "cygwin",
-            # On darwin, for whatever reason, the 32-bit installer fails. Let's
-            # just grab the 64-bit installer instead.
-            "condition": sys.platform == "darwin",
-            "url": "http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/setup/snapshots/setup-x86_64-2.874.exe",
-            "filename": "cygwin-setup-2.874.exe",
-            "sha256": "58f9f42f5dbd52c5e3ecd24e537603ee8897ea15176b7acdc34afcef83e5c19a",
-        },
-        {
-            "name": "Cygwin",
-            "only": "cygwin",
-            "condition": sys.platform != "darwin",
-            "url": "http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/setup/snapshots/setup-x86-2.874.exe",
-            "filename": "cygwin-setup-2.874.exe",
-            "sha256": "a79e4f57ce98a4d4bacb8fbb66fcea3de92ef30b34ab8b76e11c8bd3b426fd31",
         },
         {
             "name": "Ninja",
@@ -504,36 +486,6 @@ def install_python(python_installer_path, wirunsql_path, tmp_dir, output_path):
     shutil.rmtree(str(tmp_dir), ignore_errors=True)
 
 
-def install_cygwin(cygwin_installer_path, tmp_dir, output_path):
-    print("Installing cygwin")
-    os.makedirs(str(tmp_dir), exist_ok=True)
-    local_package_dir_win32 = get_windows_path(tmp_dir / "cygwin_cache")
-    cygwin_dir_win32 = get_windows_path(output_path / "cygwin")
-    run_windows_program(
-        [
-            str(cygwin_installer_path),
-            "--quiet-mode",
-            "--only-site",
-            "--site",
-            "http://ctm.crouchingtigerhiddenfruitbat.org/pub/cygwin/circa/2002/11/12/084110",
-            "--no-verify",
-            "--root",
-            cygwin_dir_win32,
-            "--local-package-dir",
-            local_package_dir_win32,
-            "--no-shortcuts",
-            "--no-startmenu",
-            "--no-desktop",
-            "--arch",
-            "x86",
-            "--packages",
-            "gcc",
-        ],
-        cwd=str(tmp_dir),
-    )
-    shutil.rmtree(str(tmp_dir), ignore_errors=True)
-
-
 def install_pragma_var_order(tmp_dir, output_path):
     print("Installing pragma_var_order")
     os.makedirs(str(tmp_dir), exist_ok=True)
@@ -587,7 +539,7 @@ def main(args: Namespace) -> int:
     tmp2_dir = output_path / "tmp2"
 
     if args.only is None or len(args.only) == 0:
-        steps = set(["vs", "dx8", "py", "pragma", "cygwin", "ninja", "satsuki"])
+        steps = set(["vs", "dx8", "py", "pragma", "ninja", "satsuki"])
     else:
         steps = set(args.only)
 
@@ -602,7 +554,6 @@ def main(args: Namespace) -> int:
         installer_path = dl_cache_path / "en_vs.net_pro_full.exe"
         python_installer_path = dl_cache_path / "python-3.4.4.msi"
         wirunsql_path = dl_cache_path / "WiRunSQL.vbs"
-        cygwin_installer_path = dl_cache_path / "cygwin-setup-2.874.exe"
         ninja_zip_path = dl_cache_path / "ninja-win.zip"
 
         if "vs" in steps:
@@ -613,8 +564,6 @@ def main(args: Namespace) -> int:
             install_python(python_installer_path, wirunsql_path, tmp_dir, output_path)
         if "pragma" in steps:
             install_pragma_var_order(tmp_dir, output_path)
-        if "cygwin" in steps:
-            install_cygwin(cygwin_installer_path, tmp_dir, output_path)
         if "ninja" in steps:
             install_ninja(ninja_zip_path, output_path)
         if "satsuki" in steps:
