@@ -41,6 +41,11 @@ def get_path_of_mangled_symbol(symbol):
         raise Exception("Unknown symbol kind " + symbol)
 
 
+IGNORE_OVERLOAD_LIST = [
+    # This is supposed to be inlined but is inserted right before the first caller.
+    "D3DXMatrixIdentity"
+]
+
 fun_to_mangled_map = {}
 with open(args.input_def) as f:
     for line in f:
@@ -56,6 +61,10 @@ with open(args.input_def) as f:
             continue
         print(fun_path)
         if fun_path in fun_to_mangled_map:
+            if fun_path in IGNORE_OVERLOAD_LIST:
+                print("Ignoring overload of function " + fun_path)
+                continue
+
             raise Exception("Overload detected, two functions patch " + fun_path)
         fun_to_mangled_map[fun_path] = mangled_symbol
 

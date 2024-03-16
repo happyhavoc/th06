@@ -18,9 +18,13 @@ AnmVm::AnmVm
 AnmVm::Initialize
 AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
+AnmManager::CreateEmptyTexture
 AnmManager::LoadAnm
 AnmManager::LoadSurface
+AnmManager::ReleaseTexture
 AnmManager::ReleaseSurface
+AnmManager::ReleaseSurfaces
+AnmManager::SetActiveSprite
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem

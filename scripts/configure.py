@@ -96,6 +96,7 @@ def configure(build_type):
             "MidiOutput",
             "SoundPlayer",
             "Stage",
+            "AnmVm",
             "AnmManager",
             "GameManager",
             "Rng",

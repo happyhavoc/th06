@@ -2,6 +2,7 @@
 
 .intel_syntax
 
+.global _g_TextureFormatD3D8Mapping
 .global _g_ControllerMapping
 .global _g_AsciiManagerOnDrawMenusChain
 .global _g_AsciiManager
@@ -28,6 +29,7 @@
 .global _g_PrimitivesToDrawNoVertexBuf
 .global _g_PrimitivesToDrawVertexBuf
 
+_g_TextureFormatD3D8Mapping         = 0x0046c220
 _g_ControllerMapping                = 0x004765a0
 _g_AsciiManagerOnDrawMenusChain     = 0x0047b8e0
 _g_AsciiManager                     = 0x0047b900

@@ -3,36 +3,7 @@
 #include "GameErrorContext.hpp"
 #include "Supervisor.hpp"
 #include "i18n.hpp"
-
-AnmVm::AnmVm()
-{
-    this->spriteNumber = -1;
-}
-
-void AnmVm::Initialize()
-{
-    this->uvScrollPos.y = 0.0;
-    this->uvScrollPos.x = 0.0;
-    this->scaleInterpFinalX = 0.0;
-    this->scaleInterpFinalY = 0.0;
-    this->angleVel.z = 0.0;
-    this->angleVel.y = 0.0;
-    this->angleVel.x = 0.0;
-    this->rotation.z = 0.0;
-    this->rotation.y = 0.0;
-    this->rotation.x = 0.0;
-    this->scaleX = 1.0;
-    this->scaleY = 1.0;
-    this->scaleInterpEndTime = 0;
-    this->alphaInterpEndTime = 0;
-    this->color = D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0xff);
-    D3DXMatrixIdentity(&this->matrix);
-    this->flags = AnmVmFlags_0 | AnmVmFlags_1;
-    this->autoRotate = 0;
-    this->pendingInterrupt = 0;
-    this->posInterpEndTime = 0;
-    this->currentTimeInScript.Initialize();
-}
+#include "utils.hpp"
 
 // Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRWH
 struct VertexTex1Xyzrwh
@@ -60,12 +31,23 @@ struct VertexTex1DiffuseXyz
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 
-AnmManager::AnmManager() : virtualMachine()
+#ifndef DIFFBUILD
+D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
+    D3DFMT_UNKNOWN, D3DFMT_A8R8G8B8, D3DFMT_A1R5G5B5, D3DFMT_R5G6B5, D3DFMT_R8G8B8, D3DFMT_A4R4G4B4,
+};
+#endif
+
+// Stack layout here doesn't match because of extra unused stack slot.
+// This might mean that some empty constructors are called and inlined here.
+AnmManager::AnmManager()
 {
+    this->maybeLoadedSpriteCount = 0;
+
     memset(this, 0, sizeof(AnmManager));
-    for (size_t i = 0; i < sizeof(this->sprites) / sizeof(this->sprites[0]); i++)
+
+    for (int spriteIndex = 0; spriteIndex < ARRAY_SIZE_SIGNED(this->sprites); spriteIndex++)
     {
-        this->sprites[i].sourceFileIndex = -1;
+        this->sprites[spriteIndex].sourceFileIndex = -1;
     }
 
     g_PrimitivesToDrawVertexBuf[3].pos.w = 1.0;
@@ -105,6 +87,30 @@ AnmManager::AnmManager() : virtualMachine()
 }
 AnmManager::~AnmManager()
 {
+}
+
+ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat)
+{
+    D3DXCreateTexture(g_Supervisor.d3dDevice, width, height, 1, 0, g_TextureFormatD3D8Mapping[textureFormat],
+                      D3DPOOL_MANAGED, this->textures + textureIdx);
+
+    return ZUN_SUCCESS;
+}
+
+ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 sprite_index)
+{
+    if (this->sprites[sprite_index].sourceFileIndex < 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    vm->spriteNumber = (i16)sprite_index;
+    vm->sprite = this->sprites + sprite_index;
+    D3DXMatrixIdentity(&vm->matrix);
+    vm->matrix.m[0][0] = vm->sprite->widthPx / vm->sprite->textureWidth;
+    vm->matrix.m[1][1] = vm->sprite->heightPx / vm->sprite->textureHeight;
+
+    return ZUN_SUCCESS;
 }
 
 ZunResult AnmManager::LoadSurface(i32 surfaceIdx, char *path)
@@ -194,7 +200,32 @@ void AnmManager::ReleaseSurface(i32 surfaceIdx)
         this->surfacesBis[surfaceIdx]->Release();
         this->surfacesBis[surfaceIdx] = NULL;
     }
-    return;
+}
+
+void AnmManager::ReleaseSurfaces(void)
+{
+    for (int idx = 0; idx < ARRAY_SIZE_SIGNED(this->surfaces); idx++)
+    {
+        if (this->surfaces[idx] != NULL)
+        {
+            this->surfaces[idx]->Release();
+            this->surfaces[idx] = NULL;
+        }
+    }
+}
+
+void AnmManager::ReleaseTexture(i32 textureIdx)
+{
+    if (this->textures[textureIdx] != NULL)
+    {
+        this->textures[textureIdx]->Release();
+        this->textures[textureIdx] = NULL;
+    }
+
+    void *imageDataArray = this->imageDataArray[textureIdx];
+    free(imageDataArray);
+
+    this->imageDataArray[textureIdx] = NULL;
 }
 
 void AnmManager::CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y)
