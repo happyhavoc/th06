@@ -5,17 +5,17 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRWH
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRHW
 struct VertexTex1Xyzrwh
 {
-    D3DXVECTOR4 pos;
+    D3DXVECTOR4 position;
     D3DXVECTOR2 textureUV;
 };
 
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRWH
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRHW
 struct VertexTex1DiffuseXyzrwh
 {
-    D3DXVECTOR4 pos;
+    D3DXVECTOR4 position;
     D3DCOLOR diffuse;
     D3DXVECTOR2 textureUV;
 };
@@ -23,13 +23,14 @@ struct VertexTex1DiffuseXyzrwh
 // Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ
 struct VertexTex1DiffuseXyz
 {
-    D3DXVECTOR3 pos;
+    D3DXVECTOR3 position;
     D3DCOLOR diffuse;
     D3DXVECTOR2 textureUV;
 };
 
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
+DIFFABLE_STATIC(VertexTex1DiffuseXyz, g_PrimitivesToDrawUnknown[4]);
 
 #ifndef DIFFBUILD
 D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
@@ -50,10 +51,10 @@ AnmManager::AnmManager()
         this->sprites[spriteIndex].sourceFileIndex = -1;
     }
 
-    g_PrimitivesToDrawVertexBuf[3].pos.w = 1.0;
-    g_PrimitivesToDrawVertexBuf[2].pos.w = g_PrimitivesToDrawVertexBuf[3].pos.w;
-    g_PrimitivesToDrawVertexBuf[1].pos.w = g_PrimitivesToDrawVertexBuf[2].pos.w;
-    g_PrimitivesToDrawVertexBuf[0].pos.w = g_PrimitivesToDrawVertexBuf[1].pos.w;
+    g_PrimitivesToDrawVertexBuf[3].position.w = 1.0;
+    g_PrimitivesToDrawVertexBuf[2].position.w = g_PrimitivesToDrawVertexBuf[3].position.w;
+    g_PrimitivesToDrawVertexBuf[1].position.w = g_PrimitivesToDrawVertexBuf[2].position.w;
+    g_PrimitivesToDrawVertexBuf[0].position.w = g_PrimitivesToDrawVertexBuf[1].position.w;
     g_PrimitivesToDrawVertexBuf[0].textureUV.x = 0.0;
     g_PrimitivesToDrawVertexBuf[0].textureUV.y = 0.0;
     g_PrimitivesToDrawVertexBuf[1].textureUV.x = 1.0;
@@ -63,10 +64,10 @@ AnmManager::AnmManager()
     g_PrimitivesToDrawVertexBuf[3].textureUV.x = 1.0;
     g_PrimitivesToDrawVertexBuf[3].textureUV.y = 1.0;
 
-    g_PrimitivesToDrawNoVertexBuf[3].pos.w = 1.0;
-    g_PrimitivesToDrawNoVertexBuf[2].pos.w = g_PrimitivesToDrawNoVertexBuf[3].pos.w;
-    g_PrimitivesToDrawNoVertexBuf[1].pos.w = g_PrimitivesToDrawNoVertexBuf[2].pos.w;
-    g_PrimitivesToDrawNoVertexBuf[0].pos.w = g_PrimitivesToDrawNoVertexBuf[1].pos.w;
+    g_PrimitivesToDrawNoVertexBuf[3].position.w = 1.0;
+    g_PrimitivesToDrawNoVertexBuf[2].position.w = g_PrimitivesToDrawNoVertexBuf[3].position.w;
+    g_PrimitivesToDrawNoVertexBuf[1].position.w = g_PrimitivesToDrawNoVertexBuf[2].position.w;
+    g_PrimitivesToDrawNoVertexBuf[0].position.w = g_PrimitivesToDrawNoVertexBuf[1].position.w;
     g_PrimitivesToDrawNoVertexBuf[0].textureUV.x = 0.0;
     g_PrimitivesToDrawNoVertexBuf[0].textureUV.y = 0.0;
     g_PrimitivesToDrawNoVertexBuf[1].textureUV.x = 1.0;
@@ -88,6 +89,72 @@ AnmManager::AnmManager()
 AnmManager::~AnmManager()
 {
 }
+
+void AnmManager::SetupVertexBuffer()
+{
+    this->vertexBufferContents[2].position.x = -128;
+    this->vertexBufferContents[0].position.x = -128;
+    this->vertexBufferContents[3].position.x = 128;
+    this->vertexBufferContents[1].position.x = 128;
+
+    this->vertexBufferContents[1].position.y = -128;
+    this->vertexBufferContents[0].position.y = -128;
+    this->vertexBufferContents[3].position.y = 128;
+    this->vertexBufferContents[2].position.y = 128;
+
+    this->vertexBufferContents[3].position.z = 0;
+    this->vertexBufferContents[2].position.z = 0;
+    this->vertexBufferContents[1].position.z = 0;
+    this->vertexBufferContents[0].position.z = 0;
+
+    this->vertexBufferContents[2].textureUV.x = 0;
+    this->vertexBufferContents[0].textureUV.x = 0;
+    this->vertexBufferContents[3].textureUV.x = 1;
+    this->vertexBufferContents[1].textureUV.x = 1;
+    this->vertexBufferContents[1].textureUV.y = 0;
+    this->vertexBufferContents[0].textureUV.y = 0;
+    this->vertexBufferContents[3].textureUV.y = 1;
+    this->vertexBufferContents[2].textureUV.y = 1;
+
+    g_PrimitivesToDrawUnknown[0].position = this->vertexBufferContents[0].position;
+    g_PrimitivesToDrawUnknown[1].position = this->vertexBufferContents[1].position;
+    g_PrimitivesToDrawUnknown[2].position = this->vertexBufferContents[2].position;
+    g_PrimitivesToDrawUnknown[3].position = this->vertexBufferContents[3].position;
+
+    g_PrimitivesToDrawUnknown[0].textureUV.x = this->vertexBufferContents[0].textureUV.x;
+    g_PrimitivesToDrawUnknown[0].textureUV.y = this->vertexBufferContents[0].textureUV.y;
+    g_PrimitivesToDrawUnknown[1].textureUV.x = this->vertexBufferContents[1].textureUV.x;
+    g_PrimitivesToDrawUnknown[1].textureUV.y = this->vertexBufferContents[1].textureUV.y;
+    g_PrimitivesToDrawUnknown[2].textureUV.x = this->vertexBufferContents[2].textureUV.x;
+    g_PrimitivesToDrawUnknown[2].textureUV.y = this->vertexBufferContents[2].textureUV.y;
+    g_PrimitivesToDrawUnknown[3].textureUV.x = this->vertexBufferContents[3].textureUV.x;
+    g_PrimitivesToDrawUnknown[3].textureUV.y = this->vertexBufferContents[3].textureUV.y;
+
+    RenderVertexInfo *buffer;
+
+    if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
+    {
+        g_Supervisor.d3dDevice->CreateVertexBuffer(sizeof(this->vertexBufferContents), 0, D3DFVF_TEX1 | D3DFVF_XYZ,
+                                                   D3DPOOL_MANAGED, &this->vertexBuffer);
+
+        this->vertexBuffer->Lock(0, 0, (BYTE **)&buffer, 0);
+        memcpy(buffer, this->vertexBufferContents, sizeof(this->vertexBufferContents));
+        this->vertexBuffer->Unlock();
+
+        g_Supervisor.d3dDevice->SetStreamSource(0, g_AnmManager->vertexBuffer, sizeof(RenderVertexInfo));
+    }
+}
+
+#pragma optimize("s", on)
+void AnmManager::ReleaseVertexBuffer()
+{
+    if (this->vertexBuffer != NULL)
+    {
+        this->vertexBuffer->Release();
+        this->vertexBuffer = NULL;
+    }
+}
+#pragma optimize("s", off)
 
 ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat)
 {

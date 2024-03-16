@@ -28,6 +28,7 @@
 .global _g_AnmManager
 .global _g_PrimitivesToDrawNoVertexBuf
 .global _g_PrimitivesToDrawVertexBuf
+.global _g_PrimitivesToDrawUnknown
 
 _g_TextureFormatD3D8Mapping         = 0x0046c220
 _g_ControllerMapping                = 0x004765a0
@@ -55,3 +56,4 @@ _g_SoundPlayer                      = 0x006d3f50
 _g_AnmManager                       = 0x006d4588
 _g_PrimitivesToDrawNoVertexBuf      = 0x006d4590
 _g_PrimitivesToDrawVertexBuf        = 0x006d4600
+_g_PrimitivesToDrawUnknown          = 0x006d4660
