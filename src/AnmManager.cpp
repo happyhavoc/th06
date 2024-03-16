@@ -208,11 +208,8 @@ ZunResult AnmManager::LoadSurface(i32 surfaceIdx, char *path)
     if (g_Supervisor.d3dDevice->CreateRenderTarget(this->surfaceSourceInfo[surfaceIdx].Width,
                                                    this->surfaceSourceInfo[surfaceIdx].Height,
                                                    g_Supervisor.presentParameters.BackBufferFormat, D3DMULTISAMPLE_NONE,
-                                                   TRUE, &this->surfaces[surfaceIdx]) != D3D_OK)
-    {
-        goto fail;
-    }
-    if (g_Supervisor.d3dDevice->CreateImageSurface(
+                                                   TRUE, &this->surfaces[surfaceIdx]) != D3D_OK &&
+        g_Supervisor.d3dDevice->CreateImageSurface(
             this->surfaceSourceInfo[surfaceIdx].Width, this->surfaceSourceInfo[surfaceIdx].Height,
             g_Supervisor.presentParameters.BackBufferFormat, &this->surfaces[surfaceIdx]) != D3D_OK)
     {
