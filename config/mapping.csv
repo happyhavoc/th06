@@ -358,7 +358,7 @@ ResultScreen::FUN_0042d0a4,0x42d0a4,0xeb,__stdcall,void,ResultScreen*,i32
 ResultScreen::FUN_0042d18f,0x42d18f,0x103,__thiscall,u32,ResultScreen*,ResultScreen*,u32
 ResultScreen::FUN_0042d292,0x42d292,0xc8,__thiscall,u32,ResultScreen*
 ResultScreen::FUN_0042d35a,0x42d35a,0x419,__thiscall,u32,ResultScreen*
-ResultScreen::RegisterChain,0x42d773,0x12e,__stdcall,u8,i32
+ResultScreen::RegisterChain,0x42d773,0x12e,default,ZunResult,i32
 ResultScreen::ResultScreen,0x42d8a1,0xed,__thiscall,void*,ResultScreen*
 ResultScreen::OnUpdate,0x42d98e,0xab8,__thiscall,u8,ResultScreen*,ResultScreen*
 ResultScreen::OnDraw,0x42e446,0xc1a,unknown,u8,ResultScreen*
