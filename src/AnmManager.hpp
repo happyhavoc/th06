@@ -21,8 +21,8 @@ struct AnmRawEntry
     i32 numSprites;
     i32 numScripts;
     u32 textureIdx;
-    u32 width;
-    u32 height;
+    i32 width;
+    i32 height;
     u32 format;
     u32 colorKey;
     u32 nameOffset;
