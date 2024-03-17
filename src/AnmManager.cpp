@@ -38,6 +38,13 @@ D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
 };
 #endif
 
+#define TEX_FMT_UNKNOWN 0
+#define TEX_FMT_A8R8G8B8 1
+#define TEX_FMT_A1R5G5B5 2
+#define TEX_FMT_R5G6B5 3
+#define TEX_FMT_R8G8B8 4
+#define TEX_FMT_A4R4G4B4 5
+
 // Stack layout here doesn't match because of extra unused stack slot.
 // This might mean that some empty constructors are called and inlined here.
 AnmManager::AnmManager()
@@ -160,6 +167,40 @@ ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, 
 {
     D3DXCreateTexture(g_Supervisor.d3dDevice, width, height, 1, 0, g_TextureFormatD3D8Mapping[textureFormat],
                       D3DPOOL_MANAGED, this->textures + textureIdx);
+
+    return ZUN_SUCCESS;
+}
+
+ZunResult AnmManager::LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey)
+{
+    ReleaseTexture(textureIdx);
+    this->imageDataArray[textureIdx] = FileSystem::OpenPath(textureName, 0);
+
+    if (this->imageDataArray[textureIdx] == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (((g_Supervisor.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) != 0)
+    {
+        if (g_TextureFormatD3D8Mapping[textureFormat] == D3DFMT_A8R8G8B8 ||
+            g_TextureFormatD3D8Mapping[textureFormat] == D3DFMT_UNKNOWN)
+        {
+            textureFormat = TEX_FMT_A4R4G4B4;
+        }
+        else if (g_TextureFormatD3D8Mapping[textureFormat] == D3DFMT_R8G8B8)
+        {
+            textureFormat = TEX_FMT_R5G6B5;
+        }
+    }
+
+    if (D3DXCreateTextureFromFileInMemoryEx(g_Supervisor.d3dDevice, this->imageDataArray[textureIdx], g_LastFileSize, 0,
+                                            0, 0, 0, g_TextureFormatD3D8Mapping[textureFormat], D3DPOOL_MANAGED,
+                                            D3DX_FILTER_NONE | D3DX_FILTER_POINT, D3DX_DEFAULT, colorKey, NULL, NULL,
+                                            &this->textures[textureIdx]) != D3D_OK)
+    {
+        return ZUN_ERROR;
+    }
 
     return ZUN_SUCCESS;
 }

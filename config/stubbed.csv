@@ -1,4 +1,3 @@
-AnmManager::LoadTexture
 AnmManager::ReleaseAnm
 AnmManager::ExecuteAnmIdx
 AnmManager::LoadTextureMipmap

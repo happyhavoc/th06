@@ -22,6 +22,7 @@ AnmManager::CreateEmptyTexture
 AnmManager::LoadAnm
 AnmManager::LoadSprite
 AnmManager::LoadSurface
+AnmManager::LoadTexture
 AnmManager::ReleaseTexture
 AnmManager::ReleaseSurface
 AnmManager::ReleaseSurfaces
