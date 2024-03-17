@@ -164,6 +164,27 @@ ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, 
     return ZUN_SUCCESS;
 }
 
+void AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
+{
+    memcpy(this->sprites + spriteIdx, sprite, sizeof(AnmLoadedSprite));
+    this->sprites[spriteIdx].spriteId = this->maybeLoadedSpriteCount++;
+
+    // For some reasons, all of thoses use a DIVR, how can we match here?
+    this->sprites[spriteIdx].uvStart.x =
+        this->sprites[spriteIdx].startPixelInclusive.x / this->sprites[spriteIdx].textureWidth;
+    this->sprites[spriteIdx].uvEnd.x =
+        this->sprites[spriteIdx].endPixelInclusive.x / this->sprites[spriteIdx].textureWidth;
+    this->sprites[spriteIdx].uvStart.y =
+        this->sprites[spriteIdx].startPixelInclusive.y / this->sprites[spriteIdx].textureHeight;
+    this->sprites[spriteIdx].uvEnd.y =
+        this->sprites[spriteIdx].endPixelInclusive.y / this->sprites[spriteIdx].textureHeight;
+
+    this->sprites[spriteIdx].widthPx =
+        this->sprites[spriteIdx].endPixelInclusive.x - this->sprites[spriteIdx].startPixelInclusive.x;
+    this->sprites[spriteIdx].heightPx =
+        this->sprites[spriteIdx].endPixelInclusive.y - this->sprites[spriteIdx].startPixelInclusive.y;
+}
+
 ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 sprite_index)
 {
     if (this->sprites[sprite_index].sourceFileIndex < 0)
