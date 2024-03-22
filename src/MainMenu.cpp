@@ -14,7 +14,7 @@ ZunResult MainMenu::BeginStartup()
 
     if (LoadTitleAnm(this) != ZUN_SUCCESS)
     {
-        g_Supervisor.curState = 4;
+        g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
         return ZUN_ERROR;
     }
     else
@@ -33,8 +33,8 @@ ZunResult MainMenu::BeginStartup()
         for (i = 0; i < 122; i++)
         {
             this->vm[i].pendingInterrupt = 1;
-            this->vm[i].flags |= 8;
-            if ((g_Supervisor.cfg.opts & 1) == 0)
+            this->vm[i].flags |= AnmVmFlags_8;
+            if ((g_Supervisor.cfg.opts & (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING)) == 0)
             {
                 this->vm[i].color = 0xff000000;
             }
