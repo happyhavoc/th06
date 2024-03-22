@@ -3,11 +3,11 @@
 #include <D3D8.h>
 
 #include "AnmVm.hpp"
-#include "inttypes.hpp"
 #include "ZunResult.hpp"
+#include "inttypes.hpp"
 
-
-enum GameState {
+enum GameState
+{
     STATE_STARTUP,
     STATE_PRE_INPUT,
     STATE_MAIN_MENU,
@@ -49,4 +49,4 @@ struct MainMenu
     i8 padding2[0x8D24];
 };
 
-ZunResult LoadTitleAnm(MainMenu* menu);
+ZunResult LoadTitleAnm(MainMenu *menu);
