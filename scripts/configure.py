@@ -92,6 +92,7 @@ def configure(build_type):
             "Supervisor",
             "GameErrorContext",
             "GameWindow",
+            "MainMenu",
             "MidiOutput",
             "SoundPlayer",
             "Stage",

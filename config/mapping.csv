@@ -423,7 +423,7 @@ MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,u32,MainMenu*
 MainMenu::MoveCursor,0x43753c,0x136,__stdcall,i32,MainMenu*,i32
 MainMenu::FUN_00437672,0x437672,0x131,__stdcall,void,MainMenu*,i16,u16,i32
 FUN_004377a3,0x4377a3,0xff,__stdcall,void,MainMenu*,i32,i32,u32,u32,i32
-MainMenu::beginStartup,0x4378a2,0x142,__fastcall,ZunResult,MainMenu*
+MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
 MainMenu::FUN_004379e4,0x4379e4,0x15d,__thiscall,i32,MainMenu*
 MainMenu::FUN_00437b41,0x437b41,0x68b,__thiscall,u32,MainMenu*
 MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,void,MainMenu*
@@ -432,7 +432,7 @@ MainMenu::setSavedCursorPosition,0x438ef8,0x23f,__thiscall,void,MainMenu*,AnmVm*
 MainMenu::FUN_00439137,0x439137,0x82e,__thiscall,u32,MainMenu*
 MainMenu::FUN_00439965,0x439965,0x171,__thiscall,u32,MainMenu*
 MainMenu::OnDraw,0x439ad6,0x2ca,unknown,u8,MainMenu*
-MainMenu::loadTitleAnm,0x439da0,0x1e8,__stdcall,u32,MainMenu*
+LoadTitleAnm,0x439da0,0x1e8,__stdcall,ZunResult,MainMenu*
 MainMenu::loadMenu,0x439f88,0x264,default,ZunResult,u32
 LoadReplayMenu,0x43a1ec,0x14c,__stdcall,ZunResult,MainMenu*
 MainMenu::RegisterChain,0x43a338,0x12c,unknown,ZunResult,u32
