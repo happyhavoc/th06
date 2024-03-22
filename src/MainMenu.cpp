@@ -21,7 +21,7 @@ ZunResult MainMenu::BeginStartup()
     {
         time = timeGetTime();
         while ((time - g_Supervisor.startupTimeBeforeMenuMusic >= 0) &&
-                (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
+               (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
         {
             time = timeGetTime();
         }
