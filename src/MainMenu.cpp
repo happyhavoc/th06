@@ -31,7 +31,7 @@ ZunResult MainMenu::BeginStartup()
     for (i = 0; i < 122; i++)
     {
         this->vm[i].pendingInterrupt = 1;
-        this->vm[i].flags |= AnmVmFlags_8;
+        this->vm[i].flags |= AnmVmFlags_3;
         if ((g_Supervisor.cfg.opts & (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING)) == 0)
         {
             this->vm[i].color = 0xff000000;
