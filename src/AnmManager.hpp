@@ -67,6 +67,7 @@ struct AnmManager
 
     void ReleaseAnm(i32 anmIdx);
     ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
+    void ExecuteAnmIdx(AnmVm *vm, int anmFileIdx);
 
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;
