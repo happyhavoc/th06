@@ -95,7 +95,7 @@ struct Supervisor
     static ZunResult DeletedCallback(Supervisor *s);
     static void DrawFpsCounter();
 
-    static void PlayAudio(char *path);
+    void PlayAudio(char *path);
 
     static void CreateBackBuffer();
 
