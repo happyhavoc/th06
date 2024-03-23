@@ -5,6 +5,7 @@
 #include "Supervisor.hpp"
 
 #pragma optimize("s", on)
+#pragma var_order(time, i, vector3Ptr)
 ZunResult MainMenu::BeginStartup()
 {
     D3DXVECTOR3 vector3Ptr; // we have to add Ptr,
