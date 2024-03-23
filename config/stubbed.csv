@@ -10,6 +10,7 @@ StageMenu::OnDrawRetryMenu
 AsciiManager::DrawPopupsWithHwVertexProcessing
 AsciiManager::DrawPopupsWithoutHwVertexProcessing
 GameWindow::Render
+MainMenu::LoadTitleAnm
 MidiDevice::Close
 MidiTimer::StopTimer
 MidiOutput::ClearTracks
@@ -27,6 +28,7 @@ Supervisor::CreateBackBuffer
 Supervisor::SetupDInput
 Supervisor::TickTimer
 Supervisor::ReleasePbg3
+Supervisor::PlayAudio
 GameManager::RegisterChain
 GameManager::CutChain
 Ending::RegisterChain

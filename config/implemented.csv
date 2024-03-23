@@ -55,6 +55,7 @@ DebugPrint
 DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
+MainMenu::BeginStartup
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput
