@@ -30,6 +30,7 @@ enum GameState
 struct MainMenu
 {
     ZunResult BeginStartup();
+    static ZunResult LoadTitleAnm(MainMenu *menu);
     static ZunResult RegisterChain(u32 is_demo);
 
     AnmVm vm[122];
@@ -49,4 +50,3 @@ struct MainMenu
     i8 padding2[0x8D24];
 };
 
-ZunResult LoadTitleAnm(MainMenu *menu);

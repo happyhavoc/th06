@@ -10,7 +10,7 @@ StageMenu::OnDrawRetryMenu
 AsciiManager::DrawPopupsWithHwVertexProcessing
 AsciiManager::DrawPopupsWithoutHwVertexProcessing
 GameWindow::Render
-LoadTitleAnm
+MainMenu::LoadTitleAnm
 MidiDevice::Close
 MidiTimer::StopTimer
 MidiOutput::ClearTracks
