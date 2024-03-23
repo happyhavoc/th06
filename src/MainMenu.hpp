@@ -49,4 +49,3 @@ struct MainMenu
     u32 unk_820c;
     i8 padding2[0x8D24];
 };
-
