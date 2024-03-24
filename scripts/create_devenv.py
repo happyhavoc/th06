@@ -239,7 +239,7 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
         str(aria2c_path)
         + " --dir "
         + str(dl_cache_path)
-        + " --summary-interval=0 --seed-time=0 --select-file=4 "
+        + " --summary-interval=0 --seed-time=0 "
         + str(requirement["torrent"]),
         shell=True,
     )
@@ -254,8 +254,12 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
         raise Exception(
             "Download failed: Got hash " + hash + ", expected " + requirement["sha256"]
         )
-    os.removedirs(str(dl_cache_path / requirement["torrent_dirname"]))
-
+    try:
+        os.rmdir(str(dl_cache_path / requirement["torrent_dirname"]))
+        os.remove(str(dl_cache_path / requirement["torrent_dirname"] + ".torrent"))
+    except:
+        print("Failed to remove torrent directory, should be removed manually.")
+        pass
 
 def download_requirements(dl_cache_path, steps, should_torrent):
     requirements = [
