@@ -32,6 +32,10 @@ struct MainMenu
 {
     ZunResult BeginStartup();
     static ZunResult LoadTitleAnm(MainMenu *menu);
+    ZunResult DrawStartMenu();
+    static i32 MoveCursor(MainMenu* menu, i32 menu_length);
+    static void DrawMenuItem(AnmVm* vm, i32, i32, D3DCOLOR, D3DCOLOR, i32);
+
     static ZunResult RegisterChain(u32 is_demo);
 
     AnmVm vm[122];
@@ -43,7 +47,7 @@ struct MainMenu
     GameState gameState;
     i32 stateTimer;
     i32 idleFrames;
-    f32 unk_81fc;
+    i32 unk_81fc;
     D3DCOLOR maybeMenuTextColor;
     D3DCOLOR color2;
     D3DCOLOR color1;
@@ -52,7 +56,11 @@ struct MainMenu
     u32 wasActive;
     i8 padding2[4];
     i16 controlMapping[9];
-    i8 padding3[6];
+    i8 padding3[2];
+    u8 colorMode16bit;
+    u8 windowed;
+    u8 frameskipConfig;
+    i8 padding4;
     ChainElem *chainCalc;
     ChainElem *chainDraw;
     char replayFilePaths[60][512];
@@ -61,7 +69,7 @@ struct MainMenu
     i8 *currentReplay;
     i32 *unk_10ee0;
     f32 *unk_10ee4;
-    i8 padding4[64];
+    i8 padding5[64];
     u32 unk_10f28;
     u32 unk_10f2c;
     u32 time_related;
