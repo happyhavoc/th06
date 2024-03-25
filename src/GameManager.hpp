@@ -6,7 +6,8 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
-enum Difficulty {
+enum Difficulty
+{
     EASY,
     NORMAL,
     HARD,
@@ -19,7 +20,6 @@ struct GameManager
     static ZunResult RegisterChain();
     static void CutChain();
     i32 hasReachedMaxClears(i32 character, i32 shottype);
-
 
     u8 padding[0xf];
     Difficulty difficulty;

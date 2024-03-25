@@ -9,7 +9,7 @@
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 
-#define WAS_PRESSED(key) (((g_CurFrameInput & key ) != 0) && (g_CurFrameInput & key ) != (g_LastFrameInput & key ))
+#define WAS_PRESSED(key) (((g_CurFrameInput & key) != 0) && (g_CurFrameInput & key) != (g_LastFrameInput & key))
 
 #pragma optimize("s", on)
 #pragma var_order(time, i, vector3Ptr)
@@ -118,157 +118,174 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 }
 #pragma optimize("", on)
 
-
 DIFFABLE_STATIC(u16, g_LastFrameInput);
 DIFFABLE_STATIC(u16, g_CurFrameInput);
 
 #pragma optimize("s", on)
 #pragma var_order(i, drawVm)
-ZunResult MainMenu::DrawStartMenu(void) {
+ZunResult MainMenu::DrawStartMenu(void)
+{
     int i;
     i = MoveCursor(this, 8);
-    if((this->cursor == 1) && !g_GameManager.hasReachedMaxClears(0,0) &&
-        !g_GameManager.hasReachedMaxClears(0,1) &&
-        !g_GameManager.hasReachedMaxClears(1,0) &&
-        !g_GameManager.hasReachedMaxClears(1,1)
-        ) {
+    if ((this->cursor == 1) && !g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
+        !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1))
+    {
         this->cursor += i;
     }
-    AnmVm* drawVm = this->vm;
-    for(i=0; i < 8; i++, drawVm++ /* zun why */) {
+    AnmVm *drawVm = this->vm;
+    for (i = 0; i < 8; i++, drawVm++ /* zun why */)
+    {
         DrawMenuItem(drawVm, i, this->cursor, 0xffff0000, 0x80300000, 122);
     }
-    if(this->stateTimer >= 0x14) {
-        if(WAS_PRESSED(0x1001)) {
-            switch(this->cursor) {
-                case 0:
-                    for (i = 0; i < 122; i++) {
+    if (this->stateTimer >= 0x14)
+    {
+        if (WAS_PRESSED(0x1001))
+        {
+            switch (this->cursor)
+            {
+            case 0:
+                for (i = 0; i < 122; i++)
+                {
+                    this->vm[i].pendingInterrupt = 4;
+                }
+                this->gameState = STATE_DIFFICULTY_LOAD;
+                g_GameManager.unk_1823 = 0;
+                if (EXTRA <= g_GameManager.difficulty)
+                {
+                    g_GameManager.difficulty = NORMAL;
+                }
+                if (EXTRA <= g_Supervisor.cfg.defaultDifficulty)
+                {
+                    g_Supervisor.cfg.defaultDifficulty = NORMAL;
+                }
+                this->stateTimer = 0;
+                this->unk_81fc = 0x40000000;
+                this->maybeMenuTextColor = 0xff000000;
+                this->unk_820c = 0;
+                this->isActive = 60;
+                g_SoundPlayer.PlaySoundByIdx(10, 0);
+                break;
+            case 1:
+                if (!(!g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
+                      !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1)))
+                {
+                    for (i = 0; i < 122; i++)
+                    {
                         this->vm[i].pendingInterrupt = 4;
                     }
                     this->gameState = STATE_DIFFICULTY_LOAD;
                     g_GameManager.unk_1823 = 0;
-                    if(EXTRA <= g_GameManager.difficulty) {
-                        g_GameManager.difficulty = NORMAL;
-                    }
-                    if(EXTRA <= g_Supervisor.cfg.defaultDifficulty) {
-                        g_Supervisor.cfg.defaultDifficulty = NORMAL;
-                    }
+                    g_GameManager.difficulty = EXTRA;
                     this->stateTimer = 0;
                     this->unk_81fc = 0x40000000;
                     this->maybeMenuTextColor = 0xff000000;
                     this->unk_820c = 0;
                     this->isActive = 60;
-                    g_SoundPlayer.PlaySoundByIdx(10,0);
-                    break;
-                case 1: 
-                    if(!(!g_GameManager.hasReachedMaxClears(0,0) &&
-                        !g_GameManager.hasReachedMaxClears(0,1) &&
-                        !g_GameManager.hasReachedMaxClears(1,0) &&
-                        !g_GameManager.hasReachedMaxClears(1,1))) {
-                        for (i = 0; i < 122; i++) {
-                            this->vm[i].pendingInterrupt = 4;
-                        }
-                        this->gameState = STATE_DIFFICULTY_LOAD;
-                        g_GameManager.unk_1823 = 0;
-                        g_GameManager.difficulty = EXTRA;
-                        this->stateTimer = 0;
-                        this->unk_81fc = 0x40000000;
-                        this->maybeMenuTextColor = 0xff000000;
-                        this->unk_820c = 0;
-                        this->isActive = 60;
-                        g_SoundPlayer.PlaySoundByIdx(10,0);
-                    } else {
-                        g_SoundPlayer.PlaySoundByIdx(0xb,0);
-                    }
-                    break;
-                case 2:
-                    g_GameManager.unk_1823 = 1;
-                    for (i = 0; i < 122; i++) {
-                        this->vm[i].pendingInterrupt = 4;
-                    }
-                    this->gameState = STATE_DIFFICULTY_LOAD;
-                    if(EXTRA <= g_GameManager.difficulty) {
-                        g_GameManager.difficulty = NORMAL;
-                    }
-                    if(EXTRA <= g_Supervisor.cfg.defaultDifficulty) {
-                        g_Supervisor.cfg.defaultDifficulty = NORMAL;
-                    }
-                    this->stateTimer = 0;
-                    this->unk_81fc = 0x40000000;
-                    this->maybeMenuTextColor = 0xff000000;
-                    this->unk_820c = 0;
-                    this->isActive = 60;
-                    g_SoundPlayer.PlaySoundByIdx(10,0);
-                    break;
-                case 3:
-                    for(i = 0; i < 122; i++) {
-                        this->vm[i].pendingInterrupt = 4;
-                    }
-                    this->gameState = STATE_REPLAY_LOAD;
-                    g_GameManager.unk_1823 = 0;
-                    this->stateTimer = 0;
-                    this->unk_81fc = 0x40000000;
-                    this->maybeMenuTextColor = 0xff000000;
-                    this->unk_820c = 0;
-                    this->isActive = 60;
-                    g_SoundPlayer.PlaySoundByIdx(10,0);
-                    break;
-                case 4:
-                    for(i = 0; i < 122; i++) {
-                        this->vm[i].pendingInterrupt = 4;
-                    }
-                    this->gameState = STATE_SCORE;
-                    this->stateTimer = 0;
-                    this->unk_81fc = 0x40000000;
-                    this->maybeMenuTextColor = 0xff000000;
-                    this->unk_820c = 0;
-                    this->isActive = 60;
-                    g_SoundPlayer.PlaySoundByIdx(10,0);
-                    break;
-                case 5:
-                    this->gameState = STATE_MUSIC_ROOM;
-                    this->stateTimer = 0;
-                    for(i = 0; i < 122; i++) {
-                        this->vm[i].pendingInterrupt = 4;
-                    }
                     g_SoundPlayer.PlaySoundByIdx(10, 0);
-                    break;
-                case 6:
-                    this->gameState = STATE_OPTIONS;
-                    this->stateTimer = 0;
-                    for(i = 0; i < 122; i++) {
-                        this->vm[i].pendingInterrupt = 3;
-                    }
-                    this->cursor = 0;
-                    this->colorMode16bit = g_Supervisor.cfg.colorMode16bit;
-                    this->windowed = g_Supervisor.cfg.windowed;
-                    this->frameskipConfig = g_Supervisor.cfg.frameskipConfig;
-                    g_SoundPlayer.PlaySoundByIdx(10, 0);
-                    break;
-                case 7:
-                    this->gameState = STATE_QUIT;
-                    this->stateTimer = 0;
-                    for(i = 0; i < 122; i++) {
-                        this->vm[i].pendingInterrupt = 4;
-                    }
+                }
+                else
+                {
                     g_SoundPlayer.PlaySoundByIdx(0xb, 0);
-                    break;
+                }
+                break;
+            case 2:
+                g_GameManager.unk_1823 = 1;
+                for (i = 0; i < 122; i++)
+                {
+                    this->vm[i].pendingInterrupt = 4;
+                }
+                this->gameState = STATE_DIFFICULTY_LOAD;
+                if (EXTRA <= g_GameManager.difficulty)
+                {
+                    g_GameManager.difficulty = NORMAL;
+                }
+                if (EXTRA <= g_Supervisor.cfg.defaultDifficulty)
+                {
+                    g_Supervisor.cfg.defaultDifficulty = NORMAL;
+                }
+                this->stateTimer = 0;
+                this->unk_81fc = 0x40000000;
+                this->maybeMenuTextColor = 0xff000000;
+                this->unk_820c = 0;
+                this->isActive = 60;
+                g_SoundPlayer.PlaySoundByIdx(10, 0);
+                break;
+            case 3:
+                for (i = 0; i < 122; i++)
+                {
+                    this->vm[i].pendingInterrupt = 4;
+                }
+                this->gameState = STATE_REPLAY_LOAD;
+                g_GameManager.unk_1823 = 0;
+                this->stateTimer = 0;
+                this->unk_81fc = 0x40000000;
+                this->maybeMenuTextColor = 0xff000000;
+                this->unk_820c = 0;
+                this->isActive = 60;
+                g_SoundPlayer.PlaySoundByIdx(10, 0);
+                break;
+            case 4:
+                for (i = 0; i < 122; i++)
+                {
+                    this->vm[i].pendingInterrupt = 4;
+                }
+                this->gameState = STATE_SCORE;
+                this->stateTimer = 0;
+                this->unk_81fc = 0x40000000;
+                this->maybeMenuTextColor = 0xff000000;
+                this->unk_820c = 0;
+                this->isActive = 60;
+                g_SoundPlayer.PlaySoundByIdx(10, 0);
+                break;
+            case 5:
+                this->gameState = STATE_MUSIC_ROOM;
+                this->stateTimer = 0;
+                for (i = 0; i < 122; i++)
+                {
+                    this->vm[i].pendingInterrupt = 4;
+                }
+                g_SoundPlayer.PlaySoundByIdx(10, 0);
+                break;
+            case 6:
+                this->gameState = STATE_OPTIONS;
+                this->stateTimer = 0;
+                for (i = 0; i < 122; i++)
+                {
+                    this->vm[i].pendingInterrupt = 3;
+                }
+                this->cursor = 0;
+                this->colorMode16bit = g_Supervisor.cfg.colorMode16bit;
+                this->windowed = g_Supervisor.cfg.windowed;
+                this->frameskipConfig = g_Supervisor.cfg.frameskipConfig;
+                g_SoundPlayer.PlaySoundByIdx(10, 0);
+                break;
+            case 7:
+                this->gameState = STATE_QUIT;
+                this->stateTimer = 0;
+                for (i = 0; i < 122; i++)
+                {
+                    this->vm[i].pendingInterrupt = 4;
+                }
+                g_SoundPlayer.PlaySoundByIdx(0xb, 0);
+                break;
             }
-    }
-    if(WAS_PRESSED(0x200)) {
-        this->gameState = STATE_QUIT;
-        this->stateTimer = 0;
-        for(i = 0; i < 122; i++) {
-            this->vm[i].pendingInterrupt = 4;
         }
-        g_SoundPlayer.PlaySoundByIdx(0xb,0);
+        if (WAS_PRESSED(0x200))
+        {
+            this->gameState = STATE_QUIT;
+            this->stateTimer = 0;
+            for (i = 0; i < 122; i++)
+            {
+                this->vm[i].pendingInterrupt = 4;
+            }
+            g_SoundPlayer.PlaySoundByIdx(0xb, 0);
+        }
+        if (WAS_PRESSED(0xA))
+        {
+            this->cursor = 7;
+            g_SoundPlayer.PlaySoundByIdx(0xb, 0);
+        }
     }
-    if(WAS_PRESSED(0xA)) {
-        this->cursor = 7;
-        g_SoundPlayer.PlaySoundByIdx(0xb, 0);
-    }
-}
-return ZUN_SUCCESS;
+    return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
-

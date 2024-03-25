@@ -261,6 +261,7 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
         print("Failed to remove torrent directory, should be removed manually.")
         pass
 
+
 def download_requirements(dl_cache_path, steps, should_torrent):
     requirements = [
         {
