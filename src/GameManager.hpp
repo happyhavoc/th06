@@ -23,10 +23,7 @@ struct GameManager
     static void CutChain();
     i32 hasReachedMaxClears(i32 character, i32 shottype);
 
-    u32 unk_0;
-    u32 score;
-    u32 unk_8;
-    u32 highScore;
+    u8 padding[0xf];
     Difficulty difficulty;
     u32 grazeInStage;
     u32 unk_18;
