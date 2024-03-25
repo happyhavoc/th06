@@ -57,6 +57,7 @@ FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
+MainMenu::DrawStartMenu
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput

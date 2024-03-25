@@ -57,7 +57,7 @@ struct GameConfiguration
     u8 colorMode16bit;
     u8 musicMode;
     i8 playSounds;
-    i8 defaultDifficulty;
+    u8 defaultDifficulty;
     u8 windowed;
     // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
     u8 frameskipConfig;
@@ -195,3 +195,5 @@ u16 GetInput(void);
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
 DIFFABLE_EXTERN(Supervisor, g_Supervisor)
+DIFFABLE_EXTERN(u16, g_LastFrameInput)
+DIFFABLE_EXTERN(u16, g_CurFrameInput)

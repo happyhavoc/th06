@@ -20,6 +20,7 @@ MidiOutput::UnprepareHeader
 MidiOutput::ReleaseFileData
 SoundPlayer::InitializeDSound
 SoundPlayer::InitSoundBuffers
+SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
 Supervisor::OnUpdate
 Supervisor::OnDraw
@@ -31,8 +32,11 @@ Supervisor::ReleasePbg3
 Supervisor::PlayAudio
 GameManager::RegisterChain
 GameManager::CutChain
+GameManager::hasReachedMaxClears
 Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain
+MainMenu::MoveCursor
 MainMenu::RegisterChain
+MainMenu::DrawMenuItem
 ReplayDoStuff
