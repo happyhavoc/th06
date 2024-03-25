@@ -195,3 +195,5 @@ u16 GetInput(void);
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
 DIFFABLE_EXTERN(Supervisor, g_Supervisor)
+DIFFABLE_EXTERN(u16, g_LastFrameInput)
+DIFFABLE_EXTERN(u16, g_CurFrameInput)

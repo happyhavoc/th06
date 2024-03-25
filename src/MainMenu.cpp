@@ -118,9 +118,6 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 }
 #pragma optimize("", on)
 
-DIFFABLE_STATIC(u16, g_LastFrameInput);
-DIFFABLE_STATIC(u16, g_CurFrameInput);
-
 #pragma optimize("s", on)
 #pragma var_order(i, drawVm)
 ZunResult MainMenu::DrawStartMenu(void)
