@@ -58,6 +58,7 @@ FileSystem::WriteDataToFile
 MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
+MainMenu::ReplayHandling
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput

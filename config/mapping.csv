@@ -426,7 +426,7 @@ MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,void,AnmVm*,i32,i32,unsigned long
 MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
 MainMenu::FUN_004379e4,0x4379e4,0x15d,__thiscall,i32,MainMenu*
 MainMenu::DrawStartMenu,0x437b41,0x68b,__thiscall,ZunResult,MainMenu*
-MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,void,MainMenu*
+MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,i32,MainMenu*
 MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,u32,MainMenu*
 MainMenu::setSavedCursorPosition,0x438ef8,0x23f,__thiscall,void,MainMenu*,AnmVm*,i32,i32,i32
 MainMenu::FUN_00439137,0x439137,0x82e,__thiscall,u32,MainMenu*
@@ -434,7 +434,7 @@ MainMenu::ChoosePracticeLevel,0x439965,0x171,__thiscall,u32,MainMenu*
 MainMenu::OnDraw,0x439ad6,0x2ca,unknown,u8,MainMenu*
 MainMenu::LoadTitleAnm,0x439da0,0x1e8,__stdcall,u32,MainMenu*
 MainMenu::loadMenu,0x439f88,0x264,default,ZunResult,u32
-LoadReplayMenu,0x43a1ec,0x14c,__stdcall,ZunResult,MainMenu*
+MainMenu::LoadReplayMenu,0x43a1ec,0x14c,__stdcall,ZunResult,MainMenu*
 MainMenu::RegisterChain,0x43a338,0x12c,unknown,ZunResult,u32
 MainMenu::AddedCallback,0x43a464,0x1f5,unknown,u8,MainMenu*
 MainMenu::DeletedCallback,0x43a659,0xb1,__stdcall,u32,MainMenu*
@@ -1071,9 +1071,9 @@ __allmul,0x45d3e0,0x34,unknown,u8,u32,u32,u32,u32
 FUN_0045d414,0x45d414,0x70,unknown,u8,u32
 _strcpy,0x45d490,0x8a,__cdecl,char*,char*,char*
 _strcat,0x45d4a0,0x65,__cdecl,char*,char*,char*
-createDirectoryInCWD,0x45d588,0x2c,unknown,ZunResult,u32
+FileSystem::CreateDirectoryInCWD,0x45d588,0x2c,unknown,ZunResult,char*
 _strncmp,0x45d5c0,0x39,__cdecl,i32,char*,char*,u32
-ChangeCWD,0x45d5f9,0x9c,unknown,u8,u32
+FileSystem::ChangeCWD,0x45d5f9,0x9c,__stdcall,void,char*
 _rand,0x45d695,0x22,__cdecl,i32
 FUN_0045d6b7,0x45d6b7,0x9,unknown,u8
 __chkstk,0x45d6c0,0x3d,unknown,u8,u8

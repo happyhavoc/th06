@@ -39,4 +39,8 @@ ResultScreen::RegisterChain
 MainMenu::MoveCursor
 MainMenu::RegisterChain
 MainMenu::DrawMenuItem
+MainMenu::LoadReplayMenu
 ReplayDoStuff
+FileSystem::CreateDirectoryInCWD
+FileSystem::ChangeCWD
+validateReplayData

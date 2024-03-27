@@ -2,6 +2,7 @@
 #include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "Ending.hpp"
+#include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "GameWindow.hpp"
 #include "MainMenu.hpp"
