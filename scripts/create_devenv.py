@@ -257,9 +257,10 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
     try:
         os.rmdir(str(dl_cache_path / requirement["torrent_dirname"]))
         os.remove(str(dl_cache_path / requirement["torrent_dirname"] + ".torrent"))
-    except:
+    except Exception:
         print("Failed to remove torrent directory, should be removed manually.")
         pass
+
 
 def download_requirements(dl_cache_path, steps, should_torrent):
     requirements = [
