@@ -25,13 +25,14 @@ C_ASSERT(sizeof(StageReplayData) == 0x69780);
 struct ReplayData {
     char* magic;
     u16 version;
-    u8 shottypeChara;
-    u8 difficulty;
+    i8 shottypeChara;
+    i8 difficulty;
     u32 checksum;
     u16 paddingBytes;
     u8 key;
-    i8 padding[37];
+    i8 padding[33];
     StageReplayData *stageScore[7];
+    i8 padding2[4];
 };
 C_ASSERT(sizeof(ReplayData) == 0x50);
 
