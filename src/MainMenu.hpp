@@ -37,6 +37,9 @@ struct MainMenu
     static i32 MoveCursor(MainMenu *menu, i32 menu_length);
     static void DrawMenuItem(AnmVm *vm, i32, i32, D3DCOLOR, D3DCOLOR, i32);
 
+    i32 ReplayHandling();
+    static ZunResult LoadReplayMenu(MainMenu* menu);
+
     static ZunResult RegisterChain(u32 is_demo);
 
     AnmVm vm[122];

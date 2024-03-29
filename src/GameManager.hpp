@@ -23,7 +23,10 @@ struct GameManager
     static void CutChain();
     i32 hasReachedMaxClears(i32 character, i32 shottype);
 
-    u8 padding[0xf];
+    u32 unk_0;
+    u32 score;
+    u32 unk_8;
+    u32 highScore;
     Difficulty difficulty;
     u32 grazeInStage;
     u32 unk_18;
@@ -68,6 +71,7 @@ struct GameManager
     u32 minRank;
     u32 subRank;
 };
+
 C_ASSERT(sizeof(GameManager) == 0x1a80);
 
 DIFFABLE_EXTERN(GameManager, g_GameManager);
