@@ -12,7 +12,9 @@ struct SoundPlayer
     void InitializeDSound(HWND window);
     ZunResult InitSoundBuffers();
     ZunResult Release(void);
+
     void PlaySounds();
+    void PlaySoundByIdx(i32 idx, i32 unused);
 
     CSoundManager manager;
     i32 unk4;
