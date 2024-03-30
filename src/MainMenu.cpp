@@ -267,7 +267,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 break;
             }
         }
-        if (WAS_PRESSED(0x200))
+        if (WAS_PRESSED(KEY_Q))
         {
             this->gameState = STATE_QUIT;
             this->stateTimer = 0;
@@ -277,7 +277,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             }
             g_SoundPlayer.PlaySoundByIdx(0xb, 0);
         }
-        if (WAS_PRESSED(0xA))
+        if (WAS_PRESSED(KEY_BOMB | KEY_MENU))
         {
             this->cursor = 7;
             g_SoundPlayer.PlaySoundByIdx(0xb, 0);
