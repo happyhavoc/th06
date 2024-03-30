@@ -11,8 +11,8 @@
 #include "ReplayData.hpp"
 #include "GameErrorContext.hpp"
 #include "Supervisor.hpp"
-#include "utils.hpp"
 #include "i18n.hpp"
+#include "utils.hpp"
 
 #define WAS_PRESSED(key) (((g_CurFrameInput & key) != 0) && (g_CurFrameInput & key) != (g_LastFrameInput & key))
 
@@ -20,22 +20,23 @@
 /* we can move them to their own header if referenced somewhere else :) */
 #define COLOR_BLACK 0xff000000
 #define COLOR_WHITE 0xffffffff
-#define COLOR_RED   0xffff0000
+#define COLOR_RED 0xffff0000
 // TODO: find a better name for this color
 #define COLOR_START_MENU_ITEM_INACTIVE 0x80300000
 
-enum Keys {
+enum Keys
+{
     KEY_SHOOT = 0x0001,
-    KEY_BOMB  = 0x0002,
+    KEY_BOMB = 0x0002,
     KEY_FOCUS = 0x0004,
-    KEY_MENU  = 0x0008,
-    KEY_UP    = 0x0010,
-    KEY_DOWN  = 0x0020,
-    KEY_LEFT  = 0x0040,
+    KEY_MENU = 0x0008,
+    KEY_UP = 0x0010,
+    KEY_DOWN = 0x0020,
+    KEY_LEFT = 0x0040,
     KEY_RIGHT = 0x0080,
-    KEY_SKIP  = 0x0100,
-    KEY_Q     = 0x0200,
-    KEY_S     = 0x0400,
+    KEY_SKIP = 0x0100,
+    KEY_Q = 0x0200,
+    KEY_S = 0x0400,
     KEY_ENTER = 0x1000,
 };
 
