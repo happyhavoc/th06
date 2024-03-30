@@ -46,6 +46,7 @@ GetInput
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
+GameWindow::Render
 ResetKeyboard
 WindowProc
 CreateGameWindow
