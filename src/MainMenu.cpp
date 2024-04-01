@@ -161,7 +161,7 @@ ZunResult MainMenu::DrawStartMenu(void)
     }
     if (this->stateTimer >= 0x14)
     {
-        if (WAS_PRESSED(KEY_ENTER | KEY_SHOOT))
+        if (WAS_PRESSED(KEY_SHOOT) || WAS_PRESSED(KEY_ENTER))
         {
             switch (this->cursor)
             {
