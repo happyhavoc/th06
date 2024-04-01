@@ -40,3 +40,5 @@ MainMenu::MoveCursor
 MainMenu::RegisterChain
 MainMenu::DrawMenuItem
 ReplayDoStuff
+Pbg3Archive::Pbg3Archive
+Pbg3Archive::~Pbg3Archive
