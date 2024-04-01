@@ -81,7 +81,7 @@ def export(args, version: dict):
         # annoying as it introduces some noise in the diff. Let's patch it out.
         text = out.read_text()
         text = re.sub(
-            '<INFO_SOURCE (.*) TIMESTAMP="(.*)" (.*)/>', "<INFO_SOURCE \1 \2/>", text
+            '<INFO_SOURCE (.*) TIMESTAMP=".*" (.*)/>', r"<INFO_SOURCE \1 \2/>", text
         )
         out.write_text(text)
 
