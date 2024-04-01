@@ -41,6 +41,5 @@ MainMenu::RegisterChain
 MainMenu::DrawMenuItem
 MainMenu::LoadReplayMenu
 ReplayDoStuff
-FileSystem::CreateDirectoryInCWD
-FileSystem::ChangeCWD
-validateReplayData
+Pbg3Archive::Pbg3Archive
+Pbg3Archive::~Pbg3Archive
