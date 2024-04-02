@@ -10,7 +10,7 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-#define WAS_PRESSED(key) (((g_CurFrameInput & key) != 0) && (g_CurFrameInput & key) != (g_LastFrameInput & key))
+#define WAS_PRESSED(key) (((g_CurFrameInput & (key)) != 0) && (g_CurFrameInput & (key)) != (g_LastFrameInput & (key)))
 
 /* COLORS */
 /* we can move them to their own header if referenced somewhere else :) */
