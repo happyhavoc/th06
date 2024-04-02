@@ -147,7 +147,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 #pragma var_order(i, drawVm)
 ZunResult MainMenu::DrawStartMenu(void)
 {
-    int i;
+    i32 i;
     i = MoveCursor(this, 8);
     if ((this->cursor == 1) && !g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
         !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1))
@@ -166,7 +166,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             switch (this->cursor)
             {
             case 0:
-                for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -191,7 +191,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 if (!(!g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
                       !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1)))
                 {
-                    for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                    for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                     {
                         this->vm[i].pendingInterrupt = 4;
                     }
@@ -212,7 +212,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 break;
             case 2:
                 g_GameManager.unk_1823 = 1;
-                for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -233,7 +233,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 3:
-                for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -247,7 +247,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 4:
-                for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -262,7 +262,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             case 5:
                 this->gameState = STATE_MUSIC_ROOM;
                 this->stateTimer = 0;
-                for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -271,7 +271,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             case 6:
                 this->gameState = STATE_OPTIONS;
                 this->stateTimer = 0;
-                for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 3;
                 }
@@ -284,7 +284,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             case 7:
                 this->gameState = STATE_QUIT;
                 this->stateTimer = 0;
-                for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -296,7 +296,7 @@ ZunResult MainMenu::DrawStartMenu(void)
         {
             this->gameState = STATE_QUIT;
             this->stateTimer = 0;
-            for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+            for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
             {
                 this->vm[i].pendingInterrupt = 4;
             }
