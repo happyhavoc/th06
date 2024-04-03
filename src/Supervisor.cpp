@@ -192,6 +192,8 @@ ZunResult Supervisor::RegisterChain()
     return ZUN_SUCCESS;
 }
 
+DIFFABLE_STATIC(u16, g_LastFrameInput);
+DIFFABLE_STATIC(u16, g_CurFrameInput);
 DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
 DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
 
