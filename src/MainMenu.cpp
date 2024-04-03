@@ -398,10 +398,7 @@ i32 MainMenu::ReplayHandling()
                     validateReplayData(this->currentReplay,g_LastFileSize);
                     for(cur = 0; cur < 7; cur++) {
                         if(this->currentReplay->stageScore[cur] != NULL) {
-                            // FIXME: I dont understand this code at all, so i just yoinked it from the ghidra server
-                            this->currentReplay->stageScore[cur] =
-                                (StageReplayData *)
-                                ((int)this->currentReplay->stageScore + (int)(this->currentReplay->stageScore[cur][-1].replayInputs + 0xd2e8));
+                            this->currentReplay->stageScore[cur] = (StageReplayData*)((u32)this->currentReplay + (u32)this->currentReplay->stageScore[cur]);
                         }
                     }
 
