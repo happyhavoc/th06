@@ -4,8 +4,8 @@
 
 #include "AnmVm.hpp"
 #include "Chain.hpp"
-#include "ZunResult.hpp"
 #include "ReplayData.hpp"
+#include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 enum GameState
@@ -39,7 +39,7 @@ struct MainMenu
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
 
     i32 ReplayHandling();
-    static ZunResult LoadReplayMenu(MainMenu* menu);
+    static ZunResult LoadReplayMenu(MainMenu *menu);
 
     static ZunResult RegisterChain(u32 is_demo);
 

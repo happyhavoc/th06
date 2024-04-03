@@ -1,15 +1,15 @@
 #include <D3DX8.h>
-#include <windows.h>
 #include <cstdio>
+#include <windows.h>
 
 #include "MainMenu.hpp"
 
 #include "AnmManager.hpp"
-#include "GameManager.hpp"
-#include "SoundPlayer.hpp"
 #include "Filesystem.hpp"
-#include "ReplayData.hpp"
 #include "GameErrorContext.hpp"
+#include "GameManager.hpp"
+#include "ReplayData.hpp"
+#include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
@@ -58,7 +58,7 @@ ZunResult MainMenu::BeginStartup()
     {
         time = timeGetTime();
         while ((time - g_Supervisor.startupTimeBeforeMenuMusic >= 0) &&
-                (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
+               (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
         {
             time = timeGetTime();
         }

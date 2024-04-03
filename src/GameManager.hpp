@@ -29,9 +29,9 @@ struct GameManager
     u32 unk_18;
     u32 unk_1c;
     u32 padding[4];
-    u8 catk[64][0x1000/64];
-    u8 clrd[4][0x60/4];
-    u8 pscr[96][0x780/96];
+    u8 catk[64][0x1000 / 64];
+    u8 clrd[4][0x60 / 4];
+    u8 pscr[96][0x780 / 96];
     u16 currentPower;
     u16 unk_1812;
     u16 pointItemsCollectedInStage;

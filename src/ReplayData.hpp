@@ -2,13 +2,15 @@
 
 #include "inttypes.hpp"
 
-struct ReplayDataInput {
+struct ReplayDataInput
+{
     u32 frameNum;
     u16 inputKey;
     u16 padding;
 };
 
-struct StageReplayData {
+struct StageReplayData
+{
     u32 score;
     u16 randomSeed;
     u16 unk_6;
@@ -22,8 +24,9 @@ struct StageReplayData {
 };
 C_ASSERT(sizeof(StageReplayData) == 0x69780);
 
-struct ReplayData {
-    char* magic;
+struct ReplayData
+{
+    char *magic;
     u16 version;
     i8 shottypeChara;
     i8 difficulty;
@@ -36,4 +39,4 @@ struct ReplayData {
 };
 C_ASSERT(sizeof(ReplayData) == 0x50);
 
-ZunResult validateReplayData(ReplayData* data, i32 fileSize);
+ZunResult validateReplayData(ReplayData *data, i32 fileSize);
