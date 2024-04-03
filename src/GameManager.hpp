@@ -28,7 +28,7 @@ struct GameManager
     u32 grazeInStage;
     u32 unk_18;
     u32 unk_1c;
-    u32 padding[4];
+    u32 padding2[4];
     u8 catk[64][0x1000 / 64];
     u8 clrd[4][0x60 / 4];
     u8 pscr[96][0x780 / 96];
@@ -49,18 +49,18 @@ struct GameManager
     u8 unk_1822;
     u8 unk_1823;
     bool demoMode;
-    u8 padding2[7];
+    u8 padding3[7];
     char replayFile[256];
     u8 unk_192c[256];
     u16 unk_1a2c;
-    u8 padding3[2];
+    u8 padding4[2];
     u32 unk_1a30;
     i32 currentStage;
     i32 unk_1a38;
     D3DXVECTOR2 arcadeRegionTopLeft;
     D3DXVECTOR2 arcadeRegionSize;
-    f32 padding4[4];
-    u8 padding5[4];
+    f32 padding5[4];
+    u8 padding6[4];
     D3DXVECTOR3 stageCameraFacingDir;
     u32 counat;
     u32 rank;
@@ -68,7 +68,6 @@ struct GameManager
     u32 minRank;
     u32 subRank;
 };
-
 C_ASSERT(sizeof(GameManager) == 0x1a80);
 
 DIFFABLE_EXTERN(GameManager, g_GameManager);
