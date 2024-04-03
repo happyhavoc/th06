@@ -173,7 +173,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             switch (this->cursor)
             {
             case 0:
-                for (i = 0; i < 122; i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -189,7 +189,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 }
                 this->stateTimer = 0;
                 this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = 0xff000000;
+                this->maybeMenuTextColor = COLOR_BLACK;
                 this->unk_820c = 0;
                 this->isActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
@@ -198,7 +198,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 if (!(!g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
                       !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1)))
                 {
-                    for (i = 0; i < 122; i++)
+                    for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                     {
                         this->vm[i].pendingInterrupt = 4;
                     }
@@ -219,7 +219,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 break;
             case 2:
                 g_GameManager.unk_1823 = 1;
-                for (i = 0; i < 122; i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -234,13 +234,13 @@ ZunResult MainMenu::DrawStartMenu(void)
                 }
                 this->stateTimer = 0;
                 this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = 0xff000000;
+                this->maybeMenuTextColor = COLOR_BLACK;
                 this->unk_820c = 0;
                 this->isActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 3:
-                for (i = 0; i < 122; i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -248,20 +248,20 @@ ZunResult MainMenu::DrawStartMenu(void)
                 g_GameManager.unk_1823 = 0;
                 this->stateTimer = 0;
                 this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = 0xff000000;
+                this->maybeMenuTextColor = COLOR_BLACK;
                 this->unk_820c = 0;
                 this->isActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 4:
-                for (i = 0; i < 122; i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
                 this->gameState = STATE_SCORE;
                 this->stateTimer = 0;
                 this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = 0xff000000;
+                this->maybeMenuTextColor = COLOR_BLACK;
                 this->unk_820c = 0;
                 this->isActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
@@ -269,7 +269,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             case 5:
                 this->gameState = STATE_MUSIC_ROOM;
                 this->stateTimer = 0;
-                for (i = 0; i < 122; i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
@@ -278,7 +278,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             case 6:
                 this->gameState = STATE_OPTIONS;
                 this->stateTimer = 0;
-                for (i = 0; i < 122; i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 3;
                 }
@@ -291,7 +291,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             case 7:
                 this->gameState = STATE_QUIT;
                 this->stateTimer = 0;
-                for (i = 0; i < 122; i++)
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
