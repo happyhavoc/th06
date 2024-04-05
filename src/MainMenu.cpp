@@ -1,6 +1,7 @@
 #include <D3DX8.h>
 #include <cstdio>
 #include <windows.h>
+#include <direct.h>
 
 #include "MainMenu.hpp"
 
@@ -368,8 +369,8 @@ i32 MainMenu::ReplayHandling()
                     }
                     free(replayData);
                 }
-                FileSystem::CreateDirectoryInCWD("./replay");
-                FileSystem::ChangeCWD("./replay");
+                _mkdir("./replay");
+                _chdir("./replay");
                 replayFileHandle = FindFirstFileA("th6_ud????.rpy", &replayFileInfo);
                 if (replayFileHandle != INVALID_HANDLE_VALUE)
                 {
@@ -394,7 +395,7 @@ i32 MainMenu::ReplayHandling()
                     }
                 }
                 FindClose(replayFileHandle);
-                FileSystem::ChangeCWD("../");
+                _chdir("../");
                 this->replayFilesNum = replayFileIdx;
                 this->unk_81fc = 0;
                 this->wasActive = this->isActive;
