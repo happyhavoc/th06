@@ -10,7 +10,7 @@ StageMenu::OnDrawGameMenu
 StageMenu::OnDrawRetryMenu
 AsciiManager::DrawPopupsWithHwVertexProcessing
 AsciiManager::DrawPopupsWithoutHwVertexProcessing
-GameWindow::Render
+GameWindow::Present
 MidiDevice::Close
 MidiTimer::StopTimer
 MidiOutput::ClearTracks
@@ -22,6 +22,7 @@ SoundPlayer::InitializeDSound
 SoundPlayer::InitSoundBuffers
 SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
+SoundPlayer::PlaySounds
 Supervisor::OnUpdate
 Supervisor::OnDraw
 Supervisor::DeletedCallback

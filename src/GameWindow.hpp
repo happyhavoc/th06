@@ -4,9 +4,17 @@
 #include "inttypes.hpp"
 #include <windows.h>
 
+enum RenderResult
+{
+    RENDER_RESULT_KEEP_RUNNING,
+    RENDER_RESULT_EXIT_SUCCESS,
+    RENDER_RESULT_EXIT_ERROR,
+};
+
 struct GameWindow
 {
-    u32 Render();
+    RenderResult Render();
+    static void Present();
 
     HWND window;
     i32 isAppClosing;
@@ -19,3 +27,5 @@ struct GameWindow
 };
 
 DIFFABLE_EXTERN(GameWindow, g_GameWindow)
+DIFFABLE_EXTERN(i32, g_TickCountToEffectiveFramerate)
+DIFFABLE_EXTERN(double, g_LastFrameTime)
