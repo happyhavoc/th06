@@ -521,8 +521,7 @@ i32 MainMenu::ReplayHandling()
             free(uh);
             this->currentReplay = NULL;
             g_GameManager.currentStage = this->cursor;
-            g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER,
-;
+            g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER;
             return 1;
         }
         if (WAS_PRESSED(KEY_BOMB | KEY_MENU))

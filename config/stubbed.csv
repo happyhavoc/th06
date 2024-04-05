@@ -43,6 +43,6 @@ MainMenu::LoadReplayMenu
 ReplayDoStuff
 FileSystem::CreateDirectoryInCWD
 FileSystem::ChangeCWD
-validateReplayData
+ValidateReplayData
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

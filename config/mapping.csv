@@ -330,7 +330,7 @@ Player::FUN_00429bb0,0x429bb0,0x99,default,void,Player*
 Player::AddedCallback,0x429c50,0x45e,default,u32,Player*
 Player::DeletedCallback,0x42a0b0,0x24,unknown,u8
 Player::CutChain,0x42a0e0,0x55,unknown,u8
-validateReplayData,0x42a140,0x100,__stdcall,ZunResult,ReplayData*,i32
+ValidateReplayData,0x42a140,0x100,__stdcall,ZunResult,ReplayData*,i32
 ReplayManager::RegisterChain,0x42a240,0x228,__stdcall,u32,i32,char*
 ReplayManager::OnUpdate,0x42a470,0x97,unknown,u8,ReplayManager*
 ReplayManager::DemoOnUpdate,0x42a510,0x51,default,ChainCallbackResult,ReplayManager*

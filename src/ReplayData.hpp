@@ -33,9 +33,8 @@ struct ReplayData
     u32 checksum;
     u16 paddingBytes;
     u8 key;
-    i8 padding[33];
+    i8 padding[37];
     StageReplayData *stageScore[7];
-    i8 padding2[4];
 };
 C_ASSERT(sizeof(ReplayData) == 0x50);
 
