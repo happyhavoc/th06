@@ -39,4 +39,4 @@ struct ReplayData
 };
 C_ASSERT(sizeof(ReplayData) == 0x50);
 
-ZunResult validateReplayData(ReplayData *data, i32 fileSize);
+ZunResult ValidateReplayData(ReplayData *data, i32 fileSize);

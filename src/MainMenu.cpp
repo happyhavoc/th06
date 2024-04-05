@@ -380,7 +380,7 @@ i32 MainMenu::ReplayHandling()
                         {
                             continue;
                         }
-                        if (!validateReplayData(replayData, g_LastFileSize))
+                        if (!ValidateReplayData(replayData, g_LastFileSize))
                         {
                             // FIXME: wrong assembly
                             memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
@@ -440,7 +440,7 @@ i32 MainMenu::ReplayHandling()
                 this->cursor = 0;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 this->currentReplay = (ReplayData *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
-                validateReplayData(this->currentReplay, g_LastFileSize);
+                ValidateReplayData(this->currentReplay, g_LastFileSize);
                 for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore); cur++)
                 {
                     if (this->currentReplay->stageScore[cur] != NULL)
