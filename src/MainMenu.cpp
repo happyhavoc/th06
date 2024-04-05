@@ -357,7 +357,7 @@ i32 MainMenu::ReplayHandling()
                     {
                         continue;
                     }
-                    if (!validateReplayData(replayData, g_LastFileSize))
+                    if (!ValidateReplayData(replayData, g_LastFileSize))
                     {
                         // FIXME: wrong assembly
                         memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
@@ -401,7 +401,7 @@ i32 MainMenu::ReplayHandling()
                 this->isActive = 0;
                 this->gameState = STATE_REPLAY_ANIM;
                 anmVm = this->vm;
-                for (cur = 0; cur < 122; cur++, anmVm++)
+                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur++, anmVm++)
                 {
                     anmVm->pendingInterrupt = 15;
                 }
@@ -426,7 +426,7 @@ i32 MainMenu::ReplayHandling()
         {
             MoveCursor(this, this->replayFilesNum);
             this->chosenReplay = this->cursor;
-            if (WAS_PRESSED(0x1001))
+            if (WAS_PRESSED(KEY_SHOOT | KEY_ENTER))
             {
                 this->gameState = STATE_REPLAY_SELECT;
                 anmVm = &(this->vm[97]);
@@ -441,7 +441,7 @@ i32 MainMenu::ReplayHandling()
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 this->currentReplay = (ReplayData *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
                 validateReplayData(this->currentReplay, g_LastFileSize);
-                for (cur = 0; cur < 7; cur++)
+                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore); cur++)
                 {
                     if (this->currentReplay->stageScore[cur] != NULL)
                     {
@@ -456,7 +456,7 @@ i32 MainMenu::ReplayHandling()
                     if (!this->replayFileData[this->chosenReplay].stageScore[this->cursor])
                         goto leaveDo;
                     this->cursor = this->cursor + 1;
-                } while ((int)this->cursor < 7);
+                } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore));
                 return ZUN_SUCCESS;
             }
         }
@@ -465,7 +465,7 @@ i32 MainMenu::ReplayHandling()
         {
             this->gameState = STATE_REPLAY_UNLOAD;
             this->stateTimer = 0;
-            for (cur = 0; cur < 122; cur++)
+            for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur++)
             {
                 this->vm[cur].pendingInterrupt = 4;
             }
@@ -531,14 +531,14 @@ i32 MainMenu::ReplayHandling()
             this->currentReplay = NULL;
             this->gameState = STATE_REPLAY_ANIM;
             this->stateTimer = 0;
-            for (cur = 0; cur < 122; cur++)
+            for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur++)
             {
                 this->vm[cur].pendingInterrupt = 4;
             }
             g_SoundPlayer.PlaySoundByIdx(0xb, 0);
             this->gameState = STATE_REPLAY_ANIM;
             anmVm = this->vm;
-            for (cur = 0; cur < 122; cur += 1, anmVm++)
+            for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur += 1, anmVm++)
             {
                 anmVm->pendingInterrupt = 0xf;
             }
