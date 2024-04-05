@@ -338,12 +338,12 @@ i32 MainMenu::ReplayHandling()
     switch (this->gameState)
     {
     case STATE_REPLAY_LOAD:
-        if (this->stateTimer == 0x3c)
+        if (this->stateTimer == 60)
         {
             if (LoadReplayMenu(this))
             {
                 GameErrorContextLog(&g_GameErrorContext, "japanese");
-                g_Supervisor.curState = 4;
+                g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
                 return ZUN_SUCCESS;
             }
             else
@@ -521,7 +521,8 @@ i32 MainMenu::ReplayHandling()
             free(uh);
             this->currentReplay = NULL;
             g_GameManager.currentStage = this->cursor;
-            g_Supervisor.curState = 2;
+            g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER,
+;
             return 1;
         }
         if (WAS_PRESSED(KEY_BOMB | KEY_MENU))
