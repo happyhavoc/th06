@@ -11,9 +11,9 @@ struct ReplayDataInput
 
 struct StageReplayData
 {
-    u32 score;
-    u16 randomSeed;
-    u16 unk_6;
+    i32 score;
+    i16 randomSeed;
+    i16 unk_6;
     i8 power;
     i8 livesRemaining;
     i8 bombsRemaining;
@@ -27,12 +27,12 @@ C_ASSERT(sizeof(StageReplayData) == 0x69780);
 struct ReplayData
 {
     char *magic;
-    u16 version;
-    i8 shottypeChara;
-    i8 difficulty;
-    u32 checksum;
-    u16 paddingBytes;
-    u8 key;
+    i16 version;
+    u8 shottypeChara;
+    u8 difficulty;
+    i32 checksum;
+    i16 paddingBytes;
+    i8 key;
     i8 padding[37];
     StageReplayData *stageScore[7];
 };
