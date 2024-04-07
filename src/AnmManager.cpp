@@ -180,8 +180,9 @@ ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 sprite_index)
     return ZUN_SUCCESS;
 }
 
-void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript){
-    ZunTimer* timer;
+void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
+{
+    ZunTimer *timer;
 
     vm->flags &= ~(AnmVmFlags_6 | AnmVmFlags_7);
     vm->Initialize();
@@ -194,7 +195,8 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript){
     timer->previous = -999;
 
     vm->flags &= ~(AnmVmFlags_0);
-    if (beginingOfScript) {
+    if (beginingOfScript)
+    {
         this->ExecuteScript(vm);
     }
 }
