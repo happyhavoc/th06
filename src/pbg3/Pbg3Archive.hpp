@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Pbg3Parser.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
+#include "pbg3/Pbg3Parser.hpp"
 
 struct Pbg3Entry
 {
