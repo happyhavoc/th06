@@ -600,4 +600,15 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
     return ZUN_SUCCESS;
 }
 
+void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
+{
+    vm->anmFileIndex = anmFileIdx;
+    vm->pos = D3DXVECTOR3(0, 0, 0);
+    vm->pos2 = D3DXVECTOR3(0, 0, 0);
+    vm->fontHeight = 15;
+    vm->fontWidth = 15;
+
+    SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
+}
+
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)

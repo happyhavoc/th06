@@ -1,5 +1,4 @@
 AnmManager::ReleaseAnm
-AnmManager::ExecuteAnmIdx
 AnmManager::ExecuteScript
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
