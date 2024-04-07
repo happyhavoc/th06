@@ -56,6 +56,7 @@ struct AnmManager
     ZunResult LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
     ZunResult LoadTextureMipmap(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
     void ReleaseTexture(i32 textureIdx);
+    void TakeScreenshotIfRequested();
 
     void SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript);
     i32 ExecuteScript(AnmVm *vm);

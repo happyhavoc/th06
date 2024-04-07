@@ -173,6 +173,23 @@ BREAK_BUT_WITHOUT_BREAK_BECAUSE_IM_USING_A_GOTO_BASED_LOOP:
     return RENDER_RESULT_KEEP_RUNNING;
 }
 
+void GameWindow::Present(void)
+{
+    if (g_Supervisor.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
+    {
+        g_AnmManager->ReleaseSurfaces();
+        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
+        InitD3dDevice();
+        g_Supervisor.unk198 = 2;
+    }
+    g_AnmManager->TakeScreenshotIfRequested();
+    if (g_Supervisor.unk198 != 0)
+    {
+        g_Supervisor.unk198--;
+    }
+    return;
+}
+
 i32 InitD3dInterface(void)
 {
     g_Supervisor.d3dIface = Direct3DCreate8(D3D_SDK_VERSION);

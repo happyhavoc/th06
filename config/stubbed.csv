@@ -4,6 +4,7 @@ AnmManager::ExecuteAnmIdx
 AnmManager::LoadTextureMipmap
 AnmManager::LoadSprite
 AnmManager::ExecuteScript
+AnmManager::TakeScreenshotIfRequested
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
@@ -11,7 +12,6 @@ StageMenu::OnDrawGameMenu
 StageMenu::OnDrawRetryMenu
 AsciiManager::DrawPopupsWithHwVertexProcessing
 AsciiManager::DrawPopupsWithoutHwVertexProcessing
-GameWindow::Present
 MidiDevice::Close
 MidiTimer::StopTimer
 MidiOutput::ClearTracks

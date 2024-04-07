@@ -238,7 +238,7 @@ InitD3dDevice,0x421420,0x4d9,default,void
 CheckForRunningGameInstance,0x421900,0x4d,__stdcall,i32
 GameErrorContext::Flush,0x421950,0x7e,__thiscall,void,GameErrorContext*
 AnmManager::ReleaseSurfaces,0x4219d0,0x68,__thiscall,void,AnmManager*
-AnmManager::TakeScrenshotIfRequested,0x421a40,0x5e,__thiscall,void,AnmManager*
+AnmManager::TakeScreenshotIfRequested,0x421a40,0x5e,__thiscall,void,AnmManager*
 MidiDevice::MidiDevice,0x421aa0,0x21,__thiscall,u32*,MidiDevice*
 MidiDevice::~MidiDevice,0x421ad0,0x13,__thiscall,void,MidiDevice*
 MidiDevice::OpenDevice,0x421af0,0x59,__thiscall,u8,MidiDevice*,u32
