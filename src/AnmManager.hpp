@@ -57,6 +57,9 @@ struct AnmManager
     ZunResult LoadTextureMipmap(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
     void ReleaseTexture(i32 textureIdx);
 
+    void SetAndExecuteScript(AnmVm *vm,AnmRawInstr *beginingOfScript);
+    i32 ExecuteScript(AnmVm *vm);
+
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
 

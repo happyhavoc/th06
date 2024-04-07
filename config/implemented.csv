@@ -26,6 +26,7 @@ AnmManager::ReleaseSurface
 AnmManager::ReleaseSurfaces
 AnmManager::ReleaseVertexBuffer
 AnmManager::SetActiveSprite
+AnmManager::SetAndExecuteScript
 AnmManager::SetupVertexBuffer
 ChainElem::ChainElem
 ChainElem::~ChainElem
