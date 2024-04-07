@@ -24,18 +24,6 @@ DIFFABLE_STATIC(Supervisor, g_Supervisor)
 DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
 DIFFABLE_STATIC(JOYCAPSA, g_JoystickCaps)
 
-i32 InitD3dInterface(void)
-{
-    g_Supervisor.d3dIface = Direct3DCreate8(D3D_SDK_VERSION);
-
-    if (g_Supervisor.d3dIface == NULL)
-    {
-        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ);
-        return 1;
-    }
-    return 0;
-}
-
 // TODO: Not a perfect match.
 ZunResult Supervisor::LoadConfig(char *path)
 {
