@@ -50,6 +50,7 @@
 #define TH_JP_ERR_CANNOT_BE_LOADED "%sが読み込めないです。\n"
 #define TH_JP_ERR_ANMMANAGER_SPRITE_CORRUPTED "スプライトアニメ %s が読み込めません。データが失われてるか壊れています\n"
 #define TH_JP_ERR_ANMMANAGER_TEXTURE_CORRUPTED "テクスチャ %s が読み込めません。データが失われてるか壊れています\n"
+#define TH_JP_ERR_ANMMANAGER_UNK_TEX_FORMAT "error : イメージがαを持っていません\n"
 #define TH_JP_IN_DAT_FILE "紅魔郷IN.dat"
 #define TH_JP_MD_DAT_FILE "紅魔郷MD.dat"
 #define TH_JP_TL_DAT_FILE "紅魔郷TL.dat"
@@ -101,6 +102,7 @@
 #define TH_EN_ERR_CANNOT_BE_LOADED "%s cannot be loaded.\n"
 #define TH_EN_ERR_ANMMANAGER_SPRITE_CORRUPTED "Unable to load sprite animation %s. Data is lost or corrupted.\n"
 #define TH_EN_ERR_ANMMANAGER_TEXTURE_CORRUPTED "Unable to load texture %s. Data is lost or corrupted.\n"
+#define TH_EN_ERR_ANMMANAGER_UNK_TEX_FORMAT "error : Image does not have a valid format\n"
 #define TH_EN_IN_DAT_FILE "KOUMAKYO_IN.dat"
 #define TH_EN_MD_DAT_FILE "KOUMAKYO_MD.dat"
 #define TH_CONCAT_HELPER(x, y) x##y
@@ -152,6 +154,7 @@
 #define TH_ERR_CANNOT_BE_LOADED TH_MAKE_LANG_STR(TH_LANG, _ERR_CANNOT_BE_LOADED)
 #define TH_ERR_ANMMANAGER_SPRITE_CORRUPTED TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_SPRITE_CORRUPTED)
 #define TH_ERR_ANMMANAGER_TEXTURE_CORRUPTED TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_TEXTURE_CORRUPTED)
+#define TH_ERR_ANMMANAGER_UNK_TEX_FORMAT TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_UNK_TEX_FORMAT)
 #define TH_IN_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _IN_DAT_FILE)
 #define TH_MD_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _MD_DAT_FILE)
 #define TH_TL_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _TL_DAT_FILE)

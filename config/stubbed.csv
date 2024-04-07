@@ -1,6 +1,5 @@
 AnmManager::ReleaseAnm
 AnmManager::ExecuteAnmIdx
-AnmManager::LoadTextureMipmap
 AnmManager::ExecuteScript
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
