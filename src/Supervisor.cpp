@@ -552,22 +552,21 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 #pragma optimize("s", on)
 void Supervisor::TickTimer(i32 *frames, f32 *subframes)
 {
-    if (this->framerateMultiplier <= 0.99f) 
+    if (this->framerateMultiplier <= 0.99f)
     {
         *subframes = *subframes + this->effectiveFramerateMultiplier;
-        if (*subframes >= 1.0f) 
+        if (*subframes >= 1.0f)
         {
             *frames = *frames + 1;
             *subframes = *subframes - 1.0f;
         }
     }
-    else 
+    else
     {
         *frames = *frames + 1;
     }
 }
 #pragma optimize("", on)
-
 
 u16 GetJoystickCaps(void)
 {
