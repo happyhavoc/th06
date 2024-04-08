@@ -73,6 +73,7 @@ Supervisor::LoadConfig
 Supervisor::DrawFpsCounter
 Supervisor::OnUpdate
 Supervisor::OnDraw
+Supervisor::TickTimer
 InitD3dDevice
 InitD3dRendering
 Clear

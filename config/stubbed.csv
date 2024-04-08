@@ -28,7 +28,6 @@ Supervisor::OnDraw
 Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
 Supervisor::SetupDInput
-Supervisor::TickTimer
 Supervisor::ReleasePbg3
 Supervisor::PlayAudio
 GameManager::RegisterChain
