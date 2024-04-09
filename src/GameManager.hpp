@@ -22,6 +22,8 @@ struct GameManager
     static ZunResult RegisterChain();
     static void CutChain();
     i32 hasReachedMaxClears(i32 character, i32 shottype);
+    void IncreaseSubrank(i32 amount);
+    void DecreaseSubrank(i32 amount);
 
     u32 gui_score;
     u32 score;
@@ -76,10 +78,10 @@ struct GameManager
     i32 unk_1a5c;
     D3DXVECTOR3 stageCameraFacingDir;
     u32 counat;
-    u32 rank;
-    u32 maxRank;
-    u32 minRank;
-    u32 subRank;
+    i32 rank;
+    i32 maxRank;
+    i32 minRank;
+    i32 subRank;
 };
 C_ASSERT(sizeof(GameManager) == 0x1a80);
 
