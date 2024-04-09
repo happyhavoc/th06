@@ -13,7 +13,7 @@ GameManager::GameManager()
     (this->arcadeRegionSize).x = 384.0;
     (this->arcadeRegionSize).y = 448.0;
 }
-#pragma optimize("s", off)
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 void GameManager::IncreaseSubrank(i32 amount)
@@ -28,9 +28,8 @@ void GameManager::IncreaseSubrank(i32 amount)
     {
         this->rank = this->maxRank;
     }
-    return;
 }
-#pragma optimize("s", off)
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 void GameManager::DecreaseSubrank(i32 amount)
@@ -45,6 +44,5 @@ void GameManager::DecreaseSubrank(i32 amount)
     {
         this->rank = this->minRank;
     }
-    return;
 }
-#pragma optimize("s", off)
+#pragma optimize("", on)
