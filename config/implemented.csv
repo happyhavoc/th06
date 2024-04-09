@@ -47,6 +47,9 @@ GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
 GameWindow::Render
+GameManager::GameManager
+GameManager::IncreaseSubrank
+GameManager::DecreaseSubrank
 ResetKeyboard
 WindowProc
 CreateGameWindow
