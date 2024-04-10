@@ -2,16 +2,22 @@
 
 DIFFABLE_STATIC(GameManager, g_GameManager);
 
+#define GAME_REGION_TOP 16.0
+#define GAME_REGION_LEFT 32.0
+
+#define GAME_REGION_WIDTH 384.0
+#define GAME_REGION_HEIGHT 448.0
+
 #pragma optimize("s", on)
 GameManager::GameManager()
 {
 
     memset(this, 0, sizeof(GameManager));
 
-    (this->arcadeRegionTopLeftPos).x = 32.0;
-    (this->arcadeRegionTopLeftPos).y = 16.0;
-    (this->arcadeRegionSize).x = 384.0;
-    (this->arcadeRegionSize).y = 448.0;
+    (this->arcadeRegionTopLeftPos).x = GAME_REGION_LEFT;
+    (this->arcadeRegionTopLeftPos).y = GAME_REGION_TOP;
+    (this->arcadeRegionSize).x = GAME_REGION_WIDTH;
+    (this->arcadeRegionSize).y = GAME_REGION_HEIGHT;
 }
 #pragma optimize("", on)
 
@@ -22,9 +28,9 @@ void GameManager::IncreaseSubrank(i32 amount)
     while (this->subRank >= 100)
     {
         this->rank++;
-        this->subRank = this->subRank - 100;
+        this->subRank -= 100;
     }
-    if ((this->rank > this->maxRank))
+    if (this->rank > this->maxRank)
     {
         this->rank = this->maxRank;
     }
@@ -38,7 +44,7 @@ void GameManager::DecreaseSubrank(i32 amount)
     while (this->subRank < 0)
     {
         this->rank--;
-        this->subRank = this->subRank + 100;
+        this->subRank += 100;
     }
     if (this->rank < this->minRank)
     {
