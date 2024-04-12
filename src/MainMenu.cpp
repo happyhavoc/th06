@@ -311,3 +311,51 @@ ZunResult MainMenu::DrawStartMenu(void)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR currentItemColor, D3DCOLOR otherItemColor,
+                            int vm_amount)
+{
+    D3DXVECTOR3 otherItemPos;
+    D3DXVECTOR3 currentItemPos;
+
+    if (itemNumber == cursor)
+    {
+        if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) |
+             (g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1)) == 0)
+        {
+            vm->color = currentItemColor;
+        }
+        else
+        {
+            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + vm_amount);
+            vm->color = currentItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
+                        D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // just... why?
+        }
+
+        currentItemPos.x = -4.0f;
+        currentItemPos.y = -4.0f;
+        currentItemPos.z = 0.0f;
+        vm->pos2 = currentItemPos;
+    }
+    else
+    {
+        if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1 |
+             g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1) == 0)
+        {
+            vm->color = otherItemColor;
+        }
+
+        else
+        {
+            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber);
+            vm->color = otherItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
+                        D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // again, why?
+        }
+        otherItemPos.x = 0.0f;
+        otherItemPos.y = 0.0f;
+        otherItemPos.z = 0.0f;
+        vm->pos2 = otherItemPos;
+    }
+}
+#pragma optimize("", on)
