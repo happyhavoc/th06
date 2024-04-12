@@ -180,6 +180,27 @@ ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 sprite_index)
     return ZUN_SUCCESS;
 }
 
+void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
+{
+    ZunTimer *timer;
+
+    vm->flags &= ~(AnmVmFlags_6 | AnmVmFlags_7);
+    vm->Initialize();
+    vm->beginingOfScript = beginingOfScript;
+    vm->currentInstruction = vm->beginingOfScript;
+
+    timer = &(vm->currentTimeInScript);
+    timer->current = 0;
+    timer->subFrame = 0.0;
+    timer->previous = -999;
+
+    vm->flags &= ~(AnmVmFlags_0);
+    if (beginingOfScript)
+    {
+        this->ExecuteScript(vm);
+    }
+}
+
 ZunResult AnmManager::LoadSurface(i32 surfaceIdx, char *path)
 {
     if (this->surfaces[surfaceIdx] != NULL)

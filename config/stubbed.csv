@@ -3,6 +3,7 @@ AnmManager::ReleaseAnm
 AnmManager::ExecuteAnmIdx
 AnmManager::LoadTextureMipmap
 AnmManager::LoadSprite
+AnmManager::ExecuteScript
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
