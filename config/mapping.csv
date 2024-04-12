@@ -177,7 +177,7 @@ GameManager::CutChain,0x41c269,0x23,default,void
 FUN_0041c28c,0x41c28c,0x167,unknown,u8,u32
 FUN_0041c3f3,0x41c3f3,0x18b,unknown,u8,u32
 GameManager::IncreaseSubrank,0x41c57e,0x7c,__thiscall,void,GameManager*,i32
-GameManager::FUN_0041c5fa,0x41c5fa,0x7c,__thiscall,void,GameManager*,i32
+GameManager::DecreaseSubrank,0x41c5fa,0x7c,__thiscall,void,GameManager*,i32
 GameManager::GameManager,0x41c676,0x56,__thiscall,void,GameManager*
 Chain::~Chain,0x41c6d0,0x4b,__thiscall,void,Chain*
 ChainElem::ChainElem,0x41c720,0x61,__thiscall,ChainElem*,ChainElem*

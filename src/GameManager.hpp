@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <d3dx8math.h>
 
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
@@ -17,19 +18,70 @@ enum Difficulty
 
 struct GameManager
 {
+    GameManager();
     static ZunResult RegisterChain();
     static void CutChain();
     i32 hasReachedMaxClears(i32 character, i32 shottype);
+    void IncreaseSubrank(i32 amount);
+    void DecreaseSubrank(i32 amount);
 
-    u8 padding[0xf];
+    u32 gui_score;
+    u32 score;
+    u32 unk_8;
+    u32 highScore;
     Difficulty difficulty;
-    u8 padding2[0x180a];
+    u32 grazeInStage;
+    u32 unk_18;
+    u32 unk_1c;
+    u32 unk_20;
+    u32 unk_24;
+    u32 unk_28;
+    u32 unk_2c;
+    u8 catk[0x1000];
+    u8 clrd[0x60];
+    u8 pscr[0x780];
+    u16 currentPower;
+    i8 unk_1812;
+    i8 unk_1813;
+    u16 pointItemsCollectedInStage;
+    i8 unk_1816;
+    i8 unk_1817;
+    i8 numRetries;
+    i8 powerItemCountForScore;
+    i8 livesRemaining;
+    i8 bombsRemaining;
+    i8 unk_181c;
+    i8 character;
+    i8 shotType;
     bool isInGameMenu;
     bool isInRetryMenu;
     bool isInMenu;
-    u8 padding3[2];
+    i8 unk_1822;
     u8 unk_1823;
-    u8 padding4[0x25b];
+    i8 demoMode;
+    i8 unk_1825;
+    i8 unk_1826;
+    i8 unk_1827;
+    i32 unk_1828;
+    i8 replayFile[256];
+    i8 unk_192c[256];
+    i32 unk_1a2c;
+    u32 unk_1a30;
+    i32 currentStage;
+    u32 unk_1a38;
+    D3DXVECTOR2 arcadeRegionTopLeftPos;
+    D3DXVECTOR2 arcadeRegionSize;
+    f32 unk_1a4c;
+    f32 unk_1a50;
+    f32 unk_1a54;
+    f32 unk_1a58;
+    i32 unk_1a5c;
+    D3DXVECTOR3 stageCameraFacingDir;
+    u32 counat;
+    i32 rank;
+    i32 maxRank;
+    i32 minRank;
+    i32 subRank;
 };
 C_ASSERT(sizeof(GameManager) == 0x1a80);
 
