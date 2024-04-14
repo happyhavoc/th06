@@ -20,8 +20,6 @@ SoundPlayer::InitSoundBuffers
 SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
 SoundPlayer::PlaySounds
-Supervisor::OnUpdate
-Supervisor::OnDraw
 Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
 Supervisor::SetupDInput
