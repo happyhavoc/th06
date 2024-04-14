@@ -66,7 +66,10 @@ for stub in stubbed_csv:
 
     calling_convention = fun["calling_convention"]
     ret_type = fun["ret_type"]
-    ret_val = ret_vals[ret_type]
+    if ret_type.endswith("*"):
+        ret_val = "NULL"
+    else:
+        ret_val = ret_vals[ret_type]
     args_types = fun["arg_types"]
 
     if calling_convention == "__thiscall":
