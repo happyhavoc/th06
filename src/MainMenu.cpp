@@ -20,22 +20,6 @@
 // TODO: find a better name for this color
 #define COLOR_START_MENU_ITEM_INACTIVE 0x80300000
 
-enum Keys
-{
-    KEY_SHOOT = 0x0001,
-    KEY_BOMB = 0x0002,
-    KEY_FOCUS = 0x0004,
-    KEY_MENU = 0x0008,
-    KEY_UP = 0x0010,
-    KEY_DOWN = 0x0020,
-    KEY_LEFT = 0x0040,
-    KEY_RIGHT = 0x0080,
-    KEY_SKIP = 0x0100,
-    KEY_Q = 0x0200,
-    KEY_S = 0x0400,
-    KEY_ENTER = 0x1000,
-};
-
 #pragma optimize("s", on)
 #pragma var_order(time, i, vector3Ptr)
 ZunResult MainMenu::BeginStartup()
@@ -161,7 +145,7 @@ ZunResult MainMenu::DrawStartMenu(void)
     }
     if (this->stateTimer >= 0x14)
     {
-        if (WAS_PRESSED(KEY_ENTER | KEY_SHOOT))
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
         {
             switch (this->cursor)
             {
@@ -292,7 +276,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 break;
             }
         }
-        if (WAS_PRESSED(KEY_Q))
+        if (WAS_PRESSED(TH_BUTTON_Q))
         {
             this->gameState = STATE_QUIT;
             this->stateTimer = 0;
@@ -302,7 +286,7 @@ ZunResult MainMenu::DrawStartMenu(void)
             }
             g_SoundPlayer.PlaySoundByIdx(0xb, 0);
         }
-        if (WAS_PRESSED(KEY_BOMB | KEY_MENU))
+        if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
             this->cursor = 7;
             g_SoundPlayer.PlaySoundByIdx(0xb, 0);
