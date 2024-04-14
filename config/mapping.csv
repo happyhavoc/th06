@@ -287,8 +287,8 @@ Supervisor::LoadPbg3,0x424375,0x2d8,__thiscall,i32,Supervisor*,i32,char*
 Supervisor::LoadConfig,0x42464d,0x45f,__thiscall,ZunResult,Supervisor*,char*
 readMidiFile,0x424aac,0x38,unknown,u8,u32,u32
 PlayMidiFile,0x424ae4,0x4b,__stdcall,i32,i32
-isMusicMutedWtf,0x424b2f,0x2e,__stdcall,ZunResult
-Supervisor::PlayAudio,0x424b5d,0x1db,__stdcall,void,char*
+Supervisor::SetupMidiPlayback,0x424b2f,0x2e,__thiscall,ZunResult,Supervisor*,char*
+Supervisor::PlayAudio,0x424b5d,0x1db,__thiscall,void,Supervisor*,char*
 Supervisor::FUN_00424d38,0x424d38,0x4a,__thiscall,u32,Supervisor*
 Supervisor::fadeOutMusic,0x424d82,0xbf,__thiscall,u32,Supervisor*,f32
 SoundPlayer::FadeOut,0x424e41,0x4e,__thiscall,void,SoundPlayer*,f32
@@ -341,14 +341,14 @@ DemoAddedCallback,0x42a840,0x1d5,__stdcall,ZunResult,ReplayManager*
 ReplayManager::DeletedCallback,0x42aa20,0x8c,unknown,u8,ReplayManager*
 FUN_0042aab0,0x42aab0,0x7b,unknown,u8
 ReplayDoStuff,0x42ab30,0x5a9,__stdcall,void,char*,char*
-OpenScore,0x42b0d9,0x1a7,default,ScoreDat*,char*
+ResultScreen::OpenScore,0x42b0d9,0x1a7,default,ScoreDat*,char*
 GetHighScore,0x42b280,0x126,__stdcall,u32,ScoreDat*,ResultScreenUnk3ab0*,i32,i32
 FUN_0042b3a6,0x42b3a6,0x91,default,i32,ResultScreenUnk3ab0*,Hscr*
 ZunFreeArray,0x42b437,0x2f,__stdcall,void,void*
 ParseCatk,0x42b466,0x9c,default,u32,ScoreDat*,Catk*
-ParseClrd,0x42b502,0x15c,unknown,u8,ScoreDat*,Clrd*
-ParsePscr,0x42b65e,0x17e,__stdcall,u32,ScoreDat*,Pscr*
-ScoreDat::FUN_0042b7dc,0x42b7dc,0x2d,__cdecl,void,void*,ScoreDat*
+ResultScreen::ParseClrd,0x42b502,0x15c,unknown,ZunResult,ScoreDat*,Clrd*
+ResultScreen::ParsePscr,0x42b65e,0x17e,__stdcall,ZunResult,ScoreDat*,Pscr*
+ResultScreen::ReleaseScoreDat,0x42b7dc,0x2d,__cdecl,void,ScoreDat*
 WriteScore,0x42b809,0x424,unknown,u8,u32
 ResultScreen::FUN_0042bc2d,0x42bc2d,0x2e,__thiscall,void,ResultScreen*,Hscr*,i32,i32
 ResultScreen::FUN_0042bc5b,0x42bc5b,0x2a,__thiscall,void,ResultScreen*,i32,i32
@@ -370,7 +370,7 @@ SetViewport,0x42f790,0x66,default,void,unsigned long
 ScreenEffect::calcChainElementCallback,0x42f800,0xae,default,u32,ScreenEffect*
 DrawSquare,0x42f8b0,0x3c8,__stdcall,void,zRect*,unsigned long
 calcChainElementCallback_3,0x42fc80,0xa8,unknown,u8,ScreenEffect*
-ScreenEffect::RegisterChain,0x42fd30,0x1ac,unknown,u8,u32,u32,u32,u32,u32
+ScreenEffect::RegisterChain,0x42fd30,0x1ac,unknown,ZunResult,u32,u32,u32,u32,u32
 ScreenEffect::drawChainCallback,0x42fee0,0x88,unknown,u8,ScreenEffect*
 drawChainCallback_2,0x42ff70,0x47,unknown,u8,ScreenEffect*
 calcChainElementCallback_2,0x42ffc0,0x22c,unknown,u8,ScreenEffect*
