@@ -20,7 +20,10 @@ AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::CreateEmptyTexture
 AnmManager::LoadAnm
+AnmManager::LoadSprite
 AnmManager::LoadSurface
+AnmManager::LoadTexture
+AnmManager::LoadTextureAlphaChannel
 AnmManager::ReleaseTexture
 AnmManager::ReleaseSurface
 AnmManager::ReleaseSurfaces
@@ -28,6 +31,7 @@ AnmManager::ReleaseVertexBuffer
 AnmManager::SetActiveSprite
 AnmManager::SetAndExecuteScript
 AnmManager::SetupVertexBuffer
+AnmManager::ExecuteAnmIdx
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem

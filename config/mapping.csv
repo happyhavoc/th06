@@ -392,7 +392,7 @@ SoundPlayer::SoundPlayer,0x431420,0x4c,__thiscall,u32*,SoundPlayer*
 AnmManager::AnmManager,0x431470,0x1ed,__thiscall,AnmManager*,AnmManager*
 AnmManager::SetupVertexBuffer,0x431660,0x2bc,__thiscall,void,AnmManager*
 AnmManager::LoadTexture,0x431920,0xed,__thiscall,ZunResult,AnmManager*,i32,char*,i32,unsigned long
-AnmManager::LoadTextureMipmap,0x431a10,0x35f,__thiscall,ZunResult,AnmManager*,i32,char*,i32,unsigned long
+AnmManager::LoadTextureAlphaChannel,0x431a10,0x35f,__thiscall,ZunResult,AnmManager*,i32,char*,i32,unsigned long
 AnmManager::CreateEmptyTexture,0x431d70,0x42,__thiscall,ZunResult,AnmManager*,u32,u32,u32,u32
 AnmManager::LoadAnm,0x431dc0,0x270,__thiscall,ZunResult,AnmManager*,i32,char*,i32
 AnmManager::ReleaseAnm,0x432030,0x1a2,__thiscall,void,AnmManager*,i32

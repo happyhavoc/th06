@@ -38,6 +38,13 @@ D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
 };
 #endif
 
+#define TEX_FMT_UNKNOWN 0
+#define TEX_FMT_A8R8G8B8 1
+#define TEX_FMT_A1R5G5B5 2
+#define TEX_FMT_R5G6B5 3
+#define TEX_FMT_R8G8B8 4
+#define TEX_FMT_A4R4G4B4 5
+
 // Stack layout here doesn't match because of extra unused stack slot.
 // This might mean that some empty constructors are called and inlined here.
 AnmManager::AnmManager()
@@ -162,6 +169,168 @@ ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, 
                       D3DPOOL_MANAGED, this->textures + textureIdx);
 
     return ZUN_SUCCESS;
+}
+
+ZunResult AnmManager::LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey)
+{
+    ReleaseTexture(textureIdx);
+    this->imageDataArray[textureIdx] = FileSystem::OpenPath(textureName, 0);
+
+    if (this->imageDataArray[textureIdx] == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (((g_Supervisor.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) != 0)
+    {
+        if (g_TextureFormatD3D8Mapping[textureFormat] == D3DFMT_A8R8G8B8 ||
+            g_TextureFormatD3D8Mapping[textureFormat] == D3DFMT_UNKNOWN)
+        {
+            textureFormat = TEX_FMT_A4R4G4B4;
+        }
+        else if (g_TextureFormatD3D8Mapping[textureFormat] == D3DFMT_R8G8B8)
+        {
+            textureFormat = TEX_FMT_R5G6B5;
+        }
+    }
+
+    if (D3DXCreateTextureFromFileInMemoryEx(g_Supervisor.d3dDevice, this->imageDataArray[textureIdx], g_LastFileSize, 0,
+                                            0, 0, 0, g_TextureFormatD3D8Mapping[textureFormat], D3DPOOL_MANAGED,
+                                            D3DX_FILTER_NONE | D3DX_FILTER_POINT, D3DX_DEFAULT, colorKey, NULL, NULL,
+                                            &this->textures[textureIdx]) != D3D_OK)
+    {
+        return ZUN_ERROR;
+    }
+
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(surfaceDesc, data, lockedRectDst, lockedRectSrc, textureSrc, dstData0, srcData0, y0, x0, dstData1,   \
+                  srcData1, x1, y1, dstData2, srcData2, x2, y2)
+ZunResult AnmManager::LoadTextureAlphaChannel(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey)
+{
+    IDirect3DTexture8 *textureSrc;
+    D3DSURFACE_DESC surfaceDesc;
+    D3DLOCKED_RECT lockedRectDst;
+    D3DLOCKED_RECT lockedRectSrc;
+    u8 *data;
+
+    textureSrc = NULL;
+    data = FileSystem::OpenPath(textureName, 0);
+
+    if (data == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    this->textures[textureIdx]->GetLevelDesc(0, &surfaceDesc);
+
+    if (surfaceDesc.Format != D3DFMT_A8R8G8B8 && surfaceDesc.Format != D3DFMT_A4R4G4B4 &&
+        surfaceDesc.Format != D3DFMT_A1R5G5B5)
+    {
+        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ANMMANAGER_UNK_TEX_FORMAT);
+        goto err;
+    }
+
+    if (D3DXCreateTextureFromFileInMemoryEx(g_Supervisor.d3dDevice, data, g_LastFileSize, 0, 0, 0, 0,
+                                            surfaceDesc.Format, D3DPOOL_SYSTEMMEM, D3DX_FILTER_NONE | D3DX_FILTER_POINT,
+                                            D3DX_DEFAULT, colorKey, NULL, NULL, &textureSrc) != D3D_OK)
+    {
+        goto err;
+    }
+
+    if (this->textures[textureIdx]->LockRect(0, &lockedRectDst, NULL, 0) != 0)
+        goto err;
+
+    if (textureSrc->LockRect(0, &lockedRectSrc, NULL, D3DLOCK_NO_DIRTY_UPDATE) != 0)
+        goto err;
+
+    // Copy over the alpha channel from the source to the destination, taking
+    // into account the texture format.
+    switch (surfaceDesc.Format)
+    {
+    case D3DFMT_A8R8G8B8:
+        for (i32 y0 = 0; y0 < surfaceDesc.Height; y0++)
+        {
+            u8 *dstData0 = (u8 *)lockedRectDst.pBits + y0 * lockedRectDst.Pitch;
+            u8 *srcData0 = (u8 *)lockedRectSrc.pBits + y0 * lockedRectSrc.Pitch;
+
+            for (i32 x0 = 0; x0 < surfaceDesc.Width; x0++, srcData0 += 4, dstData0 += 4)
+            {
+                dstData0[3] = srcData0[0];
+            }
+        }
+        break;
+
+    case D3DFMT_A1R5G5B5:
+        for (i32 y1 = 0; y1 < surfaceDesc.Height; y1++)
+        {
+            u16 *dstData1 = (u16 *)((u8 *)lockedRectDst.pBits + y1 * lockedRectDst.Pitch);
+            u16 *srcData1 = (u16 *)((u8 *)lockedRectSrc.pBits + y1 * lockedRectSrc.Pitch);
+
+            for (i32 x1 = 0; x1 < surfaceDesc.Width; x1++, srcData1++, dstData1++)
+            {
+                *dstData1 = (((u16)(*srcData1 & 0x1f) >> 4) & 1) << 15 | *dstData1 & ~ZUN_BIT(15);
+            }
+        }
+        break;
+
+    case D3DFMT_A4R4G4B4:
+        for (i32 y2 = 0; y2 < surfaceDesc.Height; y2++)
+        {
+            u16 *dstData2 = (u16 *)((u8 *)lockedRectDst.pBits + y2 * lockedRectDst.Pitch);
+            u16 *srcData2 = (u16 *)((u8 *)lockedRectSrc.pBits + y2 * lockedRectSrc.Pitch);
+
+            for (i32 x2 = 0; x2 < surfaceDesc.Width; x2++, srcData2++, dstData2++)
+            {
+                *dstData2 = (u16)((*srcData2 & 0xf) & 0xf) << 12 | *dstData2 & ~ZUN_RANGE(12, 4);
+            }
+        }
+        break;
+    }
+
+    textureSrc->UnlockRect(0);
+    this->textures[textureIdx]->UnlockRect(0);
+
+    if (textureSrc != NULL)
+    {
+        textureSrc->Release();
+        textureSrc = NULL;
+    }
+
+    free(data);
+    return ZUN_SUCCESS;
+
+err:
+    if (textureSrc != NULL)
+    {
+        textureSrc->Release();
+        textureSrc = NULL;
+    }
+
+    free(data);
+    return ZUN_ERROR;
+}
+
+void AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
+{
+    memcpy(this->sprites + spriteIdx, sprite, sizeof(AnmLoadedSprite));
+    this->sprites[spriteIdx].spriteId = this->maybeLoadedSpriteCount++;
+
+    // For some reasons, all of thoses use a DIVR, how can we match here?
+    this->sprites[spriteIdx].uvStart.x =
+        this->sprites[spriteIdx].startPixelInclusive.x / this->sprites[spriteIdx].textureWidth;
+    this->sprites[spriteIdx].uvEnd.x =
+        this->sprites[spriteIdx].endPixelInclusive.x / this->sprites[spriteIdx].textureWidth;
+    this->sprites[spriteIdx].uvStart.y =
+        this->sprites[spriteIdx].startPixelInclusive.y / this->sprites[spriteIdx].textureHeight;
+    this->sprites[spriteIdx].uvEnd.y =
+        this->sprites[spriteIdx].endPixelInclusive.y / this->sprites[spriteIdx].textureHeight;
+
+    this->sprites[spriteIdx].widthPx =
+        this->sprites[spriteIdx].endPixelInclusive.x - this->sprites[spriteIdx].startPixelInclusive.x;
+    this->sprites[spriteIdx].heightPx =
+        this->sprites[spriteIdx].endPixelInclusive.y - this->sprites[spriteIdx].startPixelInclusive.y;
 }
 
 ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 sprite_index)
@@ -391,7 +560,7 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
     if (anm->mipmapNameOffset != 0)
     {
         anmName = (char *)((u8 *)anm + anm->mipmapNameOffset);
-        if (this->LoadTextureMipmap(anm->textureIdx, anmName, anm->format, anm->colorKey) != ZUN_SUCCESS)
+        if (this->LoadTextureAlphaChannel(anm->textureIdx, anmName, anm->format, anm->colorKey) != ZUN_SUCCESS)
         {
             GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ANMMANAGER_TEXTURE_CORRUPTED, anmName);
             return ZUN_ERROR;
@@ -429,6 +598,17 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
     this->anmFilesSpriteIndexOffsets[anmIdx] = spriteIdxOffset;
 
     return ZUN_SUCCESS;
+}
+
+void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
+{
+    vm->anmFileIndex = anmFileIdx;
+    vm->pos = D3DXVECTOR3(0, 0, 0);
+    vm->pos2 = D3DXVECTOR3(0, 0, 0);
+    vm->fontHeight = 15;
+    vm->fontWidth = 15;
+
+    SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
 }
 
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)

@@ -1,8 +1,4 @@
-AnmManager::LoadTexture
 AnmManager::ReleaseAnm
-AnmManager::ExecuteAnmIdx
-AnmManager::LoadTextureMipmap
-AnmManager::LoadSprite
 AnmManager::ExecuteScript
 AnmManager::TakeScreenshotIfRequested
 AsciiManager::DrawStrings
