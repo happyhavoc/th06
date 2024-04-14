@@ -34,7 +34,10 @@ Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 MainMenu::MoveCursor
-MainMenu::RegisterChain
+MainMenu::OnUpdate
+MainMenu::OnDraw
+MainMenu::AddedCallback
+MainMenu::DeletedCallback
 ReplayDoStuff
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

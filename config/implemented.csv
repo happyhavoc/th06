@@ -69,6 +69,7 @@ MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
 MainMenu::DrawMenuItem
+MainMenu::RegisterChain
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput

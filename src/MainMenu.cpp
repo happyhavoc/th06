@@ -4,6 +4,7 @@
 #include "MainMenu.hpp"
 
 #include "AnmManager.hpp"
+#include "ChainPriorities.hpp"
 #include "GameManager.hpp"
 #include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
@@ -359,3 +360,35 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
     }
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma function("memset")
+ZunResult MainMenu::RegisterChain(u32 isDemo)
+{
+    MainMenu *menu = &g_MainMenu;
+
+    memset(menu, 0, sizeof(MainMenu));
+    g_GameManager.isInGameMenu = 0;
+    DebugPrint(TH_DBG_MAINMENU_VRAM, g_Supervisor.d3dDevice->GetAvailableTextureMem());
+    menu->gameState = isDemo ? STATE_REPLAY_LOAD : STATE_STARTUP;
+    g_Supervisor.framerateMultiplier = 0.0;
+    menu->chainCalc = g_Chain.CreateElem((ChainCallback)MainMenu::OnUpdate);
+    menu->chainCalc->arg = menu;
+    menu->chainCalc->addedCallback = (ChainAddedCallback)MainMenu::AddedCallback;
+    menu->chainCalc->deletedCallback = (ChainDeletedCallback)MainMenu::DeletedCallback;
+    menu->stateTimer = 0;
+    if (g_Chain.AddToCalcChain(menu->chainCalc, TH_CHAIN_PRIO_CALC_MAINMENU) != 0)
+    {
+        return ZUN_ERROR;
+    }
+    menu->chainDraw = g_Chain.CreateElem((ChainCallback)MainMenu::OnDraw);
+    menu->chainDraw->arg = menu;
+    g_Chain.AddToDrawChain(menu->chainDraw, TH_CHAIN_PRIO_DRAW_MAINMENU);
+    menu->lastFrameTime = 0;
+    menu->stateTimer = 0x3c;
+    menu->frameCountForRefreshRateCalc = 0;
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+DIFFABLE_STATIC(MainMenu, g_MainMenu);
