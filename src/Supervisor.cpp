@@ -823,9 +823,9 @@ u16 GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_FOCUS, VK_SHIFT);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_MENU, VK_ESCAPE);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, VK_CONTROL);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK9, 'Q');
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK10, 'S');
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK12, VK_RETURN);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_Q, 'Q');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_S, 'S');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_ENTER, VK_RETURN);
     }
     else
     {
@@ -860,9 +860,9 @@ u16 GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_MENU, DIK_ESCAPE);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, DIK_LCONTROL);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, DIK_RCONTROL);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK9, DIK_Q);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK10, DIK_S);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK12, DIK_RETURN);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_Q, DIK_Q);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_S, DIK_S);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_ENTER, DIK_RETURN);
     }
 
     return GetControllerInput(buttons);
