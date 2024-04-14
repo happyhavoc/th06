@@ -47,6 +47,7 @@ GetInput
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
+GameWindow::Present
 GameWindow::Render
 GameManager::GameManager
 GameManager::IncreaseSubrank

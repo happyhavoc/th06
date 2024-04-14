@@ -94,6 +94,7 @@ def configure(build_type):
             "GameWindow",
             "MainMenu",
             "MidiOutput",
+            "ScreenEffect",
             "SoundPlayer",
             "Stage",
             "AnmVm",

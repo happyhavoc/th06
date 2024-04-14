@@ -182,8 +182,6 @@ enum TouhouButton
     TH_BUTTON_DOWN_RIGHT = TH_BUTTON_DOWN | TH_BUTTON_RIGHT,
 };
 
-i32 InitD3dInterface(void);
-
 u16 GetJoystickCaps(void);
 u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
                                   u32 inputButtons);
