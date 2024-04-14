@@ -27,3 +27,4 @@ _g_AnmManager,                          0x006d4588
 _g_PrimitivesToDrawNoVertexBuf,         0x006d4590
 _g_PrimitivesToDrawVertexBuf,           0x006d4600
 _g_PrimitivesToDrawUnknown,             0x006d4660
+_g_MainMenu,                            0x006d46c0

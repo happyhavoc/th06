@@ -33,11 +33,15 @@ struct MainMenu
     ZunResult BeginStartup();
     static ZunResult LoadTitleAnm(MainMenu *menu);
     ZunResult DrawStartMenu();
-    static i32 MoveCursor(MainMenu *menu, i32 menu_length);
+    static i32 MoveCursor(MainMenu *menu, i32 menuLength);
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
 
-    static ZunResult RegisterChain(u32 is_demo);
+    static ZunResult RegisterChain(u32 isDemo);
+    static ChainCallbackResult OnUpdate(MainMenu *s);
+    static ChainCallbackResult OnDraw(MainMenu *s);
+    static ZunResult AddedCallback(MainMenu *s);
+    static ZunResult DeletedCallback(MainMenu *s);
 
     AnmVm vm[122];
     i32 cursor;
@@ -72,7 +76,9 @@ struct MainMenu
     f32 *unk_10ee4;
     i8 padding5[64];
     u32 unk_10f28;
-    u32 unk_10f2c;
-    u32 time_related;
+    u32 frameCountForRefreshRateCalc;
+    u32 lastFrameTime;
 };
 C_ASSERT(sizeof(MainMenu) == 0x10f34);
+
+DIFFABLE_EXTERN(MainMenu, g_MainMenu);

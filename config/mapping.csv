@@ -419,7 +419,7 @@ AnmManager::CopySurfaceToBackBuffer,0x435300,0x1bd,__thiscall,void,AnmManager*,i
 AnmManager::DrawEndingRect,0x4354c0,0x1a8,__thiscall,void,AnmManager*,i32,long,long,i32,i32,i32,i32
 AnmManager::TakeScreenshot,0x435670,0xed,__thiscall,void,AnmManager*,i32,i32,i32,i32,i32
 MainMenu::MainMenu,0x43575d,0x42,__thiscall,void,MainMenu*
-MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,u32,MainMenu*
+MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,ChainCallbackResult,MainMenu*
 MainMenu::MoveCursor,0x43753c,0x136,__stdcall,i32,MainMenu*,i32
 MainMenu::select_related,0x437672,0x131,__stdcall,void,MainMenu*,i16,u16,i32
 MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,void,AnmVm*,i32,i32,unsigned long,unsigned long,i32
@@ -431,13 +431,13 @@ MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,u32,MainMenu*
 MainMenu::setSavedCursorPosition,0x438ef8,0x23f,__thiscall,void,MainMenu*,AnmVm*,i32,i32,i32
 MainMenu::FUN_00439137,0x439137,0x82e,__thiscall,u32,MainMenu*
 MainMenu::ChoosePracticeLevel,0x439965,0x171,__thiscall,u32,MainMenu*
-MainMenu::OnDraw,0x439ad6,0x2ca,unknown,u8,MainMenu*
+MainMenu::OnDraw,0x439ad6,0x2ca,unknown,ChainCallbackResult,MainMenu*
 MainMenu::LoadTitleAnm,0x439da0,0x1e8,__stdcall,u32,MainMenu*
 MainMenu::loadMenu,0x439f88,0x264,default,ZunResult,u32
 LoadReplayMenu,0x43a1ec,0x14c,__stdcall,ZunResult,MainMenu*
 MainMenu::RegisterChain,0x43a338,0x12c,unknown,ZunResult,u32
-MainMenu::AddedCallback,0x43a464,0x1f5,unknown,u8,MainMenu*
-MainMenu::DeletedCallback,0x43a659,0xb1,__stdcall,u32,MainMenu*
+MainMenu::AddedCallback,0x43a464,0x1f5,unknown,ZunResult,MainMenu*
+MainMenu::DeletedCallback,0x43a659,0xb1,__stdcall,ZunResult,MainMenu*
 MainMenu::ReleaseAnm,0x43a70a,0x2c,default,void
 GameManager::hasReachedMaxClears,0x43a736,0x70,__thiscall,i32,GameManager*,i32,i32
 CSoundManager::CSoundManager,0x43a7b0,0x17,__thiscall,u32*,CSoundManager*
