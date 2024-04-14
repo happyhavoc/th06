@@ -33,7 +33,7 @@ struct MainMenu
     ZunResult BeginStartup();
     static ZunResult LoadTitleAnm(MainMenu *menu);
     ZunResult DrawStartMenu();
-    static i32 MoveCursor(MainMenu *menu, i32 menu_length);
+    static i32 MoveCursor(MainMenu *menu, i32 menuLength);
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
 
