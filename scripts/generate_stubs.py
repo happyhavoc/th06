@@ -78,5 +78,6 @@ for stub in stubbed_csv:
     )
     fun_sig += ")"
     print(fun_sig + " {", file=output)
+    print('    printf("STUBBED: ' + fun_sig + '\\n");', file=output)
     print("    return " + ret_val + ";", file=output)
     print("}", file=output)
