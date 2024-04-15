@@ -4,5 +4,8 @@
 
 struct Ending
 {
+    Ending();
     static ZunResult RegisterChain();
+    i32 DeletedCallback();
+
 };

@@ -5,5 +5,7 @@ diff
 log.txt
 scripts/dls
 scripts/prefix
+scripts/msvc70
 build.ninja
 __pycache__
+.vscode
