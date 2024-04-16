@@ -997,3 +997,4 @@ BOOL CALLBACK EnumGameControllersCb(const DIDEVICEINSTANCEA *pdidInstance, VOID 
     }
     return FALSE;
 }
+#pragma optimize("", on)
