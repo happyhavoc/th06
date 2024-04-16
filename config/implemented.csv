@@ -85,6 +85,7 @@ Supervisor::DrawFpsCounter
 Supervisor::OnUpdate
 Supervisor::OnDraw
 Supervisor::TickTimer
+Supervisor::SetupDInput
 InitD3dDevice
 InitD3dRendering
 Clear

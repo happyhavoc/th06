@@ -22,7 +22,6 @@ SoundPlayer::Release
 SoundPlayer::PlaySounds
 Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
-Supervisor::SetupDInput
 Supervisor::ReleasePbg3
 Supervisor::PlayAudio
 GameManager::RegisterChain
@@ -37,5 +36,7 @@ MainMenu::OnDraw
 MainMenu::AddedCallback
 MainMenu::DeletedCallback
 ReplayDoStuff
+controllerCallback
+EnumGameControllersCb
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive
