@@ -982,7 +982,7 @@ BOOL CALLBACK controllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-BOOL CALLBACK EnumGameControllersCb(const DIDEVICEINSTANCEA *pdidInstance, VOID *pContext)
+BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
 
 {
     HRESULT result;
