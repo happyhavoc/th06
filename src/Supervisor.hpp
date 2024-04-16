@@ -193,8 +193,8 @@ unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerBut
                                               enum TouhouButton touhouButton, u8 *inputButtons);
 u16 GetControllerInput(u16 buttons);
 u16 GetInput(void);
-u8 controllerCallback(DIDEVICEOBJECTINSTANCEA *);
-u32 EnumGameControllersCb(i32);
+BOOL CALLBACK controllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef);
+BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext);
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
 DIFFABLE_EXTERN(Supervisor, g_Supervisor)

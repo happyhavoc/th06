@@ -36,7 +36,5 @@ MainMenu::OnDraw
 MainMenu::AddedCallback
 MainMenu::DeletedCallback
 ReplayDoStuff
-controllerCallback
-EnumGameControllersCb
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

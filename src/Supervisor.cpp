@@ -607,8 +607,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
     supervisor->keyboard->Acquire();
     GameErrorContextLog(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
 
-    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, (LPDIENUMDEVICESCALLBACKA)EnumGameControllersCb, NULL,
-                                         DIEDFL_ATTACHEDONLY);
+    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumGameControllersCb, NULL, DIEDFL_ATTACHEDONLY);
     if (supervisor->controller)
     {
         supervisor->controller->SetDataFormat(&c_dfDIJoystick);
@@ -617,7 +616,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
         g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
 
         supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
-        supervisor->controller->EnumObjects((LPDIENUMDEVICEOBJECTSCALLBACKA)controllerCallback, NULL, DIDFT_ALL);
+        supervisor->controller->EnumObjects(controllerCallback, NULL, DIDFT_ALL);
 
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_PAD_FOUND);
     }
@@ -954,4 +953,47 @@ u16 GetInput(void)
     }
 
     return GetControllerInput(buttons);
+}
+
+#pragma optimize("s", on)
+#pragma var_order(diprange, result)
+BOOL CALLBACK controllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
+
+{
+    HRESULT result;
+    DIPROPRANGE diprange;
+    result = (HRESULT)pvRef; // ehm, ok?
+    if (lpddoi->dwType & DIDFT_AXIS)
+    {
+        diprange.diph.dwSize = sizeof(diprange);
+        diprange.diph.dwHeaderSize = sizeof(diprange.diph);
+        diprange.diph.dwHow = DIPH_BYID;
+        diprange.diph.dwObj = lpddoi->dwType;
+        diprange.lMin = -1000;
+        diprange.lMax = 1000;
+
+        if (g_Supervisor.controller->SetProperty(DIPROP_RANGE, &diprange.diph) < 0)
+        {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+BOOL CALLBACK EnumGameControllersCb(const DIDEVICEINSTANCEA *pdidInstance, VOID *pContext)
+
+{
+    HRESULT result;
+
+    if (!g_Supervisor.controller)
+    {
+        result = g_Supervisor.dinputIface->CreateDevice(pdidInstance->guidInstance, &g_Supervisor.controller, NULL);
+        if (result < 0)
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
