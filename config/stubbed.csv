@@ -28,6 +28,7 @@ Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
 Supervisor::ReleasePbg3
 Supervisor::PlayAudio
+Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
 GameManager::RegisterChain
 GameManager::CutChain
@@ -37,11 +38,15 @@ MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 ScreenEffect::RegisterChain
 MainMenu::MoveCursor
-MainMenu::OnUpdate
 MainMenu::OnDraw
 MainMenu::DeletedCallback
 MainMenu::LoadReplayMenu
+MainMenu::LoadDiffCharSelect
+MainMenu::SelectRelated
+MainMenu::DrawOptionsMenu
+MainMenu::WeirdSecondInputCheck
 ReplayDoStuff
 ValidateReplayData
+GetControllerState
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

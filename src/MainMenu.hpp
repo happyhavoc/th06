@@ -27,16 +27,21 @@ enum GameState
     STATE_REPLAY_UNLOAD,
     STATE_REPLAY_SELECT,
     STATE_MUSIC_ROOM,
+    STATE_PRACTICE_LVL_SELECT,
 };
 
 struct MainMenu
 {
     ZunResult BeginStartup();
-    static ZunResult LoadTitleAnm(MainMenu *menu);
     ZunResult DrawStartMenu();
+    u32 DrawOptionsMenu();
+    ZunResult WeirdSecondInputCheck();
+
+    static ZunResult LoadTitleAnm(MainMenu *menu);
     static i32 MoveCursor(MainMenu *menu, i32 menuLength);
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
+    static void SelectRelated(MainMenu *menu, u16 btnPressed, u16 oldMapping, u32 unk);
 
     i32 ReplayHandling();
     static ZunResult LoadReplayMenu(MainMenu *menu);
@@ -46,6 +51,7 @@ struct MainMenu
     static ChainCallbackResult OnDraw(MainMenu *s);
     static ZunResult AddedCallback(MainMenu *s);
     static ZunResult DeletedCallback(MainMenu *s);
+    static ZunResult LoadDiffCharSelect(MainMenu *s);
 
     AnmVm vm[122];
     i32 cursor;
@@ -76,9 +82,9 @@ struct MainMenu
     char replayFileName[60][8];
     ReplayData replayFileData[60];
     ReplayData *currentReplay;
-    i32 *unk_10ee0;
-    f32 *unk_10ee4;
-    i8 padding5[64];
+    i32 timeRelatedArrSize;
+    f32 timeRelatedArr[16];
+    u32 unk_10f24;
     u32 unk_10f28;
     i32 frameCountForRefreshRateCalc;
     u32 lastFrameTime;

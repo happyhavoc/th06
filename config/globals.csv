@@ -1,5 +1,6 @@
 _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_ControllerMapping,                   0x004765a0
+_g_LastJoystickInput,                   0x00478690
 _g_AsciiManagerOnDrawMenusChain,        0x0047b8e0
 _g_AsciiManager,                        0x0047b900
 _g_AsciiManagerCalcChain,               0x00487aac
