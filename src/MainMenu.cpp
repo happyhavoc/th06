@@ -323,6 +323,7 @@ void _strcpy(char *dst, char *src)
 }
 
 #pragma optimize("s", on)
+#pragma function(strcpy)
 #pragma var_order(anmVm, cur, replayFileHandle, replayFileIdx, replayData, replayFilePath, replayFileInfo, uh, uh2,    \
                   padding)
 i32 MainMenu::ReplayHandling()
@@ -454,7 +455,7 @@ i32 MainMenu::ReplayHandling()
                 do
                 {
                     // FIXME: there's an additional jump
-                    if (!this->replayFileData[this->chosenReplay].stageScore[this->cursor])
+                    if (this->replayFileData[this->chosenReplay].stageScore[this->cursor])
                         goto leaveDo;
                     this->cursor = this->cursor + 1;
                 } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore));
