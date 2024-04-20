@@ -421,8 +421,7 @@ i32 MainMenu::ReplayHandling()
                     {
                         // FIXME: wrong assembly
                         memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
-                        // HACK: i dont think it should be this way
-                        _strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
+                        strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
                         sprintf(this->replayFileName[replayFileIdx], "No.%.2d", cur + 1);
                         replayFileIdx++;
                     }
@@ -486,7 +485,7 @@ i32 MainMenu::ReplayHandling()
         {
             MoveCursor(this, this->replayFilesNum);
             this->chosenReplay = this->cursor;
-            if (WAS_PRESSED(KEY_SHOOT | KEY_ENTER))
+            if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
             {
                 this->gameState = STATE_REPLAY_SELECT;
                 anmVm = &(this->vm[97]);
@@ -521,7 +520,7 @@ i32 MainMenu::ReplayHandling()
             }
         }
     leaveDo:
-        if (WAS_PRESSED(KEY_MENU | KEY_BOMB))
+        if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
             this->gameState = STATE_REPLAY_UNLOAD;
             this->stateTimer = 0;
@@ -562,14 +561,14 @@ i32 MainMenu::ReplayHandling()
                 }
             }
         }
-        if (WAS_PRESSED(KEY_SHOOT | KEY_ENTER) && this->currentReplay[this->cursor].stageScore)
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageScore)
         {
             g_GameManager.unk_1c = 1;
             g_Supervisor.framerateMultiplier = 1.0;
-            _strcpy(g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
+            strcpy(g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
             g_GameManager.difficulty = (Difficulty)this->currentReplay->difficulty;
             g_GameManager.character = this->currentReplay->shottypeChara / 2;
-            g_GameManager.shottype = this->currentReplay->shottypeChara % 2;
+            g_GameManager.shotType = this->currentReplay->shottypeChara % 2;
             cur = 0;
             while (this->currentReplay->stageScore[cur] == NULL)
             {
@@ -584,7 +583,7 @@ i32 MainMenu::ReplayHandling()
             g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER;
             return 1;
         }
-        if (WAS_PRESSED(KEY_BOMB | KEY_MENU))
+        if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
             ReplayData *uh2 = this->currentReplay;
             free(uh2);
