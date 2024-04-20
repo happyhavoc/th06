@@ -1,8 +1,8 @@
 #include <fstream>
 #include <vector>
 
-#include "munit.h"
-#include <Pbg3Archive.hpp>
+#include "pbg3/Pbg3Archive.hpp"
+#include <munit.h>
 
 static MunitResult test_read_raw(const MunitParameter params[], void *user_data)
 {

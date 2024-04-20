@@ -54,8 +54,12 @@ struct AnmManager
 
     ZunResult CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat);
     ZunResult LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
-    ZunResult LoadTextureMipmap(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
+    ZunResult LoadTextureAlphaChannel(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
     void ReleaseTexture(i32 textureIdx);
+    void TakeScreenshotIfRequested();
+
+    void SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript);
+    i32 ExecuteScript(AnmVm *vm);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
@@ -67,7 +71,7 @@ struct AnmManager
 
     void ReleaseAnm(i32 anmIdx);
     ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
-    void ExecuteAnmIdx(AnmVm *vm, int anmFileIdx);
+    void ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx);
 
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;

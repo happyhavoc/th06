@@ -1,6 +1,8 @@
+AnmManager::LoadTexture
 AnmManager::ReleaseAnm
-AnmManager::ExecuteScript
-AnmManager::TakeScreenshotIfRequested
+AnmManager::ExecuteAnmIdx
+AnmManager::LoadTextureMipmap
+AnmManager::LoadSprite
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
@@ -8,6 +10,7 @@ StageMenu::OnDrawGameMenu
 StageMenu::OnDrawRetryMenu
 AsciiManager::DrawPopupsWithHwVertexProcessing
 AsciiManager::DrawPopupsWithoutHwVertexProcessing
+GameWindow::Render
 MidiDevice::Close
 MidiTimer::StopTimer
 MidiOutput::ClearTracks
@@ -19,10 +22,12 @@ SoundPlayer::InitializeDSound
 SoundPlayer::InitSoundBuffers
 SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
-SoundPlayer::PlaySounds
+Supervisor::OnUpdate
+Supervisor::OnDraw
 Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
 Supervisor::SetupDInput
+Supervisor::TickTimer
 Supervisor::ReleasePbg3
 Supervisor::PlayAudio
 GameManager::RegisterChain
@@ -32,12 +37,8 @@ Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 MainMenu::MoveCursor
-MainMenu::OnUpdate
-MainMenu::OnDraw
-MainMenu::AddedCallback
-MainMenu::DeletedCallback
-MainMenu::LoadReplayMenu
+MainMenu::RegisterChain
+MainMenu::DrawMenuItem
 ReplayDoStuff
-ValidateReplayData
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

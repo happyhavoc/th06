@@ -32,12 +32,19 @@ Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 MainMenu::MoveCursor
+<<<<<<< HEAD
+MainMenu::RegisterChain
+MainMenu::DrawMenuItem
+MainMenu::LoadReplayMenu
+=======
 MainMenu::OnUpdate
 MainMenu::OnDraw
 MainMenu::AddedCallback
 MainMenu::DeletedCallback
-MainMenu::LoadReplayMenu
+>>>>>>> 6370a44e8647656e66e9278a486fd2396659d500
 ReplayDoStuff
+FileSystem::CreateDirectoryInCWD
+FileSystem::ChangeCWD
 ValidateReplayData
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

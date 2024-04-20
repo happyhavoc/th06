@@ -24,18 +24,6 @@ DIFFABLE_STATIC(Supervisor, g_Supervisor)
 DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
 DIFFABLE_STATIC(JOYCAPSA, g_JoystickCaps)
 
-i32 InitD3dInterface(void)
-{
-    g_Supervisor.d3dIface = Direct3DCreate8(D3D_SDK_VERSION);
-
-    if (g_Supervisor.d3dIface == NULL)
-    {
-        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ);
-        return 1;
-    }
-    return 0;
-}
-
 // TODO: Not a perfect match.
 ZunResult Supervisor::LoadConfig(char *path)
 {
@@ -549,6 +537,25 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
     return 0;
 }
 
+#pragma optimize("s", on)
+void Supervisor::TickTimer(i32 *frames, f32 *subframes)
+{
+    if (this->framerateMultiplier <= 0.99f)
+    {
+        *subframes = *subframes + this->effectiveFramerateMultiplier;
+        if (*subframes >= 1.0f)
+        {
+            *frames = *frames + 1;
+            *subframes = *subframes - 1.0f;
+        }
+    }
+    else
+    {
+        *frames = *frames + 1;
+    }
+}
+#pragma optimize("", on)
+
 u16 GetJoystickCaps(void)
 {
     JOYINFOEX pji;
@@ -816,9 +823,9 @@ u16 GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_FOCUS, VK_SHIFT);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_MENU, VK_ESCAPE);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, VK_CONTROL);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK9, 'Q');
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK10, 'S');
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK12, VK_RETURN);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_Q, 'Q');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_S, 'S');
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_ENTER, VK_RETURN);
     }
     else
     {
@@ -853,9 +860,9 @@ u16 GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_MENU, DIK_ESCAPE);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, DIK_LCONTROL);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SKIP, DIK_RCONTROL);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK9, DIK_Q);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK10, DIK_S);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK12, DIK_RETURN);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_Q, DIK_Q);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_S, DIK_S);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_ENTER, DIK_RETURN);
     }
 
     return GetControllerInput(buttons);

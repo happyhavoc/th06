@@ -1,6 +1,6 @@
 #include <stddef.h>
 
-#include "Pbg3Archive.hpp"
+#include "pbg3/Pbg3Archive.hpp"
 
 DIFFABLE_STATIC(Pbg3Archive **, g_Pbg3Archives)
 

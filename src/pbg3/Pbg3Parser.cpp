@@ -1,4 +1,4 @@
-#include "Pbg3Parser.hpp"
+#include "pbg3/Pbg3Parser.hpp"
 
 Pbg3Parser::Pbg3Parser() : IPbg3Parser(), FileAbstraction()
 {

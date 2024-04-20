@@ -171,18 +171,19 @@ enum TouhouButton
     TH_BUTTON_LEFT = 1 << 6,
     TH_BUTTON_RIGHT = 1 << 7,
     TH_BUTTON_SKIP = 1 << 8,
-    TH_BUTTON_UNK9 = 1 << 9,
-    TH_BUTTON_UNK10 = 1 << 10,
+    TH_BUTTON_Q = 1 << 9,
+    TH_BUTTON_S = 1 << 10,
     TH_BUTTON_UNK11 = 1 << 11,
-    TH_BUTTON_UNK12 = 1 << 12,
+    TH_BUTTON_ENTER = 1 << 12,
 
     TH_BUTTON_UP_LEFT = TH_BUTTON_UP | TH_BUTTON_LEFT,
     TH_BUTTON_UP_RIGHT = TH_BUTTON_UP | TH_BUTTON_RIGHT,
     TH_BUTTON_DOWN_LEFT = TH_BUTTON_DOWN | TH_BUTTON_LEFT,
     TH_BUTTON_DOWN_RIGHT = TH_BUTTON_DOWN | TH_BUTTON_RIGHT,
-};
 
-i32 InitD3dInterface(void);
+    TH_BUTTON_SELECTMENU = TH_BUTTON_ENTER | TH_BUTTON_SHOOT,
+    TH_BUTTON_RETURNMENU = TH_BUTTON_MENU | TH_BUTTON_BOMB,
+};
 
 u16 GetJoystickCaps(void);
 u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,

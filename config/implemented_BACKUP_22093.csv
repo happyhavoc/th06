@@ -68,9 +68,12 @@ FileSystem::WriteDataToFile
 MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
+<<<<<<< HEAD
 MainMenu::ReplayHandling
+=======
 MainMenu::DrawMenuItem
 MainMenu::RegisterChain
+>>>>>>> 6370a44e8647656e66e9278a486fd2396659d500
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput

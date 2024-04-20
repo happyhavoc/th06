@@ -38,14 +38,18 @@ struct MainMenu
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
 
+<<<<<<< HEAD
     i32 ReplayHandling();
     static ZunResult LoadReplayMenu(MainMenu *menu);
 
+    static ZunResult RegisterChain(u32 is_demo);
+=======
     static ZunResult RegisterChain(u32 isDemo);
     static ChainCallbackResult OnUpdate(MainMenu *s);
     static ChainCallbackResult OnDraw(MainMenu *s);
     static ZunResult AddedCallback(MainMenu *s);
     static ZunResult DeletedCallback(MainMenu *s);
+>>>>>>> 6370a44e8647656e66e9278a486fd2396659d500
 
     AnmVm vm[122];
     i32 cursor;

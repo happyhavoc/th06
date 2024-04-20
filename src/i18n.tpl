@@ -5,6 +5,7 @@
 // JP
 #define TH_JP_CONFIG_FILE "東方紅魔郷.cfg"
 #define TH_JP_WINDOW_TITLE "東方紅魔郷　〜 the Embodiment of Scarlet Devil"
+#define TH_JP_DBG_MAINMENU_VRAM "Debug : title 開始 VRAM = %d\n"
 #define TH_JP_ERR_ALREADY_RUNNING "二つは起動できません\n"
 #define TH_JP_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D オブジェクトは何故か作成出来なかった\n"
 #define TH_JP_ERR_LOGGER_START "東方動作記録 --------------------------------------------- \n"
@@ -50,6 +51,7 @@
 #define TH_JP_ERR_CANNOT_BE_LOADED "%sが読み込めないです。\n"
 #define TH_JP_ERR_ANMMANAGER_SPRITE_CORRUPTED "スプライトアニメ %s が読み込めません。データが失われてるか壊れています\n"
 #define TH_JP_ERR_ANMMANAGER_TEXTURE_CORRUPTED "テクスチャ %s が読み込めません。データが失われてるか壊れています\n"
+#define TH_JP_ERR_ANMMANAGER_UNK_TEX_FORMAT "error : イメージがαを持っていません\n"
 #define TH_JP_IN_DAT_FILE "紅魔郷IN.dat"
 #define TH_JP_MD_DAT_FILE "紅魔郷MD.dat"
 #define TH_JP_TL_DAT_FILE "紅魔郷TL.dat"
@@ -57,6 +59,7 @@
 // EN
 #define TH_EN_CONFIG_FILE "th06.cfg"
 #define TH_EN_WINDOW_TITLE "Touhou Koumakyou ~ the Embodiment of Scarlet Devil"
+#define TH_EN_DBG_MAINMENU_VRAM "Debug : title menu VRAM = %d\n"
 #define TH_EN_ERR_ALREADY_RUNNING "Touhou cannot be started\n"
 #define TH_EN_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D object could not be created for some reason\n"
 #define TH_EN_ERR_LOGGER_START "Logger started --------------------------------------------- \n"
@@ -101,6 +104,7 @@
 #define TH_EN_ERR_CANNOT_BE_LOADED "%s cannot be loaded.\n"
 #define TH_EN_ERR_ANMMANAGER_SPRITE_CORRUPTED "Unable to load sprite animation %s. Data is lost or corrupted.\n"
 #define TH_EN_ERR_ANMMANAGER_TEXTURE_CORRUPTED "Unable to load texture %s. Data is lost or corrupted.\n"
+#define TH_EN_ERR_ANMMANAGER_UNK_TEX_FORMAT "error : Image does not have a valid format\n"
 #define TH_EN_IN_DAT_FILE "KOUMAKYO_IN.dat"
 #define TH_EN_MD_DAT_FILE "KOUMAKYO_MD.dat"
 #define TH_CONCAT_HELPER(x, y) x##y
@@ -109,6 +113,7 @@
 
 #define TH_CONFIG_FILE TH_MAKE_LANG_STR(TH_LANG, _CONFIG_FILE)
 #define TH_WINDOW_TITLE TH_MAKE_LANG_STR(TH_LANG, _WINDOW_TITLE)
+#define TH_DBG_MAINMENU_VRAM TH_MAKE_LANG_STR(TH_LANG, _DBG_MAINMENU_VRAM)
 #define TH_ERR_ALREADY_RUNNING TH_MAKE_LANG_STR(TH_LANG, _ERR_ALREADY_RUNNING)
 #define TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ TH_MAKE_LANG_STR(TH_LANG, _ERR_D3D_COULD_NOT_CREATE_OBJ)
 #define TH_ERR_LOGGER_START TH_MAKE_LANG_STR(TH_LANG, _ERR_LOGGER_START)
@@ -152,6 +157,7 @@
 #define TH_ERR_CANNOT_BE_LOADED TH_MAKE_LANG_STR(TH_LANG, _ERR_CANNOT_BE_LOADED)
 #define TH_ERR_ANMMANAGER_SPRITE_CORRUPTED TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_SPRITE_CORRUPTED)
 #define TH_ERR_ANMMANAGER_TEXTURE_CORRUPTED TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_TEXTURE_CORRUPTED)
+#define TH_ERR_ANMMANAGER_UNK_TEX_FORMAT TH_MAKE_LANG_STR(TH_LANG, _ERR_ANMMANAGER_UNK_TEX_FORMAT)
 #define TH_IN_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _IN_DAT_FILE)
 #define TH_MD_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _MD_DAT_FILE)
 #define TH_TL_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _TL_DAT_FILE)

@@ -20,18 +20,13 @@ AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::CreateEmptyTexture
 AnmManager::LoadAnm
-AnmManager::LoadSprite
 AnmManager::LoadSurface
-AnmManager::LoadTexture
-AnmManager::LoadTextureAlphaChannel
 AnmManager::ReleaseTexture
 AnmManager::ReleaseSurface
 AnmManager::ReleaseSurfaces
 AnmManager::ReleaseVertexBuffer
 AnmManager::SetActiveSprite
-AnmManager::SetAndExecuteScript
 AnmManager::SetupVertexBuffer
-AnmManager::ExecuteAnmIdx
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem
@@ -51,11 +46,6 @@ GetInput
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
-GameWindow::Present
-GameWindow::Render
-GameManager::GameManager
-GameManager::IncreaseSubrank
-GameManager::DecreaseSubrank
 ResetKeyboard
 WindowProc
 CreateGameWindow
@@ -69,8 +59,6 @@ MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
-MainMenu::DrawMenuItem
-MainMenu::RegisterChain
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput
@@ -85,7 +73,6 @@ Supervisor::LoadConfig
 Supervisor::DrawFpsCounter
 Supervisor::OnUpdate
 Supervisor::OnDraw
-Supervisor::TickTimer
 InitD3dDevice
 InitD3dRendering
 Clear
