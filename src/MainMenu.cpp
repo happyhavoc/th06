@@ -6,9 +6,9 @@
 #include "MainMenu.hpp"
 
 #include "AnmManager.hpp"
+#include "ChainPriorities.hpp"
 #include "Filesystem.hpp"
 #include "GameErrorContext.hpp"
-#include "ChainPriorities.hpp"
 #include "GameManager.hpp"
 #include "ReplayData.hpp"
 #include "SoundPlayer.hpp"
