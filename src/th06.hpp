@@ -15,6 +15,7 @@
 #include "Replay.hpp"
 #include "ResultScreen.hpp"
 #include "Rng.hpp"
+#include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "Supervisor.hpp"

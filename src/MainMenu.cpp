@@ -6,6 +6,8 @@
 #include "AnmManager.hpp"
 #include "ChainPriorities.hpp"
 #include "GameManager.hpp"
+#include "ResultScreen.hpp"
+#include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
 #include "i18n.hpp"
@@ -371,6 +373,90 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
     menu->lastFrameTime = 0;
     menu->stateTimer = 0x3c;
     menu->frameCountForRefreshRateCalc = 0;
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(scoredat, i, anmmgr)
+ZunResult MainMenu::AddedCallback(MainMenu *m)
+{
+    i32 i;
+    ScoreDat *scoredat;
+    AnmManager *anmmgr;
+
+    if (g_GameManager.demoMode == 0)
+    {
+        g_Supervisor.SetupMidiPlayback("bgm/th06_01.mid");
+    }
+
+    anmmgr = g_AnmManager;
+
+    for (i = 0; i < 0x7a; i++)
+    {
+        anmmgr->scripts[i + 0x100] = NULL;
+    }
+    m->unk_81e4 = 0;
+
+    switch (g_Supervisor.wantedState2)
+    {
+    case SUPERVISOR_STATE_GAMEMANAGER:
+    case SUPERVISOR_STATE_GAMEMANAGER_REINIT:
+    case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
+        m->cursor = g_GameManager.difficulty == EXTRA;
+        break;
+    case SUPERVISOR_STATE_RESULTSCREEN:
+        m->cursor = 4;
+        break;
+    case SUPERVISOR_STATE_MUSICROOM:
+        m->cursor = 5;
+        break;
+    case SUPERVISOR_STATE_INIT:
+    case SUPERVISOR_STATE_MAINMENU:
+    default:
+        m->cursor = 0;
+    }
+
+    if (g_GameManager.unk_1823 != 0)
+    {
+        m->cursor = 2;
+    }
+
+    g_GameManager.unk_1823 = 0;
+    if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
+    {
+        m->color1 = 0x80004000;
+        m->color2 = 0xff008000;
+    }
+    else
+    {
+        m->color1 = 0x80ffffff;
+        m->color2 = 0xffffffff;
+    }
+    m->unk_81fc = 0;
+    m->maybeMenuTextColor = 0x40000000;
+    m->unk_820c = 0;
+    m->isActive = 0;
+    m->unk_10f28 = 0x10;
+    m->currentReplay = NULL;
+    scoredat = ResultScreen::OpenScore("score.dat");
+    ResultScreen::ParseClrd(scoredat, g_GameManager.clrd);
+    ResultScreen::ParsePscr(scoredat, g_GameManager.pscr);
+    ResultScreen::ReleaseScoreDat(scoredat);
+    if (g_GameManager.demoMode == 0)
+    {
+        if (g_Supervisor.startupTimeBeforeMenuMusic == 0)
+        {
+            g_Supervisor.PlayAudio("bgm/th06_01.mid");
+            ScreenEffect::RegisterChain(0, 0x78, 0xffffff, 0, 0);
+        }
+        else
+        {
+            ScreenEffect::RegisterChain(0, 200, 0xffffff, 0, 0);
+        }
+    }
+    g_GameManager.demoMode = 0;
+    g_GameManager.unk_1828 = 0;
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)

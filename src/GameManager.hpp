@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <d3dx8math.h>
 
+#include "ResultScreen.hpp"
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
@@ -38,8 +39,8 @@ struct GameManager
     u32 unk_28;
     u32 unk_2c;
     u8 catk[0x1000];
-    u8 clrd[0x60];
-    u8 pscr[0x780];
+    Clrd clrd[4];
+    Pscr pscr[96];
     u16 currentPower;
     i8 unk_1812;
     i8 unk_1813;
@@ -58,7 +59,7 @@ struct GameManager
     bool isInMenu;
     i8 unk_1822;
     u8 unk_1823;
-    i8 demoMode;
+    u8 demoMode;
     i8 unk_1825;
     i8 unk_1826;
     i8 unk_1827;
