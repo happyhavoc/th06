@@ -41,6 +41,8 @@ MainMenu::MoveCursor
 MainMenu::OnUpdate
 MainMenu::OnDraw
 MainMenu::DeletedCallback
+MainMenu::LoadReplayMenu
 ReplayDoStuff
+ValidateReplayData
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

@@ -1,3 +1,18 @@
+#include "AnmManager.hpp"
+#include "AsciiManager.hpp"
+#include "Chain.hpp"
+#include "Ending.hpp"
+#include "FileSystem.hpp"
+#include "GameManager.hpp"
+#include "GameWindow.hpp"
+#include "MainMenu.hpp"
+#include "MidiOutput.hpp"
+#include "MusicRoom.hpp"
+#include "Replay.hpp"
+#include "ResultScreen.hpp"
+#include "SoundPlayer.hpp"
+#include "Supervisor.hpp"
+#include "inttypes.hpp"
 #include "th06.hpp"
 #include <stdio.h>
 

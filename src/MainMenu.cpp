@@ -1,11 +1,16 @@
 #include <D3DX8.h>
+#include <cstdio>
+#include <direct.h>
 #include <windows.h>
 
 #include "MainMenu.hpp"
 
 #include "AnmManager.hpp"
 #include "ChainPriorities.hpp"
+#include "Filesystem.hpp"
+#include "GameErrorContext.hpp"
 #include "GameManager.hpp"
+#include "ReplayData.hpp"
 #include "ResultScreen.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
@@ -376,6 +381,233 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma function(strcpy)
+#pragma var_order(anmVm, cur, replayFileHandle, replayFileIdx, replayData, replayFilePath, replayFileInfo, uh, uh2,    \
+                  padding)
+i32 MainMenu::ReplayHandling()
+{
+    AnmVm *anmVm;
+    i32 cur;
+    HANDLE replayFileHandle;
+    u32 replayFileIdx;
+    ReplayData *replayData;
+    char replayFilePath[32];
+    WIN32_FIND_DATA replayFileInfo;
+    u8 padding[0x20]; // idk
+
+    switch (this->gameState)
+    {
+    case STATE_REPLAY_LOAD:
+        if (this->stateTimer == 60)
+        {
+            if (LoadReplayMenu(this))
+            {
+                GameErrorContextLog(&g_GameErrorContext, "japanese");
+                g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
+                return ZUN_SUCCESS;
+            }
+            else
+            {
+                replayFileIdx = 0;
+                for (cur = 0; cur < 15; cur++)
+                {
+                    sprintf(replayFilePath, "./replay/th6_%.2d.rpy", cur + 1);
+                    replayData = (ReplayData *)FileSystem::OpenPath(replayFilePath, 1);
+                    if (replayData == NULL)
+                    {
+                        continue;
+                    }
+                    if (!ValidateReplayData(replayData, g_LastFileSize))
+                    {
+                        // FIXME: wrong assembly
+                        memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
+                        strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
+                        sprintf(this->replayFileName[replayFileIdx], "No.%.2d", cur + 1);
+                        replayFileIdx++;
+                    }
+                    free(replayData);
+                }
+                _mkdir("./replay");
+                _chdir("./replay");
+                replayFileHandle = FindFirstFileA("th6_ud????.rpy", &replayFileInfo);
+                if (replayFileHandle != INVALID_HANDLE_VALUE)
+                {
+                    for (cur = 0; cur < 0x2d; cur++)
+                    {
+                        replayData = (ReplayData *)FileSystem::OpenPath(replayFilePath, 1);
+                        if (replayData == NULL)
+                        {
+                            continue;
+                        }
+                        if (!ValidateReplayData(replayData, g_LastFileSize))
+                        {
+                            // FIXME: wrong assembly
+                            memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
+                            sprintf(this->replayFilePaths[replayFileIdx], "./replay/%s", replayFileInfo.cFileName);
+                            sprintf(this->replayFileName[replayFileIdx], "User ");
+                            replayFileIdx++;
+                        }
+                        free(replayData);
+                        if (!FindNextFileA(replayFileHandle, &replayFileInfo))
+                            break;
+                    }
+                }
+                FindClose(replayFileHandle);
+                _chdir("../");
+                this->replayFilesNum = replayFileIdx;
+                this->unk_81fc = 0;
+                this->wasActive = this->isActive;
+                this->isActive = 0;
+                this->gameState = STATE_REPLAY_ANIM;
+                anmVm = this->vm;
+                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur++, anmVm++)
+                {
+                    anmVm->pendingInterrupt = 15;
+                }
+                this->cursor = 0;
+            }
+            break;
+        }
+        break;
+    case STATE_REPLAY_UNLOAD:
+        if (this->stateTimer == 0x24)
+        {
+            this->gameState = STATE_STARTUP;
+            this->stateTimer = 0;
+        }
+        break;
+    case STATE_REPLAY_ANIM:
+        if (this->stateTimer < 0x28)
+        {
+            break;
+        }
+        if (this->replayFilesNum != NULL)
+        {
+            MoveCursor(this, this->replayFilesNum);
+            this->chosenReplay = this->cursor;
+            if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
+            {
+                this->gameState = STATE_REPLAY_SELECT;
+                anmVm = &(this->vm[97]);
+                for (cur = 0; cur < 0x19; cur += 1, anmVm++)
+                {
+                    anmVm->pendingInterrupt = 0x11;
+                }
+                anmVm = &this->vm[99 + this->chosenReplay];
+                anmVm->pendingInterrupt = 0x10;
+                this->stateTimer = 0;
+                this->cursor = 0;
+                g_SoundPlayer.PlaySoundByIdx(10, 0);
+                this->currentReplay = (ReplayData *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
+                ValidateReplayData(this->currentReplay, g_LastFileSize);
+                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore); cur++)
+                {
+                    if (this->currentReplay->stageScore[cur] != NULL)
+                    {
+                        this->currentReplay->stageScore[cur] =
+                            (StageReplayData *)((u32)this->currentReplay + (u32)this->currentReplay->stageScore[cur]);
+                    }
+                }
+
+                do
+                {
+                    // FIXME: there's an additional jump
+                    if (this->replayFileData[this->chosenReplay].stageScore[this->cursor])
+                        goto leaveDo;
+                    this->cursor = this->cursor + 1;
+                } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore));
+                return ZUN_SUCCESS;
+            }
+        }
+    leaveDo:
+        if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
+        {
+            this->gameState = STATE_REPLAY_UNLOAD;
+            this->stateTimer = 0;
+            for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur++)
+            {
+                this->vm[cur].pendingInterrupt = 4;
+            }
+            g_SoundPlayer.PlaySoundByIdx(0xb, 0);
+            this->cursor = 0;
+            break;
+        }
+        break;
+    case STATE_REPLAY_SELECT:
+        if (this->stateTimer < 0x28)
+        {
+            break;
+        }
+        cur = MoveCursor(this, 7);
+        if (cur < 0)
+        {
+            while (this->replayFileData[this->chosenReplay].stageScore[this->cursor] == NULL)
+            {
+                this->cursor--;
+                if (this->cursor < 0)
+                {
+                    this->cursor = 6;
+                }
+            }
+        }
+        else if (cur > 0)
+        {
+            while (this->replayFileData[this->chosenReplay].stageScore[this->cursor] == NULL)
+            {
+                this->cursor++;
+                if (this->cursor >= 7)
+                {
+                    this->cursor = 0;
+                }
+            }
+        }
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageScore)
+        {
+            g_GameManager.unk_1c = 1;
+            g_Supervisor.framerateMultiplier = 1.0;
+            strcpy(g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
+            g_GameManager.difficulty = (Difficulty)this->currentReplay->difficulty;
+            g_GameManager.character = this->currentReplay->shottypeChara / 2;
+            g_GameManager.shotType = this->currentReplay->shottypeChara % 2;
+            cur = 0;
+            while (this->currentReplay->stageScore[cur] == NULL)
+            {
+                cur++;
+            }
+            g_GameManager.livesRemaining = this->currentReplay->stageScore[cur]->livesRemaining;
+            g_GameManager.bombsRemaining = this->currentReplay->stageScore[cur]->bombsRemaining;
+            ReplayData *uh = this->currentReplay;
+            free(uh);
+            this->currentReplay = NULL;
+            g_GameManager.currentStage = this->cursor;
+            g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER;
+            return 1;
+        }
+        if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
+        {
+            ReplayData *uh2 = this->currentReplay;
+            free(uh2);
+            this->currentReplay = NULL;
+            this->gameState = STATE_REPLAY_ANIM;
+            this->stateTimer = 0;
+            for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur++)
+            {
+                this->vm[cur].pendingInterrupt = 4;
+            }
+            g_SoundPlayer.PlaySoundByIdx(0xb, 0);
+            this->gameState = STATE_REPLAY_ANIM;
+            anmVm = this->vm;
+            for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur += 1, anmVm++)
+            {
+                anmVm->pendingInterrupt = 0xf;
+            }
+            this->cursor = this->chosenReplay;
+        }
+    }
+    return 0;
+}
 
 #pragma optimize("s", on)
 #pragma var_order(scoredat, i, anmmgr)

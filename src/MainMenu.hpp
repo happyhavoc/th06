@@ -4,6 +4,7 @@
 
 #include "AnmVm.hpp"
 #include "Chain.hpp"
+#include "ReplayData.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
@@ -36,6 +37,9 @@ struct MainMenu
     static i32 MoveCursor(MainMenu *menu, i32 menuLength);
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
+
+    i32 ReplayHandling();
+    static ZunResult LoadReplayMenu(MainMenu *menu);
 
     static ZunResult RegisterChain(u32 isDemo);
     static ChainCallbackResult OnUpdate(MainMenu *s);
@@ -70,8 +74,8 @@ struct MainMenu
     ChainElem *chainDraw;
     char replayFilePaths[60][512];
     char replayFileName[60][8];
-    i8 replayFileData[60][0x50];
-    i8 *currentReplay;
+    ReplayData replayFileData[60];
+    ReplayData *currentReplay;
     i32 *unk_10ee0;
     f32 *unk_10ee4;
     i8 padding5[64];

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <d3d8.h>
 #include <d3dx8math.h>
 
 #include "ResultScreen.hpp"

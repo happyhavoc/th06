@@ -69,6 +69,7 @@ MainMenu::AddedCallback
 MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
+MainMenu::ReplayHandling
 MainMenu::DrawMenuItem
 MainMenu::RegisterChain
 MidiDevice::MidiDevice
