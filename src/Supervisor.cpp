@@ -616,7 +616,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
         g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
 
         supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
-        supervisor->controller->EnumObjects(controllerCallback, NULL, DIDFT_ALL);
+        supervisor->controller->EnumObjects(ControllerCallback, NULL, DIDFT_ALL);
 
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_PAD_FOUND);
     }
@@ -956,13 +956,14 @@ u16 GetInput(void)
 }
 
 #pragma optimize("s", on)
-#pragma var_order(diprange, result)
-BOOL CALLBACK controllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
+#pragma var_order(diprange, pvRefBackup)
+BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
 
 {
-    HRESULT result;
+    LPVOID pvRefBackup;
     DIPROPRANGE diprange;
-    result = (HRESULT)pvRef; // ehm, ok?
+    pvRefBackup = pvRef;
+
     if (lpddoi->dwType & DIDFT_AXIS)
     {
         diprange.diph.dwSize = sizeof(diprange);

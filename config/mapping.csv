@@ -270,7 +270,7 @@ MidiOutput::FUN_00423260,0x423260,0xce,__thiscall,void,MidiOutput*,i32
 AnmManager::~AnmManager,0x423330,0xb,__thiscall,void,AnmManager*
 Supervisor::OnUpdate,0x42333b,0x44a,__stdcall,ChainCallbackResult,Supervisor*
 Supervisor::OnDraw,0x423785,0x7c,__stdcall,ChainCallbackResult,Supervisor*
-controllerCallback,0x423801,0x6a,__stdcall,u8,DIDEVICEOBJECTINSTANCEA*
+ControllerCallback,0x423801,0x6a,__stdcall,u8,DIDEVICEOBJECTINSTANCEA*
 Supervisor::RegisterChain,0x42386b,0x9f,__stdcall,ZunResult
 Supervisor::AddedCallback,0x42390a,0x20a,__stdcall,ZunResult,Supervisor*
 Supervisor::SetupDInput,0x423b14,0x28c,__stdcall,ZunResult,Supervisor*

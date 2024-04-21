@@ -63,7 +63,7 @@ WinMain
 CheckForRunningGameInstance
 DebugPrint
 DebugPrint2
-controllerCallback
+ControllerCallback
 EnumGameControllersCb
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
