@@ -97,6 +97,8 @@ struct Supervisor
 
     void PlayAudio(char *path);
 
+    ZunResult SetupMidiPlayback(char *path);
+
     static void CreateBackBuffer();
 
     static ZunResult SetupDInput(Supervisor *s);

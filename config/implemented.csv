@@ -65,6 +65,7 @@ DebugPrint
 DebugPrint2
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
+MainMenu::AddedCallback
 MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
