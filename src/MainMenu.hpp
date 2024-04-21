@@ -80,7 +80,7 @@ struct MainMenu
     f32 *unk_10ee4;
     i8 padding5[64];
     u32 unk_10f28;
-    u32 frameCountForRefreshRateCalc;
+    i32 frameCountForRefreshRateCalc;
     u32 lastFrameTime;
 };
 C_ASSERT(sizeof(MainMenu) == 0x10f34);
