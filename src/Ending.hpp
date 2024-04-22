@@ -1,8 +1,8 @@
 #pragma once
 
-#include "ZunResult.hpp"
-#include "Chain.hpp"
 #include "AnmVm.hpp"
+#include "Chain.hpp"
+#include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 
 struct Ending
@@ -10,17 +10,17 @@ struct Ending
     Ending();
     static ZunResult RegisterChain();
     int DeletedCallback();
-    
+
     u8 unk_00;
     u8 unk_01;
     u8 unk_02;
     u8 unk_03;
-    ChainElem * chainElem;
+    ChainElem *chainElem;
     f32 unk1;
     i32 unk2;
     i32 unk3;
     AnmVm anmVm[16];
-    char* endFileData;
+    char *endFileData;
     u8 unk_dependent_on_clrd;
     u8 unk_1119;
     u8 unk_111a;

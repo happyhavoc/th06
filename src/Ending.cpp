@@ -2,12 +2,13 @@
 #include "AnmManager.hpp"
 #include "Supervisor.hpp"
 
-i32 Ending::DeletedCallback(void) {
-    AnmManager* anmManager;
+i32 Ending::DeletedCallback(void)
+{
+    AnmManager *anmManager;
     g_AnmManager->ReleaseAnm(44);
     g_AnmManager->ReleaseAnm(45);
     g_AnmManager->ReleaseAnm(46);
-    
+
     g_Supervisor.curState = 7;
     g_AnmManager->ReleaseSurface(0);
     anmManager = g_AnmManager;
