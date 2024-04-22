@@ -63,6 +63,8 @@ WinMain
 CheckForRunningGameInstance
 DebugPrint
 DebugPrint2
+ControllerCallback
+EnumGameControllersCb
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MainMenu::AddedCallback
@@ -87,6 +89,7 @@ Supervisor::DrawFpsCounter
 Supervisor::OnUpdate
 Supervisor::OnDraw
 Supervisor::TickTimer
+Supervisor::SetupDInput
 InitD3dDevice
 InitD3dRendering
 Clear

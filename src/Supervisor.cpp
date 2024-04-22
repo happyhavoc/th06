@@ -538,6 +538,93 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 }
 
 #pragma optimize("s", on)
+ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
+{
+    HINSTANCE hInst;
+
+    hInst = (HINSTANCE)GetWindowLongA(supervisor->hwndGameWindow, GWL_HINSTANCE);
+    if (supervisor->cfg.opts >> GCOS_NO_DIRECTINPUT_PAD & 1)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8A, (LPVOID *)&supervisor->dinputIface, NULL) <
+        0)
+    {
+        supervisor->dinputIface = NULL;
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    if (supervisor->dinputIface->CreateDevice(GUID_SysKeyboard, &supervisor->keyboard, NULL) < 0)
+    {
+        if (supervisor->dinputIface)
+        {
+            supervisor->dinputIface->Release();
+            supervisor->dinputIface = NULL;
+        }
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    if (supervisor->keyboard->SetDataFormat(&c_dfDIKeyboard) < 0)
+    {
+        if (supervisor->keyboard)
+        {
+            supervisor->keyboard->Release();
+            supervisor->keyboard = NULL;
+        }
+
+        if (supervisor->dinputIface)
+        {
+            supervisor->dinputIface->Release();
+            supervisor->dinputIface = NULL;
+        }
+
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    if (supervisor->keyboard->SetCooperativeLevel(supervisor->hwndGameWindow,
+                                                  DISCL_NONEXCLUSIVE | DISCL_FOREGROUND | DISCL_NOWINKEY) < 0)
+    {
+        if (supervisor->keyboard)
+        {
+            supervisor->keyboard->Release();
+            supervisor->keyboard = NULL;
+        }
+
+        if (supervisor->dinputIface)
+        {
+            supervisor->dinputIface->Release();
+            supervisor->dinputIface = NULL;
+        }
+
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    supervisor->keyboard->Acquire();
+    GameErrorContextLog(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
+
+    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumGameControllersCb, NULL, DIEDFL_ATTACHEDONLY);
+    if (supervisor->controller)
+    {
+        supervisor->controller->SetDataFormat(&c_dfDIJoystick);
+        supervisor->controller->SetCooperativeLevel(supervisor->hwndGameWindow, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+
+        g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
+
+        supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
+        supervisor->controller->EnumObjects(ControllerCallback, NULL, DIDFT_ALL);
+
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_PAD_FOUND);
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 void Supervisor::TickTimer(i32 *frames, f32 *subframes)
 {
     if (this->framerateMultiplier <= 0.99f)
@@ -867,3 +954,48 @@ u16 GetInput(void)
 
     return GetControllerInput(buttons);
 }
+
+#pragma optimize("s", on)
+#pragma var_order(diprange, pvRefBackup)
+BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
+
+{
+    LPVOID pvRefBackup;
+    DIPROPRANGE diprange;
+    pvRefBackup = pvRef;
+
+    if (lpddoi->dwType & DIDFT_AXIS)
+    {
+        diprange.diph.dwSize = sizeof(diprange);
+        diprange.diph.dwHeaderSize = sizeof(diprange.diph);
+        diprange.diph.dwHow = DIPH_BYID;
+        diprange.diph.dwObj = lpddoi->dwType;
+        diprange.lMin = -1000;
+        diprange.lMax = 1000;
+
+        if (g_Supervisor.controller->SetProperty(DIPROP_RANGE, &diprange.diph) < 0)
+        {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
+
+{
+    HRESULT result;
+
+    if (!g_Supervisor.controller)
+    {
+        result = g_Supervisor.dinputIface->CreateDevice(pdidInstance->guidInstance, &g_Supervisor.controller, NULL);
+        if (result < 0)
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+#pragma optimize("", on)

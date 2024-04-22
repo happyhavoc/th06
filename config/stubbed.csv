@@ -26,7 +26,6 @@ ResultScreen::ParsePscr
 ResultScreen::ReleaseScoreDat
 Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
-Supervisor::SetupDInput
 Supervisor::ReleasePbg3
 Supervisor::PlayAudio
 Supervisor::SetupMidiPlayback

@@ -43,6 +43,11 @@
 #define TH_JP_ERR_LAUNCH_WINDOWED "ウィンドウモードで起動します\n"
 #define TH_JP_ERR_FORCE_REFERENCE_RASTERIZER "リファレンスラスタライザを強制しますn"
 #define TH_JP_ERR_DO_NOT_USE_DIRECTINPUT "パッド、キーボードの入力に DirectInput を使用しません\n"
+#define TH_JP_ERR_DIRECTINPUT_NOT_AVAILABLE "DirectInput が使用できません\n"
+#define TH_JP_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE "DirectInput SetDataFormat が使用できません\n"
+#define TH_JP_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE "DirectInput SetCooperativeLevel が使用できません\n"
+#define TH_JP_ERR_DIRECTINPUT_INITIALIZED "DirectInput は正常に初期化されました\n"
+#define TH_JP_ERR_PAD_FOUND "有効なパッドを発見しました\n"
 #define TH_JP_ERR_FILE_CANNOT_BE_EXPORTED "ファイルが書き出せません %s\n"
 #define TH_JP_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL                                                                \
     "フォルダが書込み禁止属性になっているか、ディスクがいっぱいいっぱいになってませんか？\n"
@@ -97,6 +102,11 @@
 #define TH_EN_ERR_LAUNCH_WINDOWED "Launch in windowed mode.\n"
 #define TH_EN_ERR_FORCE_REFERENCE_RASTERIZER "Force reference rasterizer.\n"
 #define TH_EN_ERR_DO_NOT_USE_DIRECTINPUT "Do not use DirectInput for pad and keyboard input.\n"
+#define TH_EN_ERR_DIRECTINPUT_NOT_AVAILABLE "DirectInput is not available.\n"
+#define TH_EN_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE "DirectInput SetDataFormat is not available.\n"
+#define TH_EN_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE "DirectInput SetCooperativeLevel is not available.\n"
+#define TH_EN_ERR_DIRECTINPUT_INITIALIZED "DirectInput was successfully initialized.\n"
+#define TH_EN_ERR_PAD_FOUND "Found a valid pad.\n"
 #define TH_EN_ERR_FILE_CANNOT_BE_EXPORTED "File cannot be exported %s.\n"
 #define TH_EN_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL "Folder has write protect attribute or disk full?\n"
 #define TH_EN_ERR_ASCIIMANAGER_INIT_FAILED "error: AsciiManager initialization failed\n"
@@ -149,6 +159,11 @@
 #define TH_ERR_LAUNCH_WINDOWED TH_MAKE_LANG_STR(TH_LANG, _ERR_LAUNCH_WINDOWED)
 #define TH_ERR_FORCE_REFERENCE_RASTERIZER TH_MAKE_LANG_STR(TH_LANG, _ERR_FORCE_REFERENCE_RASTERIZER)
 #define TH_ERR_DO_NOT_USE_DIRECTINPUT TH_MAKE_LANG_STR(TH_LANG, _ERR_DO_NOT_USE_DIRECTINPUT)
+#define TH_ERR_DIRECTINPUT_NOT_AVAILABLE TH_MAKE_LANG_STR(TH_LANG, _ERR_DIRECTINPUT_NOT_AVAILABLE)
+#define TH_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE TH_MAKE_LANG_STR(TH_LANG, _ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE)
+#define TH_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE TH_MAKE_LANG_STR(TH_LANG, _ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE)
+#define TH_ERR_DIRECTINPUT_INITIALIZED TH_MAKE_LANG_STR(TH_LANG, _ERR_DIRECTINPUT_INITIALIZED)
+#define TH_ERR_PAD_FOUND TH_MAKE_LANG_STR(TH_LANG, _ERR_PAD_FOUND)
 #define TH_ERR_FILE_CANNOT_BE_EXPORTED TH_MAKE_LANG_STR(TH_LANG, _ERR_FILE_CANNOT_BE_EXPORTED)
 #define TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL                                                                   \
     TH_MAKE_LANG_STR(TH_LANG, _ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL)
