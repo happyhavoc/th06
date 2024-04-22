@@ -7,3 +7,5 @@ scripts/dls
 scripts/prefix
 build.ninja
 __pycache__
+.vscode
+scripts/msvc70/

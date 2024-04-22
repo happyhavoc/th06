@@ -495,7 +495,7 @@ void Supervisor::DrawFpsCounter()
                 g_Supervisor.unk1b4 = framerate * .5f + g_Supervisor.unk1b4;
         }
     }
-    if (g_Supervisor.unk19c == 0)
+    if (g_Supervisor.isInEnding == 0)
     {
         fpsCounterPos.x = 512.0;
         fpsCounterPos.y = 464.0;

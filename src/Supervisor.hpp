@@ -138,7 +138,7 @@ struct Supervisor
 
     i32 unk194;
     i32 unk198;
-    i32 unk19c;
+    i32 isInEnding;
 
     i32 vsyncEnabled;
     i32 lastFrameTime;

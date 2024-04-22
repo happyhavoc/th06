@@ -159,3 +159,4 @@ FileAbstraction::~FileAbstraction
 Rng::GetRandomU16
 Rng::GetRandomU32
 Rng::GetRandomF32ZeroToOne
+Ending::DeletedCallback
