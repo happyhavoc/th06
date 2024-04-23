@@ -53,8 +53,8 @@ struct GameManager
     i8 livesRemaining;
     i8 bombsRemaining;
     i8 unk_181c;
-    i8 character;
-    i8 shotType;
+    u8 character;
+    u8 shotType;
     bool isInGameMenu;
     bool isInRetryMenu;
     bool isInMenu;
@@ -70,7 +70,7 @@ struct GameManager
     i32 unk_1a2c;
     u32 unk_1a30;
     i32 currentStage;
-    u32 unk_1a38;
+    u32 menuCursorBackup;
     D3DXVECTOR2 arcadeRegionTopLeftPos;
     D3DXVECTOR2 arcadeRegionSize;
     f32 unk_1a4c;

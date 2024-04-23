@@ -73,6 +73,7 @@ MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
 MainMenu::DrawMenuItem
+MainMenu::OnUpdate
 MainMenu::RegisterChain
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice

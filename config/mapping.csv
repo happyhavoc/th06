@@ -195,7 +195,7 @@ GetJoystickCaps,0x41cf60,0x55,__stdcall,u16
 GetControllerInput,0x41cfc0,0x5c0,__stdcall,u16,u16
 SetButtonFromDirectInputJoystate,0x41d580,0x7f,__stdcall,unsigned long,u16*,i16,unsigned long,uchar*
 SetButtonFromControllerInputs,0x41d600,0x75,__stdcall,unsigned long,u16*,i16,unsigned long,unsigned long
-joystickcheck_only_called_in_keyconfig,0x41d680,0x19e,unknown,u8
+GetControllerState,0x41d680,0x19e,unknown,u8*
 GetInput,0x41d820,0x894,__stdcall,u16
 ResetKeyboard,0x41e0c0,0x85,default,void
 FUN_0041e150,0x41e150,0xc0,unknown,u8,u32,u32,u32
@@ -289,7 +289,7 @@ readMidiFile,0x424aac,0x38,unknown,u8,u32,u32
 PlayMidiFile,0x424ae4,0x4b,__stdcall,i32,i32
 Supervisor::SetupMidiPlayback,0x424b2f,0x2e,__thiscall,ZunResult,Supervisor*,char*
 Supervisor::PlayAudio,0x424b5d,0x1db,__thiscall,void,Supervisor*,char*
-Supervisor::FUN_00424d38,0x424d38,0x4a,__thiscall,u32,Supervisor*
+Supervisor::StopAudio,0x424d38,0x4a,__thiscall,ZunResult,Supervisor*
 Supervisor::fadeOutMusic,0x424d82,0xbf,__thiscall,u32,Supervisor*,f32
 SoundPlayer::FadeOut,0x424e41,0x4e,__thiscall,void,SoundPlayer*,f32
 MusicRoom::FUN_00424e8f,0x424e8f,0x1e,__thiscall,u32,MusicRoom*
@@ -421,19 +421,19 @@ AnmManager::TakeScreenshot,0x435670,0xed,__thiscall,void,AnmManager*,i32,i32,i32
 MainMenu::MainMenu,0x43575d,0x42,__thiscall,void,MainMenu*
 MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,ChainCallbackResult,MainMenu*
 MainMenu::MoveCursor,0x43753c,0x136,__stdcall,i32,MainMenu*,i32
-MainMenu::select_related,0x437672,0x131,__stdcall,void,MainMenu*,i16,u16,i32
+MainMenu::SelectRelated,0x437672,0x131,__stdcall,void,MainMenu*,u16,u16,u32
 MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,void,AnmVm*,i32,i32,unsigned long,unsigned long,i32
 MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
-MainMenu::FUN_004379e4,0x4379e4,0x15d,__thiscall,i32,MainMenu*
+MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunResult,MainMenu*
 MainMenu::DrawStartMenu,0x437b41,0x68b,__thiscall,ZunResult,MainMenu*
 MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,i32,MainMenu*
 MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,u32,MainMenu*
 MainMenu::setSavedCursorPosition,0x438ef8,0x23f,__thiscall,void,MainMenu*,AnmVm*,i32,i32,i32
-MainMenu::FUN_00439137,0x439137,0x82e,__thiscall,u32,MainMenu*
+MainMenu::DrawOptionsMenu,0x439137,0x82e,__thiscall,u32,MainMenu*
 MainMenu::ChoosePracticeLevel,0x439965,0x171,__thiscall,u32,MainMenu*
 MainMenu::OnDraw,0x439ad6,0x2ca,unknown,ChainCallbackResult,MainMenu*
 MainMenu::LoadTitleAnm,0x439da0,0x1e8,__stdcall,u32,MainMenu*
-MainMenu::loadMenu,0x439f88,0x264,default,ZunResult,u32
+MainMenu::LoadDiffCharSelect,0x439f88,0x264,default,ZunResult,MainMenu*
 MainMenu::LoadReplayMenu,0x43a1ec,0x14c,__stdcall,ZunResult,MainMenu*
 MainMenu::RegisterChain,0x43a338,0x12c,unknown,ZunResult,u32
 MainMenu::AddedCallback,0x43a464,0x1f5,unknown,ZunResult,MainMenu*
