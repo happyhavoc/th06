@@ -16,8 +16,8 @@ struct Gui
     i32 eclSpellcardRelated;
     i32 unk_1c;
     bool bossPresent;
-    float bossHealthBar1;
-    float bossHealthBar2;
+    f32 bossHealthBar1;
+    f32 bossHealthBar2;
 };
 C_ASSERT(sizeof(Gui) == 0x2c);
 
