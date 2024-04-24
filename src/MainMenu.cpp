@@ -18,10 +18,6 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-#define WAS_PRESSED(key) (((g_CurFrameInput & (key)) != 0) && (g_CurFrameInput & (key)) != (g_LastFrameInput & (key)))
-#define WAS_PRESSED_WEIRD(key)                                                                                         \
-    (WAS_PRESSED(key) || (((g_CurFrameInput & (key)) != 0) && (g_IsEigthFrameOfHeldInput != 0)))
-
 /* COLORS */
 /* we can move them to their own header if referenced somewhere else :) */
 #define COLOR_BLACK 0xff000000
@@ -682,15 +678,15 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
         if (g_Supervisor.startupTimeBeforeMenuMusic == 0)
         {
             g_Supervisor.PlayAudio("bgm/th06_01.mid");
-            ScreenEffect::RegisterChain(0, 0x78, 0xffffff, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_0, 0x78, 0xffffff, 0, 0);
         }
         else
         {
-            ScreenEffect::RegisterChain(0, 200, 0xffffff, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_0, 200, 0xffffff, 0, 0);
         }
     }
     g_GameManager.demoMode = 0;
-    g_GameManager.unk_1828 = 0;
+    g_GameManager.demoFrames = 0;
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
@@ -792,7 +788,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         load_menu_rpy:
             g_GameManager.unk_1c = 1;
             g_GameManager.demoMode = 1;
-            g_GameManager.unk_1828 = 0;
+            g_GameManager.demoFrames = 0;
             g_Supervisor.framerateMultiplier = 1.0;
             strcpy(g_GameManager.replayFile, "data/demo/demo00.rpy");
             g_GameManager.currentStage = 3;

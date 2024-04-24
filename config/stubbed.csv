@@ -48,5 +48,6 @@ MainMenu::WeirdSecondInputCheck
 ReplayDoStuff
 ValidateReplayData
 GetControllerState
+SetupCamera
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive
