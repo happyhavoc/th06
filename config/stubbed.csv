@@ -1,5 +1,6 @@
 AnmManager::ReleaseAnm
 AnmManager::ExecuteScript
+AnmManager::Draw
 AnmManager::TakeScreenshotIfRequested
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
@@ -38,8 +39,9 @@ MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 ScreenEffect::RegisterChain
 MainMenu::MoveCursor
-MainMenu::OnDraw
 MainMenu::DeletedCallback
+MainMenu::ChoosePracticeLevel
+MainMenu::DrawReplayMenu
 MainMenu::LoadReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
@@ -47,6 +49,7 @@ MainMenu::DrawOptionsMenu
 MainMenu::WeirdSecondInputCheck
 ReplayDoStuff
 ValidateReplayData
+DrawSquare
 GetControllerState
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

@@ -70,7 +70,7 @@ ZunResult MainMenu::BeginStartup()
         vector3Ptr.x = 0.0;
         vector3Ptr.y = 0.0;
         vector3Ptr.z = 0.0;
-        this->vm[i].pos2 = vector3Ptr;
+        this->vm[i].posOffset = vector3Ptr;
     }
     this->gameState = STATE_PRE_INPUT;
     return ZUN_SUCCESS;
@@ -175,10 +175,10 @@ ZunResult MainMenu::DrawStartMenu(void)
                     g_Supervisor.cfg.defaultDifficulty = NORMAL;
                 }
                 this->stateTimer = 0;
-                this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = COLOR_BLACK;
-                this->unk_820c = 0;
-                this->isActive = 60;
+                this->minimumOpacity = 0x40000000;
+                this->menuTextColor = COLOR_BLACK;
+                this->numFramesSinceActive = 0;
+                this->framesActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 1:
@@ -193,10 +193,10 @@ ZunResult MainMenu::DrawStartMenu(void)
                     g_GameManager.unk_1823 = 0;
                     g_GameManager.difficulty = EXTRA;
                     this->stateTimer = 0;
-                    this->unk_81fc = 0x40000000;
-                    this->maybeMenuTextColor = COLOR_BLACK;
-                    this->unk_820c = 0;
-                    this->isActive = 60;
+                    this->minimumOpacity = 0x40000000;
+                    this->menuTextColor = COLOR_BLACK;
+                    this->numFramesSinceActive = 0;
+                    this->framesActive = 60;
                     g_SoundPlayer.PlaySoundByIdx(10, 0);
                 }
                 else
@@ -220,10 +220,10 @@ ZunResult MainMenu::DrawStartMenu(void)
                     g_Supervisor.cfg.defaultDifficulty = NORMAL;
                 }
                 this->stateTimer = 0;
-                this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = COLOR_BLACK;
-                this->unk_820c = 0;
-                this->isActive = 60;
+                this->minimumOpacity = 0x40000000;
+                this->menuTextColor = COLOR_BLACK;
+                this->numFramesSinceActive = 0;
+                this->framesActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 3:
@@ -234,10 +234,10 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->gameState = STATE_REPLAY_LOAD;
                 g_GameManager.unk_1823 = 0;
                 this->stateTimer = 0;
-                this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = COLOR_BLACK;
-                this->unk_820c = 0;
-                this->isActive = 60;
+                this->minimumOpacity = 0x40000000;
+                this->menuTextColor = COLOR_BLACK;
+                this->numFramesSinceActive = 0;
+                this->framesActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 4:
@@ -247,10 +247,10 @@ ZunResult MainMenu::DrawStartMenu(void)
                 }
                 this->gameState = STATE_SCORE;
                 this->stateTimer = 0;
-                this->unk_81fc = 0x40000000;
-                this->maybeMenuTextColor = COLOR_BLACK;
-                this->unk_820c = 0;
-                this->isActive = 60;
+                this->minimumOpacity = 0x40000000;
+                this->menuTextColor = COLOR_BLACK;
+                this->numFramesSinceActive = 0;
+                this->framesActive = 60;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 5:
@@ -330,7 +330,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         currentItemPos.x = -4.0f;
         currentItemPos.y = -4.0f;
         currentItemPos.z = 0.0f;
-        vm->pos2 = currentItemPos;
+        vm->posOffset = currentItemPos;
     }
     else
     {
@@ -349,7 +349,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         otherItemPos.x = 0.0f;
         otherItemPos.y = 0.0f;
         otherItemPos.z = 0.0f;
-        vm->pos2 = otherItemPos;
+        vm->posOffset = otherItemPos;
     }
 }
 #pragma optimize("", on)
@@ -459,9 +459,9 @@ i32 MainMenu::ReplayHandling()
                 FindClose(replayFileHandle);
                 _chdir("../");
                 this->replayFilesNum = replayFileIdx;
-                this->unk_81fc = 0;
-                this->wasActive = this->isActive;
-                this->isActive = 0;
+                this->minimumOpacity = 0;
+                this->framesInactive = this->framesActive;
+                this->framesActive = 0;
                 this->gameState = STATE_REPLAY_ANIM;
                 anmVm = this->vm;
                 for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur++, anmVm++)
@@ -630,7 +630,7 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     {
         anmmgr->scripts[i + 0x100] = NULL;
     }
-    m->unk_81e4 = 0;
+    m->minimumOpacity = 0;
 
     switch (g_Supervisor.wantedState2)
     {
@@ -667,10 +667,10 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
         m->color1 = 0x80ffffff;
         m->color2 = 0xffffffff;
     }
-    m->unk_81fc = 0;
-    m->maybeMenuTextColor = 0x40000000;
-    m->unk_820c = 0;
-    m->isActive = 0;
+    m->minimumOpacity = 0;
+    m->menuTextColor = 0x40000000;
+    m->numFramesSinceActive = 0;
+    m->framesActive = 0;
     m->unk_10f28 = 0x10;
     m->currentReplay = NULL;
     scoredat = ResultScreen::OpenScore("score.dat");
@@ -946,9 +946,9 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
             }
             menu->gameState = STATE_DIFFICULTY_SELECT;
-            menu->unk_81fc = 0;
-            menu->wasActive = menu->isActive;
-            menu->isActive = 0;
+            menu->minimumOpacity = 0;
+            menu->framesInactive = menu->framesActive;
+            menu->framesActive = 0;
             if (g_GameManager.difficulty < 4)
             {
                 for (i = 0; i < ARRAY_SIZE_SIGNED(menu->vm); i++)
@@ -997,7 +997,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     pos1.x = 0.0;
                     pos1.y = 0.0;
                     pos1.z = 0.0;
-                    memcpy(vmList->pos2, &pos1, sizeof(D3DXVECTOR3));
+                    memcpy(vmList->posOffset, &pos1, sizeof(D3DXVECTOR3));
                     vmList->alphaInterpEndTime = 0;
                 }
                 else
@@ -1013,7 +1013,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     pos2.x = -6.0f;
                     pos2.y = -6.0f;
                     pos2.z = 0.0;
-                    memcpy(vmList->pos2, &pos2, sizeof(D3DXVECTOR3));
+                    memcpy(vmList->posOffset, &pos2, sizeof(D3DXVECTOR3));
                 }
             }
             vmList->flags &= ~(AnmVmFlags_1);
@@ -1037,7 +1037,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 pos3.x = -6.0f;
                 pos3.y = -6.0f;
                 pos3.z = 0.0;
-                memcpy(vmList->pos2, &pos3, sizeof(D3DXVECTOR3));
+                memcpy(vmList->posOffset, &pos3, sizeof(D3DXVECTOR3));
             }
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
@@ -1287,7 +1287,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 pos4.x = 0.0;
                 pos4.y = 0.0;
                 pos4.z = 0.0;
-                memcpy(&vmList->pos2, &pos4, sizeof(D3DXVECTOR3));
+                memcpy(&vmList->posOffset, &pos4, sizeof(D3DXVECTOR3));
             }
             else
             {
@@ -1302,7 +1302,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 pos5.x = -6.f;
                 pos5.y = -6.f;
                 pos5.z = 0.0;
-                memcpy(&vmList->pos2, &pos5, sizeof(D3DXVECTOR3));
+                memcpy(&vmList->posOffset, &pos5, sizeof(D3DXVECTOR3));
             }
         }
         if (30 > menu->stateTimer)
@@ -1546,5 +1546,95 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
+#pragma optimize("", on)
+
+#pragma var_order(targetOpacity, window, vmIdx, curVm, posBackup, mgr, shouldDraw, offset, pos)
+#pragma optimize("s", on)
+ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
+{
+    D3DXVECTOR3 posBackup;
+    D3DXVECTOR3 *pos;
+    D3DXVECTOR3 *offset;
+    BOOL shouldDraw;
+    AnmVm *curVm;
+    i32 vmIdx;
+    ZunRect window;
+    i32 targetOpacity;
+    AnmManager *mgr;
+
+    curVm = menu->vm;
+    window.left = 0.0;
+    window.top = 0.0;
+    window.right = 640.0;
+    window.bottom = 480.0;
+    if (menu->gameState == STATE_STARTUP)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    mgr = g_AnmManager;
+    mgr->currentTexture = NULL;
+    g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
+    if (menu->framesActive != 0)
+    {
+        // This is confusing. framesActive/framesInactive appear to be unsigned,
+        // due to how they get loaded. But this comparison is signed somehow.
+        // Why?
+        if (menu->numFramesSinceActive < (i32)menu->framesActive)
+        {
+            menu->numFramesSinceActive += 1;
+        }
+        targetOpacity = ((menu->menuTextColor & 0xff000000) >> 24) - ((menu->minimumOpacity & 0xff000000) >> 24);
+        DrawSquare(&window, ((targetOpacity * menu->numFramesSinceActive) / menu->framesActive +
+                             ((menu->minimumOpacity & 0xff000000) >> 24)) *
+                                    0x1000000 |
+                                menu->menuTextColor & 0xffffff);
+    }
+    else if (menu->numFramesSinceActive != 0)
+    {
+        menu->numFramesSinceActive -= 1;
+        targetOpacity = ((menu->menuTextColor & 0xff000000) >> 24) - ((menu->minimumOpacity & 0xff000000) >> 24);
+        DrawSquare(&window, (((targetOpacity * menu->numFramesSinceActive) / menu->framesInactive +
+                              ((menu->minimumOpacity & 0xff000000) >> 24)) *
+                             0x1000000) |
+                                (menu->menuTextColor & 0xffffff));
+    }
+    for (vmIdx = 0; vmIdx < 98; vmIdx++, curVm++)
+    {
+        if (curVm->sprite == NULL)
+        {
+            shouldDraw = false;
+        }
+        else if (curVm->sprite->sourceFileIndex < 0)
+        {
+            shouldDraw = false;
+        }
+        else
+        {
+            shouldDraw = g_AnmManager->textures[curVm->sprite->sourceFileIndex] != NULL;
+        }
+        if (shouldDraw)
+        {
+            memcpy(posBackup, curVm->pos, sizeof(D3DXVECTOR3));
+            offset = &curVm->posOffset;
+            pos = &curVm->pos;
+            pos->x += offset->x;
+            pos->y += offset->y;
+            pos->z += offset->z;
+            g_AnmManager->Draw(curVm);
+            memcpy(curVm->pos, posBackup, sizeof(D3DXVECTOR3));
+        }
+    }
+    switch (menu->gameState)
+    {
+    case STATE_REPLAY_ANIM:
+    case STATE_REPLAY_UNLOAD:
+    case STATE_REPLAY_SELECT:
+        menu->DrawReplayMenu();
+    default:
+        menu->ChoosePracticeLevel();
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
 
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
