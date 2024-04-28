@@ -368,7 +368,7 @@ DebugPrint,0x42f6c4,0x5,__stdcall,void,char*
 Clear,0x42f6d0,0xb8,unknown,u8,u32
 SetViewport,0x42f790,0x66,default,void,unsigned long
 ScreenEffect::calcChainElementCallback,0x42f800,0xae,default,u32,ScreenEffect*
-DrawSquare,0x42f8b0,0x3c8,__stdcall,void,zRect*,unsigned long
+DrawSquare,0x42f8b0,0x3c8,__stdcall,void,ZunRect*,unsigned long
 calcChainElementCallback_3,0x42fc80,0xa8,unknown,u8,ScreenEffect*
 ScreenEffect::RegisterChain,0x42fd30,0x1ac,unknown,ZunResult,u32,u32,u32,u32,u32
 ScreenEffect::drawChainCallback,0x42fee0,0x88,unknown,u8,ScreenEffect*
@@ -404,7 +404,7 @@ AnmManager::SetRenderStateForVm,0x4324d0,0x256,__thiscall,void,AnmManager*,AnmVm
 AnmManager::FUN_00432730,0x432730,0x393,__thiscall,i32,AnmManager*,AnmVm*,i32
 AnmManager::FUN_00432ad0,0x432ad0,0x1af,__thiscall,u32,AnmManager*,AnmVm*
 AnmManager::FUN_00432c80,0x432c80,0x3c,__stdcall,void,void*,f32,f32,f32,f32,f32,f32
-AnmManager::FUN_00432cc0,0x432cc0,0x2d7,__thiscall,i32,AnmManager*,AnmVm*
+AnmManager::Draw,0x432cc0,0x2d7,__thiscall,ZunResult,AnmManager*,AnmVm*
 AnmManager::FUN_00432fa0,0x432fa0,0x1af,__thiscall,ZunResult,AnmManager*,AnmVm*
 AnmManager::FUN_00433150,0x433150,0x43e,__thiscall,i32,AnmManager*,AnmVm*
 AnmManager::FUN_00433590,0x433590,0x3cf,__thiscall,i32,AnmManager*,AnmVm*
@@ -427,10 +427,10 @@ MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
 MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunResult,MainMenu*
 MainMenu::DrawStartMenu,0x437b41,0x68b,__thiscall,ZunResult,MainMenu*
 MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,i32,MainMenu*
-MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,u32,MainMenu*
+MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,ZunResult,MainMenu*
 MainMenu::setSavedCursorPosition,0x438ef8,0x23f,__thiscall,void,MainMenu*,AnmVm*,i32,i32,i32
 MainMenu::DrawOptionsMenu,0x439137,0x82e,__thiscall,u32,MainMenu*
-MainMenu::ChoosePracticeLevel,0x439965,0x171,__thiscall,u32,MainMenu*
+MainMenu::ChoosePracticeLevel,0x439965,0x171,__thiscall,ZunResult,MainMenu*
 MainMenu::OnDraw,0x439ad6,0x2ca,unknown,ChainCallbackResult,MainMenu*
 MainMenu::LoadTitleAnm,0x439da0,0x1e8,__stdcall,u32,MainMenu*
 MainMenu::LoadDiffCharSelect,0x439f88,0x264,default,ZunResult,MainMenu*
