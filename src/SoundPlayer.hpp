@@ -9,6 +9,8 @@
 
 struct SoundPlayer
 {
+    SoundPlayer();
+
     void InitializeDSound(HWND window);
     ZunResult InitSoundBuffers();
     ZunResult Release(void);
@@ -20,14 +22,14 @@ struct SoundPlayer
     ZunResult LoadWav(char *path);
     ZunResult LoadPos(char *path);
 
-    CSoundManager manager;
+    LPDIRECTSOUND8 dsoundHdl;
     i32 unk4;
     LPDIRECTSOUNDBUFFER soundBuffers[128];
     LPDIRECTSOUNDBUFFER duplicateSoundBuffers[128];
     i32 unk408[128];
     LPDIRECTSOUNDBUFFER initSoundBuffer;
     HWND gameWindow;
-    CSoundManager *managerptr;
+    CSoundManager *manager;
     DWORD notifyThreadId;
     HANDLE notifyThreadHandle;
     i32 unk61c;
