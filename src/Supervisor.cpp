@@ -189,9 +189,9 @@ DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {
 
-    if (g_SoundPlayer.streamingSound != NULL)
+    if (g_SoundPlayer.backgroundMusic != NULL)
     {
-        g_SoundPlayer.streamingSound->UpdateFadeOut();
+        g_SoundPlayer.backgroundMusic->UpdateFadeOut();
     }
     g_LastFrameInput = g_CurFrameInput;
     g_CurFrameInput = GetInput();

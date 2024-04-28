@@ -30,12 +30,12 @@ struct SoundPlayer
     LPDIRECTSOUNDBUFFER initSoundBuffer;
     HWND gameWindow;
     CSoundManager *manager;
-    DWORD notifyThreadId;
-    HANDLE notifyThreadHandle;
+    DWORD backgroundMusicThreadId;
+    HANDLE backgroundMusicThreadHandle;
     i32 unk61c;
     u32 soundBuffersToPlay[3];
-    CStreamingSound *streamingSound;
-    HANDLE streamingSoundUpdateEvent;
+    CStreamingSound *backgroundMusic;
+    HANDLE backgroundMusicUpdateEvent;
     BOOL isLooping;
 };
 C_ASSERT(sizeof(SoundPlayer) == 0x638);
