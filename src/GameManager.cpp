@@ -75,8 +75,8 @@ void GameManager::DecreaseSubrank(i32 amount)
 #pragma optimize("s", on)
 ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
 {
-    u32 is_in_menu;
-    u32 score_increment;
+    u32 isInMenu;
+    u32 scoreIncrement;
 
     if (gameManager->demoMode)
     {
@@ -107,14 +107,14 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
 
     if (!gameManager->isInRetryMenu && !gameManager->isInGameMenu)
     {
-        is_in_menu = 1;
+        isInMenu = 1;
     }
     else
     {
-        is_in_menu = 0;
+        isInMenu = 0;
     }
 
-    gameManager->isInMenu = is_in_menu;
+    gameManager->isInMenu = isInMenu;
 
     g_Supervisor.viewport.X = gameManager->arcadeRegionTopLeftPos.x;
     g_Supervisor.viewport.Y = gameManager->arcadeRegionTopLeftPos.y;
@@ -133,63 +133,61 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
     {
         return CHAIN_CALLBACK_RESULT_BREAK;
     }
-    else
+
+    if (gameManager->score >= MAX_SCORE + 1)
     {
-        if (gameManager->score >= MAX_SCORE + 1)
-        {
-            gameManager->score = MAX_SCORE - 9;
-        }
-        if (gameManager->guiScore != gameManager->score)
-        {
-            if (gameManager->score < gameManager->guiScore)
-            {
-                gameManager->score = gameManager->guiScore;
-            }
-
-            score_increment = (gameManager->score - gameManager->guiScore) >> 5;
-            if (score_increment >= GUI_SCORE_STEP)
-            {
-                score_increment = GUI_SCORE_STEP;
-            }
-            else if (score_increment < 10)
-            {
-                score_increment = 10;
-            }
-            score_increment = score_increment - score_increment % 10;
-
-            if (gameManager->nextScoreIncrement < score_increment)
-            {
-                gameManager->nextScoreIncrement = score_increment;
-            }
-            if (gameManager->guiScore + gameManager->nextScoreIncrement > gameManager->score)
-            {
-                gameManager->nextScoreIncrement = gameManager->score - gameManager->guiScore;
-            }
-
-            gameManager->guiScore += gameManager->nextScoreIncrement;
-            if (gameManager->guiScore >= gameManager->score)
-            {
-                gameManager->nextScoreIncrement = 0;
-                gameManager->guiScore = gameManager->score;
-            }
-            if (gameManager->extraLives >= 0 && EXTRA_LIVES_SCORES[gameManager->extraLives] <= gameManager->guiScore)
-            {
-                if (gameManager->livesRemaining < MAX_LIVES)
-                {
-                    gameManager->livesRemaining++;
-                    g_SoundPlayer.PlaySoundByIdx(0x1c, 0);
-                }
-                g_Gui.flags = g_Gui.flags & 0xfffffffc | 2;
-                gameManager->extraLives++;
-                g_GameManager.IncreaseSubrank(200);
-            }
-            if (gameManager->highScore < gameManager->guiScore)
-            {
-                gameManager->highScore = gameManager->guiScore;
-            }
-        }
-        gameManager->gameFrames++;
-        return CHAIN_CALLBACK_RESULT_CONTINUE;
+        gameManager->score = MAX_SCORE - 9;
     }
+    if (gameManager->guiScore != gameManager->score)
+    {
+        if (gameManager->score < gameManager->guiScore)
+        {
+            gameManager->score = gameManager->guiScore;
+        }
+
+        scoreIncrement = (gameManager->score - gameManager->guiScore) >> 5;
+        if (scoreIncrement >= GUI_SCORE_STEP)
+        {
+            scoreIncrement = GUI_SCORE_STEP;
+        }
+        else if (scoreIncrement < 10)
+        {
+            scoreIncrement = 10;
+        }
+        scoreIncrement = scoreIncrement - scoreIncrement % 10;
+
+        if (gameManager->nextScoreIncrement < scoreIncrement)
+        {
+            gameManager->nextScoreIncrement = scoreIncrement;
+        }
+        if (gameManager->guiScore + gameManager->nextScoreIncrement > gameManager->score)
+        {
+            gameManager->nextScoreIncrement = gameManager->score - gameManager->guiScore;
+        }
+
+        gameManager->guiScore += gameManager->nextScoreIncrement;
+        if (gameManager->guiScore >= gameManager->score)
+        {
+            gameManager->nextScoreIncrement = 0;
+            gameManager->guiScore = gameManager->score;
+        }
+        if (gameManager->extraLives >= 0 && EXTRA_LIVES_SCORES[gameManager->extraLives] <= gameManager->guiScore)
+        {
+            if (gameManager->livesRemaining < MAX_LIVES)
+            {
+                gameManager->livesRemaining++;
+                g_SoundPlayer.PlaySoundByIdx(0x1c, 0);
+            }
+            g_Gui.flags = g_Gui.flags & 0xfffffffc | 2;
+            gameManager->extraLives++;
+            g_GameManager.IncreaseSubrank(200);
+        }
+        if (gameManager->highScore < gameManager->guiScore)
+        {
+            gameManager->highScore = gameManager->guiScore;
+        }
+    }
+    gameManager->gameFrames++;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)
