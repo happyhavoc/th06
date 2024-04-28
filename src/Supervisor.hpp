@@ -95,7 +95,7 @@ struct Supervisor
     static ZunResult DeletedCallback(Supervisor *s);
     static void DrawFpsCounter();
 
-    void PlayAudio(char *path);
+    ZunResult PlayAudio(char *path);
     ZunResult StopAudio();
 
     ZunResult SetupMidiPlayback(char *path);

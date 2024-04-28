@@ -999,3 +999,50 @@ BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pC
     return FALSE;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Supervisor::PlayAudio(char *path)
+{
+    char wavName[256];
+    char wavPos[256];
+    char *pathExtension;
+
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            MidiOutput *midiOutput = g_Supervisor.midiOutput;
+            midiOutput->StopPlayback();
+            midiOutput->LoadFile(path);
+            midiOutput->Play();
+        }
+    }
+    else if (g_Supervisor.cfg.musicMode == WAV)
+    {
+        strcpy(wavName, path);
+        strcpy(wavPos, path);
+        pathExtension = strrchr(wavName, L'.');
+        pathExtension[1] = 'w';
+        pathExtension[2] = 'a';
+        pathExtension[3] = 'v';
+        pathExtension = strrchr(wavPos, L'.');
+        pathExtension[1] = 'p';
+        pathExtension[2] = 'o';
+        pathExtension[3] = 's';
+        g_SoundPlayer.LoadWav(wavName);
+        if (g_SoundPlayer.LoadPos(wavPos) < ZUN_SUCCESS)
+        {
+            g_SoundPlayer.PlayBGM(FALSE);
+        }
+        else
+        {
+            g_SoundPlayer.PlayBGM(TRUE);
+        }
+    }
+    else
+    {
+        return ZUN_ERROR;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)

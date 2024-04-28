@@ -92,6 +92,7 @@ Supervisor::OnUpdate
 Supervisor::OnDraw
 Supervisor::TickTimer
 Supervisor::SetupDInput
+Supervisor::PlayAudio
 InitD3dDevice
 InitD3dRendering
 Clear

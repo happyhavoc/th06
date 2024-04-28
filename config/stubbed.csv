@@ -16,11 +16,16 @@ MidiOutput::OnTimerElapsed
 MidiOutput::StopPlayback
 MidiOutput::UnprepareHeader
 MidiOutput::ReleaseFileData
+MidiOutput::Play
+MidiOutput::LoadFile
 SoundPlayer::InitializeDSound
 SoundPlayer::InitSoundBuffers
 SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
 SoundPlayer::PlaySounds
+SoundPlayer::LoadWav
+SoundPlayer::LoadPos
+SoundPlayer::PlayBGM
 ResultScreen::OpenScore
 ResultScreen::ParseClrd
 ResultScreen::ParsePscr
@@ -28,7 +33,6 @@ ResultScreen::ReleaseScoreDat
 Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
 Supervisor::ReleasePbg3
-Supervisor::PlayAudio
 Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
 GameManager::RegisterChain

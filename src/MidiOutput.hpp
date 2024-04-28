@@ -56,6 +56,9 @@ struct MidiOutput : MidiTimer
     void ClearTracks();
     void ReleaseFileData(u32 idx);
 
+    ZunResult LoadFile(char *midiPath);
+    ZunResult Play();
+
     MIDIHDR *midiHeaders[32];
     i32 midiHeadersCursor;
     u8 *midiFileData[32];

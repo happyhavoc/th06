@@ -15,6 +15,10 @@ struct SoundPlayer
 
     void PlaySounds();
     void PlaySoundByIdx(i32 idx, i32 unused);
+    ZunResult PlayBGM(BOOL isLooping);
+
+    ZunResult LoadWav(char *path);
+    ZunResult LoadPos(char *path);
 
     CSoundManager manager;
     i32 unk4;
@@ -30,7 +34,8 @@ struct SoundPlayer
     u32 soundBuffersToPlay[3];
     CStreamingSound *streamingSound;
     HANDLE streamingSoundUpdateEvent;
+    BOOL isLooping;
 };
-C_ASSERT(sizeof(SoundPlayer) == 0x634);
+C_ASSERT(sizeof(SoundPlayer) == 0x638);
 
 DIFFABLE_EXTERN(SoundPlayer, g_SoundPlayer)

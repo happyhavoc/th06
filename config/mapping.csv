@@ -258,7 +258,7 @@ MidiOutput::ReadFileData,0x421ff0,0x79,__thiscall,u32,MidiOutput*,i32,char*
 MidiOutput::ReleaseFileData,0x422070,0x3c,__thiscall,void,MidiOutput*,u32
 MidiOutput::ClearTracks,0x4220b0,0x83,__thiscall,void,MidiOutput*
 MidiOutput::ParseFile,0x422140,0x231,__thiscall,void,MidiOutput*,i32
-MidiOutput::LoadFile,0x422380,0x3a,__thiscall,u32,MidiOutput*,u32
+MidiOutput::LoadFile,0x422380,0x3a,__thiscall,ZunResult,MidiOutput*,char*
 MidiOutput::FUN_004223c0,0x4223c0,0xcf,__thiscall,void,MidiOutput*
 MidiOutput::Play,0x422490,0x44,__thiscall,ZunResult,MidiOutput*
 MidiOutput::StopPlayback,0x4224e0,0x7c,__thiscall,ZunResult,MidiOutput*
@@ -382,7 +382,7 @@ SoundPlayer::LoadSound,0x4306e0,0x310,__thiscall,void,SoundPlayer*,i32,char*
 GetWavFormatData,0x4309f0,0x57,__stdcall,tWAVEFORMATEX*,char*,char*,i32*,i32
 SoundPlayer::LoadWav,0x430a50,0x3b5,__thiscall,ZunResult,SoundPlayer*,char*
 SoundPlayer::LoadPos,0x430e10,0xad,__thiscall,ZunResult,SoundPlayer*,char*
-SoundPlayer::playBGM,0x430ec0,0xbe,__thiscall,u32,SoundPlayer*,u32
+SoundPlayer::PlayBGM,0x430ec0,0xbe,__thiscall,ZunResult,SoundPlayer*,i32
 SoundPlayer::StopBGM,0x430f80,0xfc,__thiscall,void,SoundPlayer*
 SoundPlayer::InitSoundBuffers,0x431080,0x156,__thiscall,ZunResult,SoundPlayer*
 SoundPlayer::PlaySoundByIdx,0x4311e0,0x85,__thiscall,void,SoundPlayer*,i32,i32
