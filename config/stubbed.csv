@@ -18,7 +18,6 @@ MidiOutput::UnprepareHeader
 MidiOutput::ReleaseFileData
 MidiOutput::Play
 MidiOutput::LoadFile
-SoundPlayer::InitializeDSound
 SoundPlayer::InitSoundBuffers
 SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release

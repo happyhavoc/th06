@@ -11,7 +11,7 @@ struct SoundPlayer
 {
     SoundPlayer();
 
-    void InitializeDSound(HWND window);
+    ZunResult InitializeDSound(HWND window);
     ZunResult InitSoundBuffers();
     ZunResult Release(void);
 
@@ -22,7 +22,7 @@ struct SoundPlayer
     ZunResult LoadWav(char *path);
     ZunResult LoadPos(char *path);
 
-    LPDIRECTSOUND8 dsoundHdl;
+    LPDIRECTSOUND dsoundHdl;
     i32 unk4;
     LPDIRECTSOUNDBUFFER soundBuffers[128];
     LPDIRECTSOUNDBUFFER duplicateSoundBuffers[128];

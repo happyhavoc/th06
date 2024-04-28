@@ -98,6 +98,7 @@ InitD3dRendering
 Clear
 SetViewport
 SoundPlayer::SoundPlayer
+SoundPlayer::InitializeDSound
 CSoundManager::CSoundManager
 CSoundManager::~CSoundManager
 CSoundManager::Initialize
