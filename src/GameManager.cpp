@@ -123,22 +123,22 @@ i32 GameManager::IsInBounds(float x, float y, f32 width, f32 height)
 {
     if (width / 2.0f + x < 0.0f)
     {
-        return 0;
+        return false;
     }
     if ((x - width / 2.0f) > g_GameManager.arcadeRegionSize.x)
     {
-        return 0;
+        return false;
     }
     if (height / 2.0f + y < 0.0f)
     {
-        return 0;
+        return false;
     }
     if (y - height / 2.0f > g_GameManager.arcadeRegionSize.y)
     {
-        return 0;
+        return false;
     }
 
-    return 1;
+    return true;
 }
 #pragma optimize("", on)
 
