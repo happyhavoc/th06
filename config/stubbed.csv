@@ -33,7 +33,6 @@ Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
 GameManager::AddedCallback
 GameManager::DeletedCallback
-GameManager::hasReachedMaxClears
 Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain

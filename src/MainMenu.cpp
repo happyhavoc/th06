@@ -139,8 +139,8 @@ ZunResult MainMenu::DrawStartMenu(void)
 {
     i32 i;
     i = MoveCursor(this, 8);
-    if ((this->cursor == 1) && !g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
-        !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1))
+    if ((this->cursor == 1) && !g_GameManager.HasReachedMaxClears(0, 0) && !g_GameManager.HasReachedMaxClears(0, 1) &&
+        !g_GameManager.HasReachedMaxClears(1, 0) && !g_GameManager.HasReachedMaxClears(1, 1))
     {
         this->cursor += i;
     }
@@ -178,8 +178,8 @@ ZunResult MainMenu::DrawStartMenu(void)
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 1:
-                if (!(!g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
-                      !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1)))
+                if (!(!g_GameManager.HasReachedMaxClears(0, 0) && !g_GameManager.HasReachedMaxClears(0, 1) &&
+                      !g_GameManager.HasReachedMaxClears(1, 0) && !g_GameManager.HasReachedMaxClears(1, 1)))
                 {
                     for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                     {
@@ -1084,8 +1084,8 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 vmList = &menu->vm[85];
                 vmList->pendingInterrupt = 8;
                 g_GameManager.difficulty = EXTRA;
-                if (g_GameManager.hasReachedMaxClears(g_GameManager.character, 0) ||
-                    g_GameManager.hasReachedMaxClears(g_GameManager.character, 1))
+                if (g_GameManager.HasReachedMaxClears(g_GameManager.character, 0) ||
+                    g_GameManager.HasReachedMaxClears(g_GameManager.character, 1))
                 {
                     menu->cursor = g_GameManager.character;
                 }
@@ -1117,8 +1117,8 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->cursor = menu->cursor - 2;
             }
-            if (g_GameManager.difficulty == EXTRA && g_GameManager.hasReachedMaxClears(menu->cursor, 0) == 0 &&
-                g_GameManager.hasReachedMaxClears(menu->cursor, 1) == 0)
+            if (g_GameManager.difficulty == EXTRA && g_GameManager.HasReachedMaxClears(menu->cursor, 0) == 0 &&
+                g_GameManager.HasReachedMaxClears(menu->cursor, 1) == 0)
             {
                 menu->cursor = menu->cursor - 1;
                 if (menu->cursor < 0)
@@ -1152,8 +1152,8 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->cursor = menu->cursor + 2;
             }
-            if (g_GameManager.difficulty == EXTRA && g_GameManager.hasReachedMaxClears(menu->cursor, 0) == 0 &&
-                g_GameManager.hasReachedMaxClears(menu->cursor, 1) == 0)
+            if (g_GameManager.difficulty == EXTRA && g_GameManager.HasReachedMaxClears(menu->cursor, 0) == 0 &&
+                g_GameManager.HasReachedMaxClears(menu->cursor, 1) == 0)
             {
                 menu->cursor = menu->cursor + 1;
                 if (2 <= menu->cursor)
@@ -1241,7 +1241,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             }
             else
             {
-                if (g_GameManager.hasReachedMaxClears(g_GameManager.character, g_GameManager.shotType) != 0)
+                if (g_GameManager.HasReachedMaxClears(g_GameManager.character, g_GameManager.shotType) != 0)
                 {
                     menu->cursor = g_GameManager.shotType;
                 }
@@ -1256,7 +1256,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     case STATE_SHOT_SELECT:
         MoveCursor(menu, 2);
         if (g_GameManager.difficulty == EXTRA &&
-            g_GameManager.hasReachedMaxClears(g_GameManager.character, menu->cursor) == 0)
+            g_GameManager.HasReachedMaxClears(g_GameManager.character, menu->cursor) == 0)
         {
             menu->cursor = 1 - menu->cursor;
         }

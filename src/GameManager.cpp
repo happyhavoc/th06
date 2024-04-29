@@ -21,6 +21,7 @@ DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 #define GAME_REGION_HEIGHT 448.0
 
 #define MAX_SCORE 999999999
+#define MAX_CLEARS 99
 
 #define DEMO_FADEOUT_FRAMES 3600
 #define DEMO_FRAMES 3720
@@ -75,6 +76,15 @@ void GameManager::CutChain()
     g_Chain.Cut(&g_GameManagerCalcChain);
     g_Chain.Cut(&g_GameManagerDrawChain);
 }
+
+#pragma optimize("s", on)
+i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
+{
+    return (this->clrd[shottype + character * 2].difficultyClearedWithRetries[1] == MAX_CLEARS ||
+            this->clrd[shottype + character * 2].difficultyClearedWithRetries[2] == MAX_CLEARS ||
+            this->clrd[shottype + character * 2].difficultyClearedWithRetries[3] == MAX_CLEARS);
+}
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 void GameManager::IncreaseSubrank(i32 amount)

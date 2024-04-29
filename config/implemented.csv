@@ -56,6 +56,7 @@ GameWindow::Render
 GameManager::GameManager
 GameManager::RegisterChain
 GameManager::CutChain
+GameManager::HasReachedMaxClears
 GameManager::IncreaseSubrank
 GameManager::DecreaseSubrank
 GameManager::OnUpdate
