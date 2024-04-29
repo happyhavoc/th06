@@ -39,9 +39,9 @@ struct GameManager
     u32 highScore;
     Difficulty difficulty;
     u32 grazeInStage;
-    u32 unk_18;
-    u32 unk_1c;
-    u32 unk_20;
+    u32 grazeInTotal;
+    u32 isInReplay;
+    u32 deaths;
     u32 unk_24;
     u32 unk_28;
     u32 unk_2c;
@@ -64,8 +64,8 @@ struct GameManager
     u8 isInGameMenu;
     u8 isInRetryMenu;
     u8 isInMenu;
-    i8 unk_1822;
-    u8 unk_1823;
+    i8 isGameCompleted;
+    u8 isInPracticeMode;
     u8 demoMode;
     i8 unk_1825;
     i8 unk_1826;
@@ -73,7 +73,7 @@ struct GameManager
     i32 demoFrames;
     i8 replayFile[256];
     i8 unk_192c[256];
-    i32 unk_1a2c;
+    i32 randomSeed;
     u32 gameFrames;
     i32 currentStage;
     u32 menuCursorBackup;
