@@ -99,6 +99,7 @@ Clear
 SetViewport
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound
+SoundPlayer::LoadWav
 CSoundManager::CSoundManager
 CSoundManager::~CSoundManager
 CSoundManager::Initialize

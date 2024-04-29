@@ -22,9 +22,10 @@ SoundPlayer::InitSoundBuffers
 SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
 SoundPlayer::PlaySounds
-SoundPlayer::LoadWav
 SoundPlayer::LoadPos
 SoundPlayer::PlayBGM
+SoundPlayer::StopBGM
+SoundPlayer::BackgroundMusicPlayerThread
 ResultScreen::OpenScore
 ResultScreen::ParseClrd
 ResultScreen::ParsePscr

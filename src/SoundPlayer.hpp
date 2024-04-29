@@ -18,6 +18,9 @@ struct SoundPlayer
     void PlaySounds();
     void PlaySoundByIdx(i32 idx, i32 unused);
     ZunResult PlayBGM(BOOL isLooping);
+    void StopBGM();
+
+    static DWORD __stdcall BackgroundMusicPlayerThread(LPVOID lpThreadParameter);
 
     ZunResult LoadWav(char *path);
     ZunResult LoadPos(char *path);

@@ -74,4 +74,81 @@ ZunResult SoundPlayer::InitializeDSound(HWND gameWindow)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(notifySize, waveFile, res, numSamplesPerSec, blockAlign, curTime, startTime, waitTime, curTime2,     \
+                  startTime2, waitTime2)
+ZunResult SoundPlayer::LoadWav(char *path)
+{
+    HRESULT res;
+    CWaveFile waveFile;
+    DWORD startTime;
+    DWORD curTime;
+    u32 waitTime;
+    u32 blockAlign;
+    u32 numSamplesPerSec;
+    u32 notifySize;
+    DWORD startTime2;
+    DWORD curTime2;
+    u32 waitTime2;
+
+    if (this->manager == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_Supervisor.cfg.playSounds == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (this->dsoundHdl == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    this->StopBGM();
+    DebugPrint2("load BGM\n");
+    res = waveFile.Open(path, NULL, WAVEFILE_READ);
+    if (FAILED(res))
+    {
+        DebugPrint2("error : wav file load error %s\n", path);
+        waveFile.Close();
+        return ZUN_ERROR;
+    }
+    if (waveFile.GetSize() == 0)
+    {
+        waveFile.Close();
+        return ZUN_ERROR;
+    }
+    // Sleep 100ms?
+    startTime = timeGetTime();
+    curTime = startTime;
+    waitTime = 100;
+    while (curTime < startTime + waitTime && curTime >= startTime)
+    {
+        curTime = timeGetTime();
+    }
+    waveFile.Close();
+    blockAlign = waveFile.m_pwfx->nBlockAlign;
+    numSamplesPerSec = waveFile.m_pwfx->nSamplesPerSec;
+    notifySize = numSamplesPerSec * 2 * blockAlign >> 2;
+    notifySize -= (notifySize % blockAlign);
+    this->backgroundMusicUpdateEvent = CreateEventA(NULL, 0, 0, NULL);
+    this->backgroundMusicThreadHandle = CreateThread(NULL, 0, SoundPlayer::BackgroundMusicPlayerThread,
+                                                     g_Supervisor.hwndGameWindow, 0, &this->backgroundMusicThreadId);
+    res = this->manager->CreateStreaming(&this->backgroundMusic, path,
+                                         DSBCAPS_GETCURRENTPOSITION2 | DSBCAPS_CTRLPOSITIONNOTIFY, GUID_NULL, 4,
+                                         notifySize, this->backgroundMusicUpdateEvent);
+    if (FAILED(res))
+    {
+        DebugPrint2(TH_ERR_SOUNDPLAYER_FAILED_TO_CREATE_BGM_SOUND_BUFFER);
+        return ZUN_ERROR;
+    }
+    DebugPrint2("comp\n");
+    startTime2 = timeGetTime();
+    curTime2 = startTime2;
+    waitTime2 = 100;
+    while (curTime2 < startTime2 + waitTime2 && curTime2 >= startTime2)
+    {
+        curTime2 = timeGetTime();
+    }
+    return ZUN_SUCCESS;
+}
+
 DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
