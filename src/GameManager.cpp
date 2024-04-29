@@ -1,4 +1,5 @@
 #include "GameManager.hpp"
+#include "ChainPriorities.hpp"
 #include "Gui.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
@@ -9,6 +10,9 @@
 #include <d3d8types.h>
 
 DIFFABLE_STATIC(GameManager, g_GameManager);
+
+DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
+DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 
 #define GAME_REGION_TOP 16.0
 #define GAME_REGION_LEFT 32.0
@@ -36,6 +40,33 @@ GameManager::GameManager()
     (this->arcadeRegionTopLeftPos).y = GAME_REGION_TOP;
     (this->arcadeRegionSize).x = GAME_REGION_WIDTH;
     (this->arcadeRegionSize).y = GAME_REGION_HEIGHT;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult GameManager::RegisterChain()
+{
+    GameManager *mgr = &g_GameManager;
+
+    g_GameManagerCalcChain.callback = (ChainCallback)GameManager::OnUpdate;
+    g_GameManagerCalcChain.addedCallback = NULL;
+    g_GameManagerCalcChain.deletedCallback = NULL;
+    g_GameManagerCalcChain.addedCallback = (ChainAddedCallback)GameManager::AddedCallback;
+    g_GameManagerCalcChain.deletedCallback = (ChainDeletedCallback)GameManager::DeletedCallback;
+    g_GameManagerCalcChain.arg = mgr;
+
+    mgr->gameFrames = 0;
+
+    if (g_Chain.AddToCalcChain(&g_GameManagerCalcChain, TH_CHAIN_PRIO_CALC_GAMEMANAGER))
+    {
+        return ZUN_ERROR;
+    }
+    g_GameManagerDrawChain.callback = (ChainCallback)GameManager::OnDraw;
+    g_GameManagerDrawChain.addedCallback = NULL;
+    g_GameManagerDrawChain.deletedCallback = NULL;
+    g_GameManagerDrawChain.arg = mgr;
+    g_Chain.AddToDrawChain(&g_GameManagerDrawChain, TH_CHAIN_PRIO_DRAW_GAMEMANAGER);
+    return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
 

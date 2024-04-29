@@ -25,6 +25,10 @@ struct GameManager
     static ZunResult RegisterChain();
     static void CutChain();
     static ChainCallbackResult OnUpdate(GameManager *gameManager);
+    static ChainCallbackResult OnDraw(GameManager *gameManager);
+    static ZunResult AddedCallback(GameManager *gameManager);
+    static ZunResult DeletedCallback(GameManager *gameManager);
+
     i32 hasReachedMaxClears(i32 character, i32 shottype);
     void IncreaseSubrank(i32 amount);
     void DecreaseSubrank(i32 amount);

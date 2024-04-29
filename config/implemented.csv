@@ -54,6 +54,7 @@ GameErrorContext::Flush
 GameWindow::Present
 GameWindow::Render
 GameManager::GameManager
+GameManager::RegisterChain
 GameManager::IncreaseSubrank
 GameManager::DecreaseSubrank
 GameManager::OnUpdate
