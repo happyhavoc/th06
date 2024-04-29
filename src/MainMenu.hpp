@@ -35,6 +35,8 @@ struct MainMenu
     ZunResult BeginStartup();
     ZunResult DrawStartMenu();
     u32 DrawOptionsMenu();
+    ZunResult DrawReplayMenu();
+    ZunResult ChoosePracticeLevel();
     ZunResult WeirdSecondInputCheck();
 
     static ZunResult LoadTitleAnm(MainMenu *menu);
@@ -62,13 +64,13 @@ struct MainMenu
     GameState gameState;
     i32 stateTimer;
     i32 idleFrames;
-    i32 unk_81fc;
-    D3DCOLOR maybeMenuTextColor;
+    D3DCOLOR minimumOpacity;
+    D3DCOLOR menuTextColor;
     D3DCOLOR color2;
     D3DCOLOR color1;
-    u32 unk_820c;
-    u32 isActive;
-    u32 wasActive;
+    i32 numFramesSinceActive;
+    u32 framesActive;
+    u32 framesInactive;
     i8 padding2[4];
     i16 controlMapping[9];
     i8 padding3[2];

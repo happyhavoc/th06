@@ -604,7 +604,7 @@ void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
 {
     vm->anmFileIndex = anmFileIdx;
     vm->pos = D3DXVECTOR3(0, 0, 0);
-    vm->pos2 = D3DXVECTOR3(0, 0, 0);
+    vm->posOffset = D3DXVECTOR3(0, 0, 0);
     vm->fontHeight = 15;
     vm->fontWidth = 15;
 

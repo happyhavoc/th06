@@ -86,7 +86,7 @@ struct AnmVm
     D3DCOLOR alphaInterpFinal;
     D3DXVECTOR3 posInterpInitial;
     D3DXVECTOR3 posInterpFinal;
-    D3DXVECTOR3 pos2;
+    D3DXVECTOR3 posOffset;
     ZunTimer posInterpTime;
     i32 timeOfLastSpriteSet;
     ZunTimer alphaInterpTime;

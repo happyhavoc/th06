@@ -69,11 +69,13 @@ FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MainMenu::AddedCallback
 MainMenu::BeginStartup
+MainMenu::ChoosePracticeLevel
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
 MainMenu::DrawMenuItem
 MainMenu::OnUpdate
+MainMenu::OnDraw
 MainMenu::RegisterChain
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
