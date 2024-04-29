@@ -228,3 +228,14 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+ChainCallbackResult GameManager::OnDraw(GameManager *gameManager)
+{
+    if (gameManager->isInGameMenu)
+    {
+        gameManager->isInGameMenu = 2;
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)

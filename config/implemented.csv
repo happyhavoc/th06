@@ -59,6 +59,7 @@ GameManager::CutChain
 GameManager::IncreaseSubrank
 GameManager::DecreaseSubrank
 GameManager::OnUpdate
+GameManager::OnDraw
 ResetKeyboard
 WindowProc
 CreateGameWindow
