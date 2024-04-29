@@ -118,6 +118,30 @@ void GameManager::DecreaseSubrank(i32 amount)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+i32 GameManager::IsInBounds(float x, float y, f32 width, f32 height)
+{
+    if (width / 2.0f + x < 0.0f)
+    {
+        return 0;
+    }
+    if ((x - width / 2.0f) > g_GameManager.arcadeRegionSize.x)
+    {
+        return 0;
+    }
+    if (height / 2.0f + y < 0.0f)
+    {
+        return 0;
+    }
+    if (y - height / 2.0f > g_GameManager.arcadeRegionSize.y)
+    {
+        return 0;
+    }
+
+    return 1;
+}
+#pragma optimize("", on)
+
 #pragma var_order(score_increment, is_in_menu)
 #pragma optimize("s", on)
 ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)

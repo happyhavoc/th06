@@ -32,6 +32,7 @@ struct GameManager
     i32 HasReachedMaxClears(i32 character, i32 shottype);
     void IncreaseSubrank(i32 amount);
     void DecreaseSubrank(i32 amount);
+    i32 IsInBounds(f32 x, f32 y, f32 width, f32 height);
 
     u32 guiScore;
     u32 score;

@@ -167,7 +167,7 @@ GuiImpl::GuiImpl,0x41b34b,0x179,__thiscall,GuiImpl*,GuiImpl*
 GuiMsgVm::GuiMsgVm,0x41b4c4,0xc8,__thiscall,GuiMsgVm*,GuiMsgVm*
 FUN_0041b58c,0x41b58c,0x23,unknown,u8
 ZunTimer::nextTick,0x41b5af,0x32,__thiscall,i32,ZunTimer*
-GameManager::collision_related,0x41b5e1,0x82,unknown,i32,u32,u32,u32,u32
+GameManager::IsInBounds,0x41b5e1,0x82,unknown,i32,u32,u32,u32,u32
 GameManager::OnUpdate,0x41b663,0x3e7,default,ChainCallbackResult,GameManager*
 GameManager::OnDraw,0x41ba4a,0x20,default,ChainCallbackResult,GameManager*
 GameManager::RegisterChain,0x41ba6a,0x98,__stdcall,ZunResult
