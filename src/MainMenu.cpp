@@ -1641,8 +1641,8 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 #pragma var_order(stageNum, color, charShotType, selectedStage, textPos, local_28, stage)
 ZunResult MainMenu::ChoosePracticeLevel() {
     if(this->gameState == STATE_PRACTICE_LVL_SELECT) {
-        D3DXVECTOR3 textPos(320.0, 200.0, 0.0);
         i32 local_28;
+        D3DXVECTOR3 textPos(320.0, 200.0, 0.0);
         if(this->stateTimer < 30) {
             local_28 = this->stateTimer * 0xFF / 30;
         } else {
@@ -1667,8 +1667,8 @@ ZunResult MainMenu::ChoosePracticeLevel() {
             } else {
                 g_AsciiManager.color = (color>>1) << 0x18 | 0x00C0F0F0;
             }
-            g_AsciiManager.AddFormatText(&textPos, "STAGE %d  %.9d", stageNum+1, g_GameManager.pscr[charShotType].score);
-            textPos.y++;
+            g_AsciiManager.AddFormatText(&textPos, "STAGE %d  %.9d", stageNum+1, g_GameManager.pscr[(charShotType * 24) + stageNum * 6  + g_GameManager.difficulty].score);
+            textPos.y += 24;
         }
         g_AsciiManager.color = 0xFFFFFFFF;
     }
