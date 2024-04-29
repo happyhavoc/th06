@@ -51,5 +51,6 @@ ReplayDoStuff
 ValidateReplayData
 DrawSquare
 GetControllerState
+SetupCamera
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

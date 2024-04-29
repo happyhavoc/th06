@@ -100,6 +100,7 @@ def configure(build_type):
             "AnmVm",
             "AnmManager",
             "GameManager",
+            "Gui",
             "Rng",
             "utils",
             "ZunTimer",
