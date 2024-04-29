@@ -70,6 +70,12 @@ ZunResult GameManager::RegisterChain()
 }
 #pragma optimize("", on)
 
+void GameManager::CutChain()
+{
+    g_Chain.Cut(&g_GameManagerCalcChain);
+    g_Chain.Cut(&g_GameManagerDrawChain);
+}
+
 #pragma optimize("s", on)
 void GameManager::IncreaseSubrank(i32 amount)
 {

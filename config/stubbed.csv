@@ -31,7 +31,6 @@ Supervisor::ReleasePbg3
 Supervisor::PlayAudio
 Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
-GameManager::CutChain
 GameManager::AddedCallback
 GameManager::DeletedCallback
 GameManager::OnDraw

@@ -55,6 +55,7 @@ GameWindow::Present
 GameWindow::Render
 GameManager::GameManager
 GameManager::RegisterChain
+GameManager::CutChain
 GameManager::IncreaseSubrank
 GameManager::DecreaseSubrank
 GameManager::OnUpdate
