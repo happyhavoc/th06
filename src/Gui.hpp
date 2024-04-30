@@ -4,11 +4,13 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+#include "GuiImpl.hpp"
+
 struct Gui
 {
 
     u32 flags;
-    void *impl; // TODO:GuiImpl
+    GuiImpl *impl;
     f32 unk_8;
     f32 blueSpellcardBarLength;
     u32 unk_10;
