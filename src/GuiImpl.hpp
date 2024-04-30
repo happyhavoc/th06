@@ -1,19 +1,21 @@
 #pragma once
 
 #include "AnmVm.hpp"
+#include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include "ZunTimer.hpp"
 
-struct MsgRawHeader {
+struct MsgRawHeader
+{
     i32 numEntries;
-    void* entries;
+    void *entries;
 };
 C_ASSERT(sizeof(MsgRawHeader) == 0x8);
 
-struct GuiMsgVm {
-    MsgRawHeader* msgFile;
-    void* currentInstr;
+struct GuiMsgVm
+{
+    MsgRawHeader *msgFile;
+    void *currentInstr;
     u32 currentMsgIdx;
     ZunTimer timer;
     i32 framesElapsedDuringPause;
@@ -28,7 +30,8 @@ struct GuiMsgVm {
 };
 C_ASSERT(sizeof(GuiMsgVm) == 0x6a8);
 
-struct GuiImplChildB {
+struct GuiImplChildB
+{
     D3DXVECTOR3 vec;
     i32 unk_0xc;
     i32 unk_0x10;
@@ -36,7 +39,8 @@ struct GuiImplChildB {
 };
 C_ASSERT(sizeof(GuiImplChildB) == 0x20);
 
-struct GuiImpl {
+struct GuiImpl
+{
     AnmVm vms[26];
     i8 unk_0x1ba0[4];
     AnmVm vm1;
