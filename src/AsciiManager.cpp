@@ -37,10 +37,13 @@ ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
             ZunTimer *timer = &curPopup->timer;
             timer->previous = timer->current;
             g_Supervisor.TickTimer(&timer->current, &timer->subFrame);
-            curPopup->inUse = curPopup->timer.current > 60;
+            if ((bool)((curPopup->timer).current > 60))
+            {
+                curPopup->inUse = false;
+            }
         }
     }
-    if (g_GameManager.isInGameMenu)
+    else if (g_GameManager.isInGameMenu)
     {
         mgr->gameMenu.OnUpdateGameMenu();
     }
