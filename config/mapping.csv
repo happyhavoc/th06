@@ -170,7 +170,7 @@ ZunTimer::nextTick,0x41b5af,0x32,__thiscall,i32,ZunTimer*
 GameManager::IsInBounds,0x41b5e1,0x82,unknown,i32,u32,u32,u32,u32
 GameManager::OnUpdate,0x41b663,0x3e7,default,ChainCallbackResult,GameManager*
 GameManager::OnDraw,0x41ba4a,0x20,default,ChainCallbackResult,GameManager*
-GameManager::RegisterChain,0x41ba6a,0x98,__stdcall,ZunResult
+GameManager::RegisterChain,0x41ba6a,0x98,default,ZunResult
 GameManager::AddedCallback,0x41bb02,0x6f5,__stdcall,ZunResult,GameManager*
 GameManager::DeletedCallback,0x41c1f7,0x72,__stdcall,ZunResult,GameManager*
 GameManager::CutChain,0x41c269,0x23,default,void
@@ -258,7 +258,7 @@ MidiOutput::ReadFileData,0x421ff0,0x79,__thiscall,u32,MidiOutput*,i32,char*
 MidiOutput::ReleaseFileData,0x422070,0x3c,__thiscall,void,MidiOutput*,u32
 MidiOutput::ClearTracks,0x4220b0,0x83,__thiscall,void,MidiOutput*
 MidiOutput::ParseFile,0x422140,0x231,__thiscall,void,MidiOutput*,i32
-MidiOutput::LoadFile,0x422380,0x3a,__thiscall,u32,MidiOutput*,u32
+MidiOutput::LoadFile,0x422380,0x3a,__thiscall,ZunResult,MidiOutput*,char*
 MidiOutput::FUN_004223c0,0x4223c0,0xcf,__thiscall,void,MidiOutput*
 MidiOutput::Play,0x422490,0x44,__thiscall,ZunResult,MidiOutput*
 MidiOutput::StopPlayback,0x4224e0,0x7c,__thiscall,ZunResult,MidiOutput*
@@ -275,7 +275,7 @@ Supervisor::RegisterChain,0x42386b,0x9f,__stdcall,ZunResult
 Supervisor::AddedCallback,0x42390a,0x20a,__stdcall,ZunResult,Supervisor*
 Supervisor::SetupDInput,0x423b14,0x28c,__stdcall,ZunResult,Supervisor*
 EnumGameControllersCb,0x423da0,0x3f,__stdcall,u32,i32
-Supervisor::DeletedCallback,0x423ddf,0x160,__stdcall,ZunResult,Supervisor*
+Supervisor::DeletedCallback,0x423ddf,0x160,default,ZunResult,Supervisor*
 Supervisor::DrawFpsCounter,0x423f3f,0x1b1,__stdcall,void
 AnmManager::ReleaseVertexBuffer,0x4240f0,0x37,__thiscall,void,AnmManager*
 ZunTimer::Initialize,0x424127,0x1e,__thiscall,void,ZunTimer*
@@ -294,7 +294,7 @@ Supervisor::fadeOutMusic,0x424d82,0xbf,__thiscall,u32,Supervisor*,f32
 SoundPlayer::FadeOut,0x424e41,0x4e,__thiscall,void,SoundPlayer*,f32
 MusicRoom::FUN_00424e8f,0x424e8f,0x1e,__thiscall,u32,MusicRoom*
 MusicRoom::FUN_00424ead,0x424ead,0x38d,__thiscall,void,MusicRoom*
-MusicRoom::RegisterChain,0x42523a,0xde,__stdcall,ZunResult
+MusicRoom::RegisterChain,0x42523a,0xde,default,ZunResult
 MusicRoom::FUN_00425318,0x425318,0xc5,__thiscall,u32*,MusicRoom*
 MusicRoom::OnUpdate,0x4253dd,0x7d,unknown,u8,u32
 MusicRoom::OnDraw,0x42545a,0x1f2,unknown,u8,u32
@@ -330,7 +330,7 @@ Player::FUN_00429bb0,0x429bb0,0x99,default,void,Player*
 Player::AddedCallback,0x429c50,0x45e,default,u32,Player*
 Player::DeletedCallback,0x42a0b0,0x24,unknown,u8
 Player::CutChain,0x42a0e0,0x55,unknown,u8
-ValidateReplayData,0x42a140,0x100,__stdcall,ZunResult,ReplayData*,i32
+ValidateReplayData,0x42a140,0x100,default,ZunResult,ReplayData*,i32
 ReplayManager::RegisterChain,0x42a240,0x228,__stdcall,u32,i32,char*
 ReplayManager::OnUpdate,0x42a470,0x97,unknown,u8,ReplayManager*
 ReplayManager::DemoOnUpdate,0x42a510,0x51,default,ChainCallbackResult,ReplayManager*
@@ -340,14 +340,14 @@ ReplayManager::AddedCallback,0x42a680,0x1bd,default,ZunResult,ReplayManager*
 DemoAddedCallback,0x42a840,0x1d5,__stdcall,ZunResult,ReplayManager*
 ReplayManager::DeletedCallback,0x42aa20,0x8c,unknown,u8,ReplayManager*
 FUN_0042aab0,0x42aab0,0x7b,unknown,u8
-ReplayDoStuff,0x42ab30,0x5a9,__stdcall,void,char*,char*
+ReplayDoStuff,0x42ab30,0x5a9,default,void,char*,char*
 ResultScreen::OpenScore,0x42b0d9,0x1a7,default,ScoreDat*,char*
 GetHighScore,0x42b280,0x126,__stdcall,u32,ScoreDat*,ResultScreenUnk3ab0*,i32,i32
 FUN_0042b3a6,0x42b3a6,0x91,default,i32,ResultScreenUnk3ab0*,Hscr*
 ZunFreeArray,0x42b437,0x2f,__stdcall,void,void*
 ParseCatk,0x42b466,0x9c,default,u32,ScoreDat*,Catk*
 ResultScreen::ParseClrd,0x42b502,0x15c,unknown,ZunResult,ScoreDat*,Clrd*
-ResultScreen::ParsePscr,0x42b65e,0x17e,__stdcall,ZunResult,ScoreDat*,Pscr*
+ResultScreen::ParsePscr,0x42b65e,0x17e,default,ZunResult,ScoreDat*,Pscr*
 ResultScreen::ReleaseScoreDat,0x42b7dc,0x2d,__cdecl,void,ScoreDat*
 WriteScore,0x42b809,0x424,unknown,u8,u32
 ResultScreen::FUN_0042bc2d,0x42bc2d,0x2e,__thiscall,void,ResultScreen*,Hscr*,i32,i32
@@ -368,7 +368,7 @@ DebugPrint,0x42f6c4,0x5,__stdcall,void,char*
 Clear,0x42f6d0,0xb8,unknown,u8,u32
 SetViewport,0x42f790,0x66,default,void,unsigned long
 ScreenEffect::calcChainElementCallback,0x42f800,0xae,default,u32,ScreenEffect*
-DrawSquare,0x42f8b0,0x3c8,__stdcall,void,ZunRect*,unsigned long
+DrawSquare,0x42f8b0,0x3c8,default,void,ZunRect*,unsigned long
 calcChainElementCallback_3,0x42fc80,0xa8,unknown,u8,ScreenEffect*
 ScreenEffect::RegisterChain,0x42fd30,0x1ac,unknown,ZunResult,u32,u32,u32,u32,u32
 ScreenEffect::drawChainCallback,0x42fee0,0x88,unknown,u8,ScreenEffect*
@@ -382,12 +382,12 @@ SoundPlayer::LoadSound,0x4306e0,0x310,__thiscall,void,SoundPlayer*,i32,char*
 GetWavFormatData,0x4309f0,0x57,__stdcall,tWAVEFORMATEX*,char*,char*,i32*,i32
 SoundPlayer::LoadWav,0x430a50,0x3b5,__thiscall,ZunResult,SoundPlayer*,char*
 SoundPlayer::LoadPos,0x430e10,0xad,__thiscall,ZunResult,SoundPlayer*,char*
-SoundPlayer::playBGM,0x430ec0,0xbe,__thiscall,u32,SoundPlayer*,u32
+SoundPlayer::PlayBGM,0x430ec0,0xbe,__thiscall,ZunResult,SoundPlayer*,i32
 SoundPlayer::StopBGM,0x430f80,0xfc,__thiscall,void,SoundPlayer*
 SoundPlayer::InitSoundBuffers,0x431080,0x156,__thiscall,ZunResult,SoundPlayer*
 SoundPlayer::PlaySoundByIdx,0x4311e0,0x85,__thiscall,void,SoundPlayer*,i32,i32
 SoundPlayer::PlaySounds,0x431270,0x100,__thiscall,void,SoundPlayer*
-playMusic,0x431370,0xb0,__stdcall,i32
+SoundPlayer::BackgroundMusicPlayerThread,0x431370,0xb0,__stdcall,unsigned long,void*
 SoundPlayer::SoundPlayer,0x431420,0x4c,__thiscall,u32*,SoundPlayer*
 AnmManager::AnmManager,0x431470,0x1ed,__thiscall,AnmManager*,AnmManager*
 AnmManager::SetupVertexBuffer,0x431660,0x2bc,__thiscall,void,AnmManager*
@@ -420,8 +420,8 @@ AnmManager::DrawEndingRect,0x4354c0,0x1a8,__thiscall,void,AnmManager*,i32,long,l
 AnmManager::TakeScreenshot,0x435670,0xed,__thiscall,void,AnmManager*,i32,i32,i32,i32,i32
 MainMenu::MainMenu,0x43575d,0x42,__thiscall,void,MainMenu*
 MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,ChainCallbackResult,MainMenu*
-MainMenu::MoveCursor,0x43753c,0x136,__stdcall,i32,MainMenu*,i32
-MainMenu::SelectRelated,0x437672,0x131,__stdcall,void,MainMenu*,u16,u16,u32
+MainMenu::MoveCursor,0x43753c,0x136,default,i32,MainMenu*,i32
+MainMenu::SelectRelated,0x437672,0x131,default,void,MainMenu*,u16,u16,u32
 MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,void,AnmVm*,i32,i32,unsigned long,unsigned long,i32
 MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
 MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunResult,MainMenu*
@@ -434,10 +434,10 @@ MainMenu::ChoosePracticeLevel,0x439965,0x171,__thiscall,ZunResult,MainMenu*
 MainMenu::OnDraw,0x439ad6,0x2ca,unknown,ChainCallbackResult,MainMenu*
 MainMenu::LoadTitleAnm,0x439da0,0x1e8,__stdcall,u32,MainMenu*
 MainMenu::LoadDiffCharSelect,0x439f88,0x264,default,ZunResult,MainMenu*
-MainMenu::LoadReplayMenu,0x43a1ec,0x14c,__stdcall,ZunResult,MainMenu*
+MainMenu::LoadReplayMenu,0x43a1ec,0x14c,default,ZunResult,MainMenu*
 MainMenu::RegisterChain,0x43a338,0x12c,unknown,ZunResult,u32
 MainMenu::AddedCallback,0x43a464,0x1f5,unknown,ZunResult,MainMenu*
-MainMenu::DeletedCallback,0x43a659,0xb1,__stdcall,ZunResult,MainMenu*
+MainMenu::DeletedCallback,0x43a659,0xb1,default,ZunResult,MainMenu*
 MainMenu::ReleaseAnm,0x43a70a,0x2c,default,void
 GameManager::HasReachedMaxClears,0x43a736,0x70,__thiscall,i32,GameManager*,i32,i32
 CSoundManager::CSoundManager,0x43a7b0,0x17,__thiscall,u32*,CSoundManager*
@@ -462,7 +462,7 @@ CStreamingSound::UpdateFadeOut,0x43b4d0,0x8f,__thiscall,u32,CStreamingSound*
 CStreamingSound::HandleWaveStreamNotification,0x43b560,0x377,__thiscall,i32,CStreamingSound*,i32
 CStreamingSound::Reset,0x43b8e0,0xc2,__thiscall,long,CStreamingSound*
 CWaveFile::CWaveFile,0x43b9b0,0x52,__thiscall,CWaveFile*,CWaveFile*
-CWaveFile::operator_delete,0x43ba10,0x46,__thiscall,void,CWaveFile*
+CWaveFile::~CWaveFile,0x43ba10,0x46,__thiscall,void,CWaveFile*
 CWaveFile::Open,0x43ba60,0x180,__thiscall,i32,CWaveFile*,char*,u32,unsigned long
 CWaveFile::ReadMMIO,0x43bc00,0x241,__thiscall,u32,CWaveFile*
 CWaveFile::GetSize,0x43be50,0x11,__thiscall,u32,CWaveFile*

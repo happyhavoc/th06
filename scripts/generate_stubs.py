@@ -75,7 +75,11 @@ for stub in stubbed_csv:
     if calling_convention == "__thiscall":
         this_type = args_types.pop(0)
 
-    fun_sig = ret_type + " " + fun_name + "("
+    callconv = ""
+    if calling_convention == "__stdcall":
+        callconv = "__stdcall"
+
+    fun_sig = ret_type + " " + callconv + " " + fun_name + "("
     fun_sig += ", ".join(
         [arg_type + " " + "a" + str(idx) for idx, arg_type in enumerate(args_types)]
     )

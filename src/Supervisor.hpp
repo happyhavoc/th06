@@ -56,7 +56,7 @@ struct GameConfiguration
     i8 bombCount;
     u8 colorMode16bit;
     u8 musicMode;
-    i8 playSounds;
+    u8 playSounds;
     u8 defaultDifficulty;
     u8 windowed;
     // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
@@ -95,7 +95,7 @@ struct Supervisor
     static ZunResult DeletedCallback(Supervisor *s);
     static void DrawFpsCounter();
 
-    void PlayAudio(char *path);
+    ZunResult PlayAudio(char *path);
     ZunResult StopAudio();
 
     ZunResult SetupMidiPlayback(char *path);

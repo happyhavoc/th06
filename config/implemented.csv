@@ -98,10 +98,14 @@ Supervisor::OnUpdate
 Supervisor::OnDraw
 Supervisor::TickTimer
 Supervisor::SetupDInput
+Supervisor::PlayAudio
 InitD3dDevice
 InitD3dRendering
 Clear
 SetViewport
+SoundPlayer::SoundPlayer
+SoundPlayer::InitializeDSound
+SoundPlayer::LoadWav
 CSoundManager::CSoundManager
 CSoundManager::~CSoundManager
 CSoundManager::Initialize
