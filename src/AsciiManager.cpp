@@ -37,7 +37,7 @@ ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
             ZunTimer *timer = &curPopup->timer;
             timer->previous = timer->current;
             g_Supervisor.TickTimer(&timer->current, &timer->subFrame);
-            if ((bool)((curPopup->timer).current > 60))
+            if ((bool)(curPopup->timer.current > 60))
             {
                 curPopup->inUse = false;
             }
