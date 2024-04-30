@@ -31,9 +31,8 @@ Supervisor::ReleasePbg3
 Supervisor::PlayAudio
 Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
-GameManager::RegisterChain
-GameManager::CutChain
-GameManager::hasReachedMaxClears
+GameManager::AddedCallback
+GameManager::DeletedCallback
 Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain

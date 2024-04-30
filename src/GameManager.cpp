@@ -1,4 +1,5 @@
 #include "GameManager.hpp"
+#include "ChainPriorities.hpp"
 #include "Gui.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
@@ -10,6 +11,9 @@
 
 DIFFABLE_STATIC(GameManager, g_GameManager);
 
+DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
+DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
+
 #define GAME_REGION_TOP 16.0
 #define GAME_REGION_LEFT 32.0
 
@@ -17,6 +21,7 @@ DIFFABLE_STATIC(GameManager, g_GameManager);
 #define GAME_REGION_HEIGHT 448.0
 
 #define MAX_SCORE 999999999
+#define MAX_CLEARS 99
 
 #define DEMO_FADEOUT_FRAMES 3600
 #define DEMO_FRAMES 3720
@@ -36,6 +41,48 @@ GameManager::GameManager()
     (this->arcadeRegionTopLeftPos).y = GAME_REGION_TOP;
     (this->arcadeRegionSize).x = GAME_REGION_WIDTH;
     (this->arcadeRegionSize).y = GAME_REGION_HEIGHT;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult GameManager::RegisterChain()
+{
+    GameManager *mgr = &g_GameManager;
+
+    g_GameManagerCalcChain.callback = (ChainCallback)GameManager::OnUpdate;
+    g_GameManagerCalcChain.addedCallback = NULL;
+    g_GameManagerCalcChain.deletedCallback = NULL;
+    g_GameManagerCalcChain.addedCallback = (ChainAddedCallback)GameManager::AddedCallback;
+    g_GameManagerCalcChain.deletedCallback = (ChainDeletedCallback)GameManager::DeletedCallback;
+    g_GameManagerCalcChain.arg = mgr;
+
+    mgr->gameFrames = 0;
+
+    if (g_Chain.AddToCalcChain(&g_GameManagerCalcChain, TH_CHAIN_PRIO_CALC_GAMEMANAGER))
+    {
+        return ZUN_ERROR;
+    }
+    g_GameManagerDrawChain.callback = (ChainCallback)GameManager::OnDraw;
+    g_GameManagerDrawChain.addedCallback = NULL;
+    g_GameManagerDrawChain.deletedCallback = NULL;
+    g_GameManagerDrawChain.arg = mgr;
+    g_Chain.AddToDrawChain(&g_GameManagerDrawChain, TH_CHAIN_PRIO_DRAW_GAMEMANAGER);
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+void GameManager::CutChain()
+{
+    g_Chain.Cut(&g_GameManagerCalcChain);
+    g_Chain.Cut(&g_GameManagerDrawChain);
+}
+
+#pragma optimize("s", on)
+i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
+{
+    return (this->clrd[shottype + character * 2].difficultyClearedWithRetries[1] == MAX_CLEARS ||
+            this->clrd[shottype + character * 2].difficultyClearedWithRetries[2] == MAX_CLEARS ||
+            this->clrd[shottype + character * 2].difficultyClearedWithRetries[3] == MAX_CLEARS);
 }
 #pragma optimize("", on)
 
@@ -68,6 +115,30 @@ void GameManager::DecreaseSubrank(i32 amount)
     {
         this->rank = this->minRank;
     }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+i32 GameManager::IsInBounds(float x, float y, f32 width, f32 height)
+{
+    if (width / 2.0f + x < 0.0f)
+    {
+        return false;
+    }
+    if ((x - width / 2.0f) > g_GameManager.arcadeRegionSize.x)
+    {
+        return false;
+    }
+    if (height / 2.0f + y < 0.0f)
+    {
+        return false;
+    }
+    if (y - height / 2.0f > g_GameManager.arcadeRegionSize.y)
+    {
+        return false;
+    }
+
+    return true;
 }
 #pragma optimize("", on)
 
@@ -188,6 +259,17 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
         }
     }
     gameManager->gameFrames++;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ChainCallbackResult GameManager::OnDraw(GameManager *gameManager)
+{
+    if (gameManager->isInGameMenu)
+    {
+        gameManager->isInGameMenu = 2;
+    }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)

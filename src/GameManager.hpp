@@ -25,9 +25,14 @@ struct GameManager
     static ZunResult RegisterChain();
     static void CutChain();
     static ChainCallbackResult OnUpdate(GameManager *gameManager);
-    i32 hasReachedMaxClears(i32 character, i32 shottype);
+    static ChainCallbackResult OnDraw(GameManager *gameManager);
+    static ZunResult AddedCallback(GameManager *gameManager);
+    static ZunResult DeletedCallback(GameManager *gameManager);
+
+    i32 HasReachedMaxClears(i32 character, i32 shottype);
     void IncreaseSubrank(i32 amount);
     void DecreaseSubrank(i32 amount);
+    i32 IsInBounds(f32 x, f32 y, f32 width, f32 height);
 
     u32 guiScore;
     u32 score;
@@ -35,9 +40,9 @@ struct GameManager
     u32 highScore;
     Difficulty difficulty;
     u32 grazeInStage;
-    u32 unk_18;
-    u32 unk_1c;
-    u32 unk_20;
+    u32 grazeInTotal;
+    u32 isInReplay;
+    u32 deaths;
     u32 unk_24;
     u32 unk_28;
     u32 unk_2c;
@@ -60,8 +65,8 @@ struct GameManager
     u8 isInGameMenu;
     u8 isInRetryMenu;
     u8 isInMenu;
-    i8 unk_1822;
-    u8 unk_1823;
+    i8 isGameCompleted;
+    u8 isInPracticeMode;
     u8 demoMode;
     i8 unk_1825;
     i8 unk_1826;
@@ -69,7 +74,7 @@ struct GameManager
     i32 demoFrames;
     i8 replayFile[256];
     i8 unk_192c[256];
-    i32 unk_1a2c;
+    i32 randomSeed;
     u32 gameFrames;
     i32 currentStage;
     u32 menuCursorBackup;

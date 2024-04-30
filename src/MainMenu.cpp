@@ -139,8 +139,8 @@ ZunResult MainMenu::DrawStartMenu(void)
 {
     i32 i;
     i = MoveCursor(this, 8);
-    if ((this->cursor == 1) && !g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
-        !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1))
+    if ((this->cursor == 1) && !g_GameManager.HasReachedMaxClears(0, 0) && !g_GameManager.HasReachedMaxClears(0, 1) &&
+        !g_GameManager.HasReachedMaxClears(1, 0) && !g_GameManager.HasReachedMaxClears(1, 1))
     {
         this->cursor += i;
     }
@@ -161,7 +161,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                     this->vm[i].pendingInterrupt = 4;
                 }
                 this->gameState = STATE_DIFFICULTY_LOAD;
-                g_GameManager.unk_1823 = 0;
+                g_GameManager.isInPracticeMode = 0;
                 if (EXTRA <= g_GameManager.difficulty)
                 {
                     g_GameManager.difficulty = NORMAL;
@@ -178,15 +178,15 @@ ZunResult MainMenu::DrawStartMenu(void)
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
                 break;
             case 1:
-                if (!(!g_GameManager.hasReachedMaxClears(0, 0) && !g_GameManager.hasReachedMaxClears(0, 1) &&
-                      !g_GameManager.hasReachedMaxClears(1, 0) && !g_GameManager.hasReachedMaxClears(1, 1)))
+                if (!(!g_GameManager.HasReachedMaxClears(0, 0) && !g_GameManager.HasReachedMaxClears(0, 1) &&
+                      !g_GameManager.HasReachedMaxClears(1, 0) && !g_GameManager.HasReachedMaxClears(1, 1)))
                 {
                     for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                     {
                         this->vm[i].pendingInterrupt = 4;
                     }
                     this->gameState = STATE_DIFFICULTY_LOAD;
-                    g_GameManager.unk_1823 = 0;
+                    g_GameManager.isInPracticeMode = 0;
                     g_GameManager.difficulty = EXTRA;
                     this->stateTimer = 0;
                     this->minimumOpacity = 0x40000000;
@@ -201,7 +201,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 }
                 break;
             case 2:
-                g_GameManager.unk_1823 = 1;
+                g_GameManager.isInPracticeMode = 1;
                 for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
                 {
                     this->vm[i].pendingInterrupt = 4;
@@ -228,7 +228,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                     this->vm[i].pendingInterrupt = 4;
                 }
                 this->gameState = STATE_REPLAY_LOAD;
-                g_GameManager.unk_1823 = 0;
+                g_GameManager.isInPracticeMode = 0;
                 this->stateTimer = 0;
                 this->minimumOpacity = 0x40000000;
                 this->menuTextColor = COLOR_BLACK;
@@ -563,7 +563,7 @@ i32 MainMenu::ReplayHandling()
         }
         if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageScore)
         {
-            g_GameManager.unk_1c = 1;
+            g_GameManager.isInReplay = 1;
             g_Supervisor.framerateMultiplier = 1.0;
             strcpy(g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
             g_GameManager.difficulty = (Difficulty)this->currentReplay->difficulty;
@@ -647,12 +647,12 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
         m->cursor = 0;
     }
 
-    if (g_GameManager.unk_1823 != 0)
+    if (g_GameManager.isInPracticeMode != 0)
     {
         m->cursor = 2;
     }
 
-    g_GameManager.unk_1823 = 0;
+    g_GameManager.isInPracticeMode = 0;
     if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
     {
         m->color1 = 0x80004000;
@@ -786,7 +786,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         if (720 <= menu->idleFrames)
         {
         load_menu_rpy:
-            g_GameManager.unk_1c = 1;
+            g_GameManager.isInReplay = 1;
             g_GameManager.demoMode = 1;
             g_GameManager.demoFrames = 0;
             g_Supervisor.framerateMultiplier = 1.0;
@@ -1048,7 +1048,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             if (g_GameManager.difficulty < 4)
             {
                 g_Supervisor.cfg.defaultDifficulty = menu->cursor;
-                if (g_GameManager.unk_1823 == 0)
+                if (g_GameManager.isInPracticeMode == 0)
                 {
                     menu->cursor = 0;
                 }
@@ -1084,8 +1084,8 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 vmList = &menu->vm[85];
                 vmList->pendingInterrupt = 8;
                 g_GameManager.difficulty = EXTRA;
-                if (g_GameManager.hasReachedMaxClears(g_GameManager.character, 0) ||
-                    g_GameManager.hasReachedMaxClears(g_GameManager.character, 1))
+                if (g_GameManager.HasReachedMaxClears(g_GameManager.character, 0) ||
+                    g_GameManager.HasReachedMaxClears(g_GameManager.character, 1))
                 {
                     menu->cursor = g_GameManager.character;
                 }
@@ -1117,8 +1117,8 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->cursor = menu->cursor - 2;
             }
-            if (g_GameManager.difficulty == EXTRA && g_GameManager.hasReachedMaxClears(menu->cursor, 0) == 0 &&
-                g_GameManager.hasReachedMaxClears(menu->cursor, 1) == 0)
+            if (g_GameManager.difficulty == EXTRA && g_GameManager.HasReachedMaxClears(menu->cursor, 0) == 0 &&
+                g_GameManager.HasReachedMaxClears(menu->cursor, 1) == 0)
             {
                 menu->cursor = menu->cursor - 1;
                 if (menu->cursor < 0)
@@ -1152,8 +1152,8 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->cursor = menu->cursor + 2;
             }
-            if (g_GameManager.difficulty == EXTRA && g_GameManager.hasReachedMaxClears(menu->cursor, 0) == 0 &&
-                g_GameManager.hasReachedMaxClears(menu->cursor, 1) == 0)
+            if (g_GameManager.difficulty == EXTRA && g_GameManager.HasReachedMaxClears(menu->cursor, 0) == 0 &&
+                g_GameManager.HasReachedMaxClears(menu->cursor, 1) == 0)
             {
                 menu->cursor = menu->cursor + 1;
                 if (2 <= menu->cursor)
@@ -1241,7 +1241,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             }
             else
             {
-                if (g_GameManager.hasReachedMaxClears(g_GameManager.character, g_GameManager.shotType) != 0)
+                if (g_GameManager.HasReachedMaxClears(g_GameManager.character, g_GameManager.shotType) != 0)
                 {
                     menu->cursor = g_GameManager.shotType;
                 }
@@ -1256,7 +1256,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     case STATE_SHOT_SELECT:
         MoveCursor(menu, 2);
         if (g_GameManager.difficulty == EXTRA &&
-            g_GameManager.hasReachedMaxClears(g_GameManager.character, menu->cursor) == 0)
+            g_GameManager.HasReachedMaxClears(g_GameManager.character, menu->cursor) == 0)
         {
             menu->cursor = 1 - menu->cursor;
         }
@@ -1341,7 +1341,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         else if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
         {
             g_GameManager.shotType = menu->cursor;
-            if (g_GameManager.unk_1823 == 0)
+            if (g_GameManager.isInPracticeMode == 0)
             {
                 if (g_GameManager.difficulty < 4)
                 {
@@ -1354,14 +1354,14 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             something:
                 g_GameManager.livesRemaining = g_Supervisor.cfg.lifeCount;
                 g_GameManager.bombsRemaining = g_Supervisor.cfg.bombCount;
-                if ((g_GameManager.difficulty == EXTRA) || (g_GameManager.unk_1823 != 0))
+                if ((g_GameManager.difficulty == EXTRA) || (g_GameManager.isInPracticeMode != 0))
                 {
                     g_GameManager.livesRemaining = 2;
                     g_GameManager.bombsRemaining = 3;
                 }
                 g_Supervisor.curState = 2;
                 g_SoundPlayer.PlaySoundByIdx(10, 0);
-                g_GameManager.unk_1c = 0;
+                g_GameManager.isInReplay = 0;
                 local_48 = 0.0f;
                 if (menu->timeRelatedArrSize >= 2)
                 {

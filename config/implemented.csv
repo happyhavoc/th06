@@ -54,9 +54,14 @@ GameErrorContext::Flush
 GameWindow::Present
 GameWindow::Render
 GameManager::GameManager
+GameManager::RegisterChain
+GameManager::CutChain
+GameManager::HasReachedMaxClears
 GameManager::IncreaseSubrank
 GameManager::DecreaseSubrank
+GameManager::IsInBounds
 GameManager::OnUpdate
+GameManager::OnDraw
 ResetKeyboard
 WindowProc
 CreateGameWindow
