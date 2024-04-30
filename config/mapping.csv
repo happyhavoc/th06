@@ -171,8 +171,8 @@ GameManager::IsInBounds,0x41b5e1,0x82,unknown,i32,u32,u32,u32,u32
 GameManager::OnUpdate,0x41b663,0x3e7,default,ChainCallbackResult,GameManager*
 GameManager::OnDraw,0x41ba4a,0x20,default,ChainCallbackResult,GameManager*
 GameManager::RegisterChain,0x41ba6a,0x98,default,ZunResult
-GameManager::AddedCallback,0x41bb02,0x6f5,__stdcall,ZunResult,GameManager*
-GameManager::DeletedCallback,0x41c1f7,0x72,__stdcall,ZunResult,GameManager*
+GameManager::AddedCallback,0x41bb02,0x6f5,default,ZunResult,GameManager*
+GameManager::DeletedCallback,0x41c1f7,0x72,default,ZunResult,GameManager*
 GameManager::CutChain,0x41c269,0x23,default,void
 FUN_0041c28c,0x41c28c,0x167,unknown,u8,u32
 SetupCamera,0x41c3f3,0x18b,unknown,void,f32
