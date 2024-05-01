@@ -25,7 +25,6 @@ SoundPlayer::PlaySounds
 SoundPlayer::LoadPos
 SoundPlayer::PlayBGM
 SoundPlayer::StopBGM
-SoundPlayer::BackgroundMusicPlayerThread
 ResultScreen::OpenScore
 ResultScreen::ParseClrd
 ResultScreen::ParsePscr
