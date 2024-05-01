@@ -71,6 +71,8 @@ struct GameConfiguration
 #define IN_PBG3_INDEX 0
 #define MD_PBG3_INDEX 1
 
+typedef char Pbg3ArchiveName[32];
+
 enum SupervisorState
 {
     SUPERVISOR_STATE_INIT,
@@ -152,7 +154,7 @@ struct Supervisor
     f32 unk1b8;
 
     Pbg3Archive *pbg3Archives[16];
-    char pbg3ArchiveNames[32][16];
+    Pbg3ArchiveName pbg3ArchiveNames[16];
 
     u8 hasD3dHardwareVertexProcessing;
     u8 lockableBackbuffer;

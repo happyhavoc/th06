@@ -506,13 +506,13 @@ void Supervisor::DrawFpsCounter()
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
     {
         this->ReleasePbg3(pbg3FileIdx);
-        Pbg3Archive *f = new Pbg3Archive();
-        this->pbg3Archives[pbg3FileIdx] = f;
+        this->pbg3Archives[pbg3FileIdx] = new Pbg3Archive();
         DebugPrint("%s open ...\n", filename);
         if (this->pbg3Archives[pbg3FileIdx]->Load(filename) != 0)
         {
@@ -530,12 +530,17 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
         else
         {
             delete this->pbg3Archives[pbg3FileIdx];
+            // Let's really make sure this is null by nulling twice. I assume
+            // there's some kind of inline function here, like it's actually
+            // calling this->pbg3Archives.delete(pbg3FileIdx), followed by a
+            // manual nulling?
             this->pbg3Archives[pbg3FileIdx] = NULL;
-            // TODO: wat?
+            this->pbg3Archives[pbg3FileIdx] = NULL;
         }
     }
     return 0;
 }
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
