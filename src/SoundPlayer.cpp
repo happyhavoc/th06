@@ -151,6 +151,39 @@ ZunResult SoundPlayer::LoadWav(char *path)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(buffer, res)
+ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
+{
+    LPDIRECTSOUNDBUFFER buffer;
+    HRESULT res;
+
+    DebugPrint2("play BGM\n");
+    if (this->backgroundMusic == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    res = this->backgroundMusic->Reset();
+    if (FAILED(res))
+    {
+        return ZUN_ERROR;
+    }
+
+    buffer = this->backgroundMusic->GetBuffer(0);
+    res = this->backgroundMusic->FillBufferWithSound(buffer, isLooping);
+    if (FAILED(res))
+    {
+        return ZUN_ERROR;
+    }
+    res = this->backgroundMusic->Play(0, DSBPLAY_LOOPING);
+    if (FAILED(res))
+    {
+        return ZUN_ERROR;
+    }
+    DebugPrint2("comp\n");
+    this->isLooping = isLooping;
+    return ZUN_SUCCESS;
+}
+
 #pragma var_order(msg, looped, lpThreadParameterCopy, waitObj, res, stopped)
 DWORD __stdcall SoundPlayer::BackgroundMusicPlayerThread(LPVOID lpThreadParameter)
 {

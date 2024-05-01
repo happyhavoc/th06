@@ -23,7 +23,6 @@ SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
 SoundPlayer::PlaySounds
 SoundPlayer::LoadPos
-SoundPlayer::PlayBGM
 SoundPlayer::StopBGM
 ResultScreen::OpenScore
 ResultScreen::ParseClrd

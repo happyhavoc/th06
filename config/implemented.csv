@@ -106,6 +106,7 @@ SetViewport
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
+SoundPlayer::PlayBGM
 SoundPlayer::BackgroundMusicPlayerThread
 CSoundManager::CSoundManager
 CSoundManager::~CSoundManager
