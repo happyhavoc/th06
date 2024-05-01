@@ -490,10 +490,11 @@ Pbg3Parser::~Pbg3Parser,0x43c6e0,0x69,__thiscall,void,Pbg3Parser*
 Pbg3Parser::operator_delete,0x43c750,0x1e,__thiscall,Pbg3Parser*,Pbg3Parser*,u8
 Pbg3Archive::Pbg3Archive,0x43c770,0x13,__thiscall,void,Pbg3Archive*
 Pbg3Archive::ParseHeader,0x43c790,0x131,__thiscall,i32,Pbg3Archive*
-Pbg3Archive::~Pbg3Archive,0x43c8d0,0x4e,__thiscall,u32,Pbg3Archive*
+Pbg3Archive::Release,0x43c8d0,0x4e,__thiscall,u32,Pbg3Archive*
 Pbg3Archive::FindEntry,0x43c920,0x64,__thiscall,u32,Pbg3Archive*,char*
 Pbg3Archive::GetEntrySize,0x43c990,0x25,__thiscall,u32,Pbg3Archive*,u32
 Pbg3Archive::ReadEntryRaw,0x43c9c0,0xbd,__thiscall,u8*,Pbg3Archive*,i32*,i32*,i32
+Pbg3Archive::~Pbg3Archive,0x43ca80,5,__thiscall,u32,Pbg3Archive*
 Pbg3Archive::Load,0x43ca90,0xa5,__thiscall,i32,Pbg3Archive*,char*
 Pbg3Archive::ReadDecompressEntry,0x43cb40,0x2f1,__thiscall,u8*,Pbg3Archive*,u32,char*
 FileAbstraction::FileAbstraction,0x43ce40,0x17,__thiscall,void,FileAbstraction*
