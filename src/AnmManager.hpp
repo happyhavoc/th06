@@ -16,9 +16,10 @@ struct AnmRawSprite
     D3DXVECTOR2 size;
 };
 
-struct AnmRawScript {
+struct AnmRawScript
+{
     u32 id;
-    AnmRawInstr* firstInstruction;
+    AnmRawInstr *firstInstruction;
 };
 
 struct AnmRawEntry
