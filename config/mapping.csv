@@ -219,7 +219,7 @@ FUN_0041ea63,0x41ea63,0x1bf,unknown,char,u32,u32,_D3DFORMAT
 FUN_0041ec22,0x41ec22,0x50,unknown,u8,_D3DFORMAT
 FUN_0041ec72,0x41ec72,0x29f,__thiscall,u32,long*,u32,i32,i32,i32
 FUN_0041ef11,0x41ef11,0xf7,__thiscall,u32,i32*,IDirect3DSurface8*
-Supervisor::CreateBackBuffer,0x41f008,0x23,default,void
+Supervisor::CreateTextBuffer,0x41f008,0x23,default,void
 Supervisor::ReleaseBackBuffer,0x41f02b,0x25,default,void
 FUN_0041f050,0x41f050,0x1e0,__stdcall,void,long,long,long,long,long,i32,unsigned long,unsigned long,char*,IDirect3DTexture8*
 ItemManager::FUN_0041f230,0x41f230,0x5a,__thiscall,ItemManager*,ItemManager*
