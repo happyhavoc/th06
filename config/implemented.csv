@@ -89,6 +89,7 @@ MidiOutput::~MidiOutput
 MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 StageMenu::StageMenu
+Supervisor::CreateTextBuffer
 Supervisor::AddedCallback
 Supervisor::ReleasePbg3
 Supervisor::LoadPbg3
