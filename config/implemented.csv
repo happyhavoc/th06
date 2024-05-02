@@ -24,6 +24,7 @@ AnmManager::LoadSprite
 AnmManager::LoadSurface
 AnmManager::LoadTexture
 AnmManager::LoadTextureAlphaChannel
+AnmManager::ReleaseAnm
 AnmManager::ReleaseTexture
 AnmManager::ReleaseSurface
 AnmManager::ReleaseSurfaces

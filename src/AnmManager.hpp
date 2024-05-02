@@ -16,6 +16,11 @@ struct AnmRawSprite
     D3DXVECTOR2 size;
 };
 
+struct AnmRawScript {
+    u32 id;
+    AnmRawInstr* firstInstruction;
+};
+
 struct AnmRawEntry
 {
     i32 numSprites;
@@ -34,8 +39,10 @@ struct AnmRawEntry
     u32 hasData;
     u32 nextOffset;
     u32 unk2;
-    u8 data[0];
+    u32 spriteOffsets[10];
+    AnmRawScript scripts[10];
 };
+C_ASSERT(sizeof(AnmRawEntry) == 0xb8);
 
 struct RenderVertexInfo
 {
