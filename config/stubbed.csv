@@ -1,4 +1,3 @@
-AnmManager::ReleaseAnm
 AnmManager::ExecuteScript
 AnmManager::Draw
 AnmManager::TakeScreenshotIfRequested
