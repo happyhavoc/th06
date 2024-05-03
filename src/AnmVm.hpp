@@ -28,7 +28,7 @@ struct AnmRawInstr
 {
 };
 
-enum AnmVmFlags
+enum AnmVmFlagsEnum
 {
     AnmVmFlags_0 = 1 << 0,
     AnmVmFlags_1 = 1 << 1,
@@ -48,6 +48,27 @@ enum AnmVmFlags
     AnmVmFlags_15 = 1 << 15,
 };
 
+union AnmVmFlags {
+    u32 flags;
+    struct
+    {
+        u32 flag0 : 1;
+        u32 flag1 : 1;
+        u32 flag2 : 1;
+        u32 flag3 : 1;
+        u32 flag4 : 1;
+        u32 flag5 : 1;
+        u32 flag6 : 2;
+        u32 flag8 : 1;
+        u32 flag9 : 1;
+        u32 flag10 : 2;
+        u32 flag12 : 1;
+        u32 flag13 : 1;
+        u32 flag14 : 1;
+        u32 flag15 : 1;
+    };
+};
+
 struct AnmVm
 {
     AnmVm();
@@ -64,7 +85,7 @@ struct AnmVm
     ZunTimer currentTimeInScript;
     D3DXMATRIX matrix;
     D3DCOLOR color;
-    u32 flags;
+    AnmVmFlags flags;
     u16 alphaInterpEndTime;
     u16 scaleInterpEndTime;
     u16 autoRotate;
