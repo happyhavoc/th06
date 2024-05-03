@@ -54,7 +54,7 @@ ZunResult MainMenu::BeginStartup()
     for (i = 0; i < ARRAY_SIZE(this->vm); i++)
     {
         this->vm[i].pendingInterrupt = 1;
-        this->vm[i].flags.flags |= AnmVmFlags_3;
+        this->vm[i].flags.flag3 = 1;
         if ((g_Supervisor.cfg.opts & (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING)) == 0)
         {
             this->vm[i].color.color = COLOR_BLACK;
@@ -119,9 +119,9 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     for (i = 0; i < 80; i++)
     {
         g_AnmManager->ExecuteAnmIdx(&menu->vm[i], 0x100 + i);
-        menu->vm[i].flags.flags &= 0xfffffffe;
+        menu->vm[i].flags.flag0 = 0;
         menu->vm[i].anotherSpriteNumber = menu->vm[i].spriteNumber;
-        menu->vm[i].flags.flags |= AnmVmFlags_12;
+        menu->vm[i].flags.flag12 = 1;
     }
 
     if (g_AnmManager->LoadSurface(0, "data/title/title00.jpg"))
@@ -823,20 +823,20 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         {
             if (menu->controlMapping[i] < 0)
             {
-                vmList->flags.flags &= ~(AnmVmFlags_1);
+                vmList->flags.flag1 = 0;
                 continue;
             }
-            vmList->flags.flags |= AnmVmFlags_1;
+            vmList->flags.flag1 = 1;
             DrawMenuItem(vmList, i, menu->cursor, menu->color2, menu->color1, 0x73);
         }
         for (i = 0; i < 18; i++, vmList++)
         {
             if (menu->controlMapping[i / 2] < 0)
             {
-                vmList->flags.flags &= ~(AnmVmFlags_1);
+                vmList->flags.flag1 = 0;
                 continue;
             }
-            vmList->flags.flags |= AnmVmFlags_1;
+            vmList->flags.flag1 = 1;
             mapping = menu->controlMapping[i / 2];
             if (i % 2 == 0)
             {
@@ -1012,13 +1012,13 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     memcpy(vmList->posOffset, &pos2, sizeof(D3DXVECTOR3));
                 }
             }
-            vmList->flags.flags &= ~(AnmVmFlags_1);
+            vmList->flags.flag1 = 0;
         }
         else
         {
             for (i = 0; i < 4; i++, vmList++)
             {
-                vmList->flags.flags &= ~(AnmVmFlags_1);
+                vmList->flags.flag1 = 0;
             }
             for (i = 4; i < 5; i++, vmList++)
             {
@@ -1263,13 +1263,13 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         vmList = &menu->vm[92];
         for (i = 0; i < 2; i++, vmList += 2)
         {
-            vmList[1].flags.flags |= AnmVmFlags_3;
+            vmList[1].flags.flag3 = 1;
         }
         vmList = &menu->vm[92 + g_GameManager.character * 2];
         for (i = 0; i < 2; i++, vmList++)
         {
-            vmList->flags.flags |= AnmVmFlags_3;
-            vmList->flags.flags |= AnmVmFlags_0;
+            vmList->flags.flag3 = 1;
+            vmList->flags.flag0 = 1;
             if (i != menu->cursor)
             {
                 if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
