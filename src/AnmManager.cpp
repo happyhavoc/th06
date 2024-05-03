@@ -354,7 +354,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
 {
     ZunTimer *timer;
 
-    vm->flags.flags &= ~(AnmVmFlags_FlipX | AnmVmFlags_FlipY);
+    vm->flags.flip = 0;
     vm->Initialize();
     vm->beginingOfScript = beginingOfScript;
     vm->currentInstruction = vm->beginingOfScript;
@@ -364,7 +364,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
     timer->subFrame = 0.0;
     timer->previous = -999;
 
-    vm->flags.flags &= ~(AnmVmFlags_0);
+    vm->flags.flag0 = 0;
     if (beginingOfScript)
     {
         this->ExecuteScript(vm);
@@ -668,18 +668,18 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         switch (curInstr->opcode)
         {
         case AnmOpcode_Exit:
-            vm->flags.flags &= ~AnmVmFlags_0;
+            vm->flags.flag0 = 0;
         case AnmOpcode_ExitHide:
             vm->currentInstruction = NULL;
             return 1;
         case AnmOpcode_SetActiveSprite:
-            vm->flags.flags |= AnmVmFlags_0;
+            vm->flags.flag0 = 1;
             this->SetActiveSprite(vm, curInstr->args[0] + this->spriteIndices[vm->anmFileIndex]);
             local_68 = vm->currentTimeInScript.current;
             vm->timeOfLastSpriteSet = local_68;
             break;
         case AnmOpcode_SetRandomSprite:
-            vm->flags.flags |= AnmVmFlags_0;
+            vm->flags.flag0 = 1;
             local_c = &curInstr->args[0];
             local_6a = local_c[1];
             if (local_6a != 0)
@@ -754,10 +754,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->alphaInterpTime.InitializeForPopup();
             break;
         case AnmOpcode_SetBlendAdditive:
-            vm->flags.flags |= AnmVmFlags_2;
+            vm->flags.flag2 = 1;
             break;
         case AnmOpcode_SetBlendDefault:
-            vm->flags.flags &= ~AnmVmFlags_2;
+            vm->flags.flag2 = 0;
             break;
         case AnmOpcode_SetTranslation:
             if (vm->flags.flag5 == 0)
@@ -804,7 +804,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case AnmOpcode_Stop:
             if (vm->pendingInterrupt == 0)
             {
-                vm->flags.flags |= AnmVmFlags_13;
+                vm->flags.flag13 = 1;
                 vm->currentTimeInScript.Decrement(1);
                 goto stop;
             }
@@ -822,7 +822,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             }
 
             vm->pendingInterrupt = 0;
-            vm->flags.flags &= ~AnmVmFlags_13;
+            vm->flags.flag13 = 0;
             if (curInstr->opcode != AnmOpcode_InterruptLabel)
             {
                 if (nextInstr == NULL)
@@ -836,7 +836,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             curInstr = (AnmRawInstr *)((i32)curInstr->args + curInstr->argsCount);
             vm->currentInstruction = curInstr;
             vm->currentTimeInScript.SetCurrent(vm->currentInstruction->time);
-            vm->flags.flags |= AnmVmFlags_0;
+            vm->flags.flag0 = 0;
             continue;
         case AnmOpcode_SetVisibility:
             vm->flags.flag0 = curInstr->args[0];
@@ -983,7 +983,7 @@ stop:
             local_3c = 1.0f - local_3c;
             break;
         }
-        if (((vm->flags.flags >> 5) & 1) == 0)
+        if (vm->flags.flag5 == 0)
         {
             vm->pos.x = local_3c * vm->posInterpFinal.x + (1.0f - local_3c) * vm->posInterpInitial.x;
             vm->pos.y = local_3c * vm->posInterpFinal.y + (1.0f - local_3c) * vm->posInterpInitial.y;
