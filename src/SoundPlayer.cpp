@@ -151,4 +151,80 @@ ZunResult SoundPlayer::LoadWav(char *path)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(buffer, res)
+ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
+{
+    LPDIRECTSOUNDBUFFER buffer;
+    HRESULT res;
+
+    DebugPrint2("play BGM\n");
+    if (this->backgroundMusic == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    res = this->backgroundMusic->Reset();
+    if (FAILED(res))
+    {
+        return ZUN_ERROR;
+    }
+
+    buffer = this->backgroundMusic->GetBuffer(0);
+    res = this->backgroundMusic->FillBufferWithSound(buffer, isLooping);
+    if (FAILED(res))
+    {
+        return ZUN_ERROR;
+    }
+    res = this->backgroundMusic->Play(0, DSBPLAY_LOOPING);
+    if (FAILED(res))
+    {
+        return ZUN_ERROR;
+    }
+    DebugPrint2("comp\n");
+    this->isLooping = isLooping;
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(msg, looped, lpThreadParameterCopy, waitObj, res, stopped)
+DWORD __stdcall SoundPlayer::BackgroundMusicPlayerThread(LPVOID lpThreadParameter)
+{
+    DWORD waitObj;
+    MSG msg;
+    u32 stopped;
+    u32 looped;
+    LPVOID lpThreadParameterCopy;
+    HRESULT res;
+
+    lpThreadParameterCopy = lpThreadParameter;
+    stopped = false;
+    looped = true;
+    while (!stopped)
+    {
+        waitObj =
+            MsgWaitForMultipleObjects(1, &g_SoundPlayer.backgroundMusicUpdateEvent, FALSE, INFINITE, QS_ALLEVENTS);
+        if (g_SoundPlayer.backgroundMusic == NULL)
+        {
+            stopped = true;
+        }
+        switch (waitObj)
+        {
+        case 0:
+            if (g_SoundPlayer.backgroundMusic != NULL)
+            {
+                res = g_SoundPlayer.backgroundMusic->HandleWaveStreamNotification(looped);
+            }
+            break;
+        case 1:
+            while (PeekMessageA(&msg, NULL, 0, 0, PM_REMOVE) != 0)
+            {
+                if (msg.message == WM_QUIT)
+                {
+                    stopped = true;
+                }
+            }
+            break;
+        }
+    }
+    return 0;
+}
+
 DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
