@@ -3,6 +3,7 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+#include "ZunColor.hpp"
 #include "ZunMath.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
@@ -84,7 +85,7 @@ struct AnmVm
     D3DXVECTOR2 uvScrollPos;
     ZunTimer currentTimeInScript;
     D3DXMATRIX matrix;
-    D3DCOLOR color;
+    ZunColor color;
     AnmVmFlags flags;
     u16 alphaInterpEndTime;
     u16 scaleInterpEndTime;
