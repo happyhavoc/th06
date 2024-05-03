@@ -506,13 +506,36 @@ void Supervisor::DrawFpsCounter()
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
+{
+    if (this->pbg3Archives[pbg3FileIdx] == NULL)
+    {
+        return;
+    }
+
+    // Double free! Release is called internally by the Pbg3Archive destructor,
+    // and as such should not be called directly. By calling it directly here,
+    // it ends up being called twice, which will cause the resources owned by
+    // Pbg3Archive to be freed multiple times, which can result in crashes.
+    //
+    // For some reason, this double-free doesn't cause crashes in the original
+    // game. However, this can cause problems in dllbuilds of the game. Maybe
+    // some accuracy improvements in the PBG3 handling will remove this
+    // difference.
+    this->pbg3Archives[pbg3FileIdx]->Release();
+    delete this->pbg3Archives[pbg3FileIdx];
+    this->pbg3Archives[pbg3FileIdx] = NULL;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
     {
         this->ReleasePbg3(pbg3FileIdx);
-        Pbg3Archive *f = new Pbg3Archive();
-        this->pbg3Archives[pbg3FileIdx] = f;
+        this->pbg3Archives[pbg3FileIdx] = new Pbg3Archive();
         DebugPrint("%s open ...\n", filename);
         if (this->pbg3Archives[pbg3FileIdx]->Load(filename) != 0)
         {
@@ -530,12 +553,17 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
         else
         {
             delete this->pbg3Archives[pbg3FileIdx];
+            // Let's really make sure this is null by nulling twice. I assume
+            // there's some kind of inline function here, like it's actually
+            // calling this->pbg3Archives.delete(pbg3FileIdx), followed by a
+            // manual nulling?
             this->pbg3Archives[pbg3FileIdx] = NULL;
-            // TODO: wat?
+            this->pbg3Archives[pbg3FileIdx] = NULL;
         }
     }
     return 0;
 }
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 ZunResult Supervisor::SetupDInput(Supervisor *supervisor)

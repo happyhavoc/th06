@@ -91,6 +91,7 @@ MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 StageMenu::StageMenu
 Supervisor::AddedCallback
+Supervisor::ReleasePbg3
 Supervisor::LoadPbg3
 Supervisor::RegisterChain
 Supervisor::LoadConfig
@@ -151,6 +152,7 @@ Pbg3Parser::ReadByte
 Pbg3Parser::~Pbg3Parser
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::ParseHeader
+Pbg3Archive::Release
 Pbg3Archive::~Pbg3Archive
 Pbg3Archive::FindEntry
 Pbg3Archive::GetEntrySize

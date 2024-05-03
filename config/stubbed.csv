@@ -31,7 +31,6 @@ ResultScreen::ParsePscr
 ResultScreen::ReleaseScoreDat
 Supervisor::DeletedCallback
 Supervisor::CreateBackBuffer
-Supervisor::ReleasePbg3
 Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
 GameManager::AddedCallback

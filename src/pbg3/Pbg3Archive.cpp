@@ -54,19 +54,22 @@ i32 Pbg3Archive::ParseHeader()
     return TRUE;
 }
 
-Pbg3Archive::~Pbg3Archive()
+i32 Pbg3Archive::Release()
 {
     this->fileTableOffset = 0;
     this->numOfEntries = 0;
     if (this->parser != NULL)
     {
         delete this->parser;
+        this->parser = NULL;
     }
     if (this->entries != NULL)
     {
         delete[] this->entries;
+        this->entries = NULL;
     }
     delete this->unk;
+    return 1;
 }
 
 i32 Pbg3Archive::FindEntry(char *path)
@@ -140,6 +143,11 @@ u8 *Pbg3Archive::ReadEntryRaw(u32 *outSize, u32 *outChecksum, i32 entryIdx)
     *outChecksum = this->entries[entryIdx].checksum;
     *outSize = size;
     return data;
+}
+
+Pbg3Archive::~Pbg3Archive()
+{
+    this->Release();
 }
 
 i32 Pbg3Archive::Load(char *path)

@@ -21,6 +21,8 @@ class Pbg3Archive
     Pbg3Archive();
     ~Pbg3Archive();
 
+    i32 Release();
+
     i32 Load(char *path);
     i32 ParseHeader();
     i32 FindEntry(char *path);
