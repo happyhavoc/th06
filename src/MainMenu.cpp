@@ -51,7 +51,7 @@ ZunResult MainMenu::BeginStartup()
         g_Supervisor.startupTimeBeforeMenuMusic = 0;
         g_Supervisor.PlayAudio("bgm/th06_01.mid");
     }
-    for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
     {
         this->vm[i].pendingInterrupt = 1;
         this->vm[i].flags.flag3 = 1;
