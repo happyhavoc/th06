@@ -24,5 +24,12 @@ struct ZunTimer
         this->subFrame = 0;
         this->previous = -999;
     }
+
+    void SetCurrent(i32 value)
+    {
+        this->current = value;
+        this->subFrame = 0;
+        this->previous = -999;
+    }
 };
 C_ASSERT(sizeof(ZunTimer) == 0xc);

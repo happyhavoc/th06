@@ -19,6 +19,7 @@ AnmVm::Initialize
 AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::CreateEmptyTexture
+AnmManager::ExecuteScript
 AnmManager::LoadAnm
 AnmManager::LoadSprite
 AnmManager::LoadSurface

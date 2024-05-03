@@ -1,7 +1,8 @@
 AnmManager::ReleaseAnm
-AnmManager::ExecuteScript
 AnmManager::Draw
 AnmManager::TakeScreenshotIfRequested
+AnmManager::SetActiveSprite
+AddNormalizeAngle
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu

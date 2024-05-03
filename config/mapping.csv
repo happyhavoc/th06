@@ -208,7 +208,7 @@ GameErrorContextFatal,0x41e620,0x155,__stdcall,void,GameErrorContext*,char*
 Rng::GetRandomU16,0x41e780,0x63,__thiscall,u16,Rng*
 Rng::GetRandomU32,0x41e7f0,0x30,__thiscall,u32,Rng*
 Rng::GetRandomF32ZeroToOne,0x41e820,0x2e,__thiscall,f32,Rng*
-add_normalize_angle,0x41e850,0x7f,__stdcall,f32,f32,f32
+AddNormalizeAngle,0x41e850,0x7f,default,f32,f32,f32
 FUN_0041e8d0,0x41e8d0,0x6f,__stdcall,void,f32*,f32*,f32
 DebugPrint2,0x41e940,0x5,__stdcall,void,char*
 FUN_0041e945,0x41e945,0x3c,__thiscall,u32*,void*
