@@ -54,7 +54,7 @@ ZunResult MainMenu::BeginStartup()
     for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
     {
         this->vm[i].pendingInterrupt = 1;
-        this->vm[i].flags.flag3 = 1;
+        this->vm[i].flags.colorOp = AnmVmColorOp_Add;
         if ((g_Supervisor.cfg.opts & (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING)) == 0)
         {
             this->vm[i].color.color = COLOR_BLACK;
@@ -121,7 +121,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
         g_AnmManager->ExecuteAnmIdx(&menu->vm[i], 0x100 + i);
         menu->vm[i].flags.flag0 = 0;
         menu->vm[i].anotherSpriteNumber = menu->vm[i].spriteNumber;
-        menu->vm[i].flags.flag12 = 1;
+        menu->vm[i].flags.zWriteDisable = 1;
     }
 
     if (g_AnmManager->LoadSurface(0, "data/title/title00.jpg"))
@@ -1263,12 +1263,12 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         vmList = &menu->vm[92];
         for (i = 0; i < 2; i++, vmList += 2)
         {
-            vmList[1].flags.flag3 = 1;
+            vmList[1].flags.colorOp = AnmVmColorOp_Add;
         }
         vmList = &menu->vm[92 + g_GameManager.character * 2];
         for (i = 0; i < 2; i++, vmList++)
         {
-            vmList->flags.flag3 = 1;
+            vmList->flags.colorOp = AnmVmColorOp_Add;
             vmList->flags.flag0 = 1;
             if (i != menu->cursor)
             {

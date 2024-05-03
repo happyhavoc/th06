@@ -86,21 +86,33 @@ enum AnmVmFlagsEnum
     AnmVmFlags_15 = 1 << 15,
 };
 
+enum AnmVmBlendMode
+{
+    AnmVmBlendMode_InvSrcAlpha,
+    AnmVmBlendMode_One,
+};
+
+enum AnmVmColorOp
+{
+    AnmVmColorOp_Modulate,
+    AnmVmColorOp_Add,
+};
+
 union AnmVmFlags {
     u32 flags;
     struct
     {
         u32 flag0 : 1;
         u32 flag1 : 1;
-        u32 flag2 : 1;
-        u32 flag3 : 1;
+        u32 blendMode : 1;
+        u32 colorOp : 1;
         u32 flag4 : 1;
         u32 flag5 : 1;
         u32 flip : 2;
         u32 flag8 : 1;
         u32 flag9 : 1;
         u32 posTime : 2;
-        u32 flag12 : 1;
+        u32 zWriteDisable : 1;
         u32 flag13 : 1;
         u32 flag14 : 1;
         u32 flag15 : 1;

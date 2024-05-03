@@ -754,10 +754,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->alphaInterpTime.InitializeForPopup();
             break;
         case AnmOpcode_SetBlendAdditive:
-            vm->flags.flag2 = 1;
+            vm->flags.blendMode = AnmVmBlendMode_One;
             break;
         case AnmOpcode_SetBlendDefault:
-            vm->flags.flag2 = 0;
+            vm->flags.blendMode = AnmVmBlendMode_InvSrcAlpha;
             break;
         case AnmOpcode_SetTranslation:
             if (vm->flags.flag5 == 0)
@@ -870,7 +870,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             }
             break;
         case AnmOpcode_31:
-            vm->flags.flag12 = curInstr->args[0];
+            vm->flags.zWriteDisable = curInstr->args[0];
             break;
         case AnmOpcode_Nop:
         case AnmOpcode_InterruptLabel:
@@ -1008,6 +1008,68 @@ stop:
     local_d4->previous = local_d4->current;
     g_Supervisor.TickTimer(&local_d4->current, &local_d4->subFrame);
     return 0;
+}
+
+void AnmManager::SetRenderStateForVm(AnmVm *vm)
+{
+    if (this->currentBlendMode != vm->flags.blendMode)
+    {
+        this->currentBlendMode = vm->flags.blendMode;
+        if (this->currentBlendMode == AnmVmBlendMode_InvSrcAlpha)
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+        }
+    }
+    if ((((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0) &&
+        (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0) && (this->currentColorOp != vm->flags.colorOp))
+    {
+        this->currentColorOp = vm->flags.colorOp;
+        if (this->currentColorOp == AnmVmColorOp_Modulate)
+        {
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
+        }
+    }
+    if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
+    {
+        if (this->currentTextureFactor != vm->color.color)
+        {
+            this->currentTextureFactor = vm->color.color;
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_TEXTUREFACTOR, this->currentTextureFactor);
+        }
+    }
+    else
+    {
+        g_PrimitivesToDrawNoVertexBuf[0].diffuse = vm->color.color;
+        g_PrimitivesToDrawNoVertexBuf[1].diffuse = vm->color.color;
+        g_PrimitivesToDrawNoVertexBuf[2].diffuse = vm->color.color;
+        g_PrimitivesToDrawNoVertexBuf[3].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[0].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[1].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[2].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[3].diffuse = vm->color.color;
+    }
+    if ((((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0) &&
+        (this->currentZWriteDisable != vm->flags.zWriteDisable))
+    {
+        this->currentZWriteDisable = vm->flags.zWriteDisable;
+        if (this->currentZWriteDisable == 0)
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 1);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 0);
+        }
+    }
+    return;
 }
 
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)

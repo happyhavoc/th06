@@ -74,6 +74,8 @@ struct AnmManager
     ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
     void ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx);
 
+    void SetRenderStateForVm(AnmVm *vm);
+
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;
     IDirect3DTexture8 *textures[264];

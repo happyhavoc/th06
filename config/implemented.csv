@@ -32,6 +32,7 @@ AnmManager::ReleaseVertexBuffer
 AnmManager::SetActiveSprite
 AnmManager::SetAndExecuteScript
 AnmManager::SetupVertexBuffer
+AnmManager::SetRenderStateForVm
 AnmManager::ExecuteAnmIdx
 ChainElem::ChainElem
 ChainElem::~ChainElem
