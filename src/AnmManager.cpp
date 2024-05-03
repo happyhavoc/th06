@@ -353,7 +353,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
 {
     ZunTimer *timer;
 
-    vm->flags &= ~(AnmVmFlags_6 | AnmVmFlags_7);
+    vm->flags.flags &= ~(AnmVmFlags_6 | AnmVmFlags_7);
     vm->Initialize();
     vm->beginingOfScript = beginingOfScript;
     vm->currentInstruction = vm->beginingOfScript;
@@ -363,7 +363,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
     timer->subFrame = 0.0;
     timer->previous = -999;
 
-    vm->flags &= ~(AnmVmFlags_0);
+    vm->flags.flags &= ~(AnmVmFlags_0);
     if (beginingOfScript)
     {
         this->ExecuteScript(vm);
