@@ -191,7 +191,6 @@ ZunResult SoundPlayer::InitSoundBuffers()
     return ZUN_SUCCESS;
 }
 
-
 #pragma var_order(buffer, res)
 ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
 {
