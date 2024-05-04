@@ -1633,4 +1633,42 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+i32 MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
+
+{
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
+    {
+        menu->cursor--;
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        if (menu->cursor < 0)
+        {
+            menu->cursor = menuLenght - 1;
+        }
+        if (menu->cursor >= menuLenght)
+        {
+            menu->cursor = 0;
+        }
+        return -1;
+    }
+
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
+    {
+        menu->cursor++;
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        if (menu->cursor < 0)
+        {
+            menu->cursor = menuLenght - 1;
+        }
+        if (menu->cursor >= menuLenght)
+        {
+            menu->cursor = 0;
+        }
+        return 1;
+    }
+
+    return 0;
+}
+#pragma optimize("", on)
+
 DIFFABLE_STATIC(MainMenu, g_MainMenu);

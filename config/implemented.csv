@@ -79,6 +79,7 @@ MainMenu::BeginStartup
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
+MainMenu::MoveCursor
 MainMenu::DrawMenuItem
 MainMenu::OnUpdate
 MainMenu::OnDraw

@@ -37,7 +37,6 @@ Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 ScreenEffect::RegisterChain
-MainMenu::MoveCursor
 MainMenu::DeletedCallback
 MainMenu::ChoosePracticeLevel
 MainMenu::DrawReplayMenu
