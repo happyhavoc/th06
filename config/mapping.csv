@@ -385,7 +385,7 @@ SoundPlayer::LoadPos,0x430e10,0xad,__thiscall,ZunResult,SoundPlayer*,char*
 SoundPlayer::PlayBGM,0x430ec0,0xbe,__thiscall,ZunResult,SoundPlayer*,i32
 SoundPlayer::StopBGM,0x430f80,0xfc,__thiscall,void,SoundPlayer*
 SoundPlayer::InitSoundBuffers,0x431080,0x156,__thiscall,ZunResult,SoundPlayer*
-SoundPlayer::PlaySoundByIdx,0x4311e0,0x85,__thiscall,void,SoundPlayer*,i32,i32
+SoundPlayer::PlaySoundByIdx,0x4311e0,0x85,__thiscall,void,SoundPlayer*,SoundIdx,i32
 SoundPlayer::PlaySounds,0x431270,0x100,__thiscall,void,SoundPlayer*
 SoundPlayer::BackgroundMusicPlayerThread,0x431370,0xb0,__stdcall,unsigned long,void*
 SoundPlayer::SoundPlayer,0x431420,0x4c,__thiscall,u32*,SoundPlayer*
