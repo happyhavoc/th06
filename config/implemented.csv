@@ -20,6 +20,7 @@ AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::CreateEmptyTexture
 AnmManager::ExecuteScript
+AnmManager::DrawInner
 AnmManager::LoadAnm
 AnmManager::LoadSprite
 AnmManager::LoadSurface
