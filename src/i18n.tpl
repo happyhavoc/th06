@@ -60,6 +60,7 @@
 #define TH_JP_ERR_MAINMENU_LOAD_SELECT_SCREEN_FAILED "セレクト画面の読み込みに失敗\n"
 #define TH_JP_ERR_SOUNDPLAYER_FAILED_TO_CREATE_BGM_SOUND_BUFFER "error : ストリーミング用サウンドバッファを作成出来ませんでした\n"
 #define TH_JP_ERR_SOUNDPLAYER_FAILED_TO_INITIALIZE_OBJECT "DirectSound オブジェクトの初期化が失敗したよ\n"
+#define TH_JP_ERR_SOUNDPLAYER_FAILED_TO_LOAD_SOUND_FILE "error : Sound ファイルが読み込めない データを確認 %s\n"
 #define TH_JP_DBG_SOUNDPLAYER_INIT_SUCCESS "DirectSound は正常に初期化されました\n"
 #define TH_JP_IN_DAT_FILE "紅魔郷IN.dat"
 #define TH_JP_MD_DAT_FILE "紅魔郷MD.dat"

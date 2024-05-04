@@ -111,6 +111,7 @@ SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
 SoundPlayer::PlayBGM
 SoundPlayer::BackgroundMusicPlayerThread
+SoundPlayer::InitSoundBuffers
 CSoundManager::CSoundManager
 CSoundManager::~CSoundManager
 CSoundManager::Initialize
