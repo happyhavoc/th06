@@ -69,6 +69,7 @@ struct AnmManager
     void SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript);
     i32 ExecuteScript(AnmVm *vm);
     ZunResult Draw(AnmVm *vm);
+    ZunResult DrawInner(AnmVm *vm, i32 unk);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
