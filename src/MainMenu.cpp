@@ -1657,7 +1657,7 @@ ZunResult MainMenu::ChoosePracticeLevel()
         i32 color = local_28;
         i32 charShotType = (g_GameManager.character << 1) + g_GameManager.shotType;
         i32 stage;
-        if (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 7)
+        if (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6)
         {
             stage = 6;
         }
