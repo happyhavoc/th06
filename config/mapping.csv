@@ -424,7 +424,7 @@ MainMenu::MoveCursor,0x43753c,0x136,default,CursorMovement,MainMenu*,i32
 MainMenu::SelectRelated,0x437672,0x131,default,void,MainMenu*,u16,u16,u32
 MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,void,AnmVm*,i32,i32,unsigned long,unsigned long,i32
 MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
-MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunResult,MainMenu*
+MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunBool,MainMenu*
 MainMenu::DrawStartMenu,0x437b41,0x68b,__thiscall,ZunResult,MainMenu*
 MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,i32,MainMenu*
 MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,ZunResult,MainMenu*

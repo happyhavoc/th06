@@ -23,6 +23,9 @@
 #define COLOR_BLACK 0xff000000
 #define COLOR_WHITE 0xffffffff
 #define COLOR_RED 0xffff0000
+#define COLOR_PINK 0xffffe0e0
+
+#define COLOR_MENU_ACTIVE_BACKGROUND 0x40000000
 // TODO: find a better name for this color
 #define COLOR_START_MENU_ITEM_INACTIVE 0x80300000
 
@@ -773,7 +776,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         {
             goto load_menu_rpy;
         }
-        if (menu->WeirdSecondInputCheck() != ZUN_SUCCESS)
+        if (menu->WeirdSecondInputCheck())
             break;
         menu->idleFrames = 0;
     case STATE_MAIN_MENU:
@@ -1668,6 +1671,50 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
     }
 
     return CURSOR_DONT_MOVE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(vm, d3dVec)
+ZunBool MainMenu::WeirdSecondInputCheck()
+{
+    i32 vm;
+    D3DXVECTOR3 d3dVec;
+
+    if (this->stateTimer < 0x1e)
+    {
+        return true;
+    }
+
+    if (!WAS_PRESSED_WEIRD(TH_BUTTON_SELECTMENU | TH_BUTTON_BOMB | TH_BUTTON_MENU | TH_BUTTON_Q | TH_BUTTON_S))
+    {
+        return true;
+    }
+
+    this->stateTimer = 0;
+    this->gameState = STATE_MAIN_MENU;
+    for (vm = 0; vm < 122; vm++)
+    {
+        this->vm[vm].pendingInterrupt = 2;
+    }
+    if (!(g_Supervisor.cfg.opts & 1 >> GCOS_USE_D3D_HW_TEXTURE_BLENDING))
+    {
+        this->vm[this->cursor].color = COLOR_RED;
+    }
+    else
+    {
+        this->vm[this->cursor].color = COLOR_PINK;
+    }
+    d3dVec.x = -6.0;
+    d3dVec.y = -6.0;
+    d3dVec.z = 0.0;
+    this->vm[this->cursor].posOffset = d3dVec;
+
+    this->minimumOpacity = 0;
+    this->menuTextColor = COLOR_MENU_ACTIVE_BACKGROUND;
+    this->numFramesSinceActive = 0;
+    this->framesActive = 60;
+    return false;
 }
 #pragma optimize("", on)
 

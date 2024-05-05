@@ -44,7 +44,6 @@ MainMenu::LoadReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
 MainMenu::DrawOptionsMenu
-MainMenu::WeirdSecondInputCheck
 ReplayDoStuff
 ValidateReplayData
 DrawSquare

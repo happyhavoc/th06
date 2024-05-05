@@ -5,6 +5,7 @@
 #include "AnmVm.hpp"
 #include "Chain.hpp"
 #include "ReplayData.hpp"
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
@@ -44,7 +45,7 @@ struct MainMenu
     u32 DrawOptionsMenu();
     ZunResult DrawReplayMenu();
     ZunResult ChoosePracticeLevel();
-    ZunResult WeirdSecondInputCheck();
+    ZunBool WeirdSecondInputCheck();
 
     static ZunResult LoadTitleAnm(MainMenu *menu);
     static CursorMovement MoveCursor(MainMenu *menu, i32 menuLength);
