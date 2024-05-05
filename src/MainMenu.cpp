@@ -1634,7 +1634,7 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-i32 MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
+CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
 
 {
     if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
@@ -1649,7 +1649,7 @@ i32 MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
         {
             menu->cursor = 0;
         }
-        return -1;
+        return CURSOR_MOVE_UP;
     }
 
     if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
@@ -1664,10 +1664,10 @@ i32 MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
         {
             menu->cursor = 0;
         }
-        return 1;
+        return CURSOR_MOVE_DOWN;
     }
 
-    return 0;
+    return CURSOR_DONT_MOVE;
 }
 #pragma optimize("", on)
 

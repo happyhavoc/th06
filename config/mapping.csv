@@ -420,7 +420,7 @@ AnmManager::DrawEndingRect,0x4354c0,0x1a8,__thiscall,void,AnmManager*,i32,long,l
 AnmManager::TakeScreenshot,0x435670,0xed,__thiscall,void,AnmManager*,i32,i32,i32,i32,i32
 MainMenu::MainMenu,0x43575d,0x42,__thiscall,void,MainMenu*
 MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,ChainCallbackResult,MainMenu*
-MainMenu::MoveCursor,0x43753c,0x136,default,i32,MainMenu*,i32
+MainMenu::MoveCursor,0x43753c,0x136,default,CursorMovement,MainMenu*,i32
 MainMenu::SelectRelated,0x437672,0x131,default,void,MainMenu*,u16,u16,u32
 MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,void,AnmVm*,i32,i32,unsigned long,unsigned long,i32
 MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
