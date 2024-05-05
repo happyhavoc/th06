@@ -1638,7 +1638,6 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 
 #pragma optimize("s", on)
 CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
-
 {
     if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
     {

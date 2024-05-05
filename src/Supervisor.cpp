@@ -986,7 +986,6 @@ u16 GetInput(void)
 #pragma optimize("s", on)
 #pragma var_order(diprange, pvRefBackup)
 BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
-
 {
     LPVOID pvRefBackup;
     DIPROPRANGE diprange;
@@ -1012,7 +1011,6 @@ BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef
 
 #pragma optimize("s", on)
 BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
-
 {
     HRESULT result;
 
