@@ -342,7 +342,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-#pragma function("memset")
+#pragma function(memset)
 ZunResult MainMenu::RegisterChain(u32 isDemo)
 {
     MainMenu *menu = &g_MainMenu;
@@ -369,6 +369,7 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
     menu->frameCountForRefreshRateCalc = 0;
     return ZUN_SUCCESS;
 }
+#pragma intrinsic(memset)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
@@ -597,6 +598,8 @@ i32 MainMenu::ReplayHandling()
     }
     return 0;
 }
+#pragma intrinsic(strcpy)
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 #pragma var_order(scoredat, i, anmmgr)
@@ -684,7 +687,7 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
 
 DIFFABLE_STATIC(i16, g_LastJoystickInput)
 
-#pragma function("strcpy")
+#pragma function(strcpy)
 #pragma optimize("s", on)
 #pragma var_order(i, vmList, time, deltaTime, deltaTimeAsFrames, deltaTimeAsMs, mapping, startedUp, sVar1,             \
                   controllerData, mappingData, refreshRate, local_48, local_4c, chosenStage, pos1, pos2, pos3, pos4,   \
@@ -1534,6 +1537,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)
+#pragma intrinsic(strcpy)
 
 #pragma var_order(targetOpacity, window, vmIdx, curVm, posBackup, mgr, shouldDraw, offset, pos)
 #pragma optimize("s", on)
@@ -1701,7 +1705,9 @@ ZunBool MainMenu::WeirdSecondInputCheck()
     this->framesActive = 60;
     return false;
 }
+#pragma optimize("", on)
 
+#pragma optimize("s", on)
 #pragma var_order(stageNum, color, charShotType, selectedStage, textPos, local_28, stage)
 ZunResult MainMenu::ChoosePracticeLevel()
 {
