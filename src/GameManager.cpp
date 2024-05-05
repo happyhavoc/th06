@@ -247,7 +247,7 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
             if (gameManager->livesRemaining < MAX_LIVES)
             {
                 gameManager->livesRemaining++;
-                g_SoundPlayer.PlaySoundByIdx(0x1c, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_1UP, 0);
             }
             g_Gui.flags = g_Gui.flags & 0xfffffffc | 2;
             gameManager->extraLives++;

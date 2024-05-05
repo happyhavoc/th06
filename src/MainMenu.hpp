@@ -5,6 +5,7 @@
 #include "AnmVm.hpp"
 #include "Chain.hpp"
 #include "ReplayData.hpp"
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
@@ -30,6 +31,13 @@ enum GameState
     STATE_PRACTICE_LVL_SELECT,
 };
 
+enum CursorMovement
+{
+    CURSOR_MOVE_UP = -1,
+    CURSOR_DONT_MOVE = 0,
+    CURSOR_MOVE_DOWN = 1,
+};
+
 struct MainMenu
 {
     ZunResult BeginStartup();
@@ -37,10 +45,10 @@ struct MainMenu
     u32 DrawOptionsMenu();
     ZunResult DrawReplayMenu();
     ZunResult ChoosePracticeLevel();
-    ZunResult WeirdSecondInputCheck();
+    ZunBool WeirdSecondInputCheck();
 
     static ZunResult LoadTitleAnm(MainMenu *menu);
-    static i32 MoveCursor(MainMenu *menu, i32 menuLength);
+    static CursorMovement MoveCursor(MainMenu *menu, i32 menuLength);
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
     static void SelectRelated(MainMenu *menu, u16 btnPressed, u16 oldMapping, u32 unk);

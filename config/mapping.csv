@@ -385,7 +385,7 @@ SoundPlayer::LoadPos,0x430e10,0xad,__thiscall,ZunResult,SoundPlayer*,char*
 SoundPlayer::PlayBGM,0x430ec0,0xbe,__thiscall,ZunResult,SoundPlayer*,i32
 SoundPlayer::StopBGM,0x430f80,0xfc,__thiscall,void,SoundPlayer*
 SoundPlayer::InitSoundBuffers,0x431080,0x156,__thiscall,ZunResult,SoundPlayer*
-SoundPlayer::PlaySoundByIdx,0x4311e0,0x85,__thiscall,void,SoundPlayer*,i32,i32
+SoundPlayer::PlaySoundByIdx,0x4311e0,0x85,__thiscall,void,SoundPlayer*,SoundIdx,i32
 SoundPlayer::PlaySounds,0x431270,0x100,__thiscall,void,SoundPlayer*
 SoundPlayer::BackgroundMusicPlayerThread,0x431370,0xb0,__stdcall,unsigned long,void*
 SoundPlayer::SoundPlayer,0x431420,0x4c,__thiscall,u32*,SoundPlayer*
@@ -420,11 +420,11 @@ AnmManager::DrawEndingRect,0x4354c0,0x1a8,__thiscall,void,AnmManager*,i32,long,l
 AnmManager::TakeScreenshot,0x435670,0xed,__thiscall,void,AnmManager*,i32,i32,i32,i32,i32
 MainMenu::MainMenu,0x43575d,0x42,__thiscall,void,MainMenu*
 MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,ChainCallbackResult,MainMenu*
-MainMenu::MoveCursor,0x43753c,0x136,default,i32,MainMenu*,i32
+MainMenu::MoveCursor,0x43753c,0x136,default,CursorMovement,MainMenu*,i32
 MainMenu::SelectRelated,0x437672,0x131,default,void,MainMenu*,u16,u16,u32
 MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,void,AnmVm*,i32,i32,unsigned long,unsigned long,i32
 MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,ZunResult,MainMenu*
-MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunResult,MainMenu*
+MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunBool,MainMenu*
 MainMenu::DrawStartMenu,0x437b41,0x68b,__thiscall,ZunResult,MainMenu*
 MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,i32,MainMenu*
 MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,ZunResult,MainMenu*
