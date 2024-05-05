@@ -175,8 +175,7 @@ ZunResult SoundPlayer::InitSoundBuffers()
         {
             if (this->LoadSound(idx, g_SFXList[idx]) != ZUN_SUCCESS)
             {
-                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_LOAD_SOUND_FILE,
-                                    g_SFXList[idx]);
+                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_LOAD_SOUND_FILE, g_SFXList[idx]);
                 return ZUN_ERROR;
             }
         }
