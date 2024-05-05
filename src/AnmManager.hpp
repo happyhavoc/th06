@@ -9,6 +9,29 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRHW
+struct VertexTex1Xyzrwh
+{
+    D3DXVECTOR4 position;
+    D3DXVECTOR2 textureUV;
+};
+
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRHW
+struct VertexTex1DiffuseXyzrwh
+{
+    D3DXVECTOR4 position;
+    D3DCOLOR diffuse;
+    D3DXVECTOR2 textureUV;
+};
+
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ
+struct VertexTex1DiffuseXyz
+{
+    D3DXVECTOR3 position;
+    D3DCOLOR diffuse;
+    D3DXVECTOR2 textureUV;
+};
+
 struct AnmRawSprite
 {
     u32 id;
@@ -69,6 +92,8 @@ struct AnmManager
     void SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript);
     i32 ExecuteScript(AnmVm *vm);
     ZunResult Draw(AnmVm *vm);
+    ZunResult DrawNoRotation(AnmVm *vm);
+    ZunResult DrawInner(AnmVm *vm, i32 unk);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
@@ -78,9 +103,14 @@ struct AnmManager
     void ReleaseSurface(i32 surfaceIdx);
     void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
 
+    void TranslateRotation(VertexTex1Xyzrwh *param_1, float x, float y, float sine, float cosine, float xOffset,
+                           float yOffset);
+
     void ReleaseAnm(i32 anmIdx);
     ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
     void ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx);
+
+    void SetRenderStateForVm(AnmVm *vm);
 
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;
@@ -110,6 +140,8 @@ struct AnmManager
     i32 screenshotHeight;
 };
 C_ASSERT(sizeof(AnmManager) == 0x2112c);
+
+f32 AddNormalizeAngle(f32 a, f32 b);
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
 DIFFABLE_EXTERN(D3DFORMAT, g_TextureFormatD3D8Mapping[6]);

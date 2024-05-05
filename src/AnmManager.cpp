@@ -1,32 +1,10 @@
 #include "AnmManager.hpp"
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
+#include "Rng.hpp"
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
-
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRHW
-struct VertexTex1Xyzrwh
-{
-    D3DXVECTOR4 position;
-    D3DXVECTOR2 textureUV;
-};
-
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRHW
-struct VertexTex1DiffuseXyzrwh
-{
-    D3DXVECTOR4 position;
-    D3DCOLOR diffuse;
-    D3DXVECTOR2 textureUV;
-};
-
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ
-struct VertexTex1DiffuseXyz
-{
-    D3DXVECTOR3 position;
-    D3DCOLOR diffuse;
-    D3DXVECTOR2 textureUV;
-};
 
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
@@ -353,7 +331,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
 {
     ZunTimer *timer;
 
-    vm->flags &= ~(AnmVmFlags_6 | AnmVmFlags_7);
+    vm->flags.flip = 0;
     vm->Initialize();
     vm->beginingOfScript = beginingOfScript;
     vm->currentInstruction = vm->beginingOfScript;
@@ -363,7 +341,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
     timer->subFrame = 0.0;
     timer->previous = -999;
 
-    vm->flags &= ~(AnmVmFlags_0);
+    vm->flags.flag0 = 0;
     if (beginingOfScript)
     {
         this->ExecuteScript(vm);
@@ -643,6 +621,690 @@ void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
     vm->fontWidth = 15;
 
     SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
+}
+
+#pragma var_order(curInstr, local_c, local_10, local_14, local_18, local_1c, local_20, nextInstr, local_28, local_2c,  \
+                  local_30, local_34, local_38, local_3c, local_48, local_54, local_60, local_68, local_6a, local_6c,  \
+                  local_70, curTime, timer, scaleInterpCurTime, local_b4, local_b8, local_bc, local_c0, local_c4,      \
+                  local_c8, local_cc, local_d0, local_d4, randValue)
+i32 AnmManager::ExecuteScript(AnmVm *vm)
+{
+    AnmRawInstr *curInstr;
+    u32 *local_c;
+    f32 *local_10;
+    f32 *local_14;
+    f32 *local_18;
+    f32 *local_1c;
+    u32 *local_20;
+    AnmRawInstr *nextInstr;
+    ZunColor local_28;
+    ZunColor local_2c;
+    f32 local_30;
+    i32 local_34;
+    i32 local_38;
+    f32 local_3c;
+    D3DXVECTOR3 local_48;
+    D3DXVECTOR3 local_54;
+    D3DXVECTOR3 local_60;
+    u32 local_68;
+    u16 local_6a;
+    u16 local_6c;
+    u32 local_70;
+    i32 curTime;
+    ZunTimer *timer;
+    i32 scaleInterpCurTime;
+    ZunTimer *local_b4;
+    ZunTimer *local_b8;
+    ZunTimer *local_bc;
+    ZunTimer *local_c0;
+    i32 local_c4;
+    ZunTimer *local_c8;
+    i32 local_cc;
+    ZunTimer *local_d0;
+    ZunTimer *local_d4;
+    u32 randValue;
+
+    if (vm->currentInstruction == NULL)
+    {
+        return 1;
+    }
+
+    if (vm->pendingInterrupt != 0)
+    {
+        goto yolo;
+    }
+
+    while ((curInstr = vm->currentInstruction, curTime = vm->currentTimeInScript.current, curInstr->time <= curTime))
+    {
+        switch (curInstr->opcode)
+        {
+        case AnmOpcode_Exit:
+            vm->flags.flag0 = 0;
+        case AnmOpcode_ExitHide:
+            vm->currentInstruction = NULL;
+            return 1;
+        case AnmOpcode_SetActiveSprite:
+            vm->flags.flag0 = 1;
+            this->SetActiveSprite(vm, curInstr->args[0] + this->spriteIndices[vm->anmFileIndex]);
+            local_68 = vm->currentTimeInScript.current;
+            vm->timeOfLastSpriteSet = local_68;
+            break;
+        case AnmOpcode_SetRandomSprite:
+            vm->flags.flag0 = 1;
+            local_c = &curInstr->args[0];
+            local_6a = local_c[1];
+            if (local_6a != 0)
+            {
+                randValue = g_Rng.GetRandomU16() % local_6a;
+            }
+            else
+            {
+                randValue = 0;
+            }
+            this->SetActiveSprite(vm, local_c[0] + (u16)randValue + this->spriteIndices[vm->anmFileIndex]);
+            local_70 = vm->currentTimeInScript.current;
+            vm->timeOfLastSpriteSet = local_70;
+            break;
+        case AnmOpcode_SetScale:
+            vm->scaleX = *(f32 *)&curInstr->args[0];
+            vm->scaleY = *(f32 *)&curInstr->args[1];
+            break;
+        case AnmOpcode_SetAlpha:
+            vm->color.alpha = curInstr->args[0] & 0xff;
+            break;
+        case AnmOpcode_SetColor:
+            vm->color.color = (vm->color.color & 0xff000000) | (curInstr->args[0] & 0xffffff);
+            break;
+        case AnmOpcode_Jump:
+            vm->currentInstruction = (AnmRawInstr *)((i32)vm->beginingOfScript->args + curInstr->args[0] - 4);
+            vm->currentTimeInScript.current = vm->currentInstruction->time;
+            continue;
+        case AnmOpcode_FlipX:
+            vm->flags.flip ^= 1;
+            vm->scaleX *= -1.f;
+            break;
+        case AnmOpcode_25:
+            vm->flags.flag5 = curInstr->args[0];
+            break;
+        case AnmOpcode_FlipY:
+            vm->flags.flip ^= 2;
+            vm->scaleY *= -1.f;
+            break;
+        case AnmOpcode_SetRotation:
+            local_10 = (f32 *)&curInstr->args[0];
+            vm->rotation.x = *local_10++;
+            vm->rotation.y = *local_10++;
+            vm->rotation.z = *local_10;
+            break;
+        case AnmOpcode_SetPosition:
+            local_14 = (f32 *)&curInstr->args[0];
+            vm->angleVel.x = *local_14++;
+            vm->angleVel.y = *local_14++;
+            vm->angleVel.z = *local_14;
+            break;
+        case AnmOpcode_SetScaleSpeed:
+            local_18 = (f32 *)&curInstr->args[0];
+            vm->scaleInterpFinalX = *local_18++;
+            vm->scaleInterpFinalY = *local_18;
+            vm->scaleInterpEndTime = 0;
+            break;
+        case AnmOpcode_30:
+            local_1c = (f32 *)&curInstr->args[0];
+            vm->scaleInterpFinalX = *local_1c++;
+            vm->scaleInterpFinalY = *local_1c++;
+            vm->scaleInterpEndTime = *(u16 *)local_1c;
+            vm->scaleInterpTime.InitializeForPopup();
+            vm->scaleInterpInitialX = vm->scaleX;
+            vm->scaleInterpInitialY = vm->scaleY;
+            break;
+        case AnmOpcode_Fade:
+            local_20 = (u32 *)&curInstr->args[0];
+            vm->alphaInterpInitial = vm->color.color;
+            vm->alphaInterpFinal = (vm->color.color & 0xffffff) | ((local_20[0] & 0xff) << 24);
+            vm->alphaInterpEndTime = local_20[1];
+            vm->alphaInterpTime.InitializeForPopup();
+            break;
+        case AnmOpcode_SetBlendAdditive:
+            vm->flags.blendMode = AnmVmBlendMode_One;
+            break;
+        case AnmOpcode_SetBlendDefault:
+            vm->flags.blendMode = AnmVmBlendMode_InvSrcAlpha;
+            break;
+        case AnmOpcode_SetTranslation:
+            if (vm->flags.flag5 == 0)
+            {
+                local_48.z = *(f32 *)&curInstr->args[2];
+                local_48.y = *(f32 *)&curInstr->args[1];
+                local_48.x = *(f32 *)&curInstr->args[0];
+                memcpy(vm->pos, local_48, sizeof(D3DXVECTOR3));
+            }
+            else
+            {
+                local_54.z = *(f32 *)&curInstr->args[2];
+                local_54.y = *(f32 *)&curInstr->args[1];
+                local_54.x = *(f32 *)&curInstr->args[0];
+                memcpy(vm->posOffset, local_54, sizeof(D3DXVECTOR3));
+            }
+            break;
+        case AnmOpcode_PosTimeAccel:
+            vm->flags.posTime = 2;
+            goto PosTimeDoStuff;
+        case AnmOpcode_PosTimeDecel:
+            vm->flags.posTime = 1;
+            goto PosTimeDoStuff;
+        case AnmOpcode_PosTimeLinear:
+            vm->flags.posTime = 0;
+        PosTimeDoStuff:
+            if (vm->flags.flag5 == 0)
+            {
+                memcpy(vm->posInterpInitial, vm->pos, sizeof(D3DXVECTOR3));
+            }
+            else
+            {
+                memcpy(vm->posInterpInitial, vm->posOffset, sizeof(D3DXVECTOR3));
+            }
+            local_60.z = *(f32 *)&curInstr->args[2];
+            local_60.y = *(f32 *)&curInstr->args[1];
+            local_60.x = *(f32 *)&curInstr->args[0];
+            memcpy(vm->posInterpFinal, local_60, sizeof(D3DXVECTOR3));
+            vm->posInterpEndTime = curInstr->args[3];
+            vm->posInterpTime.InitializeForPopup();
+            break;
+        case AnmOpcode_StopHide:
+            vm->flags.flag0 = 0;
+        case AnmOpcode_Stop:
+            if (vm->pendingInterrupt == 0)
+            {
+                vm->flags.flag13 = 1;
+                vm->currentTimeInScript.Decrement(1);
+                goto stop;
+            }
+        yolo:
+            nextInstr = NULL;
+            curInstr = vm->beginingOfScript;
+            while ((curInstr->opcode != AnmOpcode_InterruptLabel || vm->pendingInterrupt != curInstr->args[0]) &&
+                   curInstr->opcode != AnmOpcode_Exit && curInstr->opcode != AnmOpcode_ExitHide)
+            {
+                if (curInstr->opcode == AnmOpcode_InterruptLabel && curInstr->args[0] == 0xffffffff)
+                {
+                    nextInstr = curInstr;
+                }
+                curInstr = (AnmRawInstr *)((i32)curInstr->args + curInstr->argsCount);
+            }
+
+            vm->pendingInterrupt = 0;
+            vm->flags.flag13 = 0;
+            if (curInstr->opcode != AnmOpcode_InterruptLabel)
+            {
+                if (nextInstr == NULL)
+                {
+                    vm->currentTimeInScript.Decrement(1);
+                    goto stop;
+                }
+                curInstr = nextInstr;
+            }
+
+            curInstr = (AnmRawInstr *)((i32)curInstr->args + curInstr->argsCount);
+            vm->currentInstruction = curInstr;
+            vm->currentTimeInScript.SetCurrent(vm->currentInstruction->time);
+            vm->flags.flag0 = 1;
+            continue;
+        case AnmOpcode_SetVisibility:
+            vm->flags.flag0 = curInstr->args[0];
+            break;
+        case AnmOpcode_23:
+            vm->flags.anchor = AnmVmAnchor_TopLeft;
+            break;
+        case AnmOpcode_SetAutoRotate:
+            vm->autoRotate = curInstr->args[0];
+            break;
+        case AnmOpcode_27:
+            vm->uvScrollPos.x += *(f32 *)&curInstr->args[0];
+            if (vm->uvScrollPos.x >= 1.0f)
+            {
+                vm->uvScrollPos.x -= 1.0f;
+            }
+            else if (vm->uvScrollPos.x < 0.0f)
+            {
+                vm->uvScrollPos.x += 1.0f;
+            }
+            break;
+        case AnmOpcode_28:
+            vm->uvScrollPos.y += *(f32 *)&curInstr->args[0];
+            if (vm->uvScrollPos.y >= 1.0f)
+            {
+                vm->uvScrollPos.y -= 1.0f;
+            }
+            else if (vm->uvScrollPos.y < 0.0f)
+            {
+                vm->uvScrollPos.y += 1.0f;
+            }
+            break;
+        case AnmOpcode_31:
+            vm->flags.zWriteDisable = curInstr->args[0];
+            break;
+        case AnmOpcode_Nop:
+        case AnmOpcode_InterruptLabel:
+        default:
+            break;
+        }
+        vm->currentInstruction = (AnmRawInstr *)((u32)curInstr->args + curInstr->argsCount);
+    }
+
+stop:
+    if (vm->angleVel.x != 0.0f)
+    {
+        vm->rotation.x = AddNormalizeAngle(vm->rotation.x, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.x);
+    }
+    if (vm->angleVel.y != 0.0f)
+    {
+        vm->rotation.y = AddNormalizeAngle(vm->rotation.y, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.y);
+    }
+    if (vm->angleVel.z != 0.0f)
+    {
+        vm->rotation.z = AddNormalizeAngle(vm->rotation.z, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.z);
+    }
+    if (vm->scaleInterpEndTime > 0)
+    {
+        timer = &vm->scaleInterpTime;
+        timer->previous = timer->current;
+        g_Supervisor.TickTimer(&timer->current, &timer->subFrame);
+        scaleInterpCurTime = vm->scaleInterpTime.current;
+        if (scaleInterpCurTime >= vm->scaleInterpEndTime)
+        {
+            vm->scaleY = vm->scaleInterpFinalY;
+            vm->scaleX = vm->scaleInterpFinalX;
+            vm->scaleInterpEndTime = 0;
+            vm->scaleInterpFinalY = 0.0;
+            vm->scaleInterpFinalX = 0.0;
+        }
+        else
+        {
+            local_b4 = &vm->scaleInterpTime;
+            vm->scaleX = (vm->scaleInterpFinalX - vm->scaleInterpInitialX) * (local_b4->current + local_b4->subFrame) /
+                             vm->scaleInterpEndTime +
+                         vm->scaleInterpInitialX;
+            local_b8 = &vm->scaleInterpTime;
+            vm->scaleY = (vm->scaleInterpFinalY - vm->scaleInterpInitialY) * (local_b8->current + local_b8->subFrame) /
+                             vm->scaleInterpEndTime +
+                         vm->scaleInterpInitialY;
+        }
+        if ((vm->flags.flip & 1) != 0)
+        {
+            vm->scaleX = vm->scaleX * -1.f;
+        }
+        if ((vm->flags.flip & 2) != 0)
+        {
+            vm->scaleY = vm->scaleY * -1.f;
+        }
+    }
+    else
+    {
+        vm->scaleY = g_Supervisor.effectiveFramerateMultiplier * vm->scaleInterpFinalY + vm->scaleY;
+        vm->scaleX = g_Supervisor.effectiveFramerateMultiplier * vm->scaleInterpFinalX + vm->scaleX;
+    }
+    if (0 < vm->alphaInterpEndTime)
+    {
+        local_bc = &vm->alphaInterpTime;
+        local_bc->previous = local_bc->current;
+        g_Supervisor.TickTimer(&local_bc->current, &local_bc->subFrame);
+        local_2c.color = vm->alphaInterpInitial;
+        local_28.color = vm->alphaInterpFinal;
+        local_c0 = &vm->alphaInterpTime;
+        local_30 = ((f32)local_c0->current + local_c0->subFrame) / (f32)vm->alphaInterpEndTime;
+        if (local_30 >= 1.0f)
+        {
+            local_30 = 1.0;
+        }
+        for (local_38 = 0; local_38 < 4; local_38++)
+        {
+            local_34 =
+                ((f32)local_28.bytes[local_38] - (f32)local_2c.bytes[local_38]) * local_30 + local_2c.bytes[local_38];
+            if (local_34 < 0)
+            {
+                local_34 = 0;
+            }
+            local_2c.bytes[local_38] = local_34 >= 256 ? 255 : local_34;
+        }
+        vm->color.color = local_2c.color;
+        local_c4 = vm->alphaInterpTime.current;
+        if (local_c4 >= vm->alphaInterpEndTime)
+        {
+            vm->alphaInterpEndTime = 0;
+        }
+    }
+    if (vm->posInterpEndTime != 0)
+    {
+        local_c8 = &vm->posInterpTime;
+        local_3c = ((f32)local_c8->current + local_c8->subFrame) / (f32)vm->posInterpEndTime;
+        if (local_3c >= 1.0f)
+        {
+            local_3c = 1.0;
+        }
+        switch (vm->flags.posTime)
+        {
+        case 1:
+            local_3c = 1.0f - local_3c;
+            local_3c *= local_3c;
+            local_3c = 1.0f - local_3c;
+            break;
+        case 2:
+            local_3c = 1.0f - local_3c;
+            local_3c = local_3c * local_3c * local_3c * local_3c;
+            local_3c = 1.0f - local_3c;
+            break;
+        }
+        if (vm->flags.flag5 == 0)
+        {
+            vm->pos.x = local_3c * vm->posInterpFinal.x + (1.0f - local_3c) * vm->posInterpInitial.x;
+            vm->pos.y = local_3c * vm->posInterpFinal.y + (1.0f - local_3c) * vm->posInterpInitial.y;
+            vm->pos.z = local_3c * vm->posInterpFinal.z + (1.0f - local_3c) * vm->posInterpInitial.z;
+        }
+        else
+        {
+            vm->posOffset.x = local_3c * vm->posInterpFinal.x + (1.0f - local_3c) * vm->posInterpInitial.x;
+            vm->posOffset.y = local_3c * vm->posInterpFinal.y + (1.0f - local_3c) * vm->posInterpInitial.y;
+            vm->posOffset.z = local_3c * vm->posInterpFinal.z + (1.0f - local_3c) * vm->posInterpInitial.z;
+        }
+        local_cc = vm->posInterpTime.current;
+        if (local_cc >= vm->posInterpEndTime)
+        {
+            vm->posInterpEndTime = 0;
+        }
+        local_d0 = &vm->posInterpTime;
+        local_d0->previous = local_d0->current;
+        g_Supervisor.TickTimer(&local_d0->current, &local_d0->subFrame);
+    }
+    local_d4 = &vm->currentTimeInScript;
+    local_d4->previous = local_d4->current;
+    g_Supervisor.TickTimer(&local_d4->current, &local_d4->subFrame);
+    return 0;
+}
+
+void AnmManager::SetRenderStateForVm(AnmVm *vm)
+{
+    if (this->currentBlendMode != vm->flags.blendMode)
+    {
+        this->currentBlendMode = vm->flags.blendMode;
+        if (this->currentBlendMode == AnmVmBlendMode_InvSrcAlpha)
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+        }
+    }
+    if ((((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0) &&
+        (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0) && (this->currentColorOp != vm->flags.colorOp))
+    {
+        this->currentColorOp = vm->flags.colorOp;
+        if (this->currentColorOp == AnmVmColorOp_Modulate)
+        {
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_ADD);
+        }
+    }
+    if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
+    {
+        if (this->currentTextureFactor != vm->color.color)
+        {
+            this->currentTextureFactor = vm->color.color;
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_TEXTUREFACTOR, this->currentTextureFactor);
+        }
+    }
+    else
+    {
+        g_PrimitivesToDrawNoVertexBuf[0].diffuse = vm->color.color;
+        g_PrimitivesToDrawNoVertexBuf[1].diffuse = vm->color.color;
+        g_PrimitivesToDrawNoVertexBuf[2].diffuse = vm->color.color;
+        g_PrimitivesToDrawNoVertexBuf[3].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[0].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[1].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[2].diffuse = vm->color.color;
+        g_PrimitivesToDrawUnknown[3].diffuse = vm->color.color;
+    }
+    if ((((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0) &&
+        (this->currentZWriteDisable != vm->flags.zWriteDisable))
+    {
+        this->currentZWriteDisable = vm->flags.zWriteDisable;
+        if (this->currentZWriteDisable == 0)
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 1);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 0);
+        }
+    }
+    return;
+}
+
+static f32 g_ZeroPointFive = 0.5;
+
+ZunResult AnmManager::DrawInner(AnmVm *vm, i32 param_3)
+{
+    if (param_3 != 0)
+    {
+        // TODO: It'd be nice to find a way to match this without inline assembly.
+        __asm {
+            fld g_PrimitivesToDrawVertexBuf[0 * TYPE g_PrimitivesToDrawVertexBuf].position.x
+            frndint
+            fsub g_ZeroPointFive
+            fld g_PrimitivesToDrawVertexBuf[1 * TYPE g_PrimitivesToDrawVertexBuf].position.x
+            frndint
+            fsub g_ZeroPointFive
+            fld g_PrimitivesToDrawVertexBuf[0 * TYPE g_PrimitivesToDrawVertexBuf].position.y
+            frndint
+            fsub g_ZeroPointFive
+            fld g_PrimitivesToDrawVertexBuf[2 * TYPE g_PrimitivesToDrawVertexBuf].position.y
+            frndint
+            fsub g_ZeroPointFive
+            fst g_PrimitivesToDrawVertexBuf[2 * TYPE g_PrimitivesToDrawVertexBuf].position.y
+            fstp g_PrimitivesToDrawVertexBuf[3 * TYPE g_PrimitivesToDrawVertexBuf].position.y
+            fst g_PrimitivesToDrawVertexBuf[0 * TYPE g_PrimitivesToDrawVertexBuf].position.y
+            fstp g_PrimitivesToDrawVertexBuf[1 * TYPE g_PrimitivesToDrawVertexBuf].position.y
+            fst g_PrimitivesToDrawVertexBuf[1 * TYPE g_PrimitivesToDrawVertexBuf].position.x
+            fstp g_PrimitivesToDrawVertexBuf[3 * TYPE g_PrimitivesToDrawVertexBuf].position.x
+            fst g_PrimitivesToDrawVertexBuf[0 * TYPE g_PrimitivesToDrawVertexBuf].position.x
+            fstp g_PrimitivesToDrawVertexBuf[2 * TYPE g_PrimitivesToDrawVertexBuf].position.x
+        }
+    }
+    g_PrimitivesToDrawVertexBuf[0].position.z = g_PrimitivesToDrawVertexBuf[1].position.z =
+        g_PrimitivesToDrawVertexBuf[2].position.z = g_PrimitivesToDrawVertexBuf[3].position.z = vm->pos.z;
+    if (this->currentSprite != vm->sprite)
+    {
+        this->currentSprite = vm->sprite;
+        g_PrimitivesToDrawVertexBuf[0].textureUV.x = g_PrimitivesToDrawVertexBuf[2].textureUV.x =
+            vm->sprite->uvStart.x + vm->uvScrollPos.x;
+        g_PrimitivesToDrawVertexBuf[1].textureUV.x = g_PrimitivesToDrawVertexBuf[3].textureUV.x =
+            vm->sprite->uvEnd.x + vm->uvScrollPos.x;
+        g_PrimitivesToDrawVertexBuf[0].textureUV.y = g_PrimitivesToDrawVertexBuf[1].textureUV.y =
+            vm->sprite->uvStart.y + vm->uvScrollPos.y;
+        g_PrimitivesToDrawVertexBuf[2].textureUV.y = g_PrimitivesToDrawVertexBuf[3].textureUV.y =
+            vm->sprite->uvEnd.y + vm->uvScrollPos.y;
+        if (this->currentTexture != this->textures[vm->sprite->sourceFileIndex])
+        {
+            this->currentTexture = this->textures[vm->sprite->sourceFileIndex];
+            g_Supervisor.d3dDevice->SetTexture(0, this->currentTexture);
+        }
+    }
+    if (this->currentVertexShader != 2)
+    {
+        if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
+        {
+            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_XYZRHW);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
+        }
+        this->currentVertexShader = 2;
+    }
+    this->SetRenderStateForVm(vm);
+    if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
+    {
+        g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, g_PrimitivesToDrawVertexBuf, 0x18);
+    }
+    else
+    {
+        g_PrimitivesToDrawNoVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[0].position.x;
+        g_PrimitivesToDrawNoVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[0].position.y;
+        g_PrimitivesToDrawNoVertexBuf[0].position.z = g_PrimitivesToDrawVertexBuf[0].position.z;
+        g_PrimitivesToDrawNoVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[1].position.x;
+        g_PrimitivesToDrawNoVertexBuf[1].position.y = g_PrimitivesToDrawVertexBuf[1].position.y;
+        g_PrimitivesToDrawNoVertexBuf[1].position.z = g_PrimitivesToDrawVertexBuf[1].position.z;
+        g_PrimitivesToDrawNoVertexBuf[2].position.x = g_PrimitivesToDrawVertexBuf[2].position.x;
+        g_PrimitivesToDrawNoVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[2].position.y;
+        g_PrimitivesToDrawNoVertexBuf[2].position.z = g_PrimitivesToDrawVertexBuf[2].position.z;
+        g_PrimitivesToDrawNoVertexBuf[3].position.x = g_PrimitivesToDrawVertexBuf[3].position.x;
+        g_PrimitivesToDrawNoVertexBuf[3].position.y = g_PrimitivesToDrawVertexBuf[3].position.y;
+        g_PrimitivesToDrawNoVertexBuf[3].position.z = g_PrimitivesToDrawVertexBuf[3].position.z;
+        g_PrimitivesToDrawNoVertexBuf[0].textureUV.x = g_PrimitivesToDrawNoVertexBuf[2].textureUV.x =
+            vm->sprite->uvStart.x + vm->uvScrollPos.x;
+        g_PrimitivesToDrawNoVertexBuf[1].textureUV.x = g_PrimitivesToDrawNoVertexBuf[3].textureUV.x =
+            vm->sprite->uvEnd.x + vm->uvScrollPos.x;
+        g_PrimitivesToDrawNoVertexBuf[0].textureUV.y = g_PrimitivesToDrawNoVertexBuf[1].textureUV.y =
+            vm->sprite->uvStart.y + vm->uvScrollPos.y;
+        g_PrimitivesToDrawNoVertexBuf[2].textureUV.y = g_PrimitivesToDrawNoVertexBuf[3].textureUV.y =
+            vm->sprite->uvEnd.y + vm->uvScrollPos.y;
+        g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, g_PrimitivesToDrawNoVertexBuf, 0x1c);
+    }
+    return ZUN_SUCCESS;
+}
+
+f32 __inline rintf(f32 float_in)
+{
+    __asm {
+        fld float_in
+        frndint
+        fstp float_in
+    }
+    return float_in;
+}
+
+#define sincos(in, out_sine, out_cosine)                                                                               \
+    {                                                                                                                  \
+        __asm { \
+        __asm fld in \
+        __asm fsincos \
+        __asm fstp out_cosine \
+        __asm fstp out_sine }                                            \
+    }
+
+#pragma var_order(spriteXCenter, spriteYCenter, yOffset, xOffset, zSine, z, zCosine)
+ZunResult AnmManager::Draw(AnmVm *vm)
+{
+    f32 zSine;
+    f32 zCosine;
+    f32 spriteXCenter;
+    f32 spriteYCenter;
+    f32 xOffset;
+    f32 yOffset;
+    f32 z;
+
+    if (vm->rotation.z == 0.0f)
+    {
+        return this->DrawNoRotation(vm);
+    }
+    if (vm->flags.flag0 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->flags.flag1 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->color.color == 0)
+    {
+        return ZUN_ERROR;
+    }
+    z = vm->rotation.z;
+    sincos(z, zSine, zCosine);
+    xOffset = rintf(vm->pos.x);
+    yOffset = rintf(vm->pos.y);
+    spriteXCenter = rintf((vm->sprite->widthPx * vm->scaleX) / 2.0f);
+    spriteYCenter = rintf((vm->sprite->heightPx * vm->scaleY) / 2.0f);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[0], -spriteXCenter - 0.5f, -spriteYCenter - 0.5f, zSine,
+                            zCosine, xOffset, yOffset);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[1], spriteXCenter - 0.5f, -spriteYCenter - 0.5f, zSine,
+                            zCosine, xOffset, yOffset);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[2], -spriteXCenter - 0.5f, spriteYCenter - 0.5f, zSine,
+                            zCosine, xOffset, yOffset);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[3], spriteXCenter - 0.5f, spriteYCenter - 0.5f, zSine, zCosine,
+                            xOffset, yOffset);
+    g_PrimitivesToDrawVertexBuf[0].position.z = g_PrimitivesToDrawVertexBuf[1].position.z =
+        g_PrimitivesToDrawVertexBuf[2].position.z = g_PrimitivesToDrawVertexBuf[3].position.z = vm->pos.z;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) != 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x += spriteXCenter;
+        g_PrimitivesToDrawVertexBuf[1].position.x += spriteXCenter;
+        g_PrimitivesToDrawVertexBuf[2].position.x += spriteXCenter;
+        g_PrimitivesToDrawVertexBuf[3].position.x += spriteXCenter;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) != 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y += spriteYCenter;
+        g_PrimitivesToDrawVertexBuf[1].position.y += spriteYCenter;
+        g_PrimitivesToDrawVertexBuf[2].position.y += spriteYCenter;
+        g_PrimitivesToDrawVertexBuf[3].position.y += spriteYCenter;
+    }
+    return this->DrawInner(vm, 0);
+}
+
+ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
+{
+    float fVar2;
+    float fVar3;
+
+    if (vm->flags.flag0 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->flags.flag1 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->color.color == 0)
+    {
+        return ZUN_ERROR;
+    }
+    fVar2 = (vm->sprite->widthPx * vm->scaleX) / 2.0f;
+    fVar3 = (vm->sprite->heightPx * vm->scaleY) / 2.0f;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x - fVar2;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x = fVar2 + vm->pos.x;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x =
+            fVar2 + vm->pos.x + fVar2;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y - fVar3;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y = fVar3 + vm->pos.y;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y =
+            fVar3 + vm->pos.y + fVar3;
+    }
+    return this->DrawInner(vm, 1);
+}
+
+void AnmManager::TranslateRotation(VertexTex1Xyzrwh *param_1, f32 x, f32 y, f32 sine, f32 cosine, f32 xOffset,
+                                   f32 yOffset)
+{
+    param_1->position.x = x * cosine + y * sine + xOffset;
+    param_1->position.y = -x * sine + y * cosine + yOffset;
+    return;
 }
 
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)

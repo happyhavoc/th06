@@ -1,6 +1,6 @@
-AnmManager::ExecuteScript
-AnmManager::Draw
 AnmManager::TakeScreenshotIfRequested
+AnmManager::SetActiveSprite
+AddNormalizeAngle
 AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
@@ -28,7 +28,6 @@ ResultScreen::ParseClrd
 ResultScreen::ParsePscr
 ResultScreen::ReleaseScoreDat
 Supervisor::DeletedCallback
-Supervisor::CreateBackBuffer
 Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
 GameManager::AddedCallback

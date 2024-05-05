@@ -51,17 +51,17 @@ ZunResult MainMenu::BeginStartup()
         g_Supervisor.startupTimeBeforeMenuMusic = 0;
         g_Supervisor.PlayAudio("bgm/th06_01.mid");
     }
-    for (i = 0; i < ARRAY_SIZE(this->vm); i++)
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
     {
         this->vm[i].pendingInterrupt = 1;
-        this->vm[i].flags |= AnmVmFlags_3;
+        this->vm[i].flags.colorOp = AnmVmColorOp_Add;
         if ((g_Supervisor.cfg.opts & (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING)) == 0)
         {
-            this->vm[i].color = COLOR_BLACK;
+            this->vm[i].color.color = COLOR_BLACK;
         }
         else
         {
-            this->vm[i].color = COLOR_WHITE;
+            this->vm[i].color.color = COLOR_WHITE;
         }
         vector3Ptr.x = 0.0;
         vector3Ptr.y = 0.0;
@@ -119,9 +119,9 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     for (i = 0; i < 80; i++)
     {
         g_AnmManager->ExecuteAnmIdx(&menu->vm[i], 0x100 + i);
-        menu->vm[i].flags &= 0xfffffffe;
+        menu->vm[i].flags.flag0 = 0;
         menu->vm[i].anotherSpriteNumber = menu->vm[i].spriteNumber;
-        menu->vm[i].flags |= AnmVmFlags_12;
+        menu->vm[i].flags.zWriteDisable = 1;
     }
 
     if (g_AnmManager->LoadSurface(0, "data/title/title00.jpg"))
@@ -314,13 +314,13 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) |
              (g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1)) == 0)
         {
-            vm->color = currentItemColor;
+            vm->color.color = currentItemColor;
         }
         else
         {
             g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + vm_amount);
-            vm->color = currentItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
-                        D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // just... why?
+            vm->color.color = currentItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
+                              D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // just... why?
         }
 
         currentItemPos.x = -4.0f;
@@ -333,14 +333,14 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1 |
              g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1) == 0)
         {
-            vm->color = otherItemColor;
+            vm->color.color = otherItemColor;
         }
 
         else
         {
             g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber);
-            vm->color = otherItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
-                        D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // again, why?
+            vm->color.color = otherItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
+                              D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // again, why?
         }
         otherItemPos.x = 0.0f;
         otherItemPos.y = 0.0f;
@@ -823,20 +823,20 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         {
             if (menu->controlMapping[i] < 0)
             {
-                vmList->flags &= ~(AnmVmFlags_1);
+                vmList->flags.flag1 = 0;
                 continue;
             }
-            vmList->flags |= AnmVmFlags_1;
+            vmList->flags.flag1 = 1;
             DrawMenuItem(vmList, i, menu->cursor, menu->color2, menu->color1, 0x73);
         }
         for (i = 0; i < 18; i++, vmList++)
         {
             if (menu->controlMapping[i / 2] < 0)
             {
-                vmList->flags &= ~(AnmVmFlags_1);
+                vmList->flags.flag1 = 0;
                 continue;
             }
-            vmList->flags |= AnmVmFlags_1;
+            vmList->flags.flag1 = 1;
             mapping = menu->controlMapping[i / 2];
             if (i % 2 == 0)
             {
@@ -984,11 +984,11 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 {
                     if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
                     {
-                        vmList->color = 0x60000000;
+                        vmList->color.color = 0x60000000;
                     }
                     else
                     {
-                        vmList->color = 0x60ffffff;
+                        vmList->color.color = 0x60ffffff;
                     }
                     pos1.x = 0.0;
                     pos1.y = 0.0;
@@ -1000,11 +1000,11 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 {
                     if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
                     {
-                        vmList->color = 0xff000000;
+                        vmList->color.color = 0xff000000;
                     }
                     else
                     {
-                        vmList->color = 0xffffffff;
+                        vmList->color.color = 0xffffffff;
                     }
                     pos2.x = -6.0f;
                     pos2.y = -6.0f;
@@ -1012,23 +1012,23 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     memcpy(vmList->posOffset, &pos2, sizeof(D3DXVECTOR3));
                 }
             }
-            vmList->flags &= ~(AnmVmFlags_1);
+            vmList->flags.flag1 = 0;
         }
         else
         {
             for (i = 0; i < 4; i++, vmList++)
             {
-                vmList->flags &= ~(AnmVmFlags_1);
+                vmList->flags.flag1 = 0;
             }
             for (i = 4; i < 5; i++, vmList++)
             {
                 if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
                 {
-                    vmList->color = 0xff000000;
+                    vmList->color.color = 0xff000000;
                 }
                 else
                 {
-                    vmList->color = 0xffffffff;
+                    vmList->color.color = 0xffffffff;
                 }
                 pos3.x = -6.0f;
                 pos3.y = -6.0f;
@@ -1263,22 +1263,22 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         vmList = &menu->vm[92];
         for (i = 0; i < 2; i++, vmList += 2)
         {
-            vmList[1].flags |= AnmVmFlags_3;
+            vmList[1].flags.colorOp = AnmVmColorOp_Add;
         }
         vmList = &menu->vm[92 + g_GameManager.character * 2];
         for (i = 0; i < 2; i++, vmList++)
         {
-            vmList->flags |= AnmVmFlags_3;
-            vmList->flags |= AnmVmFlags_0;
+            vmList->flags.colorOp = AnmVmColorOp_Add;
+            vmList->flags.flag0 = 1;
             if (i != menu->cursor)
             {
                 if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
                 {
-                    vmList->color = 0xa0000000;
+                    vmList->color.color = 0xa0000000;
                 }
                 else
                 {
-                    vmList->color = 0xa0d0d0d0;
+                    vmList->color.color = 0xa0d0d0d0;
                 }
                 pos4.x = 0.0;
                 pos4.y = 0.0;
@@ -1289,11 +1289,11 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
                 {
-                    vmList->color = 0xff202020;
+                    vmList->color.color = 0xff202020;
                 }
                 else
                 {
-                    vmList->color = 0xffffffff;
+                    vmList->color.color = 0xffffffff;
                 }
                 pos5.x = -6.f;
                 pos5.y = -6.f;
