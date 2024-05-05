@@ -166,6 +166,80 @@ void AsciiManager::CutChain()
     // to free it!
 }
 
+#pragma var_order(charWidth, i, string, text, guiString, padding_1, padding_2, padding_3)
+void AsciiManager::DrawStrings(void)
+{
+    i32 padding_1;
+    i32 padding_2;
+    i32 padding_3;
+    i32 i;
+    BOOL guiString;
+    f32 charWidth;
+    AsciiManagerString *string;
+    u8 *text;
+
+    guiString = TRUE;
+    string = this->strings;
+    this->vm0.flags.flag0 = 1;
+    this->vm0.flags.anchor = AnmVmAnchor_TopLeft;
+    for (i = 0; i < this->numStrings; i++, string++)
+    {
+        this->vm0.pos = string->position;
+        text = (u8 *)string->text;
+        this->vm0.scaleX = string->scale.x;
+        this->vm0.scaleY = string->scale.y;
+        charWidth = 14 * string->scale.x;
+        if (guiString != string->isGui)
+        {
+            guiString = string->isGui;
+            if (guiString)
+            {
+                g_Supervisor.viewport.X = g_GameManager.arcadeRegionTopLeftPos.x;
+                g_Supervisor.viewport.Y = g_GameManager.arcadeRegionTopLeftPos.y;
+                g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
+                g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
+                g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+            }
+            else
+            {
+                g_Supervisor.viewport.X = 0;
+                g_Supervisor.viewport.Y = 0;
+                g_Supervisor.viewport.Width = 640;
+                g_Supervisor.viewport.Height = 480;
+                g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+            }
+        }
+        while (*text != NULL)
+        {
+            if (*text == '\n')
+            {
+                this->vm0.pos.y = 16 * string->scale.y + this->vm0.pos.y;
+                this->vm0.pos.x = string->position.x;
+            }
+            else if (*text == ' ')
+            {
+                this->vm0.pos.x += charWidth;
+            }
+            else
+            {
+                if (string->isSelected == FALSE)
+                {
+                    this->vm0.sprite = &g_AnmManager->sprites[*text - 0x15];
+                    this->vm0.color.color = string->color;
+                }
+                else
+                {
+                    this->vm0.sprite = &g_AnmManager->sprites[*text + 0x61];
+                    this->vm0.color.color = 0xFFFFFFFF;
+                }
+                g_AnmManager->DrawNoRotation(&this->vm0);
+                this->vm0.pos.x += charWidth;
+            }
+            text++;
+        }
+    }
+}
+
 void AsciiManager::AddString(D3DXVECTOR3 *position, char *text)
 {
     if (this->numStrings >= 0x100)

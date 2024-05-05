@@ -1,7 +1,6 @@
 AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AddNormalizeAngle
-AsciiManager::DrawStrings
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu

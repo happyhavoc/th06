@@ -11,6 +11,7 @@ AsciiManager::AddString
 AsciiManager::AddFormatText
 AsciiManager::CreatePopup1
 AsciiManager::CreatePopup2
+AsciiManager::DrawStrings
 ZunTimer::Initialize
 ZunTimer::Increment
 ZunTimer::Decrement
