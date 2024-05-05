@@ -1,5 +1,4 @@
 AnmManager::TakeScreenshotIfRequested
-AnmManager::FUN_00432ad0
 AnmManager::SetActiveSprite
 AddNormalizeAngle
 StageMenu::OnUpdateGameMenu

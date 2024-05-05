@@ -94,7 +94,6 @@ struct AnmManager
     ZunResult Draw(AnmVm *vm);
     ZunResult DrawNoRotation(AnmVm *vm);
     ZunResult DrawInner(AnmVm *vm, i32 unk);
-    ZunResult FUN_00432ad0(AnmVm *vm);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
