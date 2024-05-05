@@ -2125,4 +2125,81 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
 }
 #pragma optimize("", on)
 
+#pragma var_order(i, vm, pos, padding)
+#pragma optimize("s", on)
+ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
+{
+    AnmVm *vm;
+    i32 i;
+    D3DXVECTOR3 pos;
+    i32 padding[6];
+
+    for (i = 21; i <= 26; i++)
+    {
+        g_AnmManager->ReleaseAnm(i);
+    }
+    if (g_AnmManager->LoadSurface(0, "data/title/select00.jpg") != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SELECT01, "data/select01.anm", ANM_OFFSET_SELECT01) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SELECT02, "data/select02.anm", ANM_OFFSET_SELECT02) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SELECT03, "data/select03.anm", ANM_OFFSET_SELECT03) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SELECT04, "data/select04.anm", ANM_OFFSET_SELECT04) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SELECT05, "data/select05.anm", ANM_OFFSET_SELECT05) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SLPL00A, "data/slpl00a.anm", ANM_OFFSET_SLPL00A) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SLPL00B, "data/slpl00b.anm", ANM_OFFSET_SLPL00B) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SLPL01A, "data/slpl01a.anm", ANM_OFFSET_SLPL01A) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(ANM_FILE_SLPL01B, "data/slpl01b.anm", ANM_OFFSET_SLPL01B) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    for (vm = &menu->vm[0x50], i = ANM_OFFSET_SELECT01; i <= 0x15f; i++, vm++)
+    {
+        g_AnmManager->ExecuteAnmIdx(vm, i);
+        vm->flags.flag0 = 0;
+        vm->flags.colorOp = AnmVmColorOp_Add;
+        if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
+        {
+            vm->color = 0xff000000;
+        }
+        else
+        {
+            vm->color = 0xffffffff;
+        }
+        pos.x = 0;
+        pos.y = 0;
+        pos.z = 0;
+        memcpy(&vm->posOffset, pos, sizeof(D3DXVECTOR3));
+        vm->baseSpriteIndex = vm->activeSpriteIndex;
+        vm->flags.zWriteDisable = 1;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
