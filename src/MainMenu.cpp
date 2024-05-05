@@ -1698,11 +1698,11 @@ ZunBool MainMenu::WeirdSecondInputCheck()
     }
     if (!((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1))
     {
-        this->vm[this->cursor].color = COLOR_RED;
+        this->vm[this->cursor].color.color = COLOR_RED;
     }
     else
     {
-        this->vm[this->cursor].color = COLOR_PINK;
+        this->vm[this->cursor].color.color = COLOR_PINK;
     }
     d3dVec.x = -6.0;
     d3dVec.y = -6.0;
@@ -1714,58 +1714,59 @@ ZunBool MainMenu::WeirdSecondInputCheck()
     this->numFramesSinceActive = 0;
     this->framesActive = 60;
     return false;
+}
 
 #pragma var_order(stageNum, color, charShotType, selectedStage, textPos, local_28, stage)
-    ZunResult MainMenu::ChoosePracticeLevel()
+ZunResult MainMenu::ChoosePracticeLevel()
+{
+    if (this->gameState == STATE_PRACTICE_LVL_SELECT)
     {
-        if (this->gameState == STATE_PRACTICE_LVL_SELECT)
+        i32 local_28;
+        D3DXVECTOR3 textPos(320.0, 200.0, 0.0);
+        if (this->stateTimer < 30)
         {
-            i32 local_28;
-            D3DXVECTOR3 textPos(320.0, 200.0, 0.0);
-            if (this->stateTimer < 30)
-            {
-                local_28 = this->stateTimer * 0xFF / 30;
-            }
-            else
-            {
-                local_28 = 0xff;
-            }
-
-            i32 color = local_28;
-            i32 charShotType = (g_GameManager.character << 1) + g_GameManager.shotType;
-            i32 stage;
-            if (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6)
-            {
-                stage = 6;
-            }
-            else
-            {
-                stage = g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty];
-            }
-            i32 selectedStage = stage;
-            if (g_GameManager.difficulty == EASY && stage == 6)
-            {
-                selectedStage = 5;
-            }
-            for (i32 stageNum = 0; stageNum < selectedStage; stageNum++)
-            {
-                if (stageNum == this->cursor)
-                {
-                    g_AsciiManager.color = color << 0x18 | 0x00C0F0F0;
-                }
-                else
-                {
-                    g_AsciiManager.color = (color >> 1) << 0x18 | 0x00C0F0F0;
-                }
-                g_AsciiManager.AddFormatText(
-                    &textPos, "STAGE %d  %.9d", stageNum + 1,
-                    g_GameManager.pscr[(charShotType * 24) + stageNum * 6 + g_GameManager.difficulty].score);
-                textPos.y += 24;
-            }
-            g_AsciiManager.color = 0xFFFFFFFF;
+            local_28 = this->stateTimer * 0xFF / 30;
         }
-        return ZUN_SUCCESS;
+        else
+        {
+            local_28 = 0xff;
+        }
+
+        i32 color = local_28;
+        i32 charShotType = (g_GameManager.character << 1) + g_GameManager.shotType;
+        i32 stage;
+        if (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6)
+        {
+            stage = 6;
+        }
+        else
+        {
+            stage = g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty];
+        }
+        i32 selectedStage = stage;
+        if (g_GameManager.difficulty == EASY && stage == 6)
+        {
+            selectedStage = 5;
+        }
+        for (i32 stageNum = 0; stageNum < selectedStage; stageNum++)
+        {
+            if (stageNum == this->cursor)
+            {
+                g_AsciiManager.color = color << 0x18 | 0x00C0F0F0;
+            }
+            else
+            {
+                g_AsciiManager.color = (color >> 1) << 0x18 | 0x00C0F0F0;
+            }
+            g_AsciiManager.AddFormatText(
+                &textPos, "STAGE %d  %.9d", stageNum + 1,
+                g_GameManager.pscr[(charShotType * 24) + stageNum * 6 + g_GameManager.difficulty].score);
+            textPos.y += 24;
+        }
+        g_AsciiManager.color = 0xFFFFFFFF;
     }
+    return ZUN_SUCCESS;
+}
 #pragma optimize("", on)
 
-    DIFFABLE_STATIC(MainMenu, g_MainMenu);
+DIFFABLE_STATIC(MainMenu, g_MainMenu);
