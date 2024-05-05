@@ -166,7 +166,7 @@ void AsciiManager::CutChain()
     // to free it!
 }
 
-#pragma var_order(padding_1, i, string, text, guiString, charWidth, padding_2, padding_3);
+#pragma var_order(charWidth, i, string, text, guiString, padding_1, padding_2, padding_3);
 void AsciiManager::DrawStrings(void)
 {
     i32 padding_1;
@@ -196,8 +196,8 @@ void AsciiManager::DrawStrings(void)
             {
                 g_Supervisor.viewport.X = g_GameManager.arcadeRegionTopLeftPos.x;
                 g_Supervisor.viewport.Y = g_GameManager.arcadeRegionTopLeftPos.y;
-                g_Supervisor.viewport.Width = 640.0;
-                g_Supervisor.viewport.Height = 480.0;
+                g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
+                g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
                 g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
             }
             else
@@ -222,7 +222,7 @@ void AsciiManager::DrawStrings(void)
             }
             else
             {
-                if (strings->isSelected == FALSE)
+                if (string->isSelected == FALSE)
                 {
                     this->vm0.sprite = &g_AnmManager->sprites[*text - 0x15];
                     this->vm0.color = string->color;
