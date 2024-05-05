@@ -1637,7 +1637,7 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
+CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 {
     if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
     {
@@ -1645,9 +1645,9 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
         g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
         if (menu->cursor < 0)
         {
-            menu->cursor = menuLenght - 1;
+            menu->cursor = menuLength - 1;
         }
-        if (menu->cursor >= menuLenght)
+        if (menu->cursor >= menuLength)
         {
             menu->cursor = 0;
         }
@@ -1660,9 +1660,9 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLenght)
         g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
         if (menu->cursor < 0)
         {
-            menu->cursor = menuLenght - 1;
+            menu->cursor = menuLength - 1;
         }
-        if (menu->cursor >= menuLenght)
+        if (menu->cursor >= menuLength)
         {
             menu->cursor = 0;
         }
@@ -1696,7 +1696,7 @@ ZunBool MainMenu::WeirdSecondInputCheck()
     {
         this->vm[vm].pendingInterrupt = 2;
     }
-    if (!(g_Supervisor.cfg.opts & 1 >> GCOS_USE_D3D_HW_TEXTURE_BLENDING))
+    if (!((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1))
     {
         this->vm[this->cursor].color = COLOR_RED;
     }
