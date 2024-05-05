@@ -21,6 +21,7 @@ AnmManager::CopySurfaceToBackBuffer
 AnmManager::CreateEmptyTexture
 AnmManager::ExecuteScript
 AnmManager::DrawInner
+AnmManager::DrawNoRotation
 AnmManager::LoadAnm
 AnmManager::LoadSprite
 AnmManager::LoadSurface

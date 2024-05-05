@@ -1199,4 +1199,48 @@ ZunResult AnmManager::DrawInner(AnmVm *vm, i32 param_3)
     return ZUN_SUCCESS;
 }
 
+ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
+{
+    float fVar2;
+    float fVar3;
+
+    if (vm->flags.flag0 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->flags.flag1 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->color.color == 0)
+    {
+        return ZUN_ERROR;
+    }
+    fVar2 = (vm->sprite->widthPx * vm->scaleX) / 2.0f;
+    fVar3 = (vm->sprite->heightPx * vm->scaleY) / 2.0f;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x - fVar2;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x = fVar2 + vm->pos.x;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x =
+            fVar2 + vm->pos.x + fVar2;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y - fVar3;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y = fVar3 + vm->pos.y;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y =
+            fVar3 + vm->pos.y + fVar3;
+    }
+    return this->DrawInner(vm, 1);
+}
+
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)
