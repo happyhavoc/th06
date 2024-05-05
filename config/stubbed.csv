@@ -17,8 +17,8 @@ MidiOutput::UnprepareHeader
 MidiOutput::ReleaseFileData
 MidiOutput::Play
 MidiOutput::LoadFile
-SoundPlayer::InitSoundBuffers
 SoundPlayer::PlaySoundByIdx
+SoundPlayer::LoadSound
 SoundPlayer::Release
 SoundPlayer::PlaySounds
 SoundPlayer::LoadPos

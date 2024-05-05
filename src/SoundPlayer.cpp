@@ -8,6 +8,9 @@
 #define BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE 16
 #define BACKGROUND_MUSIC_WAV_BLOCK_ALIGN BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE / 8 * BACKGROUND_MUSIC_WAV_NUM_CHANNELS
 
+DIFFABLE_STATIC(SoundBufferIdxVolume, g_SoundBufferIdxVol[32]);
+DIFFABLE_STATIC(char, *g_SFXList[26]);
+
 SoundPlayer::SoundPlayer()
 {
     memset(this, 0, sizeof(SoundPlayer));
@@ -151,6 +154,42 @@ ZunResult SoundPlayer::LoadWav(char *path)
     return ZUN_SUCCESS;
 }
 
+ZunResult SoundPlayer::InitSoundBuffers()
+{
+    i32 idx;
+    if (this->manager == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    else if (this->dsoundHdl == NULL)
+    {
+        return ZUN_SUCCESS;
+    }
+    else
+    {
+        for (idx = 0; idx < 3; idx++)
+        {
+            this->soundBuffersToPlay[idx] = -1;
+        }
+        for (idx = 0; idx < ARRAY_SIZE_SIGNED(g_SFXList); idx++)
+        {
+            if (this->LoadSound(idx, g_SFXList[idx]) != ZUN_SUCCESS)
+            {
+                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_LOAD_SOUND_FILE, g_SFXList[idx]);
+                return ZUN_ERROR;
+            }
+        }
+        for (idx = 0; idx < ARRAY_SIZE(g_SoundBufferIdxVol); idx++)
+        {
+            this->dsoundHdl->DuplicateSoundBuffer(this->soundBuffers[g_SoundBufferIdxVol[idx].bufferIdx],
+                                                  &this->duplicateSoundBuffers[idx]);
+            this->duplicateSoundBuffers[idx]->SetCurrentPosition(0);
+            this->duplicateSoundBuffers[idx]->SetVolume(g_SoundBufferIdxVol[idx].volume);
+        }
+    }
+    return ZUN_SUCCESS;
+}
+
 #pragma var_order(buffer, res)
 ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
 {
@@ -226,5 +265,4 @@ DWORD __stdcall SoundPlayer::BackgroundMusicPlayerThread(LPVOID lpThreadParamete
     }
     return 0;
 }
-
 DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
