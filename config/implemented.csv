@@ -36,6 +36,7 @@ AnmManager::SetActiveSprite
 AnmManager::SetAndExecuteScript
 AnmManager::SetupVertexBuffer
 AnmManager::SetRenderStateForVm
+AnmManager::TranslateRotation
 AnmManager::ExecuteAnmIdx
 ChainElem::ChainElem
 ChainElem::~ChainElem

@@ -6,29 +6,6 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRHW
-struct VertexTex1Xyzrwh
-{
-    D3DXVECTOR4 position;
-    D3DXVECTOR2 textureUV;
-};
-
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRHW
-struct VertexTex1DiffuseXyzrwh
-{
-    D3DXVECTOR4 position;
-    D3DCOLOR diffuse;
-    D3DXVECTOR2 textureUV;
-};
-
-// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ
-struct VertexTex1DiffuseXyz
-{
-    D3DXVECTOR3 position;
-    D3DCOLOR diffuse;
-    D3DXVECTOR2 textureUV;
-};
-
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyz, g_PrimitivesToDrawUnknown[4]);
@@ -1241,6 +1218,14 @@ ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
             fVar3 + vm->pos.y + fVar3;
     }
     return this->DrawInner(vm, 1);
+}
+
+void AnmManager::TranslateRotation(VertexTex1Xyzrwh *param_1, f32 x, f32 y, f32 sine, f32 cosine, f32 xOffset,
+                                   f32 yOffset)
+{
+    param_1->position.x = x * cosine + y * sine + xOffset;
+    param_1->position.y = -x * sine + y * cosine + yOffset;
+    return;
 }
 
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)

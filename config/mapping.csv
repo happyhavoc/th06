@@ -403,7 +403,7 @@ AnmManager::SetAndExecuteScript,0x432430,0x97,__thiscall,void,AnmManager*,AnmVm*
 AnmManager::SetRenderStateForVm,0x4324d0,0x256,__thiscall,void,AnmManager*,AnmVm*
 AnmManager::DrawInner,0x432730,0x393,__thiscall,i32,AnmManager*,AnmVm*,i32
 AnmManager::DrawNoRotation,0x432ad0,0x1af,__thiscall,u32,AnmManager*,AnmVm*
-AnmManager::FUN_00432c80,0x432c80,0x3c,__stdcall,void,void*,f32,f32,f32,f32,f32,f32
+AnmManager::TranslateRotation,0x432c80,0x3c,__stdcall,void,void*,f32,f32,f32,f32,f32,f32
 AnmManager::Draw,0x432cc0,0x2d7,__thiscall,ZunResult,AnmManager*,AnmVm*
 AnmManager::FUN_00432fa0,0x432fa0,0x1af,__thiscall,ZunResult,AnmManager*,AnmVm*
 AnmManager::FUN_00433150,0x433150,0x43e,__thiscall,i32,AnmManager*,AnmVm*

@@ -9,6 +9,29 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRHW
+struct VertexTex1Xyzrwh
+{
+    D3DXVECTOR4 position;
+    D3DXVECTOR2 textureUV;
+};
+
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRHW
+struct VertexTex1DiffuseXyzrwh
+{
+    D3DXVECTOR4 position;
+    D3DCOLOR diffuse;
+    D3DXVECTOR2 textureUV;
+};
+
+// Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ
+struct VertexTex1DiffuseXyz
+{
+    D3DXVECTOR3 position;
+    D3DCOLOR diffuse;
+    D3DXVECTOR2 textureUV;
+};
+
 struct AnmRawSprite
 {
     u32 id;
@@ -79,6 +102,9 @@ struct AnmManager
     ZunResult LoadSurface(i32 surfaceIdx, char *path);
     void ReleaseSurface(i32 surfaceIdx);
     void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
+
+    void TranslateRotation(VertexTex1Xyzrwh *param_1, float x, float y, float sine, float cosine, float xOffset,
+                           float yOffset);
 
     void ReleaseAnm(i32 anmIdx);
     ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
