@@ -1176,6 +1176,85 @@ ZunResult AnmManager::DrawInner(AnmVm *vm, i32 param_3)
     return ZUN_SUCCESS;
 }
 
+f32 __inline rintf(f32 float_in)
+{
+    __asm {
+        fld float_in
+        frndint
+        fstp float_in
+    }
+    return float_in;
+}
+
+#define sincos(in, out_sine, out_cosine)                                                                               \
+    {                                                                                                                  \
+        __asm { \
+        __asm fld in \
+        __asm fsincos \
+        __asm fstp out_cosine \
+        __asm fstp out_sine }                                            \
+    }
+
+#pragma var_order(spriteXCenter, spriteYCenter, yOffset, xOffset, zSine, z, zCosine)
+ZunResult AnmManager::Draw(AnmVm *vm)
+{
+    f32 zSine;
+    f32 zCosine;
+    f32 spriteXCenter;
+    f32 spriteYCenter;
+    f32 xOffset;
+    f32 yOffset;
+    f32 z;
+
+    if (vm->rotation.z == 0.0f)
+    {
+        return this->DrawNoRotation(vm);
+    }
+    if (vm->flags.flag0 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->flags.flag1 == 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->color.color == 0)
+    {
+        return ZUN_ERROR;
+    }
+    z = vm->rotation.z;
+    sincos(z, zSine, zCosine);
+    xOffset = rintf(vm->pos.x);
+    yOffset = rintf(vm->pos.y);
+    spriteXCenter = rintf((vm->sprite->widthPx * vm->scaleX) / 2.0f);
+    spriteYCenter = rintf((vm->sprite->heightPx * vm->scaleY) / 2.0f);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[0], -spriteXCenter - 0.5f, -spriteYCenter - 0.5f, zSine,
+                            zCosine, xOffset, yOffset);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[1], spriteXCenter - 0.5f, -spriteYCenter - 0.5f, zSine,
+                            zCosine, xOffset, yOffset);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[2], -spriteXCenter - 0.5f, spriteYCenter - 0.5f, zSine,
+                            zCosine, xOffset, yOffset);
+    this->TranslateRotation(&g_PrimitivesToDrawVertexBuf[3], spriteXCenter - 0.5f, spriteYCenter - 0.5f, zSine, zCosine,
+                            xOffset, yOffset);
+    g_PrimitivesToDrawVertexBuf[0].position.z = g_PrimitivesToDrawVertexBuf[1].position.z =
+        g_PrimitivesToDrawVertexBuf[2].position.z = g_PrimitivesToDrawVertexBuf[3].position.z = vm->pos.z;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) != 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x += spriteXCenter;
+        g_PrimitivesToDrawVertexBuf[1].position.x += spriteXCenter;
+        g_PrimitivesToDrawVertexBuf[2].position.x += spriteXCenter;
+        g_PrimitivesToDrawVertexBuf[3].position.x += spriteXCenter;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) != 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y += spriteYCenter;
+        g_PrimitivesToDrawVertexBuf[1].position.y += spriteYCenter;
+        g_PrimitivesToDrawVertexBuf[2].position.y += spriteYCenter;
+        g_PrimitivesToDrawVertexBuf[3].position.y += spriteYCenter;
+    }
+    return this->DrawInner(vm, 0);
+}
+
 ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
 {
     float fVar2;

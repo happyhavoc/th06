@@ -1,4 +1,3 @@
-AnmManager::Draw
 AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AddNormalizeAngle
