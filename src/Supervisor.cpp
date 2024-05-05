@@ -7,6 +7,7 @@
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"
+#include "GameWindow.hpp"
 #include "MainMenu.hpp"
 #include "MusicRoom.hpp"
 #include "Replay.hpp"
@@ -23,6 +24,7 @@
 DIFFABLE_STATIC(Supervisor, g_Supervisor)
 DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
 DIFFABLE_STATIC(JOYCAPSA, g_JoystickCaps)
+DIFFABLE_STATIC(IDirect3DSurface8 *, g_TextBufferSurface)
 
 // TODO: Not a perfect match.
 ZunResult Supervisor::LoadConfig(char *path)
@@ -449,7 +451,7 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     s->unk198 = 0;
     g_AnmManager->SetupVertexBuffer();
-    Supervisor::CreateBackBuffer();
+    Supervisor::CreateTextBuffer();
     s->ReleasePbg3(IN_PBG3_INDEX);
     if (g_Supervisor.LoadPbg3(MD_PBG3_INDEX, TH_MD_DAT_FILE) != 0)
         return ZUN_ERROR;
@@ -1070,5 +1072,14 @@ ZunResult Supervisor::PlayAudio(char *path)
         return ZUN_ERROR;
     }
     return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#define TEXT_BUFFER_HEIGHT 64
+#pragma optimize("s", on)
+void Supervisor::CreateTextBuffer()
+{
+    g_Supervisor.d3dDevice->CreateImageSurface(GAME_WINDOW_WIDTH, TEXT_BUFFER_HEIGHT, D3DFMT_A1R5G5B5,
+                                               &g_TextBufferSurface);
 }
 #pragma optimize("", on)

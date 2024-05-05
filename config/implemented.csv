@@ -19,6 +19,10 @@ AnmVm::Initialize
 AnmManager::AnmManager
 AnmManager::CopySurfaceToBackBuffer
 AnmManager::CreateEmptyTexture
+AnmManager::ExecuteScript
+AnmManager::DrawInner
+AnmManager::DrawNoRotation
+AnmManager::Draw
 AnmManager::LoadAnm
 AnmManager::LoadSprite
 AnmManager::LoadSurface
@@ -32,6 +36,8 @@ AnmManager::ReleaseVertexBuffer
 AnmManager::SetActiveSprite
 AnmManager::SetAndExecuteScript
 AnmManager::SetupVertexBuffer
+AnmManager::SetRenderStateForVm
+AnmManager::TranslateRotation
 AnmManager::ExecuteAnmIdx
 ChainElem::ChainElem
 ChainElem::~ChainElem
@@ -76,6 +82,7 @@ FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MainMenu::AddedCallback
 MainMenu::BeginStartup
+MainMenu::ChoosePracticeLevel
 MainMenu::LoadTitleAnm
 MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
@@ -92,6 +99,7 @@ MidiOutput::~MidiOutput
 MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 StageMenu::StageMenu
+Supervisor::CreateTextBuffer
 Supervisor::AddedCallback
 Supervisor::ReleasePbg3
 Supervisor::LoadPbg3
@@ -112,6 +120,7 @@ SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
 SoundPlayer::PlayBGM
 SoundPlayer::BackgroundMusicPlayerThread
+SoundPlayer::InitSoundBuffers
 CSoundManager::CSoundManager
 CSoundManager::~CSoundManager
 CSoundManager::Initialize

@@ -136,8 +136,7 @@ void AsciiManager::InitializeVms()
     this->scale.x = 1.0;
     this->scale.y = 1.0;
 
-    // TODO: What is this flag for?
-    this->vm1.flags |= AnmVmFlags_9 | AnmVmFlags_8;
+    this->vm1.flags.anchor = AnmVmAnchor_TopLeft;
     AnmVm *vm1 = &this->vm1;
     AnmManager *mgr1 = g_AnmManager;
     vm1->Initialize();

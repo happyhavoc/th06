@@ -102,7 +102,7 @@ struct Supervisor
 
     ZunResult SetupMidiPlayback(char *path);
 
-    static void CreateBackBuffer();
+    static void CreateTextBuffer();
 
     static ZunResult SetupDInput(Supervisor *s);
 
@@ -209,3 +209,4 @@ DIFFABLE_EXTERN(Supervisor, g_Supervisor)
 DIFFABLE_EXTERN(u16, g_LastFrameInput)
 DIFFABLE_EXTERN(u16, g_CurFrameInput)
 DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
+DIFFABLE_EXTERN(IDirect3DSurface8 *, g_TextBufferSurface)
