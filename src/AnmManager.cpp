@@ -876,7 +876,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->flags.flag0 = curInstr->args[0];
             break;
         case AnmOpcode_23:
-            vm->flags.flags |= AnmVmFlags_8 | AnmVmFlags_9;
+            vm->flags.anchor = AnmVmAnchor_TopLeft;
             break;
         case AnmOpcode_SetAutoRotate:
             vm->autoRotate = curInstr->args[0];

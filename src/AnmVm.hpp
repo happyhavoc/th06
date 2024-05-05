@@ -98,6 +98,14 @@ enum AnmVmColorOp
     AnmVmColorOp_Add,
 };
 
+enum AnmVmAnchor
+{
+    AnmVmAnchor_Center,
+    AnmVmAnchor_Left,
+    AnmVmAnchor_Top,
+    AnmVmAnchor_TopLeft,
+};
+
 union AnmVmFlags {
     u32 flags;
     struct
@@ -109,8 +117,7 @@ union AnmVmFlags {
         u32 flag4 : 1;
         u32 flag5 : 1;
         u32 flip : 2;
-        u32 flag8 : 1;
-        u32 flag9 : 1;
+        u32 anchor : 2;
         u32 posTime : 2;
         u32 zWriteDisable : 1;
         u32 flag13 : 1;
