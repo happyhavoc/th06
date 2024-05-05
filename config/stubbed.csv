@@ -39,7 +39,6 @@ ResultScreen::RegisterChain
 ScreenEffect::RegisterChain
 MainMenu::MoveCursor
 MainMenu::DeletedCallback
-MainMenu::ChoosePracticeLevel
 MainMenu::DrawReplayMenu
 MainMenu::LoadReplayMenu
 MainMenu::LoadDiffCharSelect
