@@ -40,7 +40,7 @@ MainMenu::DrawReplayMenu
 MainMenu::LoadReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
-MainMenu::DrawOptionsMenu
+MainMenu::setSavedCursorPosition
 ReplayDoStuff
 ValidateReplayData
 DrawSquare

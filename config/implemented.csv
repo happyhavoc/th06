@@ -93,6 +93,7 @@ MainMenu::OnUpdate
 MainMenu::OnDraw
 MainMenu::RegisterChain
 MainMenu::WeirdSecondInputCheck
+MainMenu::DrawOptionsMenu
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice
 MidiOutput::MidiOutput

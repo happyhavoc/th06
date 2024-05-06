@@ -1769,4 +1769,256 @@ ZunResult MainMenu::ChoosePracticeLevel()
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+#pragma var_order(i, optionsVm)
+u32 MainMenu::DrawOptionsMenu()
+{
+
+    AnmVm *optionsVm;
+    i32 i;
+
+    MoveCursor(this, 9);
+    optionsVm = &this->vm[8];
+    for (i = 0; i < 9; i++)
+    {
+        if ((i >= 5) && (i <= 7))
+        {
+            this->setSavedCursorPosition(&this->vm[i + 0x43], i, i, this->cursor);
+        }
+        else
+        {
+            this->setSavedCursorPosition(optionsVm, i, i, this->cursor);
+            optionsVm++;
+        }
+    }
+
+    for (i = 0; i < 5; i++, optionsVm++)
+    {
+        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_LIFECOUNT, i, g_Supervisor.cfg.lifeCount);
+    }
+
+    for (i = 0; i < 4; i++, optionsVm++)
+    {
+        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_BOMBCOUNT, i, g_Supervisor.cfg.bombCount);
+    }
+    for (i = 0; i < 2; i++, optionsVm++)
+    {
+        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_COLORMODE, i, g_Supervisor.cfg.colorMode16bit);
+    }
+    for (i = 0; i < 2; i++, optionsVm++)
+    {
+        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_PLAYSOUNDS, i, g_Supervisor.cfg.playSounds);
+    }
+    optionsVm = &this->vm[0x4d];
+
+    for (i = 0; i < 3; i++, optionsVm++)
+    {
+        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_MUSICMODE, i, g_Supervisor.cfg.musicMode);
+    }
+    optionsVm = &this->vm[0x4b];
+    for (i = 0; i < 2; i++, optionsVm++)
+    {
+        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_SCREENMODE, i, this->windowed);
+    }
+    if (this->stateTimer >= 0x20)
+    {
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
+        {
+            switch (this->cursor)
+            {
+            case CURSOR_OPTIONS_POS_LIFECOUNT:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                if (g_Supervisor.cfg.lifeCount <= 0)
+                {
+                    g_Supervisor.cfg.lifeCount = 5;
+                }
+                g_Supervisor.cfg.lifeCount = g_Supervisor.cfg.lifeCount - 1;
+                break;
+
+            case CURSOR_OPTIONS_POS_BOMBCOUNT:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                if (g_Supervisor.cfg.bombCount <= 0)
+                {
+                    g_Supervisor.cfg.bombCount = 4;
+                }
+                g_Supervisor.cfg.bombCount = g_Supervisor.cfg.bombCount - 1;
+                break;
+
+            case CURSOR_OPTIONS_POS_COLORMODE:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                if (g_Supervisor.cfg.colorMode16bit <= 0)
+                {
+                    g_Supervisor.cfg.colorMode16bit = 2;
+                }
+                g_Supervisor.cfg.colorMode16bit = g_Supervisor.cfg.colorMode16bit - 1;
+                break;
+
+            case CURSOR_OPTIONS_POS_MUSICMODE:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_Supervisor.StopAudio();
+                if (g_Supervisor.cfg.musicMode <= OFF)
+                {
+                    g_Supervisor.cfg.musicMode = MIDI + 1;
+                }
+                g_Supervisor.cfg.musicMode = g_Supervisor.cfg.musicMode - 1;
+                g_Supervisor.SetupMidiPlayback("bgm/th06_01.mid");
+                g_Supervisor.PlayAudio("bgm/th06_01.mid");
+                break;
+
+            case CURSOR_OPTIONS_POS_PLAYSOUNDS:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                if (g_Supervisor.cfg.playSounds <= 0)
+                {
+                    g_Supervisor.cfg.playSounds = 2;
+                }
+                g_Supervisor.cfg.playSounds = g_Supervisor.cfg.playSounds - 1;
+                break;
+
+            case CURSOR_OPTIONS_POS_SCREENMODE:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                if (this->windowed <= 0)
+                {
+                    this->windowed = 2;
+                }
+                this->windowed = this->windowed - 1;
+                break;
+            }
+        }
+        if (WAS_PRESSED(TH_BUTTON_MENU | TH_BUTTON_BOMB))
+        {
+            this->cursor = CURSOR_OPTIONS_POS_EXIT;
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+        }
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
+        {
+            switch (this->cursor)
+            {
+            case CURSOR_OPTIONS_POS_LIFECOUNT:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_Supervisor.cfg.lifeCount = g_Supervisor.cfg.lifeCount + 1;
+                if (g_Supervisor.cfg.lifeCount >= 5)
+                {
+                    g_Supervisor.cfg.lifeCount = 0;
+                }
+                break;
+            case CURSOR_OPTIONS_POS_BOMBCOUNT:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_Supervisor.cfg.bombCount = g_Supervisor.cfg.bombCount + 1;
+                if (g_Supervisor.cfg.bombCount >= 4)
+                {
+                    g_Supervisor.cfg.bombCount = 0;
+                }
+                break;
+            case CURSOR_OPTIONS_POS_COLORMODE:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_Supervisor.cfg.colorMode16bit = g_Supervisor.cfg.colorMode16bit + 1;
+                if (g_Supervisor.cfg.colorMode16bit >= 2)
+                {
+                    g_Supervisor.cfg.colorMode16bit = 0;
+                }
+                break;
+            case CURSOR_OPTIONS_POS_MUSICMODE:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_Supervisor.StopAudio();
+                g_Supervisor.cfg.musicMode = g_Supervisor.cfg.musicMode + WAV;
+                if (g_Supervisor.cfg.musicMode >= MIDI + 1)
+                {
+                    g_Supervisor.cfg.musicMode = OFF;
+                }
+                g_Supervisor.SetupMidiPlayback("bgm/th06_01.mid");
+                g_Supervisor.PlayAudio("bgm/th06_01.mid");
+                break;
+            case CURSOR_OPTIONS_POS_PLAYSOUNDS:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_Supervisor.cfg.playSounds = g_Supervisor.cfg.playSounds + 1;
+                if (g_Supervisor.cfg.playSounds >= 2)
+                {
+                    g_Supervisor.cfg.playSounds = 0;
+                }
+                break;
+            case CURSOR_OPTIONS_POS_SCREENMODE:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                this->windowed = this->windowed + 1;
+                if (this->windowed >= 2)
+                {
+                    this->windowed = 0;
+                }
+                break;
+            }
+        }
+        if (WAS_PRESSED(TH_BUTTON_MENU | TH_BUTTON_SHOOT))
+        {
+            switch (this->cursor)
+            {
+            case CURSOR_OPTIONS_POS_KEYCONFIG:
+
+                this->gameState = STATE_KEYCONFIG;
+                this->stateTimer = 0;
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
+                {
+                    this->vm[i].pendingInterrupt = 5;
+                }
+                this->cursor = 0;
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+
+                memcpy(this->controlMapping, &g_ControllerMapping, sizeof(ControllerMapping));
+
+                g_ControllerMapping.upButton = -1;
+                g_ControllerMapping.downButton = -1;
+                break;
+
+            case CURSOR_OPTIONS_POS_SETDEFAULT:
+
+                g_Supervisor.StopAudio();
+                g_Supervisor.cfg.lifeCount = 2;
+                g_Supervisor.cfg.bombCount = 3;
+                g_Supervisor.cfg.musicMode = WAV;
+                g_Supervisor.cfg.playSounds = true;
+                g_Supervisor.cfg.defaultDifficulty = NORMAL;
+                g_Supervisor.cfg.windowed = false;
+                g_Supervisor.cfg.frameskipConfig = 0;
+                g_Supervisor.SetupMidiPlayback("bgm/th06_01.mid");
+                g_Supervisor.PlayAudio("bgm/th06_01.mid");
+                break;
+
+            case CURSOR_OPTIONS_POS_EXIT:
+
+                this->gameState = STATE_MAIN_MENU;
+                this->stateTimer = 0;
+                for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
+                {
+                    this->vm[i].pendingInterrupt = 2;
+                }
+                // TODO: Cursor enum for the main menu
+                this->cursor = 6;
+                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                if (this->colorMode16bit != g_Supervisor.cfg.colorMode16bit ||
+                    this->windowed != g_Supervisor.cfg.windowed ||
+                    this->frameskipConfig != g_Supervisor.cfg.frameskipConfig)
+                {
+                    g_Supervisor.cfg.frameskipConfig = this->frameskipConfig;
+                    g_Supervisor.cfg.windowed = this->windowed;
+                    g_Supervisor.curState = SUPERVISOR_STATE_EXITERROR;
+                    return 1;
+                }
+                break;
+            }
+        }
+    }
+    return 0;
+}
+#pragma optimize("", on)
+
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
