@@ -1958,7 +1958,7 @@ u32 MainMenu::DrawOptionsMenu()
                 break;
             }
         }
-        if (WAS_PRESSED(TH_BUTTON_MENU | TH_BUTTON_SHOOT))
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
         {
             switch (this->cursor)
             {
