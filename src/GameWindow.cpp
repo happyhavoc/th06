@@ -1,4 +1,5 @@
 #include "GameWindow.hpp"
+#include "AnmManager.hpp"
 #include "GameErrorContext.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"

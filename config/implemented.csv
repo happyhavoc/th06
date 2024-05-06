@@ -99,6 +99,7 @@ MidiOutput::MidiOutput
 MidiOutput::~MidiOutput
 MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
+Stage::RegisterChain
 StageMenu::StageMenu
 Supervisor::CreateTextBuffer
 Supervisor::AddedCallback

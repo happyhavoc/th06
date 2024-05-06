@@ -1,9 +1,13 @@
 #pragma once
 
-#include "AnmManager.hpp"
+#include "AnmVm.hpp"
+#include "Chain.hpp"
 #include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
+#include "zwave.hpp"
+#include <d3d8.h>
+#include <d3dx8math.h>
 
 struct StageCameraSky
 {
@@ -15,6 +19,13 @@ C_ASSERT(sizeof(StageCameraSky) == 0xc);
 
 struct Stage
 {
+    static ZunResult RegisterChain(u32 stage);
+    static ChainCallbackResult OnUpdate(Stage *stage);
+    static ChainCallbackResult OnDrawHighPrio(Stage *stage);
+    static ChainCallbackResult OnDrawLowPrio(Stage *stage);
+    static ZunResult AddedCallback(Stage *stage);
+    static ZunResult DeletedCallback(Stage *stage);
+
     AnmVm *quadVms;
     u8 *stdData;
     i32 quadCount;
