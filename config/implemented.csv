@@ -125,6 +125,7 @@ SetViewport
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
+SoundPlayer::LoadSound
 SoundPlayer::PlayBGM
 SoundPlayer::BackgroundMusicPlayerThread
 SoundPlayer::InitSoundBuffers
