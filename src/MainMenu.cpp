@@ -8,6 +8,7 @@
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
 #include "ChainPriorities.hpp"
+#include "Colors.hpp"
 #include "Filesystem.hpp"
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"
@@ -18,17 +19,6 @@
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
-
-/* COLORS */
-/* we can move them to their own header if referenced somewhere else :) */
-#define COLOR_BLACK 0xff000000
-#define COLOR_WHITE 0xffffffff
-#define COLOR_RED 0xffff0000
-#define COLOR_PINK 0xffffe0e0
-
-#define COLOR_MENU_ACTIVE_BACKGROUND 0x40000000
-// TODO: find a better name for this color
-#define COLOR_START_MENU_ITEM_INACTIVE 0x80300000
 
 #pragma optimize("s", on)
 #pragma var_order(time, i, vector3Ptr)
@@ -1003,11 +993,11 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 {
                     if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
                     {
-                        vmList->color.color = 0xff000000;
+                        vmList->color.color = COLOR_BLACK;
                     }
                     else
                     {
-                        vmList->color.color = 0xffffffff;
+                        vmList->color.color = COLOR_WHITE;
                     }
                     pos2.x = -6.0f;
                     pos2.y = -6.0f;
@@ -1027,11 +1017,11 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
                 {
-                    vmList->color.color = 0xff000000;
+                    vmList->color.color = COLOR_BLACK;
                 }
                 else
                 {
-                    vmList->color.color = 0xffffffff;
+                    vmList->color.color = COLOR_WHITE;
                 }
                 pos3.x = -6.0f;
                 pos3.y = -6.0f;

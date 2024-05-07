@@ -1,4 +1,5 @@
 _g_TextureFormatD3D8Mapping,            0x0046c220
+_g_StageFiles,                          0x004760e0
 _g_ControllerMapping,                   0x004765a0
 _g_SoundBufferIdxVol,                   0x00478528
 _g_SFXList,                             0x00478628

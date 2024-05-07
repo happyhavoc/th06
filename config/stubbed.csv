@@ -2,10 +2,10 @@ AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AddNormalizeAngle
 Stage::OnUpdate
-Stage::AddedCallback
 Stage::DeletedCallback
 Stage::OnDrawHighPrio
 Stage::OnDrawLowPrio
+Stage::LoadStageData
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu

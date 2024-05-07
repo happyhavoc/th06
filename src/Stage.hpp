@@ -17,6 +17,20 @@ struct StageCameraSky
 };
 C_ASSERT(sizeof(StageCameraSky) == 0xc);
 
+enum SpellcardState
+{
+    NOT_RUNNING,
+    RUNNING,
+    RAN_FOR_60_FRAMES
+};
+
+struct StageFile
+{
+    char *anmFile;
+    char *stdFile;
+};
+C_ASSERT(sizeof(StageFile) == 0x8);
+
 struct Stage
 {
     static ZunResult RegisterChain(u32 stage);
@@ -25,6 +39,8 @@ struct Stage
     static ChainCallbackResult OnDrawLowPrio(Stage *stage);
     static ZunResult AddedCallback(Stage *stage);
     static ZunResult DeletedCallback(Stage *stage);
+
+    ZunResult LoadStageData(char *anmpath, char *stdpath);
 
     AnmVm *quadVms;
     u8 *stdData;
@@ -47,8 +63,8 @@ struct Stage
     i32 skyFogInterpDuration;
     ZunTimer skyFogInterpTimer;
     u8 skyFogNeedsSetup;
-    i32 spellcardEclRelated0;
-    i32 spellcardEclRelated1;
+    SpellcardState spellcardState;
+    i32 ticksSinceSpellcardStarted;
     AnmVm unk1;
     AnmVm unk2;
     u8 unpauseFlag;
