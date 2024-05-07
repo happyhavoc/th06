@@ -10,7 +10,7 @@ DIFFABLE_STATIC(ChainElem, g_StageCalcChain)
 DIFFABLE_STATIC(ChainElem, g_StageOnDrawHighPrioChain)
 DIFFABLE_STATIC(ChainElem, g_StageOnDrawLowPrioChain)
 
-DIFFABLE_EXTERN(StageFile, g_StageFiles[])
+DIFFABLE_STATIC(StageFile, g_StageFiles[8])
 
 #pragma var_order(stg, timer)
 ZunResult Stage::RegisterChain(u32 stage)
