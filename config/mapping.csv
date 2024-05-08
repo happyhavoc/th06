@@ -23,12 +23,12 @@ AnmVm::Initialize,0x403580,0xee,__thiscall,void,AnmVm*
 D3DXMatrixIdentity,0x403670,0xa7,__cdecl,_D3DMATRIX*,_D3DMATRIX*
 AnmVm::AnmVm,0x403720,0x68,__thiscall,void,AnmVm*
 Stage::Stage,0x403790,0x72,__thiscall,void,Stage*
-Stage::OnUpdate,0x403810,0x89c,__stdcall,ChainCallbackResult,Stage*
-Stage::OnDrawHighPrio,0x4040d0,0xa2,__stdcall,i32,Stage*
-Stage::OnDrawLowPrio,0x404180,0x180,__stdcall,i32,Stage*
-Stage::AddedCallback,0x404300,0x1b4,__thiscall,i32,Stage*,Stage*
+Stage::OnUpdate,0x403810,0x89c,default,ChainCallbackResult,Stage*
+Stage::OnDrawHighPrio,0x4040d0,0xa2,default,ChainCallbackResult,Stage*
+Stage::OnDrawLowPrio,0x404180,0x180,default,ChainCallbackResult,Stage*
+Stage::AddedCallback,0x404300,0x1b4,__thiscall,ZunResult,Stage*,Stage*
 Stage::RegisterChain,0x4044c0,0x11e,__stdcall,ZunResult,u32
-Stage::DeletedCallback,0x4045e0,0x66,__stdcall,i32,Stage*
+Stage::DeletedCallback,0x4045e0,0x66,default,ZunResult,Stage*
 Stage::CutChain,0x404650,0x32,__stdcall,void
 Stage::LoadStageData,0x404690,0x1c1,__thiscall,ZunResult,Stage*,char*,char*
 Stage::FUN_00404860,0x404860,0x101,__thiscall,u32,Stage*

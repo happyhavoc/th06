@@ -1,4 +1,5 @@
 _g_TextureFormatD3D8Mapping,            0x0046c220
+_g_StageFiles,                          0x004760e0
 _g_ControllerMapping,                   0x004765a0
 _g_SoundBufferIdxVol,                   0x00478528
 _g_SFXList,                             0x00478628
@@ -8,6 +9,9 @@ _g_AsciiManager,                        0x0047b900
 _g_AsciiManagerCalcChain,               0x00487aac
 _g_AsciiManagerOnDrawPopupsChain,       0x00487acc
 _g_Stage,                               0x00487b10
+_g_StageCalcChain,                      0x00487e24
+_g_StageOnDrawHighPrioChain,            0x00487af0
+_g_StageOnDrawLowPrioChain,             0x00487e04
 _g_Gui,                                 0x0069bc30
 _g_GameManager,                         0x0069bca0
 _g_GameManagerDrawChain,                0x0069d740
