@@ -8,7 +8,6 @@
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
 #include "ChainPriorities.hpp"
-#include "Colors.hpp"
 #include "Filesystem.hpp"
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"
@@ -17,6 +16,7 @@
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
+#include "ZunColor.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 

@@ -1,9 +1,9 @@
 #include "Stage.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
-#include "Colors.hpp"
 #include "GameManager.hpp"
 #include "Supervisor.hpp"
+#include "ZunColor.hpp"
 #include <d3d8.h>
 
 DIFFABLE_STATIC(ChainElem, g_StageCalcChain)
@@ -23,9 +23,8 @@ ZunResult Stage::RegisterChain(u32 stage)
     stg->stdData = NULL;
 
     timer = &stg->timer;
-    timer->current = 0;
-    timer->subFrame = 0.0;
-    timer->previous = -999;
+    timer->InitializeForPopup();
+
     stg->stage = stage;
     g_StageCalcChain.callback = (ChainCallback)Stage::OnUpdate;
     g_StageCalcChain.addedCallback = NULL;
@@ -62,9 +61,8 @@ ZunResult Stage::AddedCallback(Stage *stage)
     D3DXVECTOR3 interpInitial;
 
     scriptTimer = &stage->scriptTime;
-    scriptTimer->current = 0;
-    scriptTimer->subFrame = 0.0;
-    scriptTimer->previous = -999;
+    scriptTimer->InitializeForPopup();
+
     stage->instructionIndex = 0;
     stage->position.x = 0.0;
     stage->position.y = 0.0;
@@ -92,14 +90,12 @@ ZunResult Stage::AddedCallback(Stage *stage)
 
     stage->facingDirInterpDuration = 1;
     facingDirTimer = &stage->facingDirInterpTimer;
-    facingDirTimer->current = 0;
-    facingDirTimer->subFrame = 0.0;
-    facingDirTimer->previous = -999;
+    facingDirTimer->InitializeForPopup();
     stage->unpauseFlag = 0;
 
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, (stage->skyFog).color);
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&(stage->skyFog).nearPlane);
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(DWORD *)&(stage->skyFog).farPlane);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, stage->skyFog.color);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&stage->skyFog.nearPlane);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(DWORD *)&stage->skyFog.farPlane);
     return ZUN_SUCCESS;
 }
 
