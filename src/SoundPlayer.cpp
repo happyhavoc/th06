@@ -267,7 +267,8 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         free(soundFileData);
         return ZUN_ERROR;
     }
-    if (FAILED(soundBuffers[idx]->Lock(0, formatSize, (LPVOID *)&audioPtr1, (LPDWORD)&audioSize1, (LPVOID *)&audioPtr2,(LPDWORD)&audioSize2, NULL)))
+    if (FAILED(soundBuffers[idx]->Lock(0, formatSize, (LPVOID *)&audioPtr1, (LPDWORD)&audioSize1, (LPVOID *)&audioPtr2,
+                                       (LPDWORD)&audioSize2, NULL)))
     {
         free(soundFileData);
         return ZUN_ERROR;
