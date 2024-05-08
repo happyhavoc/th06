@@ -88,6 +88,7 @@ def configure(build_type):
         cxx_sources = [
             "AsciiManager",
             "Chain",
+            "EclManager",
             "FileSystem",
             "Supervisor",
             "GameErrorContext",

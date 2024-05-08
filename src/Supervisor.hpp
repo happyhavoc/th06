@@ -6,6 +6,7 @@
 
 #include "Chain.hpp"
 #include "MidiOutput.hpp"
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
@@ -70,6 +71,8 @@ struct GameConfiguration
 
 #define IN_PBG3_INDEX 0
 #define MD_PBG3_INDEX 1
+#define ST_PBG3_INDEX 2
+#define CM_PBG3_INDEX 4
 
 typedef char Pbg3ArchiveName[32];
 
@@ -97,6 +100,7 @@ struct Supervisor
     static ZunResult DeletedCallback(Supervisor *s);
     static void DrawFpsCounter();
 
+    ZunBool ReadMidiFile(u32 midiFileIdx, char *path);
     ZunResult PlayAudio(char *path);
     ZunResult StopAudio();
 

@@ -12,6 +12,21 @@ struct Th6k
 };
 C_ASSERT(sizeof(Th6k) == 0xc);
 
+struct Catk
+{
+    Th6k base;
+    u32 unk_c;
+    u16 idx;
+    u8 nameCsum;
+    u8 unk_13;
+    u8 unk_14;
+    char name[32];
+    u32 numAttempts;
+    u16 numSuccess;
+    u16 unk_3e;
+};
+C_ASSERT(sizeof(Catk) == 0x40);
+
 struct Clrd
 {
     Th6k base;
@@ -66,7 +81,9 @@ struct ResultScreen
     static ZunResult RegisterChain(i32 unk);
 
     static ScoreDat *OpenScore(char *path);
+    static ZunResult ParseCatk(ScoreDat *s, Catk *catk);
     static ZunResult ParseClrd(ScoreDat *s, Clrd *out);
     static ZunResult ParsePscr(ScoreDat *s, Pscr *out);
+    static u32 GetHighScore(ScoreDat *score_dat, ScoreListNode *node, u32 character, u32 difficulty);
     static void ReleaseScoreDat(ScoreDat *s);
 };

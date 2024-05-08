@@ -1,5 +1,10 @@
 _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_StageFiles,                          0x004760e0
+_g_ExtraLivesScores,                    0x004764b0
+_g_EclFiles,                            0x004764c4
+_g_AnmStageFiles,                       0x004764e8
+_g_DifficultyInfoForReplay,             0x00476528
+_g_DifficultyInfo,                      0x00476564
 _g_ControllerMapping,                   0x004765a0
 _g_SoundBufferIdxVol,                   0x00478528
 _g_SFXList,                             0x00478628
@@ -8,10 +13,11 @@ _g_AsciiManagerOnDrawMenusChain,        0x0047b8e0
 _g_AsciiManager,                        0x0047b900
 _g_AsciiManagerCalcChain,               0x00487aac
 _g_AsciiManagerOnDrawPopupsChain,       0x00487acc
-_g_Stage,                               0x00487b10
-_g_StageCalcChain,                      0x00487e24
 _g_StageOnDrawHighPrioChain,            0x00487af0
+_g_Stage,                               0x00487b10
 _g_StageOnDrawLowPrioChain,             0x00487e04
+_g_StageCalcChain,                      0x00487e24
+_g_EclManager,                          0x00487e50
 _g_EffectManager,                       0x00487fe0
 _g_EffectManagerCalcChain,              0x004b7964
 _g_EffectManagerDrawChain,              0x004b7984
