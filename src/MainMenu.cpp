@@ -810,7 +810,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         }
         break;
     case STATE_OPTIONS:
-        if (menu->DrawOptionsMenu() != 0)
+        if (menu->OnUpdateOptionsMenu() != 0)
         {
             return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
         }
@@ -1771,7 +1771,7 @@ ZunResult MainMenu::ChoosePracticeLevel()
 
 #pragma optimize("s", on)
 #pragma var_order(i, optionsVm)
-u32 MainMenu::DrawOptionsMenu()
+u32 MainMenu::OnUpdateOptionsMenu()
 {
 
     AnmVm *optionsVm;
@@ -1781,46 +1781,46 @@ u32 MainMenu::DrawOptionsMenu()
     optionsVm = &this->vm[8];
     for (i = 0; i < 9; i++)
     {
-        if ((i >= 5) && (i <= 7))
+        if (i >= 5 && i <= 7)
         {
-            this->setSavedCursorPosition(&this->vm[i + 0x43], i, i, this->cursor);
+            this->SetSavedCursorPosition(&this->vm[i + 67], i, i, this->cursor);
         }
         else
         {
-            this->setSavedCursorPosition(optionsVm, i, i, this->cursor);
+            this->SetSavedCursorPosition(optionsVm, i, i, this->cursor);
             optionsVm++;
         }
     }
 
     for (i = 0; i < 5; i++, optionsVm++)
     {
-        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_LIFECOUNT, i, g_Supervisor.cfg.lifeCount);
+        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_LIFECOUNT, i, g_Supervisor.cfg.lifeCount);
     }
 
     for (i = 0; i < 4; i++, optionsVm++)
     {
-        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_BOMBCOUNT, i, g_Supervisor.cfg.bombCount);
+        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_BOMBCOUNT, i, g_Supervisor.cfg.bombCount);
     }
     for (i = 0; i < 2; i++, optionsVm++)
     {
-        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_COLORMODE, i, g_Supervisor.cfg.colorMode16bit);
+        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_COLORMODE, i, g_Supervisor.cfg.colorMode16bit);
     }
     for (i = 0; i < 2; i++, optionsVm++)
     {
-        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_PLAYSOUNDS, i, g_Supervisor.cfg.playSounds);
+        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_PLAYSOUNDS, i, g_Supervisor.cfg.playSounds);
     }
-    optionsVm = &this->vm[0x4d];
+    optionsVm = &this->vm[77];
 
     for (i = 0; i < 3; i++, optionsVm++)
     {
-        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_MUSICMODE, i, g_Supervisor.cfg.musicMode);
+        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_MUSICMODE, i, g_Supervisor.cfg.musicMode);
     }
-    optionsVm = &this->vm[0x4b];
+    optionsVm = &this->vm[75];
     for (i = 0; i < 2; i++, optionsVm++)
     {
-        this->setSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_SCREENMODE, i, this->windowed);
+        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_SCREENMODE, i, this->windowed);
     }
-    if (this->stateTimer >= 0x20)
+    if (this->stateTimer >= 32)
     {
         if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
         {
@@ -1833,7 +1833,7 @@ u32 MainMenu::DrawOptionsMenu()
                 {
                     g_Supervisor.cfg.lifeCount = 5;
                 }
-                g_Supervisor.cfg.lifeCount = g_Supervisor.cfg.lifeCount - 1;
+                g_Supervisor.cfg.lifeCount -= 1;
                 break;
 
             case CURSOR_OPTIONS_POS_BOMBCOUNT:
@@ -1843,7 +1843,7 @@ u32 MainMenu::DrawOptionsMenu()
                 {
                     g_Supervisor.cfg.bombCount = 4;
                 }
-                g_Supervisor.cfg.bombCount = g_Supervisor.cfg.bombCount - 1;
+                g_Supervisor.cfg.bombCount -= 1;
                 break;
 
             case CURSOR_OPTIONS_POS_COLORMODE:
@@ -1853,7 +1853,7 @@ u32 MainMenu::DrawOptionsMenu()
                 {
                     g_Supervisor.cfg.colorMode16bit = 2;
                 }
-                g_Supervisor.cfg.colorMode16bit = g_Supervisor.cfg.colorMode16bit - 1;
+                g_Supervisor.cfg.colorMode16bit -= 1;
                 break;
 
             case CURSOR_OPTIONS_POS_MUSICMODE:
@@ -1864,7 +1864,7 @@ u32 MainMenu::DrawOptionsMenu()
                 {
                     g_Supervisor.cfg.musicMode = MIDI + 1;
                 }
-                g_Supervisor.cfg.musicMode = g_Supervisor.cfg.musicMode - 1;
+                g_Supervisor.cfg.musicMode -= 1;
                 g_Supervisor.SetupMidiPlayback("bgm/th06_01.mid");
                 g_Supervisor.PlayAudio("bgm/th06_01.mid");
                 break;
@@ -1876,7 +1876,7 @@ u32 MainMenu::DrawOptionsMenu()
                 {
                     g_Supervisor.cfg.playSounds = 2;
                 }
-                g_Supervisor.cfg.playSounds = g_Supervisor.cfg.playSounds - 1;
+                g_Supervisor.cfg.playSounds -= 1;
                 break;
 
             case CURSOR_OPTIONS_POS_SCREENMODE:
@@ -1886,7 +1886,7 @@ u32 MainMenu::DrawOptionsMenu()
                 {
                     this->windowed = 2;
                 }
-                this->windowed = this->windowed - 1;
+                this->windowed -= 1;
                 break;
             }
         }
@@ -1902,7 +1902,7 @@ u32 MainMenu::DrawOptionsMenu()
             case CURSOR_OPTIONS_POS_LIFECOUNT:
 
                 g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-                g_Supervisor.cfg.lifeCount = g_Supervisor.cfg.lifeCount + 1;
+                g_Supervisor.cfg.lifeCount += 1;
                 if (g_Supervisor.cfg.lifeCount >= 5)
                 {
                     g_Supervisor.cfg.lifeCount = 0;
@@ -1911,7 +1911,7 @@ u32 MainMenu::DrawOptionsMenu()
             case CURSOR_OPTIONS_POS_BOMBCOUNT:
 
                 g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-                g_Supervisor.cfg.bombCount = g_Supervisor.cfg.bombCount + 1;
+                g_Supervisor.cfg.bombCount += 1;
                 if (g_Supervisor.cfg.bombCount >= 4)
                 {
                     g_Supervisor.cfg.bombCount = 0;
@@ -1920,7 +1920,7 @@ u32 MainMenu::DrawOptionsMenu()
             case CURSOR_OPTIONS_POS_COLORMODE:
 
                 g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-                g_Supervisor.cfg.colorMode16bit = g_Supervisor.cfg.colorMode16bit + 1;
+                g_Supervisor.cfg.colorMode16bit += 1;
                 if (g_Supervisor.cfg.colorMode16bit >= 2)
                 {
                     g_Supervisor.cfg.colorMode16bit = 0;
@@ -1930,7 +1930,7 @@ u32 MainMenu::DrawOptionsMenu()
 
                 g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
                 g_Supervisor.StopAudio();
-                g_Supervisor.cfg.musicMode = g_Supervisor.cfg.musicMode + WAV;
+                g_Supervisor.cfg.musicMode += 1;
                 if (g_Supervisor.cfg.musicMode >= MIDI + 1)
                 {
                     g_Supervisor.cfg.musicMode = OFF;
@@ -1941,7 +1941,7 @@ u32 MainMenu::DrawOptionsMenu()
             case CURSOR_OPTIONS_POS_PLAYSOUNDS:
 
                 g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-                g_Supervisor.cfg.playSounds = g_Supervisor.cfg.playSounds + 1;
+                g_Supervisor.cfg.playSounds += 1;
                 if (g_Supervisor.cfg.playSounds >= 2)
                 {
                     g_Supervisor.cfg.playSounds = 0;
@@ -1950,7 +1950,7 @@ u32 MainMenu::DrawOptionsMenu()
             case CURSOR_OPTIONS_POS_SCREENMODE:
 
                 g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-                this->windowed = this->windowed + 1;
+                this->windowed += 1;
                 if (this->windowed >= 2)
                 {
                     this->windowed = 0;

@@ -55,11 +55,11 @@ struct MainMenu
 {
     ZunResult BeginStartup();
     ZunResult DrawStartMenu();
-    u32 DrawOptionsMenu();
+    u32 OnUpdateOptionsMenu();
     ZunResult DrawReplayMenu();
     ZunResult ChoosePracticeLevel();
     ZunBool WeirdSecondInputCheck();
-    void setSavedCursorPosition(AnmVm *, i32, i32, i32);
+    void SetSavedCursorPosition(AnmVm *, i32, i32, i32);
 
     static ZunResult LoadTitleAnm(MainMenu *menu);
     static CursorMovement MoveCursor(MainMenu *menu, i32 menuLength);

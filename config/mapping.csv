@@ -428,8 +428,8 @@ MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,ZunBool,MainMenu*
 MainMenu::DrawStartMenu,0x437b41,0x68b,__thiscall,ZunResult,MainMenu*
 MainMenu::ReplayHandling,0x4381ec,0x9d5,__thiscall,i32,MainMenu*
 MainMenu::DrawReplayMenu,0x438bc1,0x337,__thiscall,ZunResult,MainMenu*
-MainMenu::setSavedCursorPosition,0x438ef8,0x23f,__thiscall,void,MainMenu*,AnmVm*,i32,i32,i32
-MainMenu::DrawOptionsMenu,0x439137,0x82e,__thiscall,u32,MainMenu*
+MainMenu::SetSavedCursorPosition,0x438ef8,0x23f,__thiscall,void,MainMenu*,AnmVm*,i32,i32,i32
+MainMenu::OnUpdateOptionsMenu,0x439137,0x82e,__thiscall,u32,MainMenu*
 MainMenu::ChoosePracticeLevel,0x439965,0x171,__thiscall,ZunResult,MainMenu*
 MainMenu::OnDraw,0x439ad6,0x2ca,unknown,ChainCallbackResult,MainMenu*
 MainMenu::LoadTitleAnm,0x439da0,0x1e8,__stdcall,u32,MainMenu*
