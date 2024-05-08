@@ -193,7 +193,7 @@ ZunResult SoundPlayer::InitSoundBuffers()
 }
 
 #pragma var_order(fileSize, soundFileData, audioPtr1, audioSize1, audioPtr2, audioSize2, formatSize, wavDataPtr,       \
-                  dsBuffer, wavData, sFDCursor);
+                  dsBuffer, wavData, sFDCursor)
 ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
 {
     i32 *soundFileData;
@@ -267,8 +267,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         free(soundFileData);
         return ZUN_ERROR;
     }
-    if (FAILED(soundBuffers[idx]->Lock(0, formatSize, (LPVOID *)&audioPtr1, (LPDWORD)&audioSize1, (LPVOID *)&audioPtr2,
-                                (LPDWORD)&audioSize2, NULL) < 0)
+    if (FAILED(soundBuffers[idx]->Lock(0, formatSize, (LPVOID *)&audioPtr1, (LPDWORD)&audioSize1, (LPVOID *)&audioPtr2,(LPDWORD)&audioSize2, NULL)))
     {
         free(soundFileData);
         return ZUN_ERROR;
