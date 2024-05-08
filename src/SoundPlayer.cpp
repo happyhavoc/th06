@@ -217,7 +217,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         this->soundBuffers[idx]->Release();
         this->soundBuffers[idx] = NULL;
     }
-    soundFileData = (int *)FileSystem::OpenPath(path, 0);
+    soundFileData = (i32 *)FileSystem::OpenPath(path, 0);
     sFDCursor = soundFileData;
     if (soundFileData == NULL)
     {
@@ -258,16 +258,16 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         return ZUN_ERROR;
     }
     memset(&dsBuffer, 0, sizeof(dsBuffer));
-    dsBuffer.dwSize = 0x24;
+    dsBuffer.dwSize = sizeof(dsBuffer);
     dsBuffer.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCSOFTWARE;
     dsBuffer.dwBufferBytes = formatSize;
     dsBuffer.lpwfxFormat = &wavData;
-    if (this->dsoundHdl->CreateSoundBuffer(&dsBuffer, &this->soundBuffers[idx], NULL) < 0)
+    if (FAILED(this->dsoundHdl->CreateSoundBuffer(&dsBuffer, &this->soundBuffers[idx], NULL)))
     {
         free(soundFileData);
         return ZUN_ERROR;
     }
-    if (soundBuffers[idx]->Lock(0, formatSize, (LPVOID *)&audioPtr1, (LPDWORD)&audioSize1, (LPVOID *)&audioPtr2,
+    if (FAILED(soundBuffers[idx]->Lock(0, formatSize, (LPVOID *)&audioPtr1, (LPDWORD)&audioSize1, (LPVOID *)&audioPtr2,
                                 (LPDWORD)&audioSize2, NULL) < 0)
     {
         free(soundFileData);
