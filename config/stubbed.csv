@@ -1,6 +1,9 @@
 AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AddNormalizeAngle
+EffectManager::OnUpdate
+EffectManager::OnDraw
+EffectManager::DeletedCallback
 Stage::OnUpdate
 Stage::DeletedCallback
 Stage::OnDrawHighPrio

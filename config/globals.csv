@@ -12,6 +12,9 @@ _g_Stage,                               0x00487b10
 _g_StageCalcChain,                      0x00487e24
 _g_StageOnDrawHighPrioChain,            0x00487af0
 _g_StageOnDrawLowPrioChain,             0x00487e04
+_g_EffectManager,                       0x00487fe0
+_g_EffectManagerCalcChain,              0x004b7964
+_g_EffectManagerDrawChain,              0x004b7984
 _g_Gui,                                 0x0069bc30
 _g_GameManager,                         0x0069bca0
 _g_GameManagerDrawChain,                0x0069d740
