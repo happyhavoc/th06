@@ -2,20 +2,21 @@
 
 #include "Chain.hpp"
 #include "Effect.hpp"
-#include "inttypes.hpp"
 #include "ZunResult.hpp"
+#include "inttypes.hpp"
 
-struct EffectManager {
+struct EffectManager
+{
     i32 nextIndex;
-    EffectManager* nextManager;
+    EffectManager *nextManager;
     Effect effects[512];
     Effect dummyEffect;
-    
+
     static ZunResult RegisterChain();
-    static ChainCallbackResult OnUpdate(EffectManager* mgr);
-    static ZunResult AddedCallback(EffectManager* mgr);
-    static ZunResult DeletedCallback(EffectManager* mgr);
-    static ChainCallbackResult OnDraw(EffectManager* mgr);
+    static ChainCallbackResult OnUpdate(EffectManager *mgr);
+    static ZunResult AddedCallback(EffectManager *mgr);
+    static ZunResult DeletedCallback(EffectManager *mgr);
+    static ChainCallbackResult OnDraw(EffectManager *mgr);
     void Reset();
 };
 C_ASSERT(sizeof(EffectManager) == 0x2f984);

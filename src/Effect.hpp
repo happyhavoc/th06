@@ -1,10 +1,11 @@
 #pragma once
 
 #include "AnmVm.hpp"
-#include "inttypes.hpp"
 #include "ZunTimer.hpp"
+#include "inttypes.hpp"
 
-struct Effect {
+struct Effect
+{
     AnmVm vm;
     D3DXVECTOR3 pos1;
     f32 unk_11c;
@@ -20,7 +21,7 @@ struct Effect {
     f32 angleRelated;
     ZunTimer timer;
     i32 unk_170;
-    i32* effectUpdateCallback;
+    i32 *effectUpdateCallback;
     i8 inUseFlag;
     i8 effectId;
     i8 unk_17a;
