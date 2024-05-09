@@ -5,6 +5,8 @@
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "Ending.hpp"
+#include "Effect.hpp"
+#include "EffectManager.hpp"
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"

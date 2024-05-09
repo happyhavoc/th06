@@ -88,7 +88,7 @@ EffectManager::FUN_0040edb0,0x40edb0,0x1a0,default,i32,Effect*
 EffectManager::FUN_0040ef50,0x40ef50,0x1ae,__thiscall,AnmVm*,EffectManager*,i32,_D3DVECTOR*,i32,unsigned long
 EffectManager::OnUpdate,0x40f100,0xe6,default,i32,EffectManager*
 EffectManager::OnDraw,0x40f1f0,0x81,unknown,u8,EffectManager*
-EffectManager::AddedCallback,0x40f280,0x12c,unknown,i32,u32
+EffectManager::AddedCallback,0x40f280,0x12c,unknown,ZunResult,EffectManager*
 EffectManager::DeletedCallback,0x40f3d0,0x14,unknown,u8
 EffectManager::RegisterChain,0x40f3f0,0xa5,unknown,u8
 EffectManager::CutChain,0x40f4a0,0x23,unknown,u8
