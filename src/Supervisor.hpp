@@ -52,8 +52,8 @@ struct GameConfiguration
     ControllerMapping controllerMapping;
     // Always 0x102 for 1.02
     i32 version;
-    i8 lifeCount;
-    i8 bombCount;
+    u8 lifeCount;
+    u8 bombCount;
     u8 colorMode16bit;
     u8 musicMode;
     u8 playSounds;
