@@ -278,7 +278,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
     {
         memcpy(audioPtr2, (i8 *)wavDataPtr + audioSize1, audioSize2);
     }
-    soundBuffers[idx]->Unlock((LPVOID *)&audioPtr1, audioSize1, (LPVOID *)audioPtr2, audioSize2);
+    soundBuffers[idx]->Unlock((LPVOID *)audioPtr1, audioSize1, (LPVOID *)audioPtr2, audioSize2);
     free(soundFileData);
     return ZUN_SUCCESS;
 }
