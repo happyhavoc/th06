@@ -88,7 +88,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
 
 #define GUI_SCORE_STEP 78910
 
-const i32 EXTRA_LIVES_SCORES[5] = {10000000, 20000000, 40000000, 60000000, 1900000000};
 #define MAX_LIVES 8
 
 #pragma optimize("s", on)
@@ -507,7 +506,7 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
             gameManager->nextScoreIncrement = 0;
             gameManager->guiScore = gameManager->score;
         }
-        if (gameManager->extraLives >= 0 && EXTRA_LIVES_SCORES[gameManager->extraLives] <= gameManager->guiScore)
+        if (gameManager->extraLives >= 0 && g_ExtraLivesScores[gameManager->extraLives] <= gameManager->guiScore)
         {
             if (gameManager->livesRemaining < MAX_LIVES)
             {
