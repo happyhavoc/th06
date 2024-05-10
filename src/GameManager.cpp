@@ -31,13 +31,7 @@ struct DifficultyInfo
 };
 C_ASSERT(sizeof(DifficultyInfo) == 0xc);
 
-#ifdef DIFFBUILD
-extern "C"
-{
-    extern DifficultyInfo g_DifficultyInfo[5];
-};
-#else
-static DifficultyInfo g_DifficultyInfo[5] = {
+DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfo) = {
     // rank, minRank, maxRank
     /* EASY    */ {16, 12, 20},
     /* NORMAL  */ {16, 10, 32},
@@ -45,14 +39,7 @@ static DifficultyInfo g_DifficultyInfo[5] = {
     /* LUNATIC */ {16, 10, 32},
     /* EXTRA   */ {16, 14, 18},
 };
-#endif
-#ifdef DIFFBUILD
-extern "C"
-{
-    extern DifficultyInfo g_DifficultyInfoForReplay[5];
-};
-#else
-static DifficultyInfo g_DifficultyInfoForReplay[5] = {
+DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfoForReplay) = {
     // rank, minRank, maxRank
     /* EASY    */ {16, 12, 20},
     /* NORMAL  */ {16, 10, 32},
@@ -60,46 +47,23 @@ static DifficultyInfo g_DifficultyInfoForReplay[5] = {
     /* LUNATIC */ {16, 10, 32},
     /* EXTRA   */ {16, 14, 18},
 };
-#endif
-#ifdef DIFFBUILD
-extern "C"
-{
-    extern u32 g_ExtraLivesScores[5];
-};
-#else
-static u32 g_ExtraLivesScores[5] = {10000000, 20000000, 40000000, 60000000, 1900000000};
-#endif
-
-#ifdef DIFFBUILD
-extern "C"
-{
-    extern char *g_EclFiles[9];
-};
-#else
-static char *g_EclFiles[9] = {"dummy",
-                              "data/ecldata1.ecl",
-                              "data/ecldata2.ecl",
-                              "data/ecldata3.ecl",
-                              "data/ecldata4.ecl",
-                              "data/ecldata5.ecl",
-                              "data/ecldata6.ecl",
-                              "data/ecldata7.ecl",
-                              NULL};
-#endif
+DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 5, g_ExtraLivesScores) = {10000000, 20000000, 40000000, 60000000, 1900000000};
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 9, g_EclFiles) = {"dummy",
+                                                       "data/ecldata1.ecl",
+                                                       "data/ecldata2.ecl",
+                                                       "data/ecldata3.ecl",
+                                                       "data/ecldata4.ecl",
+                                                       "data/ecldata5.ecl",
+                                                       "data/ecldata6.ecl",
+                                                       "data/ecldata7.ecl",
+                                                       NULL};
 
 struct AnmStageFiles
 {
     char *file1;
     char *file2;
 };
-
-#ifdef DIFFBUILD
-extern "C"
-{
-    extern AnmStageFiles g_AnmStageFiles[8];
-};
-#else
-static AnmStageFiles g_AnmStageFiles[8] = {
+DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
     {"dummy", "dummy"},
     {"data/stg1enm.anm", "data/stg1enm2.anm"},
     {"data/stg2enm.anm", "data/stg2enm2.anm"},
@@ -109,7 +73,6 @@ static AnmStageFiles g_AnmStageFiles[8] = {
     {"data/stg6enm.anm", "data/stg6enm2.anm"},
     {"data/stg7enm.anm", "data/stg7enm2.anm"},
 };
-#endif
 
 #define GAME_REGION_TOP 16.0
 #define GAME_REGION_LEFT 32.0
