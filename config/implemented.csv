@@ -56,6 +56,9 @@ SetButtonFromControllerInputs
 SetButtonFromDirectInputJoystate
 GetControllerInput
 GetInput
+EffectManager::Reset
+EffectManager::AddedCallback
+EffectManager::RegisterChain
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
