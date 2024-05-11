@@ -1,4 +1,6 @@
 #include "SoundPlayer.hpp"
+
+#include "FileSystem.hpp"
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
@@ -187,6 +189,97 @@ ZunResult SoundPlayer::InitSoundBuffers()
             this->duplicateSoundBuffers[idx]->SetVolume(g_SoundBufferIdxVol[idx].volume);
         }
     }
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(fileSize, soundFileData, audioPtr1, audioSize1, audioPtr2, audioSize2, formatSize, wavDataPtr,       \
+                  dsBuffer, wavData, sFDCursor)
+ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
+{
+    i32 *soundFileData;
+    i32 *sFDCursor;
+    i32 fileSize;
+    WAVEFORMATEX *wavDataPtr;
+    WAVEFORMATEX *audioPtr1;
+    WAVEFORMATEX *audioPtr2;
+    DWORD audioSize1;
+    DWORD audioSize2;
+    WAVEFORMATEX wavData;
+    i32 formatSize;
+    DSBUFFERDESC dsBuffer;
+
+    if (this->manager == NULL)
+    {
+        return ZUN_SUCCESS;
+    }
+    if (this->soundBuffers[idx] != NULL)
+    {
+        this->soundBuffers[idx]->Release();
+        this->soundBuffers[idx] = NULL;
+    }
+    soundFileData = (i32 *)FileSystem::OpenPath(path, 0);
+    sFDCursor = soundFileData;
+    if (soundFileData == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    if (strncmp((char *)sFDCursor, "RIFF", 4))
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        free(soundFileData);
+        return ZUN_ERROR;
+    }
+    sFDCursor++;
+
+    fileSize = *sFDCursor;
+    sFDCursor++;
+
+    if (strncmp((char *)sFDCursor, "WAVE", 4))
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        free(soundFileData);
+        return ZUN_ERROR;
+    }
+    sFDCursor++;
+    wavDataPtr = GetWavFormatData(sFDCursor, "fmt ", &formatSize, fileSize - 12);
+    if (wavDataPtr == NULL)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        free(soundFileData);
+        return ZUN_ERROR;
+    }
+    wavData = *wavDataPtr;
+
+    wavDataPtr = GetWavFormatData(sFDCursor, "data", &formatSize, fileSize - 12);
+    if (wavDataPtr == NULL)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        free(soundFileData);
+        return ZUN_ERROR;
+    }
+    memset(&dsBuffer, 0, sizeof(dsBuffer));
+    dsBuffer.dwSize = sizeof(dsBuffer);
+    dsBuffer.dwFlags = DSBCAPS_GLOBALFOCUS | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCSOFTWARE;
+    dsBuffer.dwBufferBytes = formatSize;
+    dsBuffer.lpwfxFormat = &wavData;
+    if (FAILED(this->dsoundHdl->CreateSoundBuffer(&dsBuffer, &this->soundBuffers[idx], NULL)))
+    {
+        free(soundFileData);
+        return ZUN_ERROR;
+    }
+    if (FAILED(soundBuffers[idx]->Lock(0, formatSize, (LPVOID *)&audioPtr1, (LPDWORD)&audioSize1, (LPVOID *)&audioPtr2,
+                                       (LPDWORD)&audioSize2, NULL)))
+    {
+        free(soundFileData);
+        return ZUN_ERROR;
+    }
+    memcpy(audioPtr1, wavDataPtr, audioSize1);
+    if (audioPtr2 != NULL)
+    {
+        memcpy(audioPtr2, (i8 *)wavDataPtr + audioSize1, audioSize2);
+    }
+    soundBuffers[idx]->Unlock((LPVOID *)audioPtr1, audioSize1, (LPVOID *)audioPtr2, audioSize2);
+    free(soundFileData);
     return ZUN_SUCCESS;
 }
 

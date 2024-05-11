@@ -31,6 +31,7 @@
 #define TH_JP_ERR_CONFIG_NOT_FOUND "コンフィグデータが見つからないので初期化しました\n"
 #define TH_JP_ERR_CONFIG_CORRUPTED "コンフィグデータが破壊されていたので再初期化しました\n"
 #define TH_JP_ERR_NO_WAVE_FILE "wave データが無いので、midi にします\n"
+#define TH_JP_ERR_NOT_A_WAV_FILE "Wav ファイルじゃない? %s\n"
 #define TH_JP_ERR_NO_VERTEX_BUFFER "頂点バッファの使用を抑制します\n"
 #define TH_JP_ERR_NO_FOG "フォグの使用を抑制します\n"
 #define TH_JP_ERR_USE_16BIT_TEXTURES "16Bit のテクスチャの使用を強制します\n"
@@ -95,6 +96,7 @@
 #define TH_EN_ERR_CONFIG_NOT_FOUND "Config not found, initializing with default values.\n"
 #define TH_EN_ERR_CONFIG_CORRUPTED "Config corrupted, reinitializing with default values.\n"
 #define TH_EN_ERR_NO_WAVE_FILE "There is no wave data, so I'll make it midi!\n"
+#define TH_EN_ERR_NOT_A_WAV_FILE "%s isn't a wav file?"
 #define TH_EN_ERR_NO_VERTEX_BUFFER "Suppressing the use of the vertex buffer.\n"
 #define TH_EN_ERR_NO_FOG "Suppressing the use of fog.\n"
 #define TH_EN_ERR_USE_16BIT_TEXTURES "Enforces the use of 16Bit textures.\n"
@@ -157,6 +159,7 @@
 #define TH_ERR_CONFIG_NOT_FOUND TH_MAKE_LANG_STR(TH_LANG, _ERR_CONFIG_NOT_FOUND)
 #define TH_ERR_CONFIG_CORRUPTED TH_MAKE_LANG_STR(TH_LANG, _ERR_CONFIG_CORRUPTED)
 #define TH_ERR_NO_WAVE_FILE TH_MAKE_LANG_STR(TH_LANG, _ERR_NO_WAVE_FILE)
+#define TH_ERR_NOT_A_WAV_FILE TH_MAKE_LANG_STR(TH_LANG, _ERR_NOT_A_WAV_FILE)
 #define TH_ERR_NO_VERTEX_BUFFER TH_MAKE_LANG_STR(TH_LANG, _ERR_NO_VERTEX_BUFFER)
 #define TH_ERR_NO_FOG TH_MAKE_LANG_STR(TH_LANG, _ERR_NO_FOG)
 #define TH_ERR_USE_16BIT_TEXTURES TH_MAKE_LANG_STR(TH_LANG, _ERR_USE_16BIT_TEXTURES)
