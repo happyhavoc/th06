@@ -8,6 +8,7 @@
 
 struct Gui
 {
+    static ZunResult RegisterChain();
 
     u32 flags;
     GuiImpl *impl;

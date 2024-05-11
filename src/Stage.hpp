@@ -9,6 +9,25 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+struct RawStageHeader
+{
+    u16 nbObjects;
+    u16 nbFaces;
+    u32 facesOffset;
+    u32 scriptOffset;
+    u32 unk_c;
+    char stageName[128];
+    char song1Name[128];
+    char song2Name[128];
+    char song3Name[128];
+    char song4Name[128];
+    char song1Path[128];
+    char song2Path[128];
+    char song3Path[128];
+    char song4Path[128];
+};
+C_ASSERT(sizeof(RawStageHeader) == 0x490);
+
 struct StageCameraSky
 {
     f32 nearPlane;
@@ -43,7 +62,7 @@ struct Stage
     ZunResult LoadStageData(char *anmpath, char *stdpath);
 
     AnmVm *quadVms;
-    u8 *stdData;
+    RawStageHeader *stdData;
     i32 quadCount;
     i32 objectsCount;
     // TODO: This has type StdRawObject**

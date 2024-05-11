@@ -1,6 +1,15 @@
 #include "GameManager.hpp"
+#include "AsciiManager.hpp"
+#include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
+#include "EclManager.hpp"
+#include "EffectManager.hpp"
+#include "EnemyManager.hpp"
 #include "Gui.hpp"
+#include "Player.hpp"
+#include "ReplayManager.hpp"
+#include "ResultScreen.hpp"
+#include "Rng.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
@@ -13,6 +22,57 @@ DIFFABLE_STATIC(GameManager, g_GameManager);
 
 DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
+
+struct DifficultyInfo
+{
+    u32 rank;
+    u32 minRank;
+    u32 maxRank;
+};
+C_ASSERT(sizeof(DifficultyInfo) == 0xc);
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfo) = {
+    // rank, minRank, maxRank
+    /* EASY    */ {16, 12, 20},
+    /* NORMAL  */ {16, 10, 32},
+    /* HARD    */ {16, 10, 32},
+    /* LUNATIC */ {16, 10, 32},
+    /* EXTRA   */ {16, 14, 18},
+};
+DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfoForReplay) = {
+    // rank, minRank, maxRank
+    /* EASY    */ {16, 12, 20},
+    /* NORMAL  */ {16, 10, 32},
+    /* HARD    */ {16, 10, 32},
+    /* LUNATIC */ {16, 10, 32},
+    /* EXTRA   */ {16, 14, 18},
+};
+DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 5, g_ExtraLivesScores) = {10000000, 20000000, 40000000, 60000000, 1900000000};
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 9, g_EclFiles) = {"dummy",
+                                                       "data/ecldata1.ecl",
+                                                       "data/ecldata2.ecl",
+                                                       "data/ecldata3.ecl",
+                                                       "data/ecldata4.ecl",
+                                                       "data/ecldata5.ecl",
+                                                       "data/ecldata6.ecl",
+                                                       "data/ecldata7.ecl",
+                                                       NULL};
+
+struct AnmStageFiles
+{
+    char *file1;
+    char *file2;
+};
+DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
+    {"dummy", "dummy"},
+    {"data/stg1enm.anm", "data/stg1enm2.anm"},
+    {"data/stg2enm.anm", "data/stg2enm2.anm"},
+    {"data/stg3enm.anm", NULL},
+    {"data/stg4enm.anm", NULL},
+    {"data/stg5enm.anm", "data/stg5enm2.anm"},
+    {"data/stg6enm.anm", "data/stg6enm2.anm"},
+    {"data/stg7enm.anm", "data/stg7enm2.anm"},
+};
 
 #define GAME_REGION_TOP 16.0
 #define GAME_REGION_LEFT 32.0
@@ -28,7 +88,6 @@ DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 
 #define GUI_SCORE_STEP 78910
 
-const i32 EXTRA_LIVES_SCORES[5] = {10000000, 20000000, 40000000, 60000000, 1900000000};
 #define MAX_LIVES 8
 
 #pragma optimize("s", on)
@@ -76,6 +135,211 @@ void GameManager::CutChain()
     g_Chain.Cut(&g_GameManagerCalcChain);
     g_Chain.Cut(&g_GameManagerDrawChain);
 }
+
+#pragma optimize("s", on)
+#pragma var_order(failedToLoadReplay, catk, i, catkCursor, scoredat, clrdIdx, unk1, unk2, padding)
+ZunResult GameManager::AddedCallback(GameManager *mgr)
+{
+    ScoreDat *scoredat;
+    u32 clrdIdx;
+    u32 catkCursor;
+    i32 i;
+    Catk *catk;
+    ZunBool failedToLoadReplay;
+    i32 padding[3];
+
+    failedToLoadReplay = false;
+    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+    if (g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT)
+    {
+        g_Supervisor.bombCount = g_GameManager.bombsRemaining;
+        g_Supervisor.lifeCount = g_GameManager.livesRemaining;
+        mgr->arcadeRegionTopLeftPos.x = 32.0;
+        mgr->arcadeRegionTopLeftPos.y = 16.0;
+        mgr->arcadeRegionSize.x = 384.0;
+        mgr->arcadeRegionSize.y = 448.0;
+        mgr->playerMovementAreaTopLeftPos.x = 8.0;
+        mgr->playerMovementAreaTopLeftPos.y = 16.0;
+        mgr->playerMovementAreaSize.x = 368.0;
+        mgr->playerMovementAreaSize.y = 416.0;
+        mgr->counat = 0;
+        mgr->guiScore = 0;
+        mgr->score = 0;
+        mgr->nextScoreIncrement = 0;
+        mgr->highScore = 100000;
+        mgr->currentPower = 0;
+        mgr->numRetries = 0;
+        if (6 <= mgr->currentStage)
+        {
+            mgr->difficulty = EXTRA;
+        }
+        if (mgr->difficulty < EXTRA)
+        {
+            mgr->extraLives = 0;
+        }
+        else
+        {
+            mgr->extraLives = 4;
+        }
+        g_GameManager.powerItemCountForScore = 0;
+        mgr->rank = 8;
+        mgr->grazeInTotal = 0;
+        mgr->unk_1816 = 0;
+        for (catk = mgr->catk, i = 0; i < ARRAY_SIZE_SIGNED(mgr->catk); i++, catk++)
+        {
+            // Randomize catk content.
+            for (catkCursor = 0; catkCursor < sizeof(Catk) / sizeof(u16); catkCursor++)
+            {
+                ((u16 *)catk)[catkCursor] = g_Rng.GetRandomU16();
+            }
+            catk->base.magic = (u32) "CATK";
+            catk->base.unkLen = sizeof(Catk);
+            catk->base.th6kLen = sizeof(Catk);
+            catk->base.version = 0x10;
+            catk->idx = i;
+            catk->numSuccess = 0;
+            catk->unk_3e = 0;
+        }
+        scoredat = ResultScreen::OpenScore("score.dat");
+        g_GameManager.highScore = ResultScreen::GetHighScore(
+            scoredat, NULL, g_GameManager.character * 2 + g_GameManager.shotType, g_GameManager.difficulty);
+        ResultScreen::ParseCatk(scoredat, mgr->catk);
+        ResultScreen::ParseClrd(scoredat, mgr->clrd);
+        ResultScreen::ParsePscr(scoredat, (Pscr *)mgr->pscr);
+        if (mgr->isInPracticeMode != 0)
+        {
+            g_GameManager.highScore = mgr->pscr[g_GameManager.character * 2 + g_GameManager.shotType]
+                                               [g_GameManager.currentStage][g_GameManager.difficulty]
+                                                   .score;
+        }
+        ResultScreen::ReleaseScoreDat(scoredat);
+        mgr->rank = g_DifficultyInfo[g_GameManager.difficulty].rank;
+        mgr->minRank = g_DifficultyInfo[g_GameManager.difficulty].minRank;
+        mgr->maxRank = g_DifficultyInfo[g_GameManager.difficulty].maxRank;
+        mgr->deaths = 0;
+        mgr->unk_24 = 0;
+        mgr->unk_28 = 0;
+    }
+    else
+    {
+        mgr->guiScore = mgr->score;
+        mgr->nextScoreIncrement = 0;
+    }
+    mgr->subRank = 0;
+    mgr->pointItemsCollectedInStage = 0;
+    mgr->grazeInStage = 0;
+    mgr->isInGameMenu = 0;
+    mgr->currentStage = mgr->currentStage + 1;
+    if (g_GameManager.isInReplay == 0)
+    {
+        clrdIdx = g_GameManager.character * 2 + g_GameManager.shotType;
+        if (mgr->numRetries == 0 &&
+            mgr->clrd[clrdIdx].difficultyClearedWithRetries[g_GameManager.difficulty] < mgr->currentStage - 1)
+        {
+            mgr->clrd[clrdIdx].difficultyClearedWithRetries[g_GameManager.difficulty] = mgr->currentStage - 1;
+        }
+        if (mgr->clrd[clrdIdx].difficultyClearedWithoutRetries[g_GameManager.difficulty] < mgr->currentStage - 1)
+        {
+            mgr->clrd[clrdIdx].difficultyClearedWithoutRetries[g_GameManager.difficulty] = mgr->currentStage - 1;
+        }
+    }
+    if (mgr->isInPracticeMode != 0)
+    {
+        switch (mgr->currentStage)
+        {
+        case STAGE2:
+            break;
+        case STAGE3:
+            mgr->currentPower = 64;
+            break;
+        default:
+            mgr->currentPower = 128;
+        }
+    }
+    g_Supervisor.LoadPbg3(CM_PBG3_INDEX, TH_CM_DAT_FILE);
+    g_Supervisor.LoadPbg3(ST_PBG3_INDEX, TH_ST_DAT_FILE);
+    if (g_GameManager.isInReplay == 1)
+    {
+        if (ReplayManager::RegisterChain(1, g_GameManager.replayFile) != ZUN_SUCCESS)
+        {
+            failedToLoadReplay = true;
+        }
+        while (g_ExtraLivesScores[mgr->extraLives] <= mgr->guiScore)
+        {
+            mgr->extraLives++;
+        }
+        mgr->minRank = g_DifficultyInfoForReplay[g_GameManager.difficulty].minRank;
+        mgr->maxRank = g_DifficultyInfoForReplay[g_GameManager.difficulty].maxRank;
+    }
+    g_Rng.generationCount = 0;
+    mgr->randomSeed = g_Rng.seed;
+    if (Stage::RegisterChain(mgr->currentStage) != ZUN_SUCCESS)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_STAGE);
+        return ZUN_ERROR;
+    }
+
+    if (Player::RegisterChain(0) != ZUN_SUCCESS)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_PLAYER);
+        return ZUN_ERROR;
+    }
+    if (BulletManager::RegisterChain("data/etama.anm") != ZUN_SUCCESS)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_BULLETMANAGER);
+        return ZUN_ERROR;
+    }
+    if (EnemyManager::RegisterChain(g_AnmStageFiles[mgr->currentStage].file1,
+                                    g_AnmStageFiles[mgr->currentStage].file2) != ZUN_SUCCESS)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ENEMYMANAGER);
+        return ZUN_ERROR;
+    }
+    if (g_EclManager.Load(g_EclFiles[mgr->currentStage]) != ZUN_SUCCESS)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ECLMANAGER);
+        return ZUN_ERROR;
+    }
+    if (EffectManager::RegisterChain() != ZUN_SUCCESS)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_EFFECTMANAGER);
+        return ZUN_ERROR;
+    }
+    if (Gui::RegisterChain() != ZUN_SUCCESS)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_GUI);
+        return ZUN_ERROR;
+    }
+    if (g_GameManager.isInReplay == 0)
+    {
+        ReplayManager::RegisterChain(0, "replay/th6_00.rpy");
+    }
+    if (g_GameManager.demoMode == 0)
+    {
+        // Read boss battle, and store it for use when boss is started.
+        g_Supervisor.ReadMidiFile(1, g_Stage.stdData->song2Path);
+        // Immediately start playing this level's theme.
+        g_Supervisor.PlayAudio(g_Stage.stdData->song1Path);
+    }
+    mgr->isInRetryMenu = 0;
+    mgr->isInMenu = 1;
+    if (g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT)
+    {
+        g_Supervisor.unk1b4 = 0.0;
+        g_Supervisor.unk1b8 = 0.0;
+    }
+    mgr->unk_2c = 0;
+    mgr->score = 0;
+    mgr->isGameCompleted = 0;
+    g_AsciiManager.InitializeVms();
+    if (failedToLoadReplay)
+    {
+        g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU;
+    }
+    g_Supervisor.unk198 = 3;
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
@@ -242,7 +506,7 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
             gameManager->nextScoreIncrement = 0;
             gameManager->guiScore = gameManager->score;
         }
-        if (gameManager->extraLives >= 0 && EXTRA_LIVES_SCORES[gameManager->extraLives] <= gameManager->guiScore)
+        if (gameManager->extraLives >= 0 && g_ExtraLivesScores[gameManager->extraLives] <= gameManager->guiScore)
         {
             if (gameManager->livesRemaining < MAX_LIVES)
             {

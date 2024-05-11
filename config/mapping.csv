@@ -27,7 +27,7 @@ Stage::OnUpdate,0x403810,0x89c,default,ChainCallbackResult,Stage*
 Stage::OnDrawHighPrio,0x4040d0,0xa2,default,ChainCallbackResult,Stage*
 Stage::OnDrawLowPrio,0x404180,0x180,default,ChainCallbackResult,Stage*
 Stage::AddedCallback,0x404300,0x1b4,__thiscall,ZunResult,Stage*,Stage*
-Stage::RegisterChain,0x4044c0,0x11e,__stdcall,ZunResult,u32
+Stage::RegisterChain,0x4044c0,0x11e,default,ZunResult,u32
 Stage::DeletedCallback,0x4045e0,0x66,default,ZunResult,Stage*
 Stage::CutChain,0x404650,0x32,__stdcall,void
 Stage::LoadStageData,0x404690,0x1c1,__thiscall,ZunResult,Stage*,char*,char*
@@ -43,7 +43,7 @@ Player::BombMarisaACalc,0x4066f0,0x411,default,u8,Player*
 Player::BombMarisaADraw,0x406b10,0x354,default,u8,Player*
 Player::BombMarisaBCalc,0x406e70,0x33e,default,u8,Player*
 Player::BombMarisaBDraw,0x4071b0,0x185,__stdcall,void,Player*
-EclManager::FUN_00407340,0x407340,0xb2,__thiscall,ZunResult,EclManager*,char*
+EclManager::Load,0x407340,0xb2,__thiscall,ZunResult,EclManager*,char*
 COleDispParams::~COleDispParams,0x407400,0x32,__thiscall,void,COleDispParams*
 EclManager::FUN_00407440,0x407440,0x54,__thiscall,u32,EclManager*,EnemyEclContext*,i16
 EclManager::run_ecl,0x4074a0,0x3504,__stdcall,u32,Enemy*
@@ -129,7 +129,7 @@ BulletManager::FUN_00414340,0x414340,0x15,__thiscall,void,BulletManager*
 BulletManager::FUN_00414360,0x414360,0x25f,__thiscall,i32,BulletManager*,i32,i32
 BulletManager::SpawnBullet,0x4145c0,0xa5,__thiscall,u32,BulletManager*,EnemyBulletShooter*
 AnmVm::FUN_00414670,0x414670,0x27b,unknown,void*,EnemyLaserShooter*
-BulletManager::RegisterChain,0x4148f0,0xd3,__stdcall,i32,char*
+BulletManager::RegisterChain,0x4148f0,0xd3,default,ZunResult,char*
 BulletManager::OnUpdate,0x4149d0,0x1b10,__stdcall,u32,BulletManager*
 BulletManager::OnDraw,0x416500,0x647,__stdcall,ChainCallbackResult,BulletManager*
 FUN_00416b50,0x416b50,0xea,__stdcall,void,Bullet*
@@ -285,7 +285,7 @@ Supervisor::TickTimer,0x424285,0x6e,__thiscall,void,Supervisor*,i32*,f32*
 Supervisor::ReleasePbg3,0x4242f3,0x82,__thiscall,void,Supervisor*,i32
 Supervisor::LoadPbg3,0x424375,0x2d8,__thiscall,i32,Supervisor*,i32,char*
 Supervisor::LoadConfig,0x42464d,0x45f,__thiscall,ZunResult,Supervisor*,char*
-readMidiFile,0x424aac,0x38,unknown,u8,u32,u32
+Supervisor::ReadMidiFile,0x424aac,0x38,__thiscall,i32,Supervisor*,u32,char*
 PlayMidiFile,0x424ae4,0x4b,__stdcall,i32,i32
 Supervisor::SetupMidiPlayback,0x424b2f,0x2e,__thiscall,ZunResult,Supervisor*,char*
 Supervisor::PlayAudio,0x424b5d,0x1db,__thiscall,void,Supervisor*,char*
@@ -318,7 +318,7 @@ Player::CalcMove,0x427860,0xd9a,__thiscall,u32,Player*
 Player::FUN_00428630,0x428630,0x45,default,void,Player*
 Player::FUN_00428680,0x428680,0x7a,__thiscall,float10*,Player*,float10*,f32*
 Player::FUN_00428700,0x428700,0x7a,__thiscall,f32,Player*,_D3DVECTOR*
-Player::RegisterChain,0x428780,0x135,unknown,ZunResult,u8
+Player::RegisterChain,0x428780,0x135,default,ZunResult,u8
 Player::OnUpdate,0x4288c0,0x8ea,__stdcall,ChainCallbackResult,Player*
 Player::FUN_004291b0,0x4291b0,0x55b,default,void,Player*
 Player::FUN_00429710,0x429710,0x10c,default,u32,Player*
@@ -331,7 +331,7 @@ Player::AddedCallback,0x429c50,0x45e,default,u32,Player*
 Player::DeletedCallback,0x42a0b0,0x24,unknown,u8
 Player::CutChain,0x42a0e0,0x55,unknown,u8
 ValidateReplayData,0x42a140,0x100,default,ZunResult,ReplayData*,i32
-ReplayManager::RegisterChain,0x42a240,0x228,__stdcall,u32,i32,char*
+ReplayManager::RegisterChain,0x42a240,0x228,default,ZunResult,i32,char*
 ReplayManager::OnUpdate,0x42a470,0x97,unknown,u8,ReplayManager*
 ReplayManager::DemoOnUpdate,0x42a510,0x51,default,ChainCallbackResult,ReplayManager*
 FUN_0042a570,0x42a570,0xf2,default,u32,ReplayManager*
@@ -342,13 +342,13 @@ ReplayManager::DeletedCallback,0x42aa20,0x8c,unknown,u8,ReplayManager*
 FUN_0042aab0,0x42aab0,0x7b,unknown,u8
 ReplayDoStuff,0x42ab30,0x5a9,default,void,char*,char*
 ResultScreen::OpenScore,0x42b0d9,0x1a7,default,ScoreDat*,char*
-GetHighScore,0x42b280,0x126,__stdcall,u32,ScoreDat*,ResultScreenUnk3ab0*,i32,i32
+ResultScreen::GetHighScore,0x42b280,0x126,default,u32,ScoreDat*,ScoreListNode*,u32,u32
 FUN_0042b3a6,0x42b3a6,0x91,default,i32,ResultScreenUnk3ab0*,Hscr*
 ZunFreeArray,0x42b437,0x2f,__stdcall,void,void*
-ParseCatk,0x42b466,0x9c,default,u32,ScoreDat*,Catk*
+ResultScreen::ParseCatk,0x42b466,0x9c,default,ZunResult,ScoreDat*,Catk*
 ResultScreen::ParseClrd,0x42b502,0x15c,unknown,ZunResult,ScoreDat*,Clrd*
 ResultScreen::ParsePscr,0x42b65e,0x17e,default,ZunResult,ScoreDat*,Pscr*
-ResultScreen::ReleaseScoreDat,0x42b7dc,0x2d,__cdecl,void,ScoreDat*
+ResultScreen::ReleaseScoreDat,0x42b7dc,0x2d,default,void,ScoreDat*
 WriteScore,0x42b809,0x424,unknown,u8,u32
 ResultScreen::FUN_0042bc2d,0x42bc2d,0x2e,__thiscall,void,ResultScreen*,Hscr*,i32,i32
 ResultScreen::FUN_0042bc5b,0x42bc5b,0x2a,__thiscall,void,ResultScreen*,i32,i32

@@ -19,6 +19,21 @@ enum Difficulty
     EXTRA,
 };
 
+enum StageNumber
+{
+    STAGE1,
+    STAGE2,
+    STAGE3,
+    STAGE4,
+    STAGE5,
+    FINAL_STAGE,
+    EXTRA_STAGE,
+};
+
+#define PSCR_NUM_CHARS_SHOTTYPES 4
+#define PSCR_NUM_STAGES 6
+#define PSCR_NUM_DIFFICULTIES 4
+
 struct GameManager
 {
     GameManager();
@@ -45,17 +60,16 @@ struct GameManager
     u32 deaths;
     u32 unk_24;
     u32 unk_28;
-    u32 unk_2c;
-    u8 catk[0x1000];
+    u8 unk_2c;
+    Catk catk[64];
     Clrd clrd[4];
-    Pscr pscr[96];
+    Pscr pscr[PSCR_NUM_CHARS_SHOTTYPES][PSCR_NUM_STAGES][PSCR_NUM_DIFFICULTIES];
     u16 currentPower;
     i8 unk_1812;
     i8 unk_1813;
     u16 pointItemsCollectedInStage;
-    i8 unk_1816;
-    i8 unk_1817;
-    i8 numRetries;
+    u16 unk_1816;
+    u8 numRetries;
     i8 powerItemCountForScore;
     i8 livesRemaining;
     i8 bombsRemaining;
@@ -74,16 +88,14 @@ struct GameManager
     i32 demoFrames;
     i8 replayFile[256];
     i8 unk_192c[256];
-    i32 randomSeed;
+    u16 randomSeed;
     u32 gameFrames;
     i32 currentStage;
     u32 menuCursorBackup;
     D3DXVECTOR2 arcadeRegionTopLeftPos;
     D3DXVECTOR2 arcadeRegionSize;
-    f32 unk_1a4c;
-    f32 unk_1a50;
-    f32 unk_1a54;
-    f32 unk_1a58;
+    D3DXVECTOR2 playerMovementAreaTopLeftPos;
+    D3DXVECTOR2 playerMovementAreaSize;
     i32 unk_1a5c;
     D3DXVECTOR3 stageCameraFacingDir;
     u32 counat;

@@ -664,7 +664,7 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     m->currentReplay = NULL;
     scoredat = ResultScreen::OpenScore("score.dat");
     ResultScreen::ParseClrd(scoredat, g_GameManager.clrd);
-    ResultScreen::ParsePscr(scoredat, g_GameManager.pscr);
+    ResultScreen::ParsePscr(scoredat, (Pscr *)g_GameManager.pscr);
     ResultScreen::ReleaseScoreDat(scoredat);
     if (g_GameManager.demoMode == 0)
     {
@@ -1748,9 +1748,8 @@ ZunResult MainMenu::ChoosePracticeLevel()
             {
                 g_AsciiManager.color = (color >> 1) << 0x18 | 0x00C0F0F0;
             }
-            g_AsciiManager.AddFormatText(
-                &textPos, "STAGE %d  %.9d", stageNum + 1,
-                g_GameManager.pscr[(charShotType * 24) + stageNum * 6 + g_GameManager.difficulty].score);
+            g_AsciiManager.AddFormatText(&textPos, "STAGE %d  %.9d", stageNum + 1,
+                                         g_GameManager.pscr[charShotType][stageNum][g_GameManager.difficulty].score);
             textPos.y += 24;
         }
         g_AsciiManager.color = 0xFFFFFFFF;
