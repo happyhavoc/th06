@@ -65,6 +65,7 @@ GameErrorContext::Flush
 GameWindow::Present
 GameWindow::Render
 GameManager::GameManager
+GameManager::AddedCallback
 GameManager::RegisterChain
 GameManager::CutChain
 GameManager::HasReachedMaxClears
