@@ -6,6 +6,8 @@ _g_AnmStageFiles,                       0x004764e8
 _g_DifficultyInfoForReplay,             0x00476528
 _g_DifficultyInfo,                      0x00476564
 _g_ControllerMapping,                   0x004765a0
+_g_BombData,                            0x00476708
+_g_CharData,                            0x00476728
 _g_SoundBufferIdxVol,                   0x00478528
 _g_SFXList,                             0x00478628
 _g_LastJoystickInput,                   0x00478690
@@ -45,6 +47,7 @@ _g_TickCountToEffectiveFramerate,       0x006c6bf4
 _g_LastFrameTime,                       0x006c6bf8
 _g_ExclusiveMutex,                      0x006c6c00
 _g_Supervisor,                          0x006c6d18
+_g_Player,                              0x006ca628
 _g_SoundPlayer,                         0x006d3f50
 _g_AnmManager,                          0x006d4588
 _g_PrimitivesToDrawNoVertexBuf,         0x006d4590

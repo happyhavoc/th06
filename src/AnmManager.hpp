@@ -90,6 +90,11 @@ struct AnmManager
     void TakeScreenshotIfRequested();
 
     void SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript);
+    void SetAndExecuteScriptIdx(AnmVm *vm, i32 anmFileIdx)
+    {
+        vm->anmFileIndex = anmFileIdx;
+        this->SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
+    }
     i32 ExecuteScript(AnmVm *vm);
     ZunResult Draw(AnmVm *vm);
     ZunResult DrawNoRotation(AnmVm *vm);
