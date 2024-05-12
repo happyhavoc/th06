@@ -625,8 +625,8 @@ void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
 
 #pragma var_order(curInstr, local_c, local_10, local_14, local_18, local_1c, local_20, nextInstr, local_28, local_2c,  \
                   local_30, local_34, local_38, local_3c, local_48, local_54, local_60, local_68, local_6a, local_6c,  \
-                  local_70, curTime, timer, scaleInterpCurTime, local_b4, local_b8, local_bc, local_c0, local_c4,      \
-                  local_c8, local_cc, local_d0, local_d4, randValue)
+                  local_70, curTime, scaleInterpCurTime, local_b4, local_b8, local_c0, local_c4, local_c8, local_cc,   \
+                  randValue)
 i32 AnmManager::ExecuteScript(AnmVm *vm)
 {
     AnmRawInstr *curInstr;
@@ -651,17 +651,13 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
     u16 local_6c;
     u32 local_70;
     i32 curTime;
-    ZunTimer *timer;
     i32 scaleInterpCurTime;
     ZunTimer *local_b4;
     ZunTimer *local_b8;
-    ZunTimer *local_bc;
     ZunTimer *local_c0;
     i32 local_c4;
     ZunTimer *local_c8;
     i32 local_cc;
-    ZunTimer *local_d0;
-    ZunTimer *local_d4;
     u32 randValue;
 
     if (vm->currentInstruction == NULL)
@@ -906,9 +902,7 @@ stop:
     }
     if (vm->scaleInterpEndTime > 0)
     {
-        timer = &vm->scaleInterpTime;
-        timer->previous = timer->current;
-        g_Supervisor.TickTimer(&timer->current, &timer->subFrame);
+        vm->scaleInterpTime.Tick();
         scaleInterpCurTime = vm->scaleInterpTime.current;
         if (scaleInterpCurTime >= vm->scaleInterpEndTime)
         {
@@ -945,9 +939,7 @@ stop:
     }
     if (0 < vm->alphaInterpEndTime)
     {
-        local_bc = &vm->alphaInterpTime;
-        local_bc->previous = local_bc->current;
-        g_Supervisor.TickTimer(&local_bc->current, &local_bc->subFrame);
+        vm->alphaInterpTime.Tick();
         local_2c.color = vm->alphaInterpInitial;
         local_28.color = vm->alphaInterpFinal;
         local_c0 = &vm->alphaInterpTime;
@@ -1011,13 +1003,9 @@ stop:
         {
             vm->posInterpEndTime = 0;
         }
-        local_d0 = &vm->posInterpTime;
-        local_d0->previous = local_d0->current;
-        g_Supervisor.TickTimer(&local_d0->current, &local_d0->subFrame);
+        vm->posInterpTime.Tick();
     }
-    local_d4 = &vm->currentTimeInScript;
-    local_d4->previous = local_d4->current;
-    g_Supervisor.TickTimer(&local_d4->current, &local_d4->subFrame);
+    vm->currentTimeInScript.Tick();
     return 0;
 }
 
