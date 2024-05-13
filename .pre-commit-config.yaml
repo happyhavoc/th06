@@ -1,11 +1,11 @@
 repos:
 -   repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: 'v18.1.4'
+    rev: 'v18.1.5'
     hooks:
     -   id: clang-format
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.4.3
+  rev: v0.4.4
   hooks:
     # Run the linter.
     - id: ruff
