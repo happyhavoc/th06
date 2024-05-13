@@ -113,11 +113,11 @@ Enemy::FUN_00411f40,0x411f40,0x26f,__thiscall,u32,Enemy*
 Enemy::FUN_004121b0,0x4121b0,0x84,__thiscall,void,Enemy*
 Enemy::FUN_00412240,0x412240,0xd9,__thiscall,void,Enemy*
 EnemyManager::RegisterChain,0x412320,0xc0,default,ZunResult,char*,char*
-EnemyManager::OnUpdate,0x4123e0,0xa5f,unknown,u8,EnemyManager*
+EnemyManager::OnUpdate,0x4123e0,0xa5f,unknown,ChainCallbackResult,EnemyManager*
 FUN_00412e50,0x412e50,0xbd,__stdcall,void,Enemy*
-EnemyManager::OnDraw,0x412f10,0x304,unknown,u8,u32
-EnemyManager::AddedCallback,0x413220,0xff,unknown,u8,u32
-EnemyManager::DeletedCallback,0x413320,0x21,unknown,u8
+EnemyManager::OnDraw,0x412f10,0x304,unknown,ChainCallbackResult,EnemyManager*
+EnemyManager::AddedCallback,0x413220,0xff,unknown,ZunResult,EnemyManager*
+EnemyManager::DeletedCallback,0x413320,0x21,unknown,ZunResult
 EnemyManager::CutChain,0x413350,0x23,unknown,u8
 Enemy::FUN_00413380,0x413380,0xaa,__thiscall,void,Enemy*
 BulletManager::InitializeToZero,0x413430,0x19,__thiscall,void,BulletManager*

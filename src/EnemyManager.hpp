@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Chain.hpp"
 #include "Enemy.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
@@ -7,7 +8,12 @@
 
 struct EnemyManager
 {
+    void Initialize();
     static ZunResult RegisterChain(char *stgEnm1, char *stgEnm2);
+    static ChainCallbackResult OnUpdate(EnemyManager *enemyManager);
+    static ChainCallbackResult OnDraw(EnemyManager *enemyManager);
+    static ZunResult AddedCallback(EnemyManager *enemyManager);
+    static ZunResult DeletedCallback();
 
     char *stgEnmAnmFilename;
     char *stgEnm2AnmFilename;

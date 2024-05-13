@@ -21,6 +21,9 @@ _g_EclManager,                          0x00487e50
 _g_EffectManager,                       0x00487fe0
 _g_EffectManagerCalcChain,              0x004b7964
 _g_EffectManagerDrawChain,              0x004b7984
+_g_EnemyManager,                        0x004b79c8
+_g_EnemyManagerDrawChain,               0x004b79a8
+_g_EnemyManagerCalcChain,               0x005a5fb4
 _g_Gui,                                 0x0069bc30
 _g_GameManager,                         0x0069bca0
 _g_GameManagerDrawChain,                0x0069d740
