@@ -57,7 +57,6 @@ EclManager::Load
 EnemyManager::Initialize
 EnemyManager::OnUpdate
 EnemyManager::OnDraw
-EnemyManager::AddedCallback
 EnemyManager::DeletedCallback
 BulletManager::RegisterChain
 Stage::RegisterChain

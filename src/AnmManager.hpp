@@ -107,7 +107,7 @@ struct AnmManager
                            float yOffset);
 
     void ReleaseAnm(i32 anmIdx);
-    ZunResult LoadAnm(i32 anmIdx, char *path, i32 unk);
+    ZunResult LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset);
     void ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx);
 
     void SetRenderStateForVm(AnmVm *vm);

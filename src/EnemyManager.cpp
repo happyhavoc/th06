@@ -1,7 +1,12 @@
 #include "EnemyManager.hpp"
+#include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "Rng.hpp"
 #include "diffbuild.hpp"
+
+#define ITEM_SPAWNS 3
+#define ITEM_TABLES 8
 
 DIFFABLE_STATIC(EnemyManager, g_EnemyManager)
 DIFFABLE_STATIC(ChainElem, g_EnemyManagerCalcChain)
@@ -31,5 +36,29 @@ ZunResult EnemyManager::RegisterChain(char *stgEnm1, char *stgEnm2)
     {
         return ZUN_ERROR;
     }
+    return ZUN_SUCCESS;
+}
+
+ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
+{
+    Enemy *enemies = enemyManager->enemies;
+
+    if (enemyManager->stgEnmAnmFilename &&
+        g_AnmManager->LoadAnm(8, enemyManager->stgEnmAnmFilename, 256) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    if (enemyManager->stgEnm2AnmFilename &&
+        g_AnmManager->LoadAnm(9, enemyManager->stgEnm2AnmFilename, 256) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+
+    enemyManager->randomItemSpawnIndex = g_Rng.GetRandomU16InRange(ITEM_SPAWNS);
+    enemyManager->randomItemTableIndex = g_Rng.GetRandomU16InRange(ITEM_TABLES);
+
+    enemyManager->spellcardCapture = 0;
+    enemyManager->timelineInstr = NULL;
+
     return ZUN_SUCCESS;
 }
