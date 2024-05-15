@@ -47,7 +47,6 @@ ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
 MainMenu::DeletedCallback
 MainMenu::DrawReplayMenu
-MainMenu::LoadReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
 MainMenu::SetSavedCursorPosition
