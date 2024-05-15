@@ -11,7 +11,15 @@
 #define BACKGROUND_MUSIC_WAV_BLOCK_ALIGN BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE / 8 * BACKGROUND_MUSIC_WAV_NUM_CHANNELS
 
 DIFFABLE_STATIC(SoundBufferIdxVolume, g_SoundBufferIdxVol[32]);
-DIFFABLE_STATIC(char, *g_SFXList[26]);
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 26, g_SFXList) = {
+    "data/wav/plst00.wav", "data/wav/enep00.wav",   "data/wav/pldead00.wav", "data/wav/power0.wav",
+    "data/wav/power1.wav", "data/wav/tan00.wav",    "data/wav/tan01.wav",    "data/wav/tan02.wav",
+    "data/wav/ok00.wav",   "data/wav/cancel00.wav", "data/wav/select00.wav", "data/wav/gun00.wav",
+    "data/wav/cat00.wav",  "data/wav/lazer00.wav",  "data/wav/lazer01.wav",  "data/wav/enep01.wav",
+    "data/wav/nep00.wav",  "data/wav/damage00.wav", "data/wav/item00.wav",   "data/wav/kira00.wav",
+    "data/wav/kira01.wav", "data/wav/kira02.wav",   "data/wav/extend.wav",   "data/wav/timeout.wav",
+    "data/wav/graze.wav",  "data/wav/powerup.wav",
+};
 
 SoundPlayer::SoundPlayer()
 {
