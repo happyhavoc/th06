@@ -89,6 +89,7 @@ def configure(build_type):
             "AsciiManager",
             "Chain",
             "EclManager",
+            "EnemyManager",
             "FileSystem",
             "Supervisor",
             "GameErrorContext",

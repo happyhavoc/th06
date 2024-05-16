@@ -54,7 +54,10 @@ MainMenu::SetSavedCursorPosition
 Gui::RegisterChain
 EffectManager::RegisterChain
 EclManager::Load
-EnemyManager::RegisterChain
+EnemyManager::Initialize
+EnemyManager::OnUpdate
+EnemyManager::OnDraw
+EnemyManager::DeletedCallback
 BulletManager::RegisterChain
 Stage::RegisterChain
 ReplayManager::RegisterChain

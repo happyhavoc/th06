@@ -59,6 +59,8 @@ GetInput
 EffectManager::Reset
 EffectManager::AddedCallback
 EffectManager::RegisterChain
+EnemyManager::RegisterChain
+EnemyManager::AddedCallback
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
