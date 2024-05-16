@@ -1,3 +1,4 @@
+#pragma once
 
 enum ItemType // This enum is 1 byte in size on Enemy
 {
