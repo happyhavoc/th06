@@ -2010,4 +2010,54 @@ u32 MainMenu::OnUpdateOptionsMenu()
 }
 #pragma optimize("", on)
 
+#pragma var_order(fileIdx, vm, posOffset, unused)
+#pragma optimize("s", on)
+ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
+{
+    AnmVm *vm;
+    i32 fileIdx;
+    D3DXVECTOR3 posOffset;
+    i32 unused[6];
+
+    for (fileIdx = 0x15; fileIdx <= 0x1a; fileIdx++)
+    {
+        g_AnmManager->ReleaseAnm(fileIdx);
+    }
+
+    if (g_AnmManager->LoadSurface(0, "data/title/select00.jpg") != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (g_AnmManager->LoadAnm(0x24, "data/replay00.anm", 0x160) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+
+    vm = &menu->vm[96];
+    for (fileIdx = 0x160; fileIdx <= 0x179; fileIdx++, vm++)
+    {
+        g_AnmManager->ExecuteAnmIdx(vm, fileIdx);
+        vm->flags.flag0 = 0;
+        vm->flags.colorOp = AnmVmColorOp_Add;
+
+        if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
+        {
+            vm->color.color = COLOR_BLACK;
+        }
+        else
+        {
+            vm->color.color = COLOR_WHITE;
+        }
+        posOffset.x = 0.0;
+        posOffset.y = 0.0;
+        posOffset.z = 0.0;
+        vm->posOffset = posOffset;
+        vm->anotherSpriteNumber = vm->spriteNumber;
+        vm->flags.zWriteDisable = 1;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
