@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Supervisor.hpp"
 #include "inttypes.hpp"
 #include <Windows.h>
 
@@ -30,6 +31,12 @@ struct ZunTimer
         this->current = value;
         this->subFrame = 0;
         this->previous = -999;
+    }
+
+    void Tick()
+    {
+        this->previous = this->current;
+        g_Supervisor.TickTimer(&this->current, &this->subFrame);
     }
 };
 C_ASSERT(sizeof(ZunTimer) == 0xc);
