@@ -2015,7 +2015,7 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
     {
         if (!g_Supervisor.cfg.IsSoftwareTexturing())
         {
-            vm->color.color = COLOR_MENU_ITEM_HIGHLIGHT;
+            vm->color.color = COLOR_MENU_ITEM_DEFAULT;
         }
         else
         {
@@ -2029,7 +2029,7 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
     {
         if (!g_Supervisor.cfg.IsSoftwareTexturing())
         {
-            vm->color.color = COLOR_MENU_ITEM_DEFAULT;
+            vm->color.color = COLOR_MENU_ITEM_HIGHLIGHT;
         }
         else if (vm->anotherSpriteNumber < 0x122)
         {
