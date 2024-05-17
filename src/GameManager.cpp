@@ -217,7 +217,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
         mgr->minRank = g_DifficultyInfo[g_GameManager.difficulty].minRank;
         mgr->maxRank = g_DifficultyInfo[g_GameManager.difficulty].maxRank;
         mgr->deaths = 0;
-        mgr->unk_24 = 0;
+        mgr->bombsUsed = 0;
         mgr->unk_28 = 0;
     }
     else
@@ -328,7 +328,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
         g_Supervisor.unk1b4 = 0.0;
         g_Supervisor.unk1b8 = 0.0;
     }
-    mgr->unk_2c = 0;
+    mgr->isTimeStopped = false;
     mgr->score = 0;
     mgr->isGameCompleted = 0;
     g_AsciiManager.InitializeVms();
