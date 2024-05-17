@@ -20,16 +20,16 @@ enum PlayerState
     PLAYER_STATE_ALIVE,
     PLAYER_STATE_SPAWNING,
     PLAYER_STATE_DEAD,
-    PLAYER_STATE_USING_BOMB,
+    PLAYER_STATE_INVULNERABLE,
 };
 
-enum ExtraBulletSpawnState
+enum OrbState
 {
-    EXTRA_BULLET_SPAWN_STATE_NONE,
-    EXTRA_BULLET_SPAWN_STATE_UNFOCUSED,
-    EXTRA_BULLET_SPAWN_STATE_FOCUSING,
-    EXTRA_BULLET_SPAWN_STATE_FULLY_FOCUSED,
-    EXTRA_BULLET_SPAWN_STATE_UNFOCUSING,
+    ORB_HIDDEN,
+    ORB_UNFOCUSED,
+    ORB_FOCUSING,
+    ORB_FOCUSED,
+    ORB_UNFOCUSING,
 };
 
 struct BombData
@@ -62,20 +62,20 @@ struct PlayerBullet
 };
 C_ASSERT(sizeof(PlayerBullet) == 0x158);
 
-struct PlayerInner
+struct PlayerBombInfo
 {
-    u32 isUsingBomb;
-    u32 unk_4;
-    ZunTimer unk_8;
-    void (*bombCalc)(Player *p);
-    void (*bombDraw)(Player *p);
+    u32 isInUse;
+    u32 duration;
+    ZunTimer timer;
+    void (*calc)(Player *p);
+    void (*draw)(Player *p);
     u32 unk_1c[8];
     f32 unk_3c[8];
     D3DXVECTOR3 unk_5c[8];
     D3DXVECTOR3 unk_bc[8];
     AnmVm vms[8][4];
 };
-C_ASSERT(sizeof(PlayerInner) == 0x231c);
+C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
 
 typedef u32 FireBulletResult;
 typedef FireBulletResult (*FireBulletCallback)(Player *, PlayerBullet *, u32, u32);
@@ -115,8 +115,8 @@ struct Player
     static void BombMarisaADraw(Player *);
     static void BombMarisaBDraw(Player *);
 
-    AnmVm vm0;
-    AnmVm vm1[3];
+    AnmVm playerVm;
+    AnmVm orbsVm[3];
     D3DXVECTOR3 positionCenter;
     D3DXVECTOR3 unk_44c;
     D3DXVECTOR3 hitboxTopLeft;
@@ -125,50 +125,35 @@ struct Player
     D3DXVECTOR3 grabItemBottomRight;
     D3DXVECTOR3 hitboxSize;
     D3DXVECTOR3 grabItemSize;
-    D3DXVECTOR3 bulletSpawnPositions[2];
+    D3DXVECTOR3 orbsPosition[2];
     D3DXVECTOR3 unk_4b8[32];
     D3DXVECTOR3 unk_638[32];
     i32 unk_7b8[32];
     i32 unk_838[32];
-    PlayerRect unk_8b8;
-    PlayerRect unk_8c8;
-    PlayerRect unk_8d8;
-    PlayerRect unk_8e8;
-    PlayerRect unk_8f8;
-    PlayerRect unk_908;
-    PlayerRect unk_918;
-    PlayerRect unk_928;
-    PlayerRect unk_938;
-    PlayerRect unk_948;
-    PlayerRect unk_958;
-    PlayerRect unk_968;
-    PlayerRect unk_978;
-    PlayerRect unk_988;
-    PlayerRect unk_998;
-    PlayerRect unk_9a8;
+    PlayerRect unk_8b8[16];
     ZunTimer laserTimer[2];
     f32 horizontalMovementSpeedMultiplierDuringBomb;
     f32 verticalMovementSpeedMultiplierDuringBomb;
     i32 respawnTimer;
-    i32 unk_9dc;
-    u8 playerState;
+    i32 bulletGracePeriod;
+    i8 playerState;
     u8 unk_9e1;
-    u8 extraBulletSpawnState;
+    i8 orbState;
     u8 isFocus;
     u8 unk_9e4;
     ZunTimer focusMovementTimer;
     CharacterData characterData;
     i32 playerDirection;
-    f32 unk_a10;
-    i32 unk_a14;
-    i16 unk_a18;
+    f32 previousHorizontalSpeed;
+    f32 previousVerticalSpeed;
+    i16 previousFrameInput;
     D3DXVECTOR3 positionOfLastEnemyHit;
     PlayerBullet bullets[80];
     ZunTimer fireBulletTimer;
-    ZunTimer blinkingPlayerTimer;
+    ZunTimer invulnerabilityTimer;
     FireBulletCallback fireBulletCallback;
     FireBulletCallback fireBulletFocusCallback;
-    PlayerInner inner;
+    PlayerBombInfo bombInfo;
     ChainElem *chainCalc;
     ChainElem *chainDraw1;
     ChainElem *chainDraw2;

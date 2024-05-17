@@ -35,7 +35,7 @@ ZunResult Player::RegisterChain(u8 unk)
     Player *p = &g_Player;
     memset(p, 0, sizeof(Player));
 
-    p->blinkingPlayerTimer.InitializeForPopup();
+    p->invulnerabilityTimer.InitializeForPopup();
     p->unk_9e1 = unk;
     p->chainCalc = g_Chain.CreateElem((ChainCallback)Player::OnUpdate);
     p->chainDraw1 = g_Chain.CreateElem((ChainCallback)Player::OnDrawHighPrio);
@@ -68,7 +68,7 @@ ZunResult Player::AddedCallback(Player *p)
         {
             return ZUN_ERROR;
         }
-        g_AnmManager->SetAndExecuteScriptIdx(&p->vm0, 0x400);
+        g_AnmManager->SetAndExecuteScriptIdx(&p->playerVm, 0x400);
         break;
     case CHARA_MARISA:
         if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT) &&
@@ -76,14 +76,14 @@ ZunResult Player::AddedCallback(Player *p)
         {
             return ZUN_ERROR;
         }
-        g_AnmManager->SetAndExecuteScriptIdx(&p->vm0, 0x400);
+        g_AnmManager->SetAndExecuteScriptIdx(&p->playerVm, 0x400);
         break;
     }
     p->positionCenter.x = g_GameManager.arcadeRegionSize.x / 2.0f;
     p->positionCenter.y = g_GameManager.arcadeRegionSize.y - 64.0f;
     p->positionCenter.z = 0.49;
-    p->bulletSpawnPositions[0].z = 0.49;
-    p->bulletSpawnPositions[1].z = 0.49;
+    p->orbsPosition[0].z = 0.49;
+    p->orbsPosition[1].z = 0.49;
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->unk_638); idx++)
     {
         p->unk_638[idx].x = 0.0;
@@ -101,18 +101,18 @@ ZunResult Player::AddedCallback(Player *p)
     p->fireBulletCallback = p->characterData.fireBulletCallback;
     p->fireBulletFocusCallback = p->characterData.fireBulletFocusCallback;
     p->playerState = PLAYER_STATE_SPAWNING;
-    p->blinkingPlayerTimer.SetCurrent(120);
-    p->extraBulletSpawnState = EXTRA_BULLET_SPAWN_STATE_NONE;
-    g_AnmManager->SetAndExecuteScriptIdx(&p->vm1[0], 0x480);
-    g_AnmManager->SetAndExecuteScriptIdx(&p->vm1[1], 0x481);
+    p->invulnerabilityTimer.SetCurrent(120);
+    p->orbState = ORB_HIDDEN;
+    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsVm[0], 0x480);
+    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsVm[1], 0x481);
     for (curBullet = &p->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(p->bullets); idx++, curBullet++)
     {
         curBullet->bulletState = 0;
     }
     p->fireBulletTimer.SetCurrent(-1);
-    p->inner.bombCalc = g_BombData[g_GameManager.character * 2 + g_GameManager.shotType].calc;
-    p->inner.bombDraw = g_BombData[g_GameManager.character * 2 + g_GameManager.shotType].draw;
-    p->inner.isUsingBomb = 0;
+    p->bombInfo.calc = g_BombData[g_GameManager.character * 2 + g_GameManager.shotType].calc;
+    p->bombInfo.draw = g_BombData[g_GameManager.character * 2 + g_GameManager.shotType].draw;
+    p->bombInfo.isInUse = 0;
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->laserTimer); idx++)
     {
         p->laserTimer[idx].InitializeForPopup();
