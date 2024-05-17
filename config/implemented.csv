@@ -133,6 +133,9 @@ SoundPlayer::LoadSound
 SoundPlayer::PlayBGM
 SoundPlayer::BackgroundMusicPlayerThread
 SoundPlayer::InitSoundBuffers
+Player::AddedCallback
+Player::RegisterChain
+Player::Player
 CSoundManager::CSoundManager
 CSoundManager::~CSoundManager
 CSoundManager::Initialize

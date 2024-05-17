@@ -99,6 +99,7 @@ def configure(build_type):
             "EffectManager",
             "ScreenEffect",
             "SoundPlayer",
+            "Player",
             "Stage",
             "AnmVm",
             "AnmManager",
