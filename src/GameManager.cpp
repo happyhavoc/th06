@@ -152,8 +152,8 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
     if (g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT)
     {
-        g_Supervisor.bombCount = g_GameManager.bombsRemaining;
-        g_Supervisor.lifeCount = g_GameManager.livesRemaining;
+        g_Supervisor.defaultConfig.bombCount = g_GameManager.bombsRemaining;
+        g_Supervisor.defaultConfig.lifeCount = g_GameManager.livesRemaining;
         mgr->arcadeRegionTopLeftPos.x = 32.0;
         mgr->arcadeRegionTopLeftPos.y = 16.0;
         mgr->arcadeRegionSize.x = 384.0;

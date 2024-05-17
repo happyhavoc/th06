@@ -130,14 +130,7 @@ struct Supervisor
     D3DVIEWPORT8 viewport;
     D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
-
-    u8 padding[0x18];
-
-    i8 lifeCount;
-    i8 bombCount;
-
-    u8 padding2[0x1d];
-
+    GameConfiguration defaultConfig;
     i32 calcCount;
     i32 wantedState;
     i32 curState;
