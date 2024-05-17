@@ -1,8 +1,12 @@
 #include "Player.hpp"
 
 #include "AnmManager.hpp"
+#include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
+#include "EclManager.hpp"
 #include "GameManager.hpp"
+#include "Gui.hpp"
+#include "ItemManager.hpp"
 #include "Supervisor.hpp"
 #include "utils.hpp"
 
@@ -121,4 +125,195 @@ ZunResult Player::AddedCallback(Player *p)
     p->horizontalMovementSpeedMultiplierDuringBomb = 1.0;
     p->respawnTimer = 8;
     return ZUN_SUCCESS;
+}
+
+#pragma var_order(idx, scaleFactor1, scaleFactor2, lastEnemyHit)
+ChainCallbackResult Player::OnUpdate(Player *p)
+{
+    f32 scaleFactor1, scaleFactor2;
+    i32 idx;
+    D3DXVECTOR3 lastEnemyHit;
+
+    if (g_GameManager.isTimeStopped)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->unk_638); idx++)
+    {
+        p->unk_638[idx].x = 0.0;
+    }
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->unk_8b8); idx++)
+    {
+        p->unk_8b8[idx].size.x = 0.0;
+    }
+    if (p->bombInfo.isInUse)
+    {
+        p->bombInfo.calc(p);
+    }
+    else if (!g_Gui.HasCurrentMsgIdx() && p->respawnTimer != 0 && 0 < g_GameManager.bombsRemaining &&
+             WAS_PRESSED(TH_BUTTON_BOMB) && p->bombInfo.calc != NULL)
+    {
+        g_GameManager.bombsUsed++;
+        g_GameManager.bombsRemaining--;
+        g_Gui.flags = g_Gui.flags & 0xfffffff3 | 8;
+        p->bombInfo.isInUse = 1;
+        p->bombInfo.timer.SetCurrent(0);
+        p->bombInfo.duration = 999;
+        p->bombInfo.calc(p);
+        g_RunningSpellcardInfo.isCapturing = false;
+        g_GameManager.DecreaseSubrank(200);
+        g_RunningSpellcardInfo.usedBomb = g_RunningSpellcardInfo.isActive;
+    }
+    if (p->playerState == PLAYER_STATE_DEAD)
+    {
+        if (p->respawnTimer != 0)
+        {
+            p->respawnTimer--;
+            if (p->respawnTimer == 0)
+            {
+                g_GameManager.powerItemCountForScore = 0;
+                if (g_GameManager.livesRemaining > 0)
+                {
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_POWER_BIG, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_POWER_SMALL, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_POWER_SMALL, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_POWER_SMALL, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_POWER_SMALL, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_POWER_SMALL, 2);
+                    if (g_GameManager.currentPower <= 16)
+                    {
+                        g_GameManager.currentPower = 0;
+                    }
+                    else
+                    {
+                        g_GameManager.currentPower -= 16;
+                    }
+                    g_Gui.flags = g_Gui.flags & 0xffffffcf | 0x20;
+                }
+                else
+                {
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
+                    g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
+                    g_GameManager.currentPower = 0;
+                    g_Gui.flags = g_Gui.flags & 0xffffffcf | 0x20;
+                    g_GameManager.extraLives = 255;
+                }
+                g_GameManager.DecreaseSubrank(1600);
+            }
+        }
+        else
+        {
+            scaleFactor1 = p->invulnerabilityTimer.AsFramesFloat() / 30.0f;
+            p->playerVm.scaleY = 3.0f * scaleFactor1 + 1.0f;
+            p->playerVm.scaleX = 1.0f - 1.0f * scaleFactor1;
+            p->playerVm.color.color =
+                COLOR_SET_ALPHA(COLOR_WHITE, (u32)(255.0f - p->invulnerabilityTimer.AsFramesFloat() * 255.0f / 30.0f));
+            p->playerVm.flags.blendMode = AnmVmBlendMode_One;
+            p->previousHorizontalSpeed = 0.0f;
+            p->previousVerticalSpeed = 0.0f;
+            if (p->invulnerabilityTimer.AsFrames() >= 30)
+            {
+                p->playerState = PLAYER_STATE_SPAWNING;
+                p->positionCenter.x = g_GameManager.arcadeRegionSize.x / 2.0f;
+                p->positionCenter.y = g_GameManager.arcadeRegionSize.y - 64.0f;
+                p->positionCenter.z = 0.2;
+                p->invulnerabilityTimer.SetCurrent(0);
+                p->playerVm.scaleX = 3.0;
+                p->playerVm.scaleY = 3.0;
+                g_AnmManager->SetAndExecuteScriptIdx(&p->playerVm, 0x400);
+                if (g_GameManager.livesRemaining <= 0)
+                {
+                    g_GameManager.isInRetryMenu = 1;
+                }
+                else
+                {
+                    g_GameManager.livesRemaining--;
+                    g_Gui.flags = (g_Gui.flags & 0xfffffffc) | 0x2;
+                    if (g_GameManager.difficulty < 4 && g_GameManager.isInPracticeMode == 0)
+                    {
+                        g_GameManager.bombsRemaining = g_Supervisor.defaultConfig.bombCount;
+                    }
+                    else
+                    {
+                        g_GameManager.bombsRemaining = 3;
+                    }
+                    g_Gui.flags = (g_Gui.flags & 0xfffffff3) | 0x8;
+                    goto spawning;
+                }
+            }
+        }
+    }
+    else if (p->playerState == PLAYER_STATE_SPAWNING)
+    {
+    spawning:
+        p->bulletGracePeriod = 90;
+        scaleFactor2 = 1.0f - p->invulnerabilityTimer.AsFramesFloat() / 30.0f;
+        p->playerVm.scaleY = 2.0f * scaleFactor2 + 1.0f;
+        p->playerVm.scaleX = 1.0f - 1.0f * scaleFactor2;
+        p->playerVm.flags.blendMode = AnmVmBlendMode_One;
+        p->verticalMovementSpeedMultiplierDuringBomb = 1.0;
+        p->horizontalMovementSpeedMultiplierDuringBomb = 1.0;
+        p->playerVm.color.color = COLOR_SET_ALPHA(COLOR_WHITE, p->invulnerabilityTimer.AsFrames() * 255 / 30);
+        p->respawnTimer = 0;
+        if (30 <= p->invulnerabilityTimer.AsFrames())
+        {
+            p->playerState = PLAYER_STATE_INVULNERABLE;
+            p->playerVm.scaleX = 1.0;
+            p->playerVm.scaleY = 1.0;
+            p->playerVm.color.color = COLOR_WHITE;
+            p->playerVm.flags.blendMode = AnmVmBlendMode_InvSrcAlpha;
+            p->invulnerabilityTimer.SetCurrent(240);
+            p->respawnTimer = 6;
+        }
+    }
+    if (p->bulletGracePeriod != 0)
+    {
+        p->bulletGracePeriod--;
+        g_BulletManager.RemoveAllBullets(0);
+    }
+    if (p->playerState == PLAYER_STATE_INVULNERABLE)
+    {
+        p->invulnerabilityTimer.Decrement(1);
+        if (p->invulnerabilityTimer.AsFrames() <= 0)
+        {
+            p->playerState = PLAYER_STATE_ALIVE;
+            p->invulnerabilityTimer.SetCurrent(0);
+            p->playerVm.flags.colorOp = AnmVmColorOp_Modulate;
+            p->playerVm.color.color = COLOR_WHITE;
+        }
+        else if (p->invulnerabilityTimer.AsFrames() % 8 < 2)
+        {
+            p->playerVm.flags.colorOp = AnmVmColorOp_Add;
+            p->playerVm.color.color = 0xff404040;
+        }
+        else
+        {
+            p->playerVm.flags.colorOp = AnmVmColorOp_Modulate;
+            p->playerVm.color.color = COLOR_WHITE;
+        }
+    }
+    else
+    {
+        p->invulnerabilityTimer.Tick();
+    }
+    if (p->playerState != PLAYER_STATE_DEAD && p->playerState != PLAYER_STATE_SPAWNING)
+    {
+        p->HandlePlayerInputs();
+    }
+    g_AnmManager->ExecuteScript(&p->playerVm);
+    Player::UpdatePlayerBullets(p);
+    if (p->orbState != ORB_HIDDEN)
+    {
+        g_AnmManager->ExecuteScript(&p->orbsVm[0]);
+        g_AnmManager->ExecuteScript(&p->orbsVm[1]);
+    }
+    lastEnemyHit.x = -999.0;
+    lastEnemyHit.y = -999.0;
+    lastEnemyHit.z = 0.0;
+    p->positionOfLastEnemyHit = lastEnemyHit;
+    Player::UpdateFireBulletsTimer(p);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }

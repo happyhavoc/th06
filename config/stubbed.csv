@@ -51,6 +51,7 @@ MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
 MainMenu::SetSavedCursorPosition
 Gui::RegisterChain
+Gui::HasCurrentMsgIdx
 EffectManager::RegisterChain
 EclManager::Load
 EnemyManager::Initialize
@@ -58,6 +59,8 @@ EnemyManager::OnUpdate
 EnemyManager::OnDraw
 EnemyManager::DeletedCallback
 BulletManager::RegisterChain
+BulletManager::RemoveAllBullets
+ItemManager::SpawnItem
 Stage::RegisterChain
 ReplayManager::RegisterChain
 ReplayDoStuff
@@ -65,7 +68,6 @@ ValidateReplayData
 DrawSquare
 GetControllerState
 SetupCamera
-Player::OnUpdate
 Player::OnDrawHighPrio
 Player::OnDrawLowPrio
 Player::DeletedCallback
@@ -81,5 +83,8 @@ Player::BombReimuADraw
 Player::BombReimuBDraw
 Player::BombMarisaADraw
 Player::BombMarisaBDraw
+Player::UpdateFireBulletsTimer
+Player::UpdatePlayerBullets
+Player::HandlePlayerInputs
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::~Pbg3Archive

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
@@ -21,9 +22,20 @@ struct EclRawInstr
 };
 C_ASSERT(sizeof(EclRawInstr) == 0x24);
 
+struct RunningSpellcardInfo
+{
+    ZunBool isCapturing;
+    ZunBool isActive;
+    u32 captureScore;
+    u32 idx;
+    ZunBool usedBomb;
+};
+C_ASSERT(sizeof(RunningSpellcardInfo) == 0x14);
+
 struct EclManager
 {
     ZunResult Load(char *ecl);
 };
 
+DIFFABLE_EXTERN(RunningSpellcardInfo, g_RunningSpellcardInfo);
 DIFFABLE_EXTERN(EclManager, g_EclManager);

@@ -115,6 +115,10 @@ struct Player
     static void BombMarisaADraw(Player *);
     static void BombMarisaBDraw(Player *);
 
+    ZunResult HandlePlayerInputs();
+    static void UpdatePlayerBullets(Player *);
+    static ZunResult UpdateFireBulletsTimer(Player *);
+
     AnmVm playerVm;
     AnmVm orbsVm[3];
     D3DXVECTOR3 positionCenter;
