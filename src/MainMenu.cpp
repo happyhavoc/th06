@@ -2009,7 +2009,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-void MainMenu::ColorMenuItem(AnmVm *vm, int item, int subItem, int subItemSelected)
+void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelected)
 {
     if (subItem != subItemSelected)
     {
