@@ -12,6 +12,9 @@
 // TODO: find a better name for this color
 #define COLOR_START_MENU_ITEM_INACTIVE 0x80300000
 
+#define COLOR_MENU_ITEM_HIGHLIGHT 0x80202050
+#define COLOR_MENU_ITEM_DEFAULT 0x800000ff
+
 // Note: Little endian!
 union ZunColor {
     u32 color;

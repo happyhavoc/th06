@@ -49,7 +49,6 @@ MainMenu::DeletedCallback
 MainMenu::DrawReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
-MainMenu::SetSavedCursorPosition
 Gui::RegisterChain
 EffectManager::RegisterChain
 EclManager::Load

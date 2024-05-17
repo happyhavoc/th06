@@ -67,6 +67,11 @@ struct GameConfiguration
     i8 unk[16];
     // GameConfigOpts bitfield.
     u32 opts;
+
+    u32 IsSoftwareTexturing()
+    {
+        return this->opts >> GCOS_NO_COLOR_COMP & 1 | this->opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1;
+    }
 };
 
 #define IN_PBG3_INDEX 0
