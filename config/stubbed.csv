@@ -68,8 +68,8 @@ ValidateReplayData
 DrawSquare
 GetControllerState
 SetupCamera
-Player::OnDrawHighPrio
-Player::OnDrawLowPrio
+Player::DrawBullets
+Player::DrawBulletExplosions
 Player::DeletedCallback
 Player::FireBulletReimuA
 Player::FireBulletReimuB

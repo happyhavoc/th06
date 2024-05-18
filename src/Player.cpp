@@ -317,3 +317,45 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     Player::UpdateFireBulletsTimer(p);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
+
+#pragma var_order(x1, y1, x2, y2)
+ChainCallbackResult Player::OnDrawHighPrio(Player *p)
+{
+    Player::DrawBullets(p);
+    if (p->bombInfo.isInUse != 0 && p->bombInfo.draw != NULL)
+    {
+        p->bombInfo.draw(p);
+    }
+    p->playerSprite.pos.x = g_GameManager.arcadeRegionTopLeftPos.x + p->positionCenter.x;
+    p->playerSprite.pos.y = g_GameManager.arcadeRegionTopLeftPos.y + p->positionCenter.y;
+    p->playerSprite.pos.z = 0.49;
+    if (!g_GameManager.isInRetryMenu)
+    {
+        g_AnmManager->DrawNoRotation(&p->playerSprite);
+        if (p->orbState != ORB_HIDDEN &&
+            (p->playerState == PLAYER_STATE_ALIVE || p->playerState == PLAYER_STATE_INVULNERABLE))
+        {
+            p->orbsSprite[0].pos = p->orbsPosition[0];
+            p->orbsSprite[1].pos = p->orbsPosition[1];
+            f32 *x1 = &p->orbsSprite[0].pos.x;
+            *x1 += g_GameManager.arcadeRegionTopLeftPos.x;
+            f32 *y1 = &p->orbsSprite[0].pos.y;
+            *y1 += g_GameManager.arcadeRegionTopLeftPos.y;
+            f32 *x2 = &p->orbsSprite[1].pos.x;
+            *x2 += g_GameManager.arcadeRegionTopLeftPos.x;
+            f32 *y2 = &p->orbsSprite[1].pos.y;
+            *y2 += g_GameManager.arcadeRegionTopLeftPos.y;
+            p->orbsSprite[0].pos.z = 0.491;
+            p->orbsSprite[1].pos.z = 0.491;
+            g_AnmManager->Draw(&p->orbsSprite[0]);
+            g_AnmManager->Draw(&p->orbsSprite[1]);
+        }
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult Player::OnDrawLowPrio(Player *p)
+{
+    Player::DrawBulletExplosions(p);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}

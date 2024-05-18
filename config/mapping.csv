@@ -324,9 +324,9 @@ Player::UpdatePlayerBullets,0x4291b0,0x55b,default,void,Player*
 Player::UpdateFireBulletsTimer,0x429710,0x10c,default,ZunResult,Player*
 Player::FUN_00429820,0x429820,0x10e,default,void,Player*,u32
 Player::OnDrawHighPrio,0x429930,0x1c9,default,ChainCallbackResult,Player*
-Player::update_bullets,0x429b00,0x8c,default,void,Player*
+Player::DrawBullets,0x429b00,0x8c,default,void,Player*
 Player::OnDrawLowPrio,0x429b90,0x16,default,ChainCallbackResult,Player*
-Player::FUN_00429bb0,0x429bb0,0x99,default,void,Player*
+Player::DrawBulletExplosions,0x429bb0,0x99,default,void,Player*
 Player::AddedCallback,0x429c50,0x45e,default,u32,Player*
 Player::DeletedCallback,0x42a0b0,0x24,default,ZunResult,Player*
 Player::CutChain,0x42a0e0,0x55,unknown,u8
