@@ -72,7 +72,7 @@ ZunResult Player::AddedCallback(Player *p)
         {
             return ZUN_ERROR;
         }
-        g_AnmManager->SetAndExecuteScriptIdx(&p->playerVm, 0x400);
+        g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, 0x400);
         break;
     case CHARA_MARISA:
         if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT) &&
@@ -80,7 +80,7 @@ ZunResult Player::AddedCallback(Player *p)
         {
             return ZUN_ERROR;
         }
-        g_AnmManager->SetAndExecuteScriptIdx(&p->playerVm, 0x400);
+        g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, 0x400);
         break;
     }
     p->positionCenter.x = g_GameManager.arcadeRegionSize.x / 2.0f;
@@ -107,8 +107,8 @@ ZunResult Player::AddedCallback(Player *p)
     p->playerState = PLAYER_STATE_SPAWNING;
     p->invulnerabilityTimer.SetCurrent(120);
     p->orbState = ORB_HIDDEN;
-    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsVm[0], 0x480);
-    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsVm[1], 0x481);
+    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsSprite[0], 0x480);
+    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsSprite[1], 0x481);
     for (curBullet = &p->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(p->bullets); idx++, curBullet++)
     {
         curBullet->bulletState = 0;
@@ -207,11 +207,11 @@ ChainCallbackResult Player::OnUpdate(Player *p)
         else
         {
             scaleFactor1 = p->invulnerabilityTimer.AsFramesFloat() / 30.0f;
-            p->playerVm.scaleY = 3.0f * scaleFactor1 + 1.0f;
-            p->playerVm.scaleX = 1.0f - 1.0f * scaleFactor1;
-            p->playerVm.color.color =
+            p->playerSprite.scaleY = 3.0f * scaleFactor1 + 1.0f;
+            p->playerSprite.scaleX = 1.0f - 1.0f * scaleFactor1;
+            p->playerSprite.color.color =
                 COLOR_SET_ALPHA(COLOR_WHITE, (u32)(255.0f - p->invulnerabilityTimer.AsFramesFloat() * 255.0f / 30.0f));
-            p->playerVm.flags.blendMode = AnmVmBlendMode_One;
+            p->playerSprite.flags.blendMode = AnmVmBlendMode_One;
             p->previousHorizontalSpeed = 0.0f;
             p->previousVerticalSpeed = 0.0f;
             if (p->invulnerabilityTimer.AsFrames() >= 30)
@@ -221,9 +221,9 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                 p->positionCenter.y = g_GameManager.arcadeRegionSize.y - 64.0f;
                 p->positionCenter.z = 0.2;
                 p->invulnerabilityTimer.SetCurrent(0);
-                p->playerVm.scaleX = 3.0;
-                p->playerVm.scaleY = 3.0;
-                g_AnmManager->SetAndExecuteScriptIdx(&p->playerVm, 0x400);
+                p->playerSprite.scaleX = 3.0;
+                p->playerSprite.scaleY = 3.0;
+                g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, 0x400);
                 if (g_GameManager.livesRemaining <= 0)
                 {
                     g_GameManager.isInRetryMenu = 1;
@@ -251,20 +251,20 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     spawning:
         p->bulletGracePeriod = 90;
         scaleFactor2 = 1.0f - p->invulnerabilityTimer.AsFramesFloat() / 30.0f;
-        p->playerVm.scaleY = 2.0f * scaleFactor2 + 1.0f;
-        p->playerVm.scaleX = 1.0f - 1.0f * scaleFactor2;
-        p->playerVm.flags.blendMode = AnmVmBlendMode_One;
+        p->playerSprite.scaleY = 2.0f * scaleFactor2 + 1.0f;
+        p->playerSprite.scaleX = 1.0f - 1.0f * scaleFactor2;
+        p->playerSprite.flags.blendMode = AnmVmBlendMode_One;
         p->verticalMovementSpeedMultiplierDuringBomb = 1.0;
         p->horizontalMovementSpeedMultiplierDuringBomb = 1.0;
-        p->playerVm.color.color = COLOR_SET_ALPHA(COLOR_WHITE, p->invulnerabilityTimer.AsFrames() * 255 / 30);
+        p->playerSprite.color.color = COLOR_SET_ALPHA(COLOR_WHITE, p->invulnerabilityTimer.AsFrames() * 255 / 30);
         p->respawnTimer = 0;
         if (30 <= p->invulnerabilityTimer.AsFrames())
         {
             p->playerState = PLAYER_STATE_INVULNERABLE;
-            p->playerVm.scaleX = 1.0;
-            p->playerVm.scaleY = 1.0;
-            p->playerVm.color.color = COLOR_WHITE;
-            p->playerVm.flags.blendMode = AnmVmBlendMode_InvSrcAlpha;
+            p->playerSprite.scaleX = 1.0;
+            p->playerSprite.scaleY = 1.0;
+            p->playerSprite.color.color = COLOR_WHITE;
+            p->playerSprite.flags.blendMode = AnmVmBlendMode_InvSrcAlpha;
             p->invulnerabilityTimer.SetCurrent(240);
             p->respawnTimer = 6;
         }
@@ -281,18 +281,18 @@ ChainCallbackResult Player::OnUpdate(Player *p)
         {
             p->playerState = PLAYER_STATE_ALIVE;
             p->invulnerabilityTimer.SetCurrent(0);
-            p->playerVm.flags.colorOp = AnmVmColorOp_Modulate;
-            p->playerVm.color.color = COLOR_WHITE;
+            p->playerSprite.flags.colorOp = AnmVmColorOp_Modulate;
+            p->playerSprite.color.color = COLOR_WHITE;
         }
         else if (p->invulnerabilityTimer.AsFrames() % 8 < 2)
         {
-            p->playerVm.flags.colorOp = AnmVmColorOp_Add;
-            p->playerVm.color.color = 0xff404040;
+            p->playerSprite.flags.colorOp = AnmVmColorOp_Add;
+            p->playerSprite.color.color = 0xff404040;
         }
         else
         {
-            p->playerVm.flags.colorOp = AnmVmColorOp_Modulate;
-            p->playerVm.color.color = COLOR_WHITE;
+            p->playerSprite.flags.colorOp = AnmVmColorOp_Modulate;
+            p->playerSprite.color.color = COLOR_WHITE;
         }
     }
     else
@@ -303,12 +303,12 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     {
         p->HandlePlayerInputs();
     }
-    g_AnmManager->ExecuteScript(&p->playerVm);
+    g_AnmManager->ExecuteScript(&p->playerSprite);
     Player::UpdatePlayerBullets(p);
     if (p->orbState != ORB_HIDDEN)
     {
-        g_AnmManager->ExecuteScript(&p->orbsVm[0]);
-        g_AnmManager->ExecuteScript(&p->orbsVm[1]);
+        g_AnmManager->ExecuteScript(&p->orbsSprite[0]);
+        g_AnmManager->ExecuteScript(&p->orbsSprite[1]);
     }
     lastEnemyHit.x = -999.0;
     lastEnemyHit.y = -999.0;

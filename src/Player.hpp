@@ -47,7 +47,7 @@ C_ASSERT(sizeof(PlayerRect) == 0x10);
 
 struct PlayerBullet
 {
-    AnmVm vm;
+    AnmVm sprite;
     D3DXVECTOR3 position;
     D3DXVECTOR3 size;
     D3DXVECTOR2 velocity;
@@ -73,7 +73,7 @@ struct PlayerBombInfo
     f32 unk_3c[8];
     D3DXVECTOR3 unk_5c[8];
     D3DXVECTOR3 unk_bc[8];
-    AnmVm vms[8][4];
+    AnmVm sprites[8][4];
 };
 C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
 
@@ -119,8 +119,11 @@ struct Player
     static void UpdatePlayerBullets(Player *);
     static ZunResult UpdateFireBulletsTimer(Player *);
 
-    AnmVm playerVm;
-    AnmVm orbsVm[3];
+    static void DrawBullets(Player *);
+    static void DrawBulletExplosions(Player *);
+
+    AnmVm playerSprite;
+    AnmVm orbsSprite[3];
     D3DXVECTOR3 positionCenter;
     D3DXVECTOR3 unk_44c;
     D3DXVECTOR3 hitboxTopLeft;
