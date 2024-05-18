@@ -10,6 +10,8 @@ struct Gui
 {
     static ZunResult RegisterChain();
 
+    ZunBool HasCurrentMsgIdx();
+
     u32 flags;
     GuiImpl *impl;
     f32 unk_8;

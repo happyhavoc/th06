@@ -38,5 +38,15 @@ struct ZunTimer
         this->previous = this->current;
         g_Supervisor.TickTimer(&this->current, &this->subFrame);
     }
+
+    f32 AsFramesFloat()
+    {
+        return this->current + this->subFrame;
+    }
+
+    i32 AsFrames()
+    {
+        return this->current;
+    }
 };
 C_ASSERT(sizeof(ZunTimer) == 0xc);
