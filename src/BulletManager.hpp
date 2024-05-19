@@ -9,10 +9,10 @@
 struct BulletTypeSprites
 {
     AnmVm spriteBullet;
-    AnmVm spriteSpawnEffectShort;
-    AnmVm spriteSpawnEffectMedium;
-    AnmVm spriteSpawnEffectLong;
-    AnmVm spriteSpawnEffectLongMemset;
+    AnmVm spriteSpawnEffectFast;
+    AnmVm spriteSpawnEffectNormal;
+    AnmVm spriteSpawnEffectSlow;
+    AnmVm spriteSpawnEffectDonut;
 
     D3DXVECTOR3 grazeSize;
     u8 unk_55c;

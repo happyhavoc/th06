@@ -61,7 +61,6 @@ EnemyManager::Initialize
 EnemyManager::OnUpdate
 EnemyManager::OnDraw
 EnemyManager::DeletedCallback
-BulletManager::AddedCallback
 BulletManager::DeletedCallback
 BulletManager::OnUpdate
 BulletManager::OnDraw

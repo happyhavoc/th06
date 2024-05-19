@@ -41,6 +41,7 @@ AnmManager::SetRenderStateForVm
 AnmManager::TranslateRotation
 AnmManager::ExecuteAnmIdx
 BulletManager::RegisterChain
+BulletManager::AddedCallback
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem
