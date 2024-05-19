@@ -100,6 +100,7 @@ MainMenu::OnDraw
 MainMenu::RegisterChain
 MainMenu::WeirdSecondInputCheck
 MainMenu::OnUpdateOptionsMenu
+MainMenu::ColorMenuItem
 MainMenu::LoadReplayMenu
 MidiDevice::MidiDevice
 MidiDevice::~MidiDevice

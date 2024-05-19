@@ -304,8 +304,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
 
     if (itemNumber == cursor)
     {
-        if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) |
-             (g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1)) == 0)
+        if (!g_Supervisor.cfg.IsSoftwareTexturing())
         {
             vm->color.color = currentItemColor;
         }
@@ -323,8 +322,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
     }
     else
     {
-        if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1 |
-             g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1) == 0)
+        if (!g_Supervisor.cfg.IsSoftwareTexturing())
         {
             vm->color.color = otherItemColor;
         }
@@ -1770,42 +1768,42 @@ u32 MainMenu::OnUpdateOptionsMenu()
     {
         if (i >= 5 && i <= 7)
         {
-            this->SetSavedCursorPosition(&this->vm[i + 67], i, i, this->cursor);
+            this->ColorMenuItem(&this->vm[i + 67], i, i, this->cursor);
         }
         else
         {
-            this->SetSavedCursorPosition(optionsVm, i, i, this->cursor);
+            this->ColorMenuItem(optionsVm, i, i, this->cursor);
             optionsVm++;
         }
     }
 
     for (i = 0; i < 5; i++, optionsVm++)
     {
-        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_LIFECOUNT, i, g_Supervisor.cfg.lifeCount);
+        this->ColorMenuItem(optionsVm, CURSOR_OPTIONS_POS_LIFECOUNT, i, g_Supervisor.cfg.lifeCount);
     }
 
     for (i = 0; i < 4; i++, optionsVm++)
     {
-        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_BOMBCOUNT, i, g_Supervisor.cfg.bombCount);
+        this->ColorMenuItem(optionsVm, CURSOR_OPTIONS_POS_BOMBCOUNT, i, g_Supervisor.cfg.bombCount);
     }
     for (i = 0; i < 2; i++, optionsVm++)
     {
-        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_COLORMODE, i, g_Supervisor.cfg.colorMode16bit);
+        this->ColorMenuItem(optionsVm, CURSOR_OPTIONS_POS_COLORMODE, i, g_Supervisor.cfg.colorMode16bit);
     }
     for (i = 0; i < 2; i++, optionsVm++)
     {
-        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_PLAYSOUNDS, i, g_Supervisor.cfg.playSounds);
+        this->ColorMenuItem(optionsVm, CURSOR_OPTIONS_POS_PLAYSOUNDS, i, g_Supervisor.cfg.playSounds);
     }
     optionsVm = &this->vm[77];
 
     for (i = 0; i < 3; i++, optionsVm++)
     {
-        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_MUSICMODE, i, g_Supervisor.cfg.musicMode);
+        this->ColorMenuItem(optionsVm, CURSOR_OPTIONS_POS_MUSICMODE, i, g_Supervisor.cfg.musicMode);
     }
     optionsVm = &this->vm[75];
     for (i = 0; i < 2; i++, optionsVm++)
     {
-        this->SetSavedCursorPosition(optionsVm, CURSOR_OPTIONS_POS_SCREENMODE, i, this->windowed);
+        this->ColorMenuItem(optionsVm, CURSOR_OPTIONS_POS_SCREENMODE, i, this->windowed);
     }
     if (this->stateTimer >= 32)
     {
@@ -2005,6 +2003,69 @@ u32 MainMenu::OnUpdateOptionsMenu()
         }
     }
     return 0;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelected)
+{
+    if (subItem != subItemSelected)
+    {
+        if (!g_Supervisor.cfg.IsSoftwareTexturing())
+        {
+            vm->color.color = COLOR_MENU_ITEM_DEFAULT;
+        }
+        else
+        {
+            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber);
+        }
+        vm->scaleX = 1.0;
+        vm->scaleY = 1.0;
+        vm->posOffset = D3DXVECTOR3(0.0, 0.0, 0.0);
+    }
+    else
+    {
+        if (!g_Supervisor.cfg.IsSoftwareTexturing())
+        {
+            vm->color.color = COLOR_MENU_ITEM_HIGHLIGHT;
+        }
+        else if (vm->anotherSpriteNumber < 0x122)
+        {
+            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + 0x7a);
+        }
+        else
+        {
+            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + 0x73);
+        }
+        vm->posOffset = D3DXVECTOR3(-2.0, -2.0, 0.0);
+    }
+
+    if (item != this->cursor)
+    {
+        if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
+        {
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 128);
+        }
+        else
+        {
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 128);
+        }
+
+        vm->posOffset += D3DXVECTOR3(0.0, 0.0, 0.0);
+    }
+    else
+    {
+        if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
+        {
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 255);
+        }
+        else
+        {
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 255);
+        }
+
+        vm->posOffset += D3DXVECTOR3(-4.0, -4.0, 0.0);
+    }
 }
 #pragma optimize("", on)
 

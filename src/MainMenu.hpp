@@ -59,7 +59,7 @@ struct MainMenu
     ZunResult DrawReplayMenu();
     ZunResult ChoosePracticeLevel();
     ZunBool WeirdSecondInputCheck();
-    void SetSavedCursorPosition(AnmVm *, i32, i32, i32);
+    void ColorMenuItem(AnmVm *, i32, i32, i32);
 
     static ZunResult LoadTitleAnm(MainMenu *menu);
     static CursorMovement MoveCursor(MainMenu *menu, i32 menuLength);
