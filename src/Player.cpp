@@ -68,19 +68,19 @@ ZunResult Player::AddedCallback(Player *p)
     case CHARA_REIMU:
         // This is likely an inline function from g_Supervisor returning an i32.
         if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT) &&
-            g_AnmManager->LoadAnm(5, "data/player00.anm", 0x400) != ZUN_SUCCESS)
+            g_AnmManager->LoadAnm(ANM_FILE_PLAYER, "data/player00.anm", ANM_OFFSET_PLAYER) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;
         }
-        g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, 0x400);
+        g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, ANM_SCRIPT_PLAYER_IDLE);
         break;
     case CHARA_MARISA:
         if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT) &&
-            g_AnmManager->LoadAnm(5, "data/player01.anm", 0x400) != ZUN_SUCCESS)
+            g_AnmManager->LoadAnm(ANM_FILE_PLAYER, "data/player01.anm", ANM_OFFSET_PLAYER) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;
         }
-        g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, 0x400);
+        g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, ANM_SCRIPT_PLAYER_IDLE);
         break;
     }
     p->positionCenter.x = g_GameManager.arcadeRegionSize.x / 2.0f;
@@ -107,8 +107,8 @@ ZunResult Player::AddedCallback(Player *p)
     p->playerState = PLAYER_STATE_SPAWNING;
     p->invulnerabilityTimer.SetCurrent(120);
     p->orbState = ORB_HIDDEN;
-    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsSprite[0], 0x480);
-    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsSprite[1], 0x481);
+    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsSprite[0], ANM_SCRIPT_PLAYER_ORB_LEFT);
+    g_AnmManager->SetAndExecuteScriptIdx(&p->orbsSprite[1], ANM_SCRIPT_PLAYER_ORB_RIGHT);
     for (curBullet = &p->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(p->bullets); idx++, curBullet++)
     {
         curBullet->bulletState = 0;
@@ -223,7 +223,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                 p->invulnerabilityTimer.SetCurrent(0);
                 p->playerSprite.scaleX = 3.0;
                 p->playerSprite.scaleY = 3.0;
-                g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, 0x400);
+                g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, ANM_SCRIPT_PLAYER_IDLE);
                 if (g_GameManager.livesRemaining <= 0)
                 {
                     g_GameManager.isInRetryMenu = 1;

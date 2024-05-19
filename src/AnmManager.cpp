@@ -318,7 +318,7 @@ ZunResult AnmManager::SetActiveSprite(AnmVm *vm, u32 sprite_index)
         return ZUN_ERROR;
     }
 
-    vm->spriteNumber = (i16)sprite_index;
+    vm->activeSpriteIndex = (i16)sprite_index;
     vm->sprite = this->sprites + sprite_index;
     D3DXMatrixIdentity(&vm->matrix);
     vm->matrix.m[0][0] = vm->sprite->widthPx / vm->sprite->textureWidth;

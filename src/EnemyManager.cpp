@@ -44,12 +44,12 @@ ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
     Enemy *enemies = enemyManager->enemies;
 
     if (enemyManager->stgEnmAnmFilename &&
-        g_AnmManager->LoadAnm(8, enemyManager->stgEnmAnmFilename, 256) != ZUN_SUCCESS)
+        g_AnmManager->LoadAnm(ANM_FILE_ENEMY, enemyManager->stgEnmAnmFilename, ANM_OFFSET_ENEMY) != ZUN_SUCCESS)
     {
         return ZUN_ERROR;
     }
     if (enemyManager->stgEnm2AnmFilename &&
-        g_AnmManager->LoadAnm(9, enemyManager->stgEnm2AnmFilename, 256) != ZUN_SUCCESS)
+        g_AnmManager->LoadAnm(ANM_FILE_ENEMY2, enemyManager->stgEnm2AnmFilename, ANM_OFFSET_ENEMY) != ZUN_SUCCESS)
     {
         return ZUN_ERROR;
     }
