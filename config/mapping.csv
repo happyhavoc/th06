@@ -130,12 +130,12 @@ BulletManager::FUN_00414360,0x414360,0x25f,__thiscall,i32,BulletManager*,i32,i32
 BulletManager::SpawnBullet,0x4145c0,0xa5,__thiscall,u32,BulletManager*,EnemyBulletShooter*
 AnmVm::FUN_00414670,0x414670,0x27b,unknown,void*,EnemyLaserShooter*
 BulletManager::RegisterChain,0x4148f0,0xd3,default,ZunResult,char*
-BulletManager::OnUpdate,0x4149d0,0x1b10,__stdcall,u32,BulletManager*
-BulletManager::OnDraw,0x416500,0x647,__stdcall,ChainCallbackResult,BulletManager*
+BulletManager::OnUpdate,0x4149d0,0x1b10,default,ChainCallbackResult,BulletManager*
+BulletManager::OnDraw,0x416500,0x647,default,ChainCallbackResult,BulletManager*
 FUN_00416b50,0x416b50,0xea,__stdcall,void,Bullet*
 FUN_00416c50,0x416c50,0xf4,__stdcall,void,Bullet*
-BulletManager::AddedCallback,0x416d60,0x509,__stdcall,ZunResult,BulletManager*
-BulletManager::DeletedCallback,0x417270,0x31,__stdcall,ZunResult,BulletManager*
+BulletManager::AddedCallback,0x416d60,0x509,default,ZunResult,BulletManager*
+BulletManager::DeletedCallback,0x417270,0x31,default,ZunResult,BulletManager*
 CutBulletManagerChains,0x4172b0,0x23,unknown,u8
 Gui::FUN_004172d3,0x4172d3,0x41,__thiscall,u32,Gui*
 Gui::FUN_00417314,0x417314,0x18,__thiscall,void,Gui*

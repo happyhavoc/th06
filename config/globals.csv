@@ -1,5 +1,8 @@
 _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_StageFiles,                          0x004760e0
+_g_EffectsColorWithTextureBlending,     0x00476358
+_g_EffectsColorWithoutTextureBlending,  0x004763c8
+_g_EffectsColor,                        0x00476438
 _g_ExtraLivesScores,                    0x004764b0
 _g_EclFiles,                            0x004764c4
 _g_AnmStageFiles,                       0x004764e8
@@ -27,7 +30,9 @@ _g_EnemyManager,                        0x004b79c8
 _g_EnemyManagerDrawChain,               0x004b79a8
 _g_RunningSpellcardInfo,                0x005a5f8c
 _g_EnemyManagerCalcChain,               0x005a5fb4
+_g_BulletManagerDrawChain,              0x005a5fd8
 _g_BulletManager,                       0x005a5ff8
+_g_BulletManagerCalcChain,              0x0069bc10
 _g_Gui,                                 0x0069bc30
 _g_GameManager,                         0x0069bca0
 _g_GameManagerDrawChain,                0x0069d740

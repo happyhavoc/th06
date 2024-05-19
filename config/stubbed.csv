@@ -57,7 +57,11 @@ EnemyManager::Initialize
 EnemyManager::OnUpdate
 EnemyManager::OnDraw
 EnemyManager::DeletedCallback
-BulletManager::RegisterChain
+BulletManager::AddedCallback
+BulletManager::DeletedCallback
+BulletManager::OnUpdate
+BulletManager::OnDraw
+BulletManager::InitializeToZero
 BulletManager::RemoveAllBullets
 ItemManager::SpawnItem
 Stage::RegisterChain
