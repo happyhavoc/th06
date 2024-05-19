@@ -2044,11 +2044,11 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
     {
         if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
         {
-            vm->color.color = vm->color.color & 0xffffff | 0x80000000;
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 128);
         }
         else
         {
-            vm->color.color = vm->color.color & 0xffffff | 0x80000000;
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 128);
         }
 
         vm->posOffset += D3DXVECTOR3(0.0, 0.0, 0.0);
@@ -2057,11 +2057,11 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
     {
         if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
         {
-            vm->color.color = vm->color.color & 0xffffff | 0xff000000;
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 255);
         }
         else
         {
-            vm->color.color = vm->color.color & 0xffffff | 0xff000000;
+            vm->color.color = COLOR_SET_ALPHA2(vm->color.color, 255);
         }
 
         vm->posOffset += D3DXVECTOR3(-4.0, -4.0, 0.0);
