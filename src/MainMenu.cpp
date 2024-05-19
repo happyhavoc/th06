@@ -617,7 +617,7 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     {
         anmmgr->scripts[i + ANM_OFFSET_TITLE01] = NULL;
     }
-    m->minimumOpacity = 0;
+    m->unk_81e4 = 0;
 
     switch (g_Supervisor.wantedState2)
     {
