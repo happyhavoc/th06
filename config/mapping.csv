@@ -124,7 +124,7 @@ BulletManager::InitializeToZero,0x413430,0x19,__thiscall,void,BulletManager*
 BulletManager::BulletManager,0x413450,0x10e,__thiscall,AnmVm*,BulletManager*
 BulletTypeVms::BulletTypeVms,0x413560,0x50,__thiscall,AnmVm*,BulletTypeVms*
 BulletManager::SetBulletAngle,0x4135b0,0xb8b,__thiscall,u32,BulletManager*,EnemyBulletShooter*,u32,i32,f32
-BulletManager::FUN_00414160,0x414160,0x1d2,__thiscall,void,BulletManager*,i32
+BulletManager::RemoveAllBullets,0x414160,0x1d2,__thiscall,void,BulletManager*,i32
 BulletManager::FUN_00414340,0x414340,0x15,__thiscall,void,BulletManager*
 BulletManager::FUN_00414360,0x414360,0x25f,__thiscall,i32,BulletManager*,i32,i32
 BulletManager::SpawnBullet,0x4145c0,0xa5,__thiscall,u32,BulletManager*,EnemyBulletShooter*
@@ -223,7 +223,7 @@ Supervisor::CreateTextBuffer,0x41f008,0x23,default,void
 Supervisor::ReleaseBackBuffer,0x41f02b,0x25,default,void
 FUN_0041f050,0x41f050,0x1e0,__stdcall,void,long,long,long,long,long,i32,unsigned long,unsigned long,char*,IDirect3DTexture8*
 ItemManager::FUN_0041f230,0x41f230,0x5a,__thiscall,ItemManager*,ItemManager*
-ItemManager::SpawnItem,0x41f290,0x205,__thiscall,void,ItemManager*,_D3DVECTOR*,i32,i32
+ItemManager::SpawnItem,0x41f290,0x205,__thiscall,void,ItemManager*,D3DXVECTOR3*,ItemType,i32
 ItemManager::FUN_0041f4a0,0x41f4a0,0xc58,__thiscall,void,ItemManager*
 ItemManager::FUN_00420130,0x420130,0x56,__thiscall,void,ItemManager*
 ItemManager_conflict2::FUN_00420190,0x420190,0x198,__thiscall,void,void*
@@ -314,19 +314,19 @@ Player::CalcBoxCollision,0x426fd0,0x1ba,unknown,u8,u32,u32
 Player::FUN_00427190,0x427190,0x49c,__thiscall,u32,Player*,f32*,f32*,f32*,u32,i32
 Player::FUN_00427630,0x427630,0x139,__thiscall,void,Player*,f32*
 Player::FUN_00427770,0x427770,0xe6,__thiscall,void,Player*
-Player::CalcMove,0x427860,0xd9a,__thiscall,u32,Player*
+Player::HandlePlayerInputs,0x427860,0xd9a,__thiscall,ZunResult,Player*
 Player::FUN_00428630,0x428630,0x45,default,void,Player*
 Player::FUN_00428680,0x428680,0x7a,__thiscall,float10*,Player*,float10*,f32*
 Player::FUN_00428700,0x428700,0x7a,__thiscall,f32,Player*,_D3DVECTOR*
 Player::RegisterChain,0x428780,0x135,default,ZunResult,u8
 Player::OnUpdate,0x4288c0,0x8ea,default,ChainCallbackResult,Player*
-Player::FUN_004291b0,0x4291b0,0x55b,default,void,Player*
-Player::FUN_00429710,0x429710,0x10c,default,u32,Player*
+Player::UpdatePlayerBullets,0x4291b0,0x55b,default,void,Player*
+Player::UpdateFireBulletsTimer,0x429710,0x10c,default,ZunResult,Player*
 Player::FUN_00429820,0x429820,0x10e,default,void,Player*,u32
 Player::OnDrawHighPrio,0x429930,0x1c9,default,ChainCallbackResult,Player*
-Player::update_bullets,0x429b00,0x8c,default,void,Player*
+Player::DrawBullets,0x429b00,0x8c,default,void,Player*
 Player::OnDrawLowPrio,0x429b90,0x16,default,ChainCallbackResult,Player*
-Player::FUN_00429bb0,0x429bb0,0x99,default,void,Player*
+Player::DrawBulletExplosions,0x429bb0,0x99,default,void,Player*
 Player::AddedCallback,0x429c50,0x45e,default,u32,Player*
 Player::DeletedCallback,0x42a0b0,0x24,default,ZunResult,Player*
 Player::CutChain,0x42a0e0,0x55,unknown,u8

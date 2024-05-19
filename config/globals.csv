@@ -25,7 +25,9 @@ _g_EffectManagerCalcChain,              0x004b7964
 _g_EffectManagerDrawChain,              0x004b7984
 _g_EnemyManager,                        0x004b79c8
 _g_EnemyManagerDrawChain,               0x004b79a8
+_g_RunningSpellcardInfo,                0x005a5f8c
 _g_EnemyManagerCalcChain,               0x005a5fb4
+_g_BulletManager,                       0x005a5ff8
 _g_Gui,                                 0x0069bc30
 _g_GameManager,                         0x0069bca0
 _g_GameManagerDrawChain,                0x0069d740
@@ -42,6 +44,7 @@ _g_LastFileSize,                        0x0069d914
 _g_Chain,                               0x0069d918
 _g_GameErrorContext,                    0x0069d998
 _g_TextBufferSurface,                   0x0069e230
+_g_ItemManager,                         0x0069e268
 _g_GameWindow,                          0x006c6bd4
 _g_TickCountToEffectiveFramerate,       0x006c6bf4
 _g_LastFrameTime,                       0x006c6bf8

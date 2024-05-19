@@ -58,9 +58,9 @@ struct GameManager
     u32 grazeInTotal;
     u32 isInReplay;
     u32 deaths;
-    u32 unk_24;
+    u32 bombsUsed;
     u32 unk_28;
-    u8 unk_2c;
+    i8 isTimeStopped;
     Catk catk[64];
     Clrd clrd[4];
     Pscr pscr[PSCR_NUM_CHARS_SHOTTYPES][PSCR_NUM_STAGES][PSCR_NUM_DIFFICULTIES];

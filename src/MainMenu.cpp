@@ -1570,20 +1570,18 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
         {
             menu->numFramesSinceActive += 1;
         }
-        targetOpacity = ((menu->menuTextColor & 0xff000000) >> 24) - ((menu->minimumOpacity & 0xff000000) >> 24);
-        DrawSquare(&window, ((targetOpacity * menu->numFramesSinceActive) / menu->framesActive +
-                             ((menu->minimumOpacity & 0xff000000) >> 24)) *
-                                    0x1000000 |
-                                menu->menuTextColor & 0xffffff);
+        targetOpacity = COLOR_ALPHA(menu->menuTextColor) - COLOR_ALPHA(menu->minimumOpacity);
+        DrawSquare(&window, COLOR_SET_ALPHA(menu->menuTextColor,
+                                            targetOpacity * menu->numFramesSinceActive / menu->framesActive +
+                                                COLOR_ALPHA(menu->minimumOpacity)));
     }
     else if (menu->numFramesSinceActive != 0)
     {
         menu->numFramesSinceActive -= 1;
-        targetOpacity = ((menu->menuTextColor & 0xff000000) >> 24) - ((menu->minimumOpacity & 0xff000000) >> 24);
-        DrawSquare(&window, (((targetOpacity * menu->numFramesSinceActive) / menu->framesInactive +
-                              ((menu->minimumOpacity & 0xff000000) >> 24)) *
-                             0x1000000) |
-                                (menu->menuTextColor & 0xffffff));
+        targetOpacity = COLOR_ALPHA(menu->menuTextColor) - COLOR_ALPHA(menu->minimumOpacity);
+        DrawSquare(&window, COLOR_SET_ALPHA(menu->menuTextColor,
+                                            targetOpacity * menu->numFramesSinceActive / menu->framesInactive +
+                                                COLOR_ALPHA(menu->minimumOpacity)));
     }
     for (vmIdx = 0; vmIdx < 98; vmIdx++, curVm++)
     {

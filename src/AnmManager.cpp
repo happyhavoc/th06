@@ -709,7 +709,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->color.alpha = curInstr->args[0] & 0xff;
             break;
         case AnmOpcode_SetColor:
-            vm->color.color = (vm->color.color & 0xff000000) | (curInstr->args[0] & 0xffffff);
+            vm->color.color = COLOR_COMBINE_ALPHA(curInstr->args[0], vm->color.color);
             break;
         case AnmOpcode_Jump:
             vm->currentInstruction = (AnmRawInstr *)((i32)vm->beginingOfScript->args + curInstr->args[0] - 4);
@@ -756,7 +756,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case AnmOpcode_Fade:
             local_20 = (u32 *)&curInstr->args[0];
             vm->alphaInterpInitial = vm->color.color;
-            vm->alphaInterpFinal = (vm->color.color & 0xffffff) | ((local_20[0] & 0xff) << 24);
+            vm->alphaInterpFinal = COLOR_SET_ALPHA2(vm->color.color, local_20[0]);
             vm->alphaInterpEndTime = local_20[1];
             vm->alphaInterpTime.InitializeForPopup();
             break;

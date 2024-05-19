@@ -87,6 +87,7 @@ def configure(build_type):
         main_sources = ["main"]
         cxx_sources = [
             "AsciiManager",
+            "BulletManager",
             "Chain",
             "EclManager",
             "EnemyManager",
@@ -95,6 +96,7 @@ def configure(build_type):
             "GameErrorContext",
             "GameWindow",
             "MainMenu",
+            "ItemManager",
             "MidiOutput",
             "EffectManager",
             "ScreenEffect",
