@@ -109,15 +109,15 @@ ZunResult AsciiManager::AddedCallback(AsciiManager *s)
 {
     int x, y, z;
 
-    if (g_AnmManager->LoadAnm(1, "data/ascii.anm", 0) != ZUN_SUCCESS)
+    if (g_AnmManager->LoadAnm(ANM_FILE_ASCII, "data/ascii.anm", ANM_OFFSET_ASCII) != ZUN_SUCCESS)
     {
         return ZUN_ERROR;
     }
-    if (g_AnmManager->LoadAnm(2, "data/asciis.anm", 0x77) != ZUN_SUCCESS)
+    if (g_AnmManager->LoadAnm(ANM_FILE_ASCIIS, "data/asciis.anm", ANM_OFFSET_ASCIIS) != ZUN_SUCCESS)
     {
         return ZUN_ERROR;
     }
-    if (g_AnmManager->LoadAnm(3, "data/capture.anm", 0x718) != ZUN_SUCCESS)
+    if (g_AnmManager->LoadAnm(ANM_FILE_CAPTURE, "data/capture.anm", ANM_OFFSET_CAPTURE) != ZUN_SUCCESS)
     {
         return ZUN_ERROR;
     }
@@ -150,9 +150,9 @@ void AsciiManager::InitializeVms()
 
 ZunResult AsciiManager::DeletedCallback(AsciiManager *s)
 {
-    g_AnmManager->ReleaseAnm(1);
-    g_AnmManager->ReleaseAnm(2);
-    g_AnmManager->ReleaseAnm(3);
+    g_AnmManager->ReleaseAnm(ANM_FILE_ASCII);
+    g_AnmManager->ReleaseAnm(ANM_FILE_ASCIIS);
+    g_AnmManager->ReleaseAnm(ANM_FILE_CAPTURE);
     return ZUN_SUCCESS;
 }
 

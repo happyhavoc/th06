@@ -438,7 +438,7 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
     g_Rng.generationCount = 0;
 
     g_SoundPlayer.InitSoundBuffers();
-    if (g_AnmManager->LoadAnm(0, "data/text.anm", 0x700) != 0)
+    if (g_AnmManager->LoadAnm(ANM_FILE_TEXT, "data/text.anm", ANM_OFFSET_TEXT) != 0)
     {
         return ZUN_ERROR;
     }

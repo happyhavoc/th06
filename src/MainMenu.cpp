@@ -84,34 +84,34 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     {
         g_AnmManager->ReleaseAnm(i);
     }
-    if (g_AnmManager->LoadAnm(0x15, "data/title01.anm", 0x100))
+    if (g_AnmManager->LoadAnm(ANM_FILE_TITLE01, "data/title01.anm", ANM_OFFSET_TITLE01))
     {
         return ZUN_ERROR;
     }
-    if (g_AnmManager->LoadAnm(0x18, "data/title02.anm", 0x11b))
+    if (g_AnmManager->LoadAnm(ANM_FILE_TITLE02, "data/title02.anm", ANM_OFFSET_TITLE02))
     {
         return ZUN_ERROR;
     }
-    if (g_AnmManager->LoadAnm(0x19, "data/title03.anm", 0x11f))
+    if (g_AnmManager->LoadAnm(ANM_FILE_TITLE03, "data/title03.anm", ANM_OFFSET_TITLE03))
     {
         return ZUN_ERROR;
     }
-    if (g_AnmManager->LoadAnm(0x1a, "data/title04.anm", 0x122))
+    if (g_AnmManager->LoadAnm(ANM_FILE_TITLE04, "data/title04.anm", ANM_OFFSET_TITLE04))
     {
         return ZUN_ERROR;
     }
-    if (g_AnmManager->LoadAnm(0x16, "data/title01s.anm", 0x17a))
+    if (g_AnmManager->LoadAnm(ANM_FILE_TITLE01S, "data/title01s.anm", ANM_OFFSET_TITLE01S))
     {
         return ZUN_ERROR;
     }
-    if (g_AnmManager->LoadAnm(0x17, "data/title04s.anm", 0x195))
+    if (g_AnmManager->LoadAnm(ANM_FILE_TITLE04S, "data/title04s.anm", ANM_OFFSET_TITLE04S))
     {
         return ZUN_ERROR;
     }
 
     for (i = 0; i < 80; i++)
     {
-        g_AnmManager->ExecuteAnmIdx(&menu->vm[i], 0x100 + i);
+        g_AnmManager->ExecuteAnmIdx(&menu->vm[i], ANM_SCRIPT_TITLE01_START + i);
         menu->vm[i].flags.flag0 = 0;
         menu->vm[i].anotherSpriteNumber = menu->vm[i].spriteNumber;
         menu->vm[i].flags.zWriteDisable = 1;
@@ -613,9 +613,9 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
 
     anmmgr = g_AnmManager;
 
-    for (i = 0; i < 0x7a; i++)
+    for (i = 0; i < ANM_OFFSET_TITLE01S - ANM_OFFSET_TITLE01; i++)
     {
-        anmmgr->scripts[i + 0x100] = NULL;
+        anmmgr->scripts[i + ANM_OFFSET_TITLE01] = NULL;
     }
     m->minimumOpacity = 0;
 
@@ -831,11 +831,11 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             mapping = menu->controlMapping[i / 2];
             if (i % 2 == 0)
             {
-                g_AnmManager->SetActiveSprite(vmList, mapping / 10 + 0x100);
+                g_AnmManager->SetActiveSprite(vmList, mapping / 10 + ANM_SPRITE_TITLE01_START);
             }
             else
             {
-                g_AnmManager->SetActiveSprite(vmList, mapping % 10 + 0x100);
+                g_AnmManager->SetActiveSprite(vmList, mapping % 10 + ANM_SPRITE_TITLE01_START);
             }
             vmList->anotherSpriteNumber = vmList->spriteNumber;
             DrawMenuItem(vmList, i / 2, menu->cursor, menu->color2, menu->color1, 0x7a);
@@ -2029,13 +2029,13 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
         {
             vm->color.color = COLOR_MENU_ITEM_HIGHLIGHT;
         }
-        else if (vm->anotherSpriteNumber < 0x122)
+        else if (vm->anotherSpriteNumber < ANM_OFFSET_TITLE04)
         {
-            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + 0x7a);
+            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + (ANM_OFFSET_TITLE01S - ANM_OFFSET_TITLE01));
         }
         else
         {
-            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + 0x73);
+            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + (ANM_OFFSET_TITLE04S - ANM_OFFSET_TITLE04));
         }
         vm->posOffset = D3DXVECTOR3(-2.0, -2.0, 0.0);
     }
@@ -2088,13 +2088,13 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
         return ZUN_ERROR;
     }
 
-    if (g_AnmManager->LoadAnm(0x24, "data/replay00.anm", 0x160) != ZUN_SUCCESS)
+    if (g_AnmManager->LoadAnm(ANM_FILE_REPLAY, "data/replay00.anm", ANM_OFFSET_REPLAY) != ZUN_SUCCESS)
     {
         return ZUN_ERROR;
     }
 
     vm = &menu->vm[96];
-    for (fileIdx = 0x160; fileIdx <= 0x179; fileIdx++, vm++)
+    for (fileIdx = ANM_SCRIPT_REPLAY_START; fileIdx <= ANM_SCRIPT_REPLAY_END; fileIdx++, vm++)
     {
         g_AnmManager->ExecuteAnmIdx(vm, fileIdx);
         vm->flags.flag0 = 0;
