@@ -113,7 +113,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     {
         g_AnmManager->ExecuteAnmIdx(&menu->vm[i], ANM_SCRIPT_TITLE01_START + i);
         menu->vm[i].flags.flag0 = 0;
-        menu->vm[i].anotherSpriteNumber = menu->vm[i].spriteNumber;
+        menu->vm[i].baseSpriteIndex = menu->vm[i].activeSpriteIndex;
         menu->vm[i].flags.zWriteDisable = 1;
     }
 
@@ -310,7 +310,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         }
         else
         {
-            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + vm_amount);
+            g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex + vm_amount);
             vm->color.color = currentItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
                               D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // just... why?
         }
@@ -329,7 +329,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
 
         else
         {
-            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber);
+            g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex);
             vm->color.color = otherItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
                               D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // again, why?
         }
@@ -837,7 +837,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 g_AnmManager->SetActiveSprite(vmList, mapping % 10 + ANM_SPRITE_TITLE01_START);
             }
-            vmList->anotherSpriteNumber = vmList->spriteNumber;
+            vmList->baseSpriteIndex = vmList->activeSpriteIndex;
             DrawMenuItem(vmList, i / 2, menu->cursor, menu->color2, menu->color1, 0x7a);
         }
         if (32 <= menu->stateTimer)
@@ -2017,7 +2017,7 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
         }
         else
         {
-            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber);
+            g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex);
         }
         vm->scaleX = 1.0;
         vm->scaleY = 1.0;
@@ -2029,13 +2029,13 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
         {
             vm->color.color = COLOR_MENU_ITEM_HIGHLIGHT;
         }
-        else if (vm->anotherSpriteNumber < ANM_OFFSET_TITLE04)
+        else if (vm->baseSpriteIndex < ANM_OFFSET_TITLE04)
         {
-            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + (ANM_OFFSET_TITLE01S - ANM_OFFSET_TITLE01));
+            g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex + (ANM_OFFSET_TITLE01S - ANM_OFFSET_TITLE01));
         }
         else
         {
-            g_AnmManager->SetActiveSprite(vm, vm->anotherSpriteNumber + (ANM_OFFSET_TITLE04S - ANM_OFFSET_TITLE04));
+            g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex + (ANM_OFFSET_TITLE04S - ANM_OFFSET_TITLE04));
         }
         vm->posOffset = D3DXVECTOR3(-2.0, -2.0, 0.0);
     }
@@ -2112,7 +2112,7 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
         posOffset.y = 0.0;
         posOffset.z = 0.0;
         vm->posOffset = posOffset;
-        vm->anotherSpriteNumber = vm->spriteNumber;
+        vm->baseSpriteIndex = vm->activeSpriteIndex;
         vm->flags.zWriteDisable = 1;
     }
     return ZUN_SUCCESS;

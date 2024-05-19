@@ -2,7 +2,7 @@
 
 AnmVm::AnmVm()
 {
-    this->spriteNumber = -1;
+    this->activeSpriteIndex = -1;
 }
 
 void AnmVm::Initialize()

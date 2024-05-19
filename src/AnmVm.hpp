@@ -154,8 +154,8 @@ struct AnmVm
     f32 scaleInterpInitialY;
     f32 scaleInterpInitialX;
     ZunTimer scaleInterpTime;
-    i16 spriteNumber;
-    i16 anotherSpriteNumber;
+    i16 activeSpriteIndex;
+    i16 baseSpriteIndex;
     i16 anmFileIndex;
     // Two padding bytes
     AnmRawInstr *beginingOfScript;
