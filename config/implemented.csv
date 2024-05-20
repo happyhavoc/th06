@@ -56,6 +56,7 @@ SetButtonFromControllerInputs
 SetButtonFromDirectInputJoystate
 GetControllerInput
 GetInput
+EclManager::Load
 EffectManager::Reset
 EffectManager::AddedCallback
 EffectManager::RegisterChain

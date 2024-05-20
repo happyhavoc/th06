@@ -52,7 +52,6 @@ MainMenu::SelectRelated
 Gui::RegisterChain
 Gui::HasCurrentMsgIdx
 EffectManager::RegisterChain
-EclManager::Load
 EnemyManager::Initialize
 EnemyManager::OnUpdate
 EnemyManager::OnDraw

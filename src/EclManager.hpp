@@ -32,10 +32,24 @@ struct RunningSpellcardInfo
 };
 C_ASSERT(sizeof(RunningSpellcardInfo) == 0x14);
 
+struct EclRawHeader
+{
+    i16 subCount;
+    i16 mainCount;
+    void *timelineOffsets[3];
+    void *subOffsets[0];
+};
+C_ASSERT(sizeof(EclRawHeader) == 0x10);
+
 struct EclManager
 {
     ZunResult Load(char *ecl);
+
+    EclRawHeader *eclFile;
+    void **subTable;
+    void *timeline;
 };
+C_ASSERT(sizeof(EclManager) == 0xc);
 
 DIFFABLE_EXTERN(RunningSpellcardInfo, g_RunningSpellcardInfo);
 DIFFABLE_EXTERN(EclManager, g_EclManager);
