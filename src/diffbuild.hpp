@@ -34,6 +34,15 @@
 #define DIFFABLE_EXTERN(type, name) extern "C" type name;
 #define DIFFABLE_STATIC(type, name) extern "C" type name;
 // This macro is meant to be used like so:
+// DIFFABLE_STATIC_ARRAY_ASSIGN(u32, g_ArrayName) = 12;
+//
+// In diffbuild, we want to discard the content of the array, so we generate a
+// second, fake static, that we store in a template<> to make sure it doesn't
+// get instanciated.
+#define DIFFABLE_STATIC_ASSIGN(type, name)                                                                             \
+    extern "C" type name;                                                                                              \
+    template <> type DIFFBUILD_HIDE_NAME_##name
+// This macro is meant to be used like so:
 // DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 5, g_ArrayName) = { 0, 1, 2 };
 //
 // In diffbuild, we want to discard the content of the array, so we generate a
@@ -45,5 +54,6 @@
 #else
 #define DIFFABLE_EXTERN(type, name) extern type name;
 #define DIFFABLE_STATIC(type, name) type name;
+#define DIFFABLE_STATIC_ASSIGN(type, name) type name
 #define DIFFABLE_STATIC_ARRAY_ASSIGN(type, size, name) type name[size]
 #endif

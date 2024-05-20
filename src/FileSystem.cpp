@@ -18,6 +18,22 @@ u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
     i32 pbg3Idx;
 
     entryIdx = -1;
+#define PREFER_UNPACKED 1
+#ifdef PREFER_UNPACKED
+    DebugPrint2("%s Load ... \n", filepath);
+    file = fopen(filepath, "rb");
+    if (file != NULL)
+    {
+        fseek(file, 0, SEEK_END);
+        fsize = ftell(file);
+        g_LastFileSize = fsize;
+        fseek(file, 0, SEEK_SET);
+        data = (u8 *)malloc(fsize);
+        fread(data, 1, fsize, file);
+        fclose(file);
+        return data;
+    }
+#endif
     if (isExternalResource == 0)
     {
         entryname = strrchr(filepath, '\\');
