@@ -49,7 +49,10 @@ MainMenu::DeletedCallback
 MainMenu::DrawReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
-Gui::RegisterChain
+Gui::AddedCallback
+Gui::DeletedCallback
+Gui::OnUpdate
+Gui::OnDraw
 Gui::HasCurrentMsgIdx
 EffectManager::RegisterChain
 EclManager::Load

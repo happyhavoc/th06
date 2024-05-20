@@ -29,6 +29,8 @@ _g_RunningSpellcardInfo,                0x005a5f8c
 _g_EnemyManagerCalcChain,               0x005a5fb4
 _g_BulletManager,                       0x005a5ff8
 _g_Gui,                                 0x0069bc30
+_g_GuiDrawChain,                        0x0069bc5c
+_g_GuiCalcChain,                        0x0069bc7c
 _g_GameManager,                         0x0069bca0
 _g_GameManagerDrawChain,                0x0069d740
 _g_GameManagerCalcChain,                0x0069d720
