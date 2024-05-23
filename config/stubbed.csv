@@ -46,7 +46,6 @@ ResultScreen::RegisterChain
 ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
 MainMenu::DeletedCallback
-MainMenu::DrawReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
 Gui::RegisterChain

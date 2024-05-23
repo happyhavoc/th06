@@ -95,6 +95,7 @@ MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
 MainMenu::MoveCursor
 MainMenu::DrawMenuItem
+MainMenu::DrawReplayMenu
 MainMenu::OnUpdate
 MainMenu::OnDraw
 MainMenu::RegisterChain

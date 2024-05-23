@@ -4,6 +4,7 @@
 
 /* COLORS */
 #define COLOR_BLACK 0xff000000
+#define COLOR_GREY 0xff808080
 #define COLOR_WHITE 0xffffffff
 #define COLOR_RED 0xffff0000
 #define COLOR_PINK 0xffffe0e0
