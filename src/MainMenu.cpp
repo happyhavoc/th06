@@ -2149,7 +2149,7 @@ ZunResult MainMenu::DrawReplayMenu()
         {
             if (i == this->chosenReplay)
             {
-                g_AsciiManager.color = D3DCOLOR_XRGB(255, 128, 128);
+                g_AsciiManager.color = COLOR_LIGHT_RED;
             }
             else
             {
@@ -2194,7 +2194,7 @@ ZunResult MainMenu::DrawReplayMenu()
             {
                 if (i == this->cursor)
                 {
-                    g_AsciiManager.color = D3DCOLOR_XRGB(255, 128, 128);
+                    g_AsciiManager.color = COLOR_LIGHT_RED;
                 }
                 else
                 {
