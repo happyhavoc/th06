@@ -2,6 +2,7 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "Player.hpp"
 #include "Stage.hpp"
@@ -257,6 +258,29 @@ ZunResult Gui::ActualAddedCallback()
     this->flags = this->flags & 0xffffff3f | 0x80;
     this->flags = this->flags & 0xfffffcff | 0x200;
     this->flags = this->flags & 0xffffffcf | 0x20;
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Gui::LoadMsg(char *path)
+{
+    i32 idx;
+
+    this->FreeMsgFile();
+    this->impl->msg.msgFile = (MsgRawHeader *)FileSystem::OpenPath(path, 0);
+    if (this->impl->msg.msgFile == NULL)
+    {
+        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GUI_MSG_FILE_CORRUPTED, path);
+        return ZUN_ERROR;
+    }
+    this->impl->msg.currentMsgIdx = 0xffffffff;
+    this->impl->msg.currentInstr = NULL;
+    for (idx = 0; idx < this->impl->msg.msgFile->numEntries; idx++)
+    {
+        this->impl->msg.msgFile->entries[idx] =
+            (MsgRawEntry *)((i32)this->impl->msg.msgFile->entries[idx] + (i32)this->impl->msg.msgFile);
+    }
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
