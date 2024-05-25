@@ -10,7 +10,6 @@ Stage::OnUpdate
 Stage::DeletedCallback
 Stage::OnDrawHighPrio
 Stage::OnDrawLowPrio
-Stage::LoadStageData
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu
