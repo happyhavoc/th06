@@ -13,7 +13,7 @@ struct EnemyManager
     static ChainCallbackResult OnUpdate(EnemyManager *enemyManager);
     static ChainCallbackResult OnDraw(EnemyManager *enemyManager);
     static ZunResult AddedCallback(EnemyManager *enemyManager);
-    static ZunResult DeletedCallback();
+    static ZunResult DeletedCallback(EnemyManager *enemyManager);
 
     char *stgEnmAnmFilename;
     char *stgEnm2AnmFilename;

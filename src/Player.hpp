@@ -78,6 +78,9 @@ struct PlayerBombInfo
 C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
 
 typedef u32 FireBulletResult;
+#define FBR_STOP_SPAWNING (-2)
+#define FBR_SPAWN_MORE (-1)
+
 typedef FireBulletResult (*FireBulletCallback)(Player *, PlayerBullet *, u32, u32);
 struct CharacterData
 {

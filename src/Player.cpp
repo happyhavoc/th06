@@ -12,10 +12,6 @@
 
 DIFFABLE_STATIC(Player, g_Player);
 
-typedef u32 FireBulletResult;
-#define FBR_STOP_SPAWNING (-2)
-#define FBR_SPAWN_MORE (-1)
-
 DIFFABLE_STATIC_ARRAY_ASSIGN(CharacterData, 4, g_CharData) = {
     /* ReimuA  */ {4.0, 2.0, 4.0, 2.0, Player::FireBulletReimuA, Player::FireBulletReimuA},
     /* ReimuB  */ {4.0, 2.0, 4.0, 2.0, Player::FireBulletReimuA, Player::FireBulletReimuB},

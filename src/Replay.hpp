@@ -1,3 +1,3 @@
 #pragma once
 
-void ReplayDoStuff(char *replay_path, char *param_2);
+void SaveReplay(char *replay_path, char *param_2);
