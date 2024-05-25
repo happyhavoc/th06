@@ -117,6 +117,7 @@ MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 Stage::RegisterChain
 Stage::AddedCallback
+Stage::LoadStageData
 StageMenu::StageMenu
 Supervisor::CreateTextBuffer
 Supervisor::AddedCallback
