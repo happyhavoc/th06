@@ -12,7 +12,7 @@ DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
 
 #pragma optimize("s", on)
-ZunResult Gui::RegisterChain(void)
+ZunResult Gui::RegisterChain()
 {
     Gui *gui = &g_Gui;
     if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
