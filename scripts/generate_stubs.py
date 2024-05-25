@@ -20,8 +20,9 @@ with open("config/mapping.csv") as f:
             "fun_addr": int(func[1], 16),
             "fun_size": int(func[2], 16),
             "calling_convention": func[3],
-            "ret_type": func[4],
-            "arg_types": func[5:],
+            "varargs": func[4] == "varargs",
+            "ret_type": func[5],
+            "arg_types": func[6:],
         }
 
 with open("config/implemented.csv") as f:
@@ -83,6 +84,7 @@ for stub in stubbed_csv:
     fun_sig = ret_type + " " + callconv + " " + fun_name + "("
     fun_sig += ", ".join(
         [arg_type + " " + "a" + str(idx) for idx, arg_type in enumerate(args_types)]
+        + (["..."] if fun["varargs"] else [])
     )
     fun_sig += ")"
     print(fun_sig + " {", file=output)
