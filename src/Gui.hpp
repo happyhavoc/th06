@@ -15,6 +15,8 @@ struct Gui
     static ChainCallbackResult OnUpdate(Gui *);
     static ChainCallbackResult OnDraw(Gui *);
 
+    ZunResult ActualAddedCallback();
+
     ZunBool HasCurrentMsgIdx();
 
     u32 flags;

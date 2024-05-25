@@ -33,3 +33,8 @@ ZunResult Gui::RegisterChain(void)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+
+ZunResult Gui::AddedCallback(Gui *gui)
+{
+    return gui->ActualAddedCallback();
+}
