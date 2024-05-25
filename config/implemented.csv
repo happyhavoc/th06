@@ -97,6 +97,7 @@ MainMenu::AddedCallback
 MainMenu::BeginStartup
 MainMenu::ChoosePracticeLevel
 MainMenu::LoadTitleAnm
+MainMenu::LoadDiffCharSelect
 MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
 MainMenu::MoveCursor
