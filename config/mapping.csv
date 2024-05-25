@@ -411,7 +411,7 @@ AnmManager::FUN_00433590,0x433590,0x3cf,__thiscall,i32,AnmManager*,AnmVm*
 AnmManager::ExecuteScript,0x433960,0x1103,__thiscall,i32,AnmManager*,AnmVm*
 AnmManager::DrawText,0x434af0,0x61,__thiscall,void,AnmManager*,u32,long,long,long,long,i32,i32,unsigned long,u32,char*
 AnmManager::DrawVmTextFmt,0x434b60,0xdb,default,void,AnmManager*,AnmVm*,unsigned long,unsigned long,char*
-AnmManager::DrawStringFormat,0x434c40,0x1dc,__stdcall,void,AnmManager*,AnmVm*,unsigned long,unsigned long,char*
+AnmManager::DrawStringFormat,0x434c40,0x1dc,default,void,AnmManager*,AnmVm*,ZunColor,ZunColor,char*
 AnmManager::DrawStringFormat2,0x434e20,0x1e2,default,void,AnmManager*,AnmVm*,unsigned long,unsigned long,char*
 AnmManager::LoadSurface,0x435010,0x25b,__thiscall,ZunResult,AnmManager*,u32,char*
 AnmManager::ReleaseSurface,0x435270,0x8f,__thiscall,void,AnmManager*,i32
