@@ -30,31 +30,33 @@ struct GuiMsgVm
 };
 C_ASSERT(sizeof(GuiMsgVm) == 0x6a8);
 
-struct GuiImplChildB
+struct GuiFormattedText
 {
     D3DXVECTOR3 vec;
-    i32 unk_0xc;
-    i32 unk_0x10;
+    i32 fmtArg;
+    i32 isShown;
     ZunTimer timer;
 };
-C_ASSERT(sizeof(GuiImplChildB) == 0x20);
+C_ASSERT(sizeof(GuiFormattedText) == 0x20);
 
 struct GuiImpl
 {
     AnmVm vms[26];
-    i8 unk_0x1ba0[4];
-    AnmVm vm1;
-    AnmVm vm2;
-    AnmVm vm3;
-    AnmVm vm4;
-    AnmVm vm5;
-    AnmVm vm6;
-    AnmVm vm7;
-    AnmVm vm8;
-    AnmVm vm9;
+    i8 bossHealthBarState;
+    AnmVm stageNameSprite;
+    AnmVm songNameSprite;
+    AnmVm playerSpellcardPortrait;
+    AnmVm enemySpellcardPortrait;
+    AnmVm bombSpellcardName;
+    AnmVm enemySpellcardName;
+    AnmVm bombSpellcardBackground;
+    AnmVm enemySpellcardBackground;
+    AnmVm loadingScreenSprite;
     GuiMsgVm msg;
     u32 finishedStage;
     u32 stageScore;
-    GuiImplChildB children[3];
+    GuiFormattedText bonusScore;
+    GuiFormattedText fullPowerMode;
+    GuiFormattedText spellCardBonus;
 };
 C_ASSERT(sizeof(GuiImpl) == 0x2c44);

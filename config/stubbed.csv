@@ -1,5 +1,7 @@
 AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
+AnmManager::DrawStringFormat
+AnmManager::DrawStringFormat2
 AddNormalizeAngle
 EffectManager::OnUpdate
 EffectManager::OnDraw
@@ -49,8 +51,11 @@ MainMenu::DeletedCallback
 MainMenu::DrawReplayMenu
 MainMenu::LoadDiffCharSelect
 MainMenu::SelectRelated
-Gui::RegisterChain
+Gui::DeletedCallback
+Gui::OnUpdate
+Gui::OnDraw
 Gui::HasCurrentMsgIdx
+Gui::LoadMsg
 EffectManager::RegisterChain
 EnemyManager::Initialize
 EnemyManager::OnUpdate

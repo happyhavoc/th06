@@ -4,11 +4,19 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+#include "Chain.hpp"
 #include "GuiImpl.hpp"
 
 struct Gui
 {
     static ZunResult RegisterChain();
+    static ZunResult AddedCallback(Gui *);
+    static ZunResult DeletedCallback(Gui *);
+    static ChainCallbackResult OnUpdate(Gui *);
+    static ChainCallbackResult OnDraw(Gui *);
+
+    ZunResult ActualAddedCallback();
+    ZunResult LoadMsg(char *path);
 
     ZunBool HasCurrentMsgIdx();
 
