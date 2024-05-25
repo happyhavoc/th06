@@ -90,6 +90,8 @@ public class GenerateMapping extends GhidraScript
             builder.append(",");
             builder.append(func.getCallingConventionName());
             builder.append(",");
+            builder.append(func.hasVarArgs() ? "varargs" : "");
+            builder.append(",");
             builder.append(transformType(func.getReturnType()));
             for (Parameter p : func.getParameters())
             {
