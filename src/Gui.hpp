@@ -16,6 +16,7 @@ struct Gui
     static ChainCallbackResult OnDraw(Gui *);
 
     ZunResult ActualAddedCallback();
+    ZunResult LoadMsg(char *path);
 
     ZunBool HasCurrentMsgIdx();
 

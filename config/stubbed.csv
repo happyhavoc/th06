@@ -1,5 +1,7 @@
 AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
+AnmManager::DrawStringFormat
+AnmManager::DrawStringFormat2
 AddNormalizeAngle
 EffectManager::OnUpdate
 EffectManager::OnDraw
@@ -53,6 +55,7 @@ Gui::DeletedCallback
 Gui::OnUpdate
 Gui::OnDraw
 Gui::HasCurrentMsgIdx
+Gui::LoadMsg
 EffectManager::RegisterChain
 EclManager::Load
 EnemyManager::Initialize
