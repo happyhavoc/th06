@@ -23,15 +23,9 @@
 #define COLOR_MENU_ITEM_HIGHLIGHT 0x800000ff
 #define COLOR_MENU_ITEM_DEFAULT 0x80202050
 
-// Note: Little endian!
-union ZunColor {
-    u32 color;
-    u8 bytes[4];
-    struct
-    {
-        u8 blue;
-        u8 green;
-        u8 red;
-        u8 alpha;
-    };
-};
+// TODO: The following assumes little endian
+#define COLOR_ALPHA_BYTE_IDX 3
+#define COLOR_GET_COMPONENT(color, component) (((u8 *)&(color))[(component)])
+#define COLOR_SET_COMPONENT(color, component, value) ((u8 *)&(color))[(component)] = (value);
+
+typedef u32 ZunColor;

@@ -21,7 +21,7 @@ void AnmVm::Initialize()
     this->scaleY = 1.0;
     this->scaleInterpEndTime = 0;
     this->alphaInterpEndTime = 0;
-    this->color.color = D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0xff);
+    this->color = D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0xff);
     D3DXMatrixIdentity(&this->matrix);
     this->flags.flags = AnmVmFlags_0 | AnmVmFlags_1;
     this->autoRotate = 0;

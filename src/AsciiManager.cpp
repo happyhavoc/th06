@@ -223,12 +223,12 @@ void AsciiManager::DrawStrings(void)
                 if (string->isSelected == FALSE)
                 {
                     this->vm0.sprite = &g_AnmManager->sprites[*text - 0x15];
-                    this->vm0.color.color = string->color;
+                    this->vm0.color = string->color;
                 }
                 else
                 {
                     this->vm0.sprite = &g_AnmManager->sprites[*text + 0x61];
-                    this->vm0.color.color = 0xFFFFFFFF;
+                    this->vm0.color = 0xFFFFFFFF;
                 }
                 g_AnmManager->DrawNoRotation(&this->vm0);
                 this->vm0.pos.x += charWidth;
