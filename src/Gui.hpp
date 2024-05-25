@@ -17,6 +17,7 @@ struct Gui
 
     ZunResult ActualAddedCallback();
     ZunResult LoadMsg(char *path);
+    void FreeMsgFile();
 
     ZunBool HasCurrentMsgIdx();
 

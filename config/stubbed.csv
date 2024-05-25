@@ -53,7 +53,7 @@ Gui::DeletedCallback
 Gui::OnUpdate
 Gui::OnDraw
 Gui::HasCurrentMsgIdx
-Gui::LoadMsg
+Gui::FreeMsgFile
 EffectManager::RegisterChain
 EnemyManager::Initialize
 EnemyManager::OnUpdate

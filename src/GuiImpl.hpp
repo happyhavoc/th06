@@ -5,10 +5,14 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+struct MsgRawEntry
+{
+};
+
 struct MsgRawHeader
 {
     i32 numEntries;
-    void *entries;
+    MsgRawEntry *entries[1];
 };
 C_ASSERT(sizeof(MsgRawHeader) == 0x8);
 

@@ -82,6 +82,7 @@ GameManager::OnDraw
 Gui::RegisterChain
 Gui::AddedCallback
 Gui::ActualAddedCallback
+Gui::LoadMsg
 ResetKeyboard
 WindowProc
 CreateGameWindow
