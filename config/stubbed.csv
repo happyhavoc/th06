@@ -30,7 +30,6 @@ SoundPlayer::GetWavFormatData
 SoundPlayer::Release
 SoundPlayer::PlaySounds
 SoundPlayer::LoadPos
-SoundPlayer::StopBGM
 ResultScreen::OpenScore
 ResultScreen::ParseClrd
 ResultScreen::ParsePscr

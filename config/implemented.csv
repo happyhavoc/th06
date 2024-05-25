@@ -141,6 +141,7 @@ SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
 SoundPlayer::LoadSound
 SoundPlayer::PlayBGM
+SoundPlayer::StopBGM
 SoundPlayer::BackgroundMusicPlayerThread
 SoundPlayer::InitSoundBuffers
 Player::AddedCallback
