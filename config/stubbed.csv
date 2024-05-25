@@ -62,7 +62,7 @@ BulletManager::RemoveAllBullets
 ItemManager::SpawnItem
 Stage::RegisterChain
 ReplayManager::RegisterChain
-ReplayDoStuff
+SaveReplay
 ValidateReplayData
 DrawSquare
 GetControllerState
@@ -86,4 +86,3 @@ Player::UpdateFireBulletsTimer
 Player::UpdatePlayerBullets
 Player::HandlePlayerInputs
 Pbg3Archive::Pbg3Archive
-Pbg3Archive::~Pbg3Archive

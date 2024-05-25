@@ -183,7 +183,6 @@ Pbg3Parser::~Pbg3Parser
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::ParseHeader
 Pbg3Archive::Release
-Pbg3Archive::~Pbg3Archive
 Pbg3Archive::FindEntry
 Pbg3Archive::GetEntrySize
 Pbg3Archive::ReadEntryRaw

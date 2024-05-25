@@ -55,6 +55,7 @@ ret_vals = {
     "float": "0.0",
     "ZunResult": "ZUN_ERROR",
     "ChainCallbackResult": "CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS",
+    "FireBulletResult": "FBR_STOP_SPAWNING",
 }
 
 for stub in stubbed_csv:
