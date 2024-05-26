@@ -192,10 +192,10 @@ Chain::Release,0x41cd10,0x26,__thiscall,,void,Chain*
 Chain::CreateElem,0x41cd40,0xa0,__thiscall,,ChainElem*,Chain*,ChainCallback*
 Chain::Cut,0x41cde0,0x17c,__thiscall,,void,Chain*,ChainElem*
 GetJoystickCaps,0x41cf60,0x55,__stdcall,,u16
-GetControllerInput,0x41cfc0,0x5c0,__stdcall,,u16,u16
+Controller::GetControllerInput,0x41cfc0,0x5c0,__stdcall,,u16,u16
 SetButtonFromDirectInputJoystate,0x41d580,0x7f,__stdcall,,unsigned long,u16*,i16,unsigned long,uchar*
 SetButtonFromControllerInputs,0x41d600,0x75,__stdcall,,unsigned long,u16*,i16,unsigned long,unsigned long
-GetControllerState,0x41d680,0x19e,default,,u8*
+Controller::GetControllerState,0x41d680,0x19e,default,,u8*
 GetInput,0x41d820,0x894,__stdcall,,u16
 ResetKeyboard,0x41e0c0,0x85,default,,void
 FUN_0041e150,0x41e150,0xc0,unknown,,u8,u32,u32,u32
