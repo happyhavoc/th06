@@ -50,10 +50,11 @@ MainMenu::LoadDiffCharSelect
 MainMenu::DrawReplayMenu
 MainMenu::SelectRelated
 Gui::DeletedCallback
-Gui::OnUpdate
 Gui::OnDraw
+Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
 Gui::FreeMsgFile
+GuiImpl::RunMsg
 EffectManager::RegisterChain
 EnemyManager::Initialize
 EnemyManager::OnUpdate

@@ -19,6 +19,7 @@ struct Gui
     ZunResult LoadMsg(char *path);
     void FreeMsgFile();
 
+    void CalculateStageScore();
     ZunBool HasCurrentMsgIdx();
 
     u32 flags;

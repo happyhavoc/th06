@@ -284,3 +284,16 @@ ZunResult Gui::LoadMsg(char *path)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+ChainCallbackResult Gui::OnUpdate(Gui *gui)
+{
+    if (g_GameManager.isTimeStopped)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    gui->CalculateStageScore();
+    gui->impl->RunMsg();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)

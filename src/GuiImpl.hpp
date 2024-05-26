@@ -45,6 +45,8 @@ C_ASSERT(sizeof(GuiFormattedText) == 0x20);
 
 struct GuiImpl
 {
+    ZunResult RunMsg();
+
     AnmVm vms[26];
     i8 bossHealthBarState;
     AnmVm stageNameSprite;

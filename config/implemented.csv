@@ -83,6 +83,7 @@ Gui::RegisterChain
 Gui::AddedCallback
 Gui::ActualAddedCallback
 Gui::LoadMsg
+Gui::OnUpdate
 ResetKeyboard
 WindowProc
 CreateGameWindow
