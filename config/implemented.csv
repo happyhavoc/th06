@@ -56,7 +56,7 @@ InitD3dInterface
 GetJoystickCaps
 SetButtonFromControllerInputs
 SetButtonFromDirectInputJoystate
-GetControllerInput
+Controller::GetControllerInput
 GetInput
 EclManager::Load
 EffectManager::Reset

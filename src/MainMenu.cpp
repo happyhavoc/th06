@@ -845,7 +845,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         }
         if (32 <= menu->stateTimer)
         {
-            controllerData = GetControllerState();
+            controllerData = Controller::GetControllerState();
             for (sVar1 = 0; sVar1 < 32; sVar1++)
             {
                 if ((controllerData[sVar1] & 0x80) != 0)
