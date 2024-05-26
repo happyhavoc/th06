@@ -225,13 +225,13 @@ ZunResult SoundPlayer::InitSoundBuffers()
     return ZUN_SUCCESS;
 }
 
-WAVEFORMATEX *SoundPlayer::GetWavFormatData(char *soundData, char *formatString, i32 *formatSize,
+WAVEFORMATEX *SoundPlayer::GetWavFormatData(u8 *soundData, char *formatString, i32 *formatSize,
                                             i32 fileSizeExcludingFormat)
 {
     while (fileSizeExcludingFormat > 0)
     {
         *formatSize = *(i32 *)(soundData + 4);
-        if (strncmp(soundData, formatString, 4) == 0)
+        if (strncmp((char*)soundData, formatString, 4) == 0)
         {
             return (WAVEFORMATEX *)(soundData + 8);
         }
