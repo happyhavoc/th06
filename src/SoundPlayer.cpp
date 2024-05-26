@@ -231,7 +231,7 @@ WAVEFORMATEX *SoundPlayer::GetWavFormatData(u8 *soundData, char *formatString, i
     while (fileSizeExcludingFormat > 0)
     {
         *formatSize = *(i32 *)(soundData + 4);
-        if (strncmp((char*)soundData, formatString, 4) == 0)
+        if (strncmp((char *)soundData, formatString, 4) == 0)
         {
             return (WAVEFORMATEX *)(soundData + 8);
         }

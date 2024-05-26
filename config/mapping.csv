@@ -379,7 +379,7 @@ ScreenEffect::DeletedCallback,0x430220,0x4b,default,,ZunResult,ScreenEffect*
 SoundPlayer::InitializeDSound,0x430270,0x29d,__thiscall,,ZunResult,SoundPlayer*,HWND__*
 SoundPlayer::Release,0x430510,0x1cd,__thiscall,,ZunResult,SoundPlayer*
 SoundPlayer::LoadSound,0x4306e0,0x310,__thiscall,,ZunResult,SoundPlayer*,i32,char*
-SoundPlayer::GetWavFormatData,0x4309f0,0x57,default,,WAVEFORMATEX*,u8*,char*,i32*,i32
+SoundPlayer::GetWavFormatData,0x4309f0,0x57,default,,tWAVEFORMATEX*,u8*,char*,i32*,i32
 SoundPlayer::LoadWav,0x430a50,0x3b5,__thiscall,,ZunResult,SoundPlayer*,char*
 SoundPlayer::LoadPos,0x430e10,0xad,__thiscall,,ZunResult,SoundPlayer*,char*
 SoundPlayer::PlayBGM,0x430ec0,0xbe,__thiscall,,u32,SoundPlayer*,u32
