@@ -93,7 +93,7 @@ struct AsciiManager
     u32 isGui;
     // If true, we are drawing the currently selected element of the MainMenu
     // class.
-    u32 isSelected;
+    ZunBool isSelected;
     i32 nextPopupIndex1;
     i32 nextPopupIndex2;
     // Seems unused
