@@ -153,11 +153,11 @@ Gui::LoadMsg,0x418665,0xc5,__thiscall,,ZunResult,Gui*,char*
 Gui::FreeMsgFile,0x41872a,0x3e,__thiscall,,void,Gui*
 Gui::FUN_00418768,0x418768,0x23,__thiscall,,void,Gui*,i32
 GuiImpl::FUN_0041878b,0x41878b,0x13e,__thiscall,,void,GuiImpl*,i32
-GuiImpl::run_msg,0x4188c9,0x7eb,__thiscall,,u32,GuiImpl*
+GuiImpl::RunMsg,0x4188c9,0x7eb,__thiscall,,u32,GuiImpl*
 GuiImpl::DrawDialogue,0x4190ec,0x486,__thiscall,,ZunResult,GuiImpl*
 Gui::FUN_00419572,0x419572,0x30,__thiscall,,u8,Gui*
 Gui::HasCurrentMsgIdx,0x4195a2,0x1d,__thiscall,,i32,Gui*
-Gui::calculateStageScore,0x4195bf,0x6da,__thiscall,,void,Gui*
+Gui::CalculateStageScore,0x4195bf,0x6da,__thiscall,,void,Gui*
 Gui::DrawGameScene,0x419c99,0x115a,__thiscall,,void,Gui*
 Gui::DrawStageElements,0x41adf3,0x3b1,__thiscall,,void,Gui*
 Gui::AddedCallback,0x41b1a4,0xd,default,,ZunResult,Gui*
