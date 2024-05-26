@@ -727,7 +727,7 @@ u32 SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest
 
 DIFFABLE_STATIC(u16, g_FocusButtonConflictState)
 
-u16 GetControllerInput(u16 buttons)
+u16 Controller::GetControllerInput(u16 buttons)
 {
     // NOTE: Those names are like this to get perfect stack frame matching
     // TODO: Give meaningfull names that still match.
@@ -954,7 +954,7 @@ u16 GetInput(void)
         {
             g_Supervisor.keyboard->Acquire();
 
-            return GetControllerInput(buttons);
+            return Controller::GetControllerInput(buttons);
         }
 
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP, DIK_UP);
@@ -982,7 +982,7 @@ u16 GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_ENTER, DIK_RETURN);
     }
 
-    return GetControllerInput(buttons);
+    return Controller::GetControllerInput(buttons);
 }
 
 #pragma optimize("s", on)

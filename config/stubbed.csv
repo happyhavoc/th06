@@ -69,7 +69,7 @@ ReplayManager::RegisterChain
 SaveReplay
 ValidateReplayData
 DrawSquare
-GetControllerState
+Controller::GetControllerState
 SetupCamera
 Player::DrawBullets
 Player::DrawBulletExplosions
