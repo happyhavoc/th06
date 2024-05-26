@@ -8,8 +8,13 @@
 #define COLOR_WHITE 0xffffffff
 #define COLOR_RED 0xffff0000
 #define COLOR_LIGHT_RED 0xffff8080
+#define COLOR_YELLOW 0xffffff40
 #define COLOR_PINK 0xffffe0e0
 #define COLOR_LIGHTCYAN 0xffe0ffff
+#define COLOR_LAVENDER 0xffe0e0ff
+#define COLOR_LIGHTBLUE 0xffd0d0ff
+#define COLOR_LIGHTYELLOW 0xffffff80
+#define COLOR_PALEBLUE 0xffc0b0ff
 
 #define COLOR_RGB_MASK 0x00FFFFFF
 #define COLOR_ALPHA_MASK 0xFF000000

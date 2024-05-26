@@ -84,6 +84,7 @@ Gui::AddedCallback
 Gui::ActualAddedCallback
 Gui::LoadMsg
 Gui::OnUpdate
+Gui::OnDraw
 ResetKeyboard
 WindowProc
 CreateGameWindow

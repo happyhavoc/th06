@@ -1,5 +1,9 @@
 #include "Gui.hpp"
+
+#include <stdio.h>
+
 #include "AnmManager.hpp"
+#include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
@@ -294,6 +298,145 @@ ChainCallbackResult Gui::OnUpdate(Gui *gui)
     }
     gui->CalculateStageScore();
     gui->impl->RunMsg();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ChainCallbackResult Gui::OnDraw(Gui *gui)
+{
+    char spellCardBonusStr[32];
+    D3DXVECTOR3 stringPos;
+
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+    if (gui->impl->finishedStage)
+    {
+        stringPos.x = GAME_REGION_LEFT + 42.0f;
+        stringPos.y = GAME_REGION_TOP + 112.0f;
+        stringPos.z = 0.0;
+        g_AsciiManager.color = COLOR_YELLOW;
+        if (g_GameManager.currentStage < EXTRA_STAGE)
+        {
+            g_AsciiManager.AddFormatText(&stringPos, "Stage Clear\n\n");
+        }
+        else
+        {
+            g_AsciiManager.AddFormatText(&stringPos, "All Clear!\n\n");
+        }
+
+        stringPos.y += 32.0f;
+        g_AsciiManager.color = COLOR_WHITE;
+        g_AsciiManager.AddFormatText(&stringPos, "Stage * 1000 = %5d\n", g_GameManager.currentStage * 1000);
+
+        stringPos.y += 16.0f;
+        g_AsciiManager.color = COLOR_LAVENDER;
+        g_AsciiManager.AddFormatText(&stringPos, "Power *  100 = %5d\n", g_GameManager.currentPower * 100);
+
+        stringPos.y += 16.0f;
+        g_AsciiManager.color = COLOR_LIGHTBLUE;
+        g_AsciiManager.AddFormatText(&stringPos, "Graze *   10 = %5d\n", g_GameManager.grazeInStage * 10);
+
+        stringPos.y += 16.0f;
+        g_AsciiManager.color = COLOR_LIGHT_RED;
+        g_AsciiManager.AddFormatText(&stringPos, "    * Point Item %3d\n", g_GameManager.pointItemsCollectedInStage);
+
+        if (EXTRA_STAGE <= g_GameManager.currentStage)
+        {
+            stringPos.y += 16.0f;
+            g_AsciiManager.color = COLOR_LIGHTYELLOW;
+            g_AsciiManager.AddFormatText(&stringPos, "Player    = %8d\n", g_GameManager.livesRemaining * 3000000);
+            stringPos.y += 16.0f;
+            g_AsciiManager.AddFormatText(&stringPos, "Bomb      = %8d\n", g_GameManager.bombsRemaining * 1000000);
+        }
+
+        stringPos.y += 32.0f;
+        switch (g_GameManager.difficulty)
+        {
+        case EASY:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Easy Rank      * 0.5\n");
+            break;
+        case NORMAL:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Normal Rank    * 1.0\n");
+            break;
+        case HARD:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Hard Rank      * 1.2\n");
+            break;
+        case LUNATIC:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Lunatic Rank   * 1.5\n");
+            break;
+        case EXTRA:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Extra Rank     * 2.0\n");
+            break;
+        }
+
+        stringPos.y += 16.0f;
+        if (g_GameManager.difficulty < EXTRA && !g_GameManager.isInPracticeMode)
+        {
+            switch (g_Supervisor.defaultConfig.lifeCount)
+            {
+            case 3:
+                g_AsciiManager.color = COLOR_LIGHT_RED;
+                g_AsciiManager.AddFormatText(&stringPos, "Player Penalty * 0.5\n");
+                stringPos.y += 16.0f;
+                break;
+            case 4:
+                g_AsciiManager.color = COLOR_LIGHT_RED;
+                g_AsciiManager.AddFormatText(&stringPos, "Player Penalty * 0.2\n");
+                stringPos.y += 16.0f;
+                break;
+            }
+        }
+        g_AsciiManager.color = COLOR_WHITE;
+        g_AsciiManager.AddFormatText(&stringPos, "Total     = %8d", gui->impl->stageScore);
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+
+    gui->impl->DrawDialogue();
+    gui->DrawStageElements();
+    gui->DrawGameScene();
+    g_AsciiManager.isGui = 1;
+    if (gui->impl->bonusScore.isShown)
+    {
+        g_AsciiManager.color = COLOR_LIGHTYELLOW;
+        g_AsciiManager.AddFormatText(&gui->impl->bonusScore.pos, "BONUS %8d", gui->impl->bonusScore.fmtArg);
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+    if (gui->impl->fullPowerMode.isShown)
+    {
+        g_AsciiManager.color = COLOR_PALEBLUE;
+        g_AsciiManager.AddFormatText(&gui->impl->fullPowerMode.pos, "Full Power Mode!!",
+                                     gui->impl->fullPowerMode.fmtArg);
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+    if (gui->impl->spellCardBonus.isShown)
+    {
+        g_AsciiManager.color = COLOR_RED;
+
+        gui->impl->spellCardBonus.pos.x =
+            ((f32)GAME_REGION_WIDTH - (f32)strlen("Spell Card Bonus!") * 16.0f) / 2.0f + (f32)GAME_REGION_LEFT;
+        gui->impl->spellCardBonus.pos.y = GAME_REGION_TOP + 64.0f;
+        g_AsciiManager.AddFormatText(&gui->impl->spellCardBonus.pos, "Spell Card Bonus!");
+
+        gui->impl->spellCardBonus.pos.y += 16.0f;
+        sprintf(spellCardBonusStr, "+%d", gui->impl->spellCardBonus.fmtArg);
+        gui->impl->spellCardBonus.pos.x =
+            ((f32)GAME_REGION_WIDTH - (f32)strlen(spellCardBonusStr) * 32.0f) / 2.0f + (f32)GAME_REGION_LEFT;
+        g_AsciiManager.scale.x = 2.0f;
+        g_AsciiManager.scale.y = 2.0f;
+        g_AsciiManager.color = COLOR_LIGHT_RED;
+        g_AsciiManager.AddString(&gui->impl->spellCardBonus.pos, spellCardBonusStr);
+
+        g_AsciiManager.scale.x = 1.0;
+        g_AsciiManager.scale.y = 1.0;
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+    g_AsciiManager.isGui = 0;
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)

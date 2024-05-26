@@ -22,6 +22,9 @@ struct Gui
     void CalculateStageScore();
     ZunBool HasCurrentMsgIdx();
 
+    void DrawStageElements();
+    void DrawGameScene();
+
     u32 flags;
     GuiImpl *impl;
     f32 unk_8;

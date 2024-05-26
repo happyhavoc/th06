@@ -36,7 +36,7 @@ C_ASSERT(sizeof(GuiMsgVm) == 0x6a8);
 
 struct GuiFormattedText
 {
-    D3DXVECTOR3 vec;
+    D3DXVECTOR3 pos;
     i32 fmtArg;
     i32 isShown;
     ZunTimer timer;
@@ -46,6 +46,7 @@ C_ASSERT(sizeof(GuiFormattedText) == 0x20);
 struct GuiImpl
 {
     ZunResult RunMsg();
+    ZunResult DrawDialogue();
 
     AnmVm vms[26];
     i8 bossHealthBarState;
