@@ -225,6 +225,18 @@ ZunResult SoundPlayer::InitSoundBuffers()
     return ZUN_SUCCESS;
 }
 
+WAVEFORMATEX* SoundPlayer::GetWavFormatData(char* soundData, char* formatString, i32* formatSize, i32 fileSizeExcludingFormat) {
+    while (fileSizeExcludingFormat > 0) {
+        *formatSize = *(i32*)(soundData + 4);
+        if (strncmp(soundData, formatString, 4) == 0) {
+            return (WAVEFORMATEX*)(soundData + 8);
+        }
+        fileSizeExcludingFormat -= (*formatSize + 8);
+        soundData += *formatSize + 8;
+    }
+    return NULL;
+}
+
 #pragma var_order(fileSize, soundFileData, audioPtr1, audioSize1, audioPtr2, audioSize2, formatSize, wavDataPtr,       \
                   dsBuffer, wavData, sFDCursor)
 ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
@@ -283,7 +295,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
     }
     wavData = *wavDataPtr;
 
-    wavDataPtr = GetWavFormatData(sFDCursor, "data", &formatSize, fileSize - 12);
+    wavDataPtr = GetWavFormatData((char*)sFDCursor, "data", &formatSize, fileSize - 12);
     if (wavDataPtr == NULL)
     {
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);

@@ -60,7 +60,7 @@ struct SoundPlayer
     ZunResult Release(void);
 
     ZunResult LoadSound(i32 idx, char *path);
-    static WAVEFORMATEX *GetWavFormatData(u8 *soundData, char *formatString, i32 *formatSize,
+    static WAVEFORMATEX *GetWavFormatData(char *soundData, char *formatString, i32 *formatSize,
                                           i32 fileSizeExcludingFormat);
     void PlaySounds();
     void PlaySoundByIdx(SoundIdx idx, i32 unused);
