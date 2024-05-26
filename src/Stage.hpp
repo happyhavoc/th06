@@ -11,11 +11,11 @@
 
 struct RawStageHeader
 {
-    u16 nbObjects;
-    u16 nbFaces;
-    u32 facesOffset;
-    u32 scriptOffset;
-    u32 unk_c;
+    i16 nbObjects;
+    i16 nbFaces;
+    i32 facesOffset;
+    i32 scriptOffset;
+    i32 unk_c;
     char stageName[128];
     char song1Name[128];
     char song2Name[128];
@@ -27,6 +27,45 @@ struct RawStageHeader
     char song4Path[128];
 };
 C_ASSERT(sizeof(RawStageHeader) == 0x490);
+
+struct RawStageQuadBasic
+{
+    i16 type;
+    i16 byteSize;
+    i16 anmScript;
+    i16 vmIdx;
+    D3DXVECTOR3 position;
+    D3DXVECTOR2 size;
+};
+C_ASSERT(sizeof(RawStageQuadBasic) == 0x1c);
+
+struct RawStageObject
+{
+    i16 id;
+    i8 unk2;
+    i8 flags;
+    D3DXVECTOR3 position;
+    D3DXVECTOR3 size;
+    RawStageQuadBasic firstQuad;
+};
+C_ASSERT(sizeof(RawStageObject) == 0x38);
+
+struct RawStageObjectInstance
+{
+    i16 id;
+    i16 unk2;
+    D3DXVECTOR3 position;
+};
+C_ASSERT(sizeof(RawStageObjectInstance) == 0x10);
+
+struct RawStageInstr
+{
+    i32 frame;
+    i16 opcode;
+    i16 size;
+    i32 args[3];
+};
+C_ASSERT(sizeof(RawStageInstr) == 0x14);
 
 struct StageCameraSky
 {
@@ -65,12 +104,9 @@ struct Stage
     RawStageHeader *stdData;
     i32 quadCount;
     i32 objectsCount;
-    // TODO: This has type StdRawObject**
-    void *objects;
-    // TODO: This has type StdRawInstance*
-    void *objectInstances;
-    // TODO: This has type StdRawInstr*
-    void *beginningOfScript;
+    RawStageObject **objects;
+    RawStageObjectInstance *objectInstances;
+    RawStageInstr *beginningOfScript;
     ZunTimer scriptTime;
     i32 instructionIndex;
     ZunTimer timer;

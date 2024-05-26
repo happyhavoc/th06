@@ -40,6 +40,8 @@ AnmManager::SetupVertexBuffer
 AnmManager::SetRenderStateForVm
 AnmManager::TranslateRotation
 AnmManager::ExecuteAnmIdx
+BulletManager::RegisterChain
+BulletManager::AddedCallback
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem
@@ -54,8 +56,9 @@ InitD3dInterface
 GetJoystickCaps
 SetButtonFromControllerInputs
 SetButtonFromDirectInputJoystate
-GetControllerInput
+Controller::GetControllerInput
 GetInput
+EclManager::Load
 EffectManager::Reset
 EffectManager::AddedCallback
 EffectManager::RegisterChain
@@ -76,6 +79,10 @@ GameManager::DecreaseSubrank
 GameManager::IsInBounds
 GameManager::OnUpdate
 GameManager::OnDraw
+Gui::RegisterChain
+Gui::AddedCallback
+Gui::ActualAddedCallback
+Gui::LoadMsg
 ResetKeyboard
 WindowProc
 CreateGameWindow
@@ -91,6 +98,7 @@ MainMenu::AddedCallback
 MainMenu::BeginStartup
 MainMenu::ChoosePracticeLevel
 MainMenu::LoadTitleAnm
+MainMenu::LoadDiffCharSelect
 MainMenu::DrawStartMenu
 MainMenu::ReplayHandling
 MainMenu::MoveCursor
@@ -111,6 +119,7 @@ MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 Stage::RegisterChain
 Stage::AddedCallback
+Stage::LoadStageData
 StageMenu::StageMenu
 Supervisor::CreateTextBuffer
 Supervisor::AddedCallback
@@ -133,6 +142,7 @@ SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
 SoundPlayer::LoadSound
 SoundPlayer::PlayBGM
+SoundPlayer::StopBGM
 SoundPlayer::BackgroundMusicPlayerThread
 SoundPlayer::InitSoundBuffers
 Player::AddedCallback
@@ -184,7 +194,6 @@ Pbg3Parser::~Pbg3Parser
 Pbg3Archive::Pbg3Archive
 Pbg3Archive::ParseHeader
 Pbg3Archive::Release
-Pbg3Archive::~Pbg3Archive
 Pbg3Archive::FindEntry
 Pbg3Archive::GetEntrySize
 Pbg3Archive::ReadEntryRaw

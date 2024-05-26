@@ -87,6 +87,31 @@ ZunResult SoundPlayer::InitializeDSound(HWND gameWindow)
     return ZUN_SUCCESS;
 }
 
+void SoundPlayer::StopBGM()
+{
+    if (this->backgroundMusic != NULL)
+    {
+        this->backgroundMusic->Stop();
+        if (this->backgroundMusicThreadHandle != NULL)
+        {
+            PostThreadMessageA(this->backgroundMusicThreadId, WM_QUIT, 0, 0);
+            DebugPrint2("stop m_dwNotifyThreadID\n");
+            WaitForSingleObject(this->backgroundMusicThreadHandle, INFINITE);
+            DebugPrint2("comp\n");
+            CloseHandle(this->backgroundMusicThreadHandle);
+            CloseHandle(this->backgroundMusicUpdateEvent);
+            this->backgroundMusicThreadHandle = NULL;
+        }
+        if (this->backgroundMusic != NULL)
+        {
+            delete this->backgroundMusic;
+            this->backgroundMusic = NULL;
+        }
+        DebugPrint2("stop BGM\n");
+    }
+    return;
+}
+
 #pragma var_order(notifySize, waveFile, res, numSamplesPerSec, blockAlign, curTime, startTime, waitTime, curTime2,     \
                   startTime2, waitTime2)
 ZunResult SoundPlayer::LoadWav(char *path)
@@ -204,8 +229,8 @@ ZunResult SoundPlayer::InitSoundBuffers()
                   dsBuffer, wavData, sFDCursor)
 ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
 {
-    i32 *soundFileData;
-    i32 *sFDCursor;
+    u8 *soundFileData;
+    u8 *sFDCursor;
     i32 fileSize;
     WAVEFORMATEX *wavDataPtr;
     WAVEFORMATEX *audioPtr1;
@@ -225,7 +250,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         this->soundBuffers[idx]->Release();
         this->soundBuffers[idx] = NULL;
     }
-    soundFileData = (i32 *)FileSystem::OpenPath(path, 0);
+    soundFileData = (u8 *)FileSystem::OpenPath(path, 0);
     sFDCursor = soundFileData;
     if (soundFileData == NULL)
     {
@@ -237,10 +262,10 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         free(soundFileData);
         return ZUN_ERROR;
     }
-    sFDCursor++;
+    sFDCursor += 4;
 
-    fileSize = *sFDCursor;
-    sFDCursor++;
+    fileSize = *(i32 *)sFDCursor;
+    sFDCursor += 4;
 
     if (strncmp((char *)sFDCursor, "WAVE", 4))
     {
@@ -248,7 +273,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         free(soundFileData);
         return ZUN_ERROR;
     }
-    sFDCursor++;
+    sFDCursor += 4;
     wavDataPtr = GetWavFormatData(sFDCursor, "fmt ", &formatSize, fileSize - 12);
     if (wavDataPtr == NULL)
     {

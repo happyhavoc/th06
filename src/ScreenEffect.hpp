@@ -15,7 +15,7 @@ enum ScreenEffects
 
 struct ScreenEffect
 {
-    static ZunResult RegisterChain(u32 screenEffect, u32 param1, u32 param2, u32 param3, u32 param4);
+    static ScreenEffect *RegisterChain(u32 screenEffect, u32 param1, u32 param2, u32 param3, u32 param4);
 };
 
 struct ZunRect

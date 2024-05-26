@@ -706,10 +706,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->scaleY = *(f32 *)&curInstr->args[1];
             break;
         case AnmOpcode_SetAlpha:
-            vm->color.alpha = curInstr->args[0] & 0xff;
+            COLOR_SET_COMPONENT(vm->color, COLOR_ALPHA_BYTE_IDX, curInstr->args[0] & 0xff);
             break;
         case AnmOpcode_SetColor:
-            vm->color.color = COLOR_COMBINE_ALPHA(curInstr->args[0], vm->color.color);
+            vm->color = COLOR_COMBINE_ALPHA(curInstr->args[0], vm->color);
             break;
         case AnmOpcode_Jump:
             vm->currentInstruction = (AnmRawInstr *)((i32)vm->beginingOfScript->args + curInstr->args[0] - 4);
@@ -755,8 +755,8 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             break;
         case AnmOpcode_Fade:
             local_20 = (u32 *)&curInstr->args[0];
-            vm->alphaInterpInitial = vm->color.color;
-            vm->alphaInterpFinal = COLOR_SET_ALPHA2(vm->color.color, local_20[0]);
+            vm->alphaInterpInitial = vm->color;
+            vm->alphaInterpFinal = COLOR_SET_ALPHA2(vm->color, local_20[0]);
             vm->alphaInterpEndTime = local_20[1];
             vm->alphaInterpTime.InitializeForPopup();
             break;
@@ -940,8 +940,8 @@ stop:
     if (0 < vm->alphaInterpEndTime)
     {
         vm->alphaInterpTime.Tick();
-        local_2c.color = vm->alphaInterpInitial;
-        local_28.color = vm->alphaInterpFinal;
+        local_2c = vm->alphaInterpInitial;
+        local_28 = vm->alphaInterpFinal;
         local_c0 = &vm->alphaInterpTime;
         local_30 = ((f32)local_c0->current + local_c0->subFrame) / (f32)vm->alphaInterpEndTime;
         if (local_30 >= 1.0f)
@@ -950,15 +950,16 @@ stop:
         }
         for (local_38 = 0; local_38 < 4; local_38++)
         {
-            local_34 =
-                ((f32)local_28.bytes[local_38] - (f32)local_2c.bytes[local_38]) * local_30 + local_2c.bytes[local_38];
+            local_34 = (f32)COLOR_GET_COMPONENT(local_28, local_38) -
+                       (f32)COLOR_GET_COMPONENT(local_2c, local_38) * local_30 +
+                       COLOR_GET_COMPONENT(local_2c, local_38);
             if (local_34 < 0)
             {
                 local_34 = 0;
             }
-            local_2c.bytes[local_38] = local_34 >= 256 ? 255 : local_34;
+            COLOR_SET_COMPONENT(local_2c, local_38, local_34 >= 256 ? 255 : local_34);
         }
-        vm->color.color = local_2c.color;
+        vm->color = local_2c;
         local_c4 = vm->alphaInterpTime.current;
         if (local_c4 >= vm->alphaInterpEndTime)
         {
@@ -1038,22 +1039,22 @@ void AnmManager::SetRenderStateForVm(AnmVm *vm)
     }
     if (((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) == 0)
     {
-        if (this->currentTextureFactor != vm->color.color)
+        if (this->currentTextureFactor != vm->color)
         {
-            this->currentTextureFactor = vm->color.color;
+            this->currentTextureFactor = vm->color;
             g_Supervisor.d3dDevice->SetRenderState(D3DRS_TEXTUREFACTOR, this->currentTextureFactor);
         }
     }
     else
     {
-        g_PrimitivesToDrawNoVertexBuf[0].diffuse = vm->color.color;
-        g_PrimitivesToDrawNoVertexBuf[1].diffuse = vm->color.color;
-        g_PrimitivesToDrawNoVertexBuf[2].diffuse = vm->color.color;
-        g_PrimitivesToDrawNoVertexBuf[3].diffuse = vm->color.color;
-        g_PrimitivesToDrawUnknown[0].diffuse = vm->color.color;
-        g_PrimitivesToDrawUnknown[1].diffuse = vm->color.color;
-        g_PrimitivesToDrawUnknown[2].diffuse = vm->color.color;
-        g_PrimitivesToDrawUnknown[3].diffuse = vm->color.color;
+        g_PrimitivesToDrawNoVertexBuf[0].diffuse = vm->color;
+        g_PrimitivesToDrawNoVertexBuf[1].diffuse = vm->color;
+        g_PrimitivesToDrawNoVertexBuf[2].diffuse = vm->color;
+        g_PrimitivesToDrawNoVertexBuf[3].diffuse = vm->color;
+        g_PrimitivesToDrawUnknown[0].diffuse = vm->color;
+        g_PrimitivesToDrawUnknown[1].diffuse = vm->color;
+        g_PrimitivesToDrawUnknown[2].diffuse = vm->color;
+        g_PrimitivesToDrawUnknown[3].diffuse = vm->color;
     }
     if ((((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0) &&
         (this->currentZWriteDisable != vm->flags.zWriteDisable))
@@ -1206,7 +1207,7 @@ ZunResult AnmManager::Draw(AnmVm *vm)
     {
         return ZUN_ERROR;
     }
-    if (vm->color.color == 0)
+    if (vm->color == 0)
     {
         return ZUN_ERROR;
     }
@@ -1256,7 +1257,7 @@ ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
     {
         return ZUN_ERROR;
     }
-    if (vm->color.color == 0)
+    if (vm->color == 0)
     {
         return ZUN_ERROR;
     }

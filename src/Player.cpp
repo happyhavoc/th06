@@ -12,10 +12,6 @@
 
 DIFFABLE_STATIC(Player, g_Player);
 
-typedef u32 FireBulletResult;
-#define FBR_STOP_SPAWNING (-2)
-#define FBR_SPAWN_MORE (-1)
-
 DIFFABLE_STATIC_ARRAY_ASSIGN(CharacterData, 4, g_CharData) = {
     /* ReimuA  */ {4.0, 2.0, 4.0, 2.0, Player::FireBulletReimuA, Player::FireBulletReimuA},
     /* ReimuB  */ {4.0, 2.0, 4.0, 2.0, Player::FireBulletReimuA, Player::FireBulletReimuB},
@@ -209,7 +205,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
             scaleFactor1 = p->invulnerabilityTimer.AsFramesFloat() / 30.0f;
             p->playerSprite.scaleY = 3.0f * scaleFactor1 + 1.0f;
             p->playerSprite.scaleX = 1.0f - 1.0f * scaleFactor1;
-            p->playerSprite.color.color =
+            p->playerSprite.color =
                 COLOR_SET_ALPHA(COLOR_WHITE, (u32)(255.0f - p->invulnerabilityTimer.AsFramesFloat() * 255.0f / 30.0f));
             p->playerSprite.flags.blendMode = AnmVmBlendMode_One;
             p->previousHorizontalSpeed = 0.0f;
@@ -256,14 +252,14 @@ ChainCallbackResult Player::OnUpdate(Player *p)
         p->playerSprite.flags.blendMode = AnmVmBlendMode_One;
         p->verticalMovementSpeedMultiplierDuringBomb = 1.0;
         p->horizontalMovementSpeedMultiplierDuringBomb = 1.0;
-        p->playerSprite.color.color = COLOR_SET_ALPHA(COLOR_WHITE, p->invulnerabilityTimer.AsFrames() * 255 / 30);
+        p->playerSprite.color = COLOR_SET_ALPHA(COLOR_WHITE, p->invulnerabilityTimer.AsFrames() * 255 / 30);
         p->respawnTimer = 0;
         if (30 <= p->invulnerabilityTimer.AsFrames())
         {
             p->playerState = PLAYER_STATE_INVULNERABLE;
             p->playerSprite.scaleX = 1.0;
             p->playerSprite.scaleY = 1.0;
-            p->playerSprite.color.color = COLOR_WHITE;
+            p->playerSprite.color = COLOR_WHITE;
             p->playerSprite.flags.blendMode = AnmVmBlendMode_InvSrcAlpha;
             p->invulnerabilityTimer.SetCurrent(240);
             p->respawnTimer = 6;
@@ -282,17 +278,17 @@ ChainCallbackResult Player::OnUpdate(Player *p)
             p->playerState = PLAYER_STATE_ALIVE;
             p->invulnerabilityTimer.SetCurrent(0);
             p->playerSprite.flags.colorOp = AnmVmColorOp_Modulate;
-            p->playerSprite.color.color = COLOR_WHITE;
+            p->playerSprite.color = COLOR_WHITE;
         }
         else if (p->invulnerabilityTimer.AsFrames() % 8 < 2)
         {
             p->playerSprite.flags.colorOp = AnmVmColorOp_Add;
-            p->playerSprite.color.color = 0xff404040;
+            p->playerSprite.color = 0xff404040;
         }
         else
         {
             p->playerSprite.flags.colorOp = AnmVmColorOp_Modulate;
-            p->playerSprite.color.color = COLOR_WHITE;
+            p->playerSprite.color = COLOR_WHITE;
         }
     }
     else

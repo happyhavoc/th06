@@ -383,7 +383,7 @@ void GameManager::DecreaseSubrank(i32 amount)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-i32 GameManager::IsInBounds(float x, float y, f32 width, f32 height)
+i32 GameManager::IsInBounds(f32 x, f32 y, f32 width, f32 height)
 {
     if (width / 2.0f + x < 0.0f)
     {

@@ -287,7 +287,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             RETURN_TO_MENU_FROM_GAME:
                 GameManager::CutChain();
                 s->curState = SUPERVISOR_STATE_INIT;
-                ReplayDoStuff(NULL, NULL);
+                SaveReplay(NULL, NULL);
                 goto REINIT_MAINMENU;
 
             case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
@@ -312,7 +312,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             case SUPERVISOR_STATE_MAINMENU_REPLAY:
                 GameManager::CutChain();
                 s->curState = SUPERVISOR_STATE_INIT;
-                ReplayDoStuff(NULL, NULL);
+                SaveReplay(NULL, NULL);
                 s->curState = SUPERVISOR_STATE_MAINMENU;
                 g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
                 if (MainMenu::RegisterChain(1) != ZUN_SUCCESS)
@@ -334,11 +334,11 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             switch (s->curState)
             {
             case SUPERVISOR_STATE_EXITSUCCESS:
-                ReplayDoStuff(NULL, NULL);
+                SaveReplay(NULL, NULL);
                 return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
             case SUPERVISOR_STATE_MAINMENU:
                 s->curState = SUPERVISOR_STATE_INIT;
-                ReplayDoStuff(NULL, NULL);
+                SaveReplay(NULL, NULL);
                 goto REINIT_MAINMENU;
             }
             break;
@@ -727,7 +727,7 @@ u32 SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest
 
 DIFFABLE_STATIC(u16, g_FocusButtonConflictState)
 
-u16 GetControllerInput(u16 buttons)
+u16 Controller::GetControllerInput(u16 buttons)
 {
     // NOTE: Those names are like this to get perfect stack frame matching
     // TODO: Give meaningfull names that still match.
@@ -954,7 +954,7 @@ u16 GetInput(void)
         {
             g_Supervisor.keyboard->Acquire();
 
-            return GetControllerInput(buttons);
+            return Controller::GetControllerInput(buttons);
         }
 
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP, DIK_UP);
@@ -982,7 +982,7 @@ u16 GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_ENTER, DIK_RETURN);
     }
 
-    return GetControllerInput(buttons);
+    return Controller::GetControllerInput(buttons);
 }
 
 #pragma optimize("s", on)
