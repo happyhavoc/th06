@@ -257,11 +257,11 @@ ZunResult Gui::ActualAddedCallback()
     this->impl->bonusScore.isShown = 0;
     this->impl->fullPowerMode.isShown = 0;
     this->impl->spellCardBonus.isShown = 0;
-    this->flags = this->flags & 0xfffffffc | 2;
-    this->flags = this->flags & 0xfffffff3 | 8;
-    this->flags = this->flags & 0xffffff3f | 0x80;
-    this->flags = this->flags & 0xfffffcff | 0x200;
-    this->flags = this->flags & 0xffffffcf | 0x20;
+    this->flags.flag0 = 2;
+    this->flags.flag1 = 2;
+    this->flags.flag2 = 2;
+    this->flags.flag4 = 2;
+    this->flags.flag3 = 2;
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)

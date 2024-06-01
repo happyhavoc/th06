@@ -7,6 +7,15 @@
 #include "Chain.hpp"
 #include "GuiImpl.hpp"
 
+struct GuiFlags
+{
+    u32 flag0 : 2;
+    u32 flag1 : 2;
+    u32 flag2 : 2;
+    u32 flag3 : 2;
+    u32 flag4 : 2;
+};
+
 struct Gui
 {
     static ZunResult RegisterChain();
@@ -25,7 +34,7 @@ struct Gui
     void DrawStageElements();
     void DrawGameScene();
 
-    u32 flags;
+    GuiFlags flags;
     GuiImpl *impl;
     f32 unk_8;
     f32 blueSpellcardBarLength;
