@@ -38,10 +38,10 @@ struct Gui
     GuiImpl *impl;
     f32 unk_8;
     f32 blueSpellcardBarLength;
-    u32 unk_10;
+    u32 bossUIOpacity;
     i32 eclSetLives;
-    i32 eclSpellcardRelated;
-    i32 unk_1c;
+    i32 spellcardSecondsRemaining;
+    i32 lastSpellcardSecondsRemaining;
     bool bossPresent;
     f32 bossHealthBar1;
     f32 bossHealthBar2;

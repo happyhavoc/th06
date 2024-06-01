@@ -20,7 +20,7 @@ struct GuiMsgVm
 {
     MsgRawHeader *msgFile;
     void *currentInstr;
-    u32 currentMsgIdx;
+    i32 currentMsgIdx;
     ZunTimer timer;
     i32 framesElapsedDuringPause;
     AnmVm portraits[2];
@@ -49,7 +49,7 @@ struct GuiImpl
     ZunResult DrawDialogue();
 
     AnmVm vms[26];
-    i8 bossHealthBarState;
+    u8 bossHealthBarState;
     AnmVm stageNameSprite;
     AnmVm songNameSprite;
     AnmVm playerSpellcardPortrait;

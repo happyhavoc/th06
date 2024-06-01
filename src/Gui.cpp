@@ -9,6 +9,7 @@
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "Player.hpp"
+#include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "utils.hpp"
 
@@ -438,5 +439,268 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
     g_AsciiManager.isGui = 0;
     g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
+static ZunColor COLOR1 = 0xa0d0ff;
+static ZunColor COLOR2 = 0xa080ff;
+static ZunColor COLOR3 = 0xe080c0;
+static ZunColor COLOR4 = 0xff4040;
+
+#pragma var_order(yPos, xPos, idx, vm)
+#pragma optimize("s", on)
+void Gui::DrawGameScene()
+{
+    AnmVm *vm;
+    i32 idx;
+    f32 xPos;
+    f32 yPos;
+
+    if (this->impl->msg.currentMsgIdx < 0 && (this->bossPresent + this->impl->bossHealthBarState) > 0)
+    {
+#pragma var_order(cappedSpellcardSecondsRemaining, bossLivesColor, textPos)
+        vm = &this->impl->vms[19];
+        g_AnmManager->DrawNoRotation(vm);
+        vm = &this->impl->vms[21];
+        vm->flags.anchor = AnmVmAnchor_TopLeft;
+        vm->scaleX = (this->bossHealthBar2 * 288.0f) / 14.0f;
+        vm->pos.x = 96.0f;
+        vm->pos.y = 24.0f;
+        vm->pos.z = 0.0;
+        g_AnmManager->DrawNoRotation(vm);
+        D3DXVECTOR3 textPos(80.0f, 16.0f, 0.0);
+        g_AsciiManager.SetColor(this->bossUIOpacity << 24 | 0xffff80);
+        g_AsciiManager.AddFormatText(&textPos, "%d", this->eclSetLives);
+        textPos = D3DXVECTOR3(384.0f, 16.0f, 0.0f);
+        D3DCOLOR bossLivesColor;
+        if (this->spellcardSecondsRemaining >= 20)
+        {
+            bossLivesColor = COLOR1;
+        }
+        else if (this->spellcardSecondsRemaining >= 10)
+        {
+            bossLivesColor = COLOR2;
+        }
+        else if (this->spellcardSecondsRemaining >= 5)
+        {
+            bossLivesColor = COLOR3;
+        }
+        else
+        {
+            bossLivesColor = COLOR4;
+        }
+
+        g_AsciiManager.SetColor(this->bossUIOpacity << 24 | bossLivesColor);
+        i32 cappedSpellcardSecondsRemaining =
+            this->spellcardSecondsRemaining > 99 ? 99 : this->spellcardSecondsRemaining;
+        if (cappedSpellcardSecondsRemaining < 10 &&
+            this->lastSpellcardSecondsRemaining != this->spellcardSecondsRemaining)
+        {
+            g_SoundPlayer.PlaySoundByIdx(SOUND_1D, 0);
+        }
+        g_AsciiManager.AddFormatText(&textPos, "%.2d", cappedSpellcardSecondsRemaining);
+        g_AsciiManager.color = COLOR_WHITE;
+        this->lastSpellcardSecondsRemaining = this->spellcardSecondsRemaining;
+    }
+    g_Supervisor.viewport.X = 0;
+    g_Supervisor.viewport.Y = 0;
+    g_Supervisor.viewport.Width = 640;
+    g_Supervisor.viewport.Height = 480;
+    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    vm = &this->impl->vms[6];
+    if (((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) == 0 &&
+        (vm->currentInstruction != NULL || g_Supervisor.unk198 != 0 || g_Supervisor.cfg.IsUnknown()))
+    {
+        for (yPos = 0.0f; yPos < 464.0f; yPos += 32.0f)
+        {
+            vm->pos = D3DXVECTOR3(0.0f, yPos, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        for (xPos = 416.0f; xPos < 624.0f; xPos += 32.0f)
+        {
+            for (yPos = 0.0f; yPos < 464.0f; yPos += 32.0f)
+            {
+                vm->pos = D3DXVECTOR3(xPos, yPos, 0.49f);
+                g_AnmManager->DrawNoRotation(vm);
+            }
+        }
+        vm = &this->impl->vms[7];
+        for (xPos = 32.0f; xPos < 416.0f; xPos += 32.0f)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 0.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        vm = &this->impl->vms[8];
+        for (xPos = 32.0f; xPos < 416.0f; xPos += 32.0f)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 464.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        g_AnmManager->Draw(&this->impl->vms[5]);
+        g_AnmManager->Draw(&this->impl->vms[0]);
+        g_AnmManager->Draw(&this->impl->vms[1]);
+        g_AnmManager->Draw(&this->impl->vms[3]);
+        g_AnmManager->Draw(&this->impl->vms[4]);
+        g_AnmManager->Draw(&this->impl->vms[2]);
+        g_AnmManager->DrawNoRotation(&this->impl->vms[9]);
+        g_AnmManager->DrawNoRotation(&this->impl->vms[10]);
+        g_AnmManager->DrawNoRotation(&this->impl->vms[11]);
+        g_AnmManager->DrawNoRotation(&this->impl->vms[12]);
+        g_AnmManager->DrawNoRotation(&this->impl->vms[13]);
+        g_AnmManager->DrawNoRotation(&this->impl->vms[14]);
+        g_AnmManager->DrawNoRotation(&this->impl->vms[15]);
+        this->flags.flag0 = 2;
+        this->flags.flag1 = 2;
+        this->flags.flag3 = 2;
+        this->flags.flag4 = 2;
+        this->flags.flag2 = 2;
+    }
+    if ((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) == 0)
+    {
+        vm = &this->impl->vms[22];
+        xPos = 496.0f;
+        vm->pos = D3DXVECTOR3(xPos, 58.0f, 0.49f);
+        g_AnmManager->DrawNoRotation(vm);
+        vm->pos = D3DXVECTOR3(xPos, 82.0f, 0.49f);
+        g_AnmManager->DrawNoRotation(vm);
+        if (this->flags.flag0)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 122.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        if (this->flags.flag1)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 146.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        if (this->flags.flag2)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 186.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        if (this->flags.flag3)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 206.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        if (this->flags.flag4)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 226.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+        vm->pos = D3DXVECTOR3(488.0f, 464.0f, 0.49f);
+        g_AnmManager->DrawNoRotation(vm);
+        vm->pos = D3DXVECTOR3(0.0, 464.0f, 0.49f);
+        g_AnmManager->DrawNoRotation(vm);
+    }
+    if (this->flags.flag0 || ((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) != 0))
+    {
+        vm = &this->impl->vms[16];
+        for (idx = 0, xPos = 496.0f; idx < g_GameManager.livesRemaining; idx++, xPos += 16.0f)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 122.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+    }
+    if (this->flags.flag1 || ((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) != 0))
+    {
+        vm = &this->impl->vms[17];
+        for (idx = 0, xPos = 496.0f; idx < g_GameManager.bombsRemaining; idx++, xPos += 16.0f)
+        {
+            vm->pos = D3DXVECTOR3(xPos, 146.0f, 0.49f);
+            g_AnmManager->DrawNoRotation(vm);
+        }
+    }
+    if (this->flags.flag2 || ((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) != 0))
+    {
+        VertexDiffuseXyzrwh vertices[4];
+        if (g_GameManager.currentPower > 0)
+        {
+            memcpy(&vertices[0].position, &D3DXVECTOR3(496.0f, 186.0f, 0.1f), sizeof(D3DXVECTOR3));
+            memcpy(&vertices[1].position, &D3DXVECTOR3(g_GameManager.currentPower + 496 + 0.0f, 186.0f, 0.1f),
+                   sizeof(D3DXVECTOR3));
+            memcpy(&vertices[2].position, &D3DXVECTOR3(496.0f, 202.0f, 0.1f), sizeof(D3DXVECTOR3));
+            memcpy(&vertices[3].position, &D3DXVECTOR3(g_GameManager.currentPower + 496 + 0.0f, 202.0f, 0.1f),
+                   sizeof(D3DXVECTOR3));
+
+            vertices[0].diffuse = vertices[2].diffuse = 0xe0e0e0ff;
+            vertices[1].diffuse = vertices[3].diffuse = 0x80e0e0ff;
+
+            vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0;
+
+            if ((g_Supervisor.cfg.opts >> 8 & 1) == 0)
+            {
+                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+            }
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+            if ((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST & 1) == 0)
+            {
+                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+            }
+            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
+            g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(VertexDiffuseXyzrwh));
+            g_AnmManager->SetCurrentVertexShader(0xff);
+            g_AnmManager->SetCurrentColorOp(0xff);
+            g_AnmManager->SetCurrentBlendMode(0xff);
+            g_AnmManager->SetCurrentZWriteDisable(0xff);
+            if ((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1) == 0)
+            {
+                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+            }
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+            if (128 <= g_GameManager.currentPower)
+            {
+                vm = &this->impl->vms[18];
+                vm->pos = D3DXVECTOR3(496.0f, 186.0f, 0.0f);
+                g_AnmManager->DrawNoRotation(vm);
+            }
+        }
+        if (g_GameManager.currentPower < 128)
+        {
+            g_AsciiManager.AddFormatText(&D3DXVECTOR3(196.0f, 186.0f, 0.0f), "%d", g_GameManager.currentPower);
+        }
+    }
+    {
+        D3DXVECTOR3 elemPos(496.0f, 82.0f, 0.0f);
+        g_AsciiManager.AddFormatText(&elemPos, "%.9d", g_GameManager.guiScore);
+        elemPos = D3DXVECTOR3(496.0f, 58.0f, 0.0f);
+        g_AsciiManager.AddFormatText(&elemPos, "%.9d", g_GameManager.highScore);
+        if (this->flags.flag3 || ((g_Supervisor.cfg.opts >> 4 & 1) != 0))
+        {
+            elemPos = D3DXVECTOR3(496.0f, 206.0f, 0.0f);
+            g_AsciiManager.AddFormatText(&elemPos, "%d", g_GameManager.grazeInStage);
+        }
+        if (this->flags.flag4 || ((g_Supervisor.cfg.opts >> 4 & 1) != 0))
+        {
+            elemPos = D3DXVECTOR3(496.0f, 226.0f, 0.0f);
+            g_AsciiManager.AddFormatText(&elemPos, "%d", g_GameManager.pointItemsCollectedInStage);
+        }
+    }
+    if (this->flags.flag0)
+    {
+        this->flags.flag0--;
+    }
+    if (this->flags.flag2)
+    {
+        this->flags.flag2--;
+    }
+    if (this->flags.flag1)
+    {
+        this->flags.flag1--;
+    }
+    if (this->flags.flag3)
+    {
+        this->flags.flag3--;
+    }
+    if (this->flags.flag4)
+    {
+        this->flags.flag4--;
+    }
+    return;
 }
 #pragma optimize("", on)

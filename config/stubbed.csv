@@ -51,7 +51,6 @@ MainMenu::DrawReplayMenu
 MainMenu::SelectRelated
 Gui::DeletedCallback
 Gui::DrawStageElements
-Gui::DrawGameScene
 Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
 Gui::FreeMsgFile

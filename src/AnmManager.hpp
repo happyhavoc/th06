@@ -10,6 +10,13 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+// structure of a vertex with SetVertexShade FVF set to D3DFVF_DIFFUSE | D3DFVF_XYZRHW
+struct VertexDiffuseXyzrwh
+{
+    D3DXVECTOR4 position;
+    D3DCOLOR diffuse;
+};
+
 // Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRHW
 struct VertexTex1Xyzrwh
 {
@@ -96,6 +103,24 @@ struct AnmManager
         vm->anmFileIndex = anmFileIdx;
         this->SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
     }
+
+    void SetCurrentVertexShader(u8 vertexShader)
+    {
+        this->currentVertexShader = vertexShader;
+    }
+    void SetCurrentColorOp(u8 colorOp)
+    {
+        this->currentColorOp = colorOp;
+    }
+    void SetCurrentBlendMode(u8 blendMode)
+    {
+        this->currentBlendMode = blendMode;
+    }
+    void SetCurrentZWriteDisable(u8 zwriteDisable)
+    {
+        this->currentZWriteDisable = zwriteDisable;
+    }
+
     i32 ExecuteScript(AnmVm *vm);
     ZunResult Draw(AnmVm *vm);
     static void DrawStringFormat(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
