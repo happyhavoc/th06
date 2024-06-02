@@ -9,6 +9,19 @@
 
 struct Player;
 
+enum PlayerDirection
+{
+    MOVEMENT_NONE,
+    MOVEMENT_UP,
+    MOVEMENT_DOWN,
+    MOVEMENT_LEFT,
+    MOVEMENT_RIGHT,
+    MOVEMENT_UP_LEFT,
+    MOVEMENT_UP_RIGHT,
+    MOVEMENT_DOWN_LEFT,
+    MOVEMENT_DOWN_RIGHT
+};
+
 enum Character
 {
     CHARA_REIMU,
@@ -118,6 +131,7 @@ struct Player
     static void BombMarisaADraw(Player *);
     static void BombMarisaBDraw(Player *);
 
+    static void StartFireBulletTimer(Player *);
     ZunResult HandlePlayerInputs();
     static void UpdatePlayerBullets(Player *);
     static ZunResult UpdateFireBulletsTimer(Player *);
@@ -149,11 +163,11 @@ struct Player
     i8 playerState;
     u8 unk_9e1;
     i8 orbState;
-    u8 isFocus;
+    i8 isFocus;
     u8 unk_9e4;
     ZunTimer focusMovementTimer;
     CharacterData characterData;
-    i32 playerDirection;
+    PlayerDirection playerDirection;
     f32 previousHorizontalSpeed;
     f32 previousVerticalSpeed;
     i16 previousFrameInput;

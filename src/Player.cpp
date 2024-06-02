@@ -1,6 +1,7 @@
 #include "Player.hpp"
 
 #include "AnmManager.hpp"
+#include "AnmVm.hpp"
 #include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
 #include "EclManager.hpp"
@@ -8,6 +9,7 @@
 #include "Gui.hpp"
 #include "ItemManager.hpp"
 #include "Supervisor.hpp"
+#include "ZunBool.hpp"
 #include "utils.hpp"
 
 DIFFABLE_STATIC(Player, g_Player);
@@ -94,7 +96,7 @@ ZunResult Player::AddedCallback(Player *p)
     p->grabItemSize.x = 12.0;
     p->grabItemSize.y = 12.0;
     p->grabItemSize.z = 5.0;
-    p->playerDirection = 0;
+    p->playerDirection = MOVEMENT_NONE;
     memcpy(&p->characterData, &g_CharData[g_GameManager.character * 2 + g_GameManager.shotType], sizeof(CharacterData));
     p->characterData.diagonalMovementSpeed = p->characterData.orthogonalMovementSpeed / sqrtf(2.0);
     p->characterData.diagonalMovementSpeedFocus = p->characterData.orthogonalMovementSpeedFocus / sqrtf(2.0);
@@ -354,4 +356,316 @@ ChainCallbackResult Player::OnDrawLowPrio(Player *p)
 {
     Player::DrawBulletExplosions(p);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(playerDirection, verticalSpeed, horizontalSpeed, verticalOrbOffset, horizontalOrbOffset, fVar1,      \
+                  fVar2, pfVar6)
+ZunResult Player::HandlePlayerInputs()
+{
+    float fVar1;
+    float fVar2;
+
+    float *pfVar6;
+    float horizontalOrbOffset;
+    float verticalOrbOffset;
+
+    float horizontalSpeed = 0.0;
+    float verticalSpeed = 0.0;
+    PlayerDirection playerDirection = this->playerDirection;
+
+    this->playerDirection = MOVEMENT_NONE;
+    if (IS_PRESSED(TH_BUTTON_UP))
+    {
+        this->playerDirection = MOVEMENT_UP;
+        if (IS_PRESSED(TH_BUTTON_LEFT))
+        {
+            this->playerDirection = MOVEMENT_UP_LEFT;
+        }
+        if (IS_PRESSED(TH_BUTTON_RIGHT))
+        {
+            this->playerDirection = MOVEMENT_UP_RIGHT;
+        }
+    }
+    else
+    {
+        if (IS_PRESSED(TH_BUTTON_DOWN))
+        {
+            this->playerDirection = MOVEMENT_DOWN;
+            if (IS_PRESSED(TH_BUTTON_LEFT))
+            {
+                this->playerDirection = MOVEMENT_DOWN_LEFT;
+            }
+            if (IS_PRESSED(TH_BUTTON_RIGHT))
+            {
+                this->playerDirection = MOVEMENT_DOWN_RIGHT;
+            }
+        }
+        else
+        {
+            if (IS_PRESSED(TH_BUTTON_LEFT))
+            {
+                this->playerDirection = MOVEMENT_LEFT;
+            }
+            if (IS_PRESSED(TH_BUTTON_RIGHT))
+            {
+                this->playerDirection = MOVEMENT_RIGHT;
+            }
+        }
+    }
+    if (IS_PRESSED(TH_BUTTON_FOCUS))
+    {
+        this->isFocus = true;
+    }
+    else
+    {
+        this->isFocus = false;
+    }
+
+    switch (this->playerDirection)
+    {
+    case MOVEMENT_RIGHT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_LEFT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = -this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = -this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_UP:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            verticalSpeed = -this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            verticalSpeed = -this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_DOWN:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            verticalSpeed = this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            verticalSpeed = this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_UP_LEFT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = horizontalSpeed;
+        break;
+    case MOVEMENT_DOWN_LEFT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = -horizontalSpeed;
+        break;
+    case MOVEMENT_UP_RIGHT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = -horizontalSpeed;
+        break;
+    case MOVEMENT_DOWN_RIGHT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = horizontalSpeed;
+    }
+
+    if (horizontalSpeed < 0.0f && this->previousHorizontalSpeed >= 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_MOVING_LEFT);
+    }
+    else if (!horizontalSpeed && this->previousHorizontalSpeed < 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_STOPPING_LEFT);
+    }
+
+    if (horizontalSpeed > 0.0f && this->previousHorizontalSpeed <= 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_MOVING_RIGHT);
+    }
+    else if (!horizontalSpeed && this->previousHorizontalSpeed > 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_STOPPING_RIGHT);
+    }
+
+    this->previousHorizontalSpeed = horizontalSpeed;
+    this->previousVerticalSpeed = verticalSpeed;
+
+    // TODO: Match stack variables here
+    pfVar6 = &this->positionCenter.x;
+    *pfVar6 +=
+        horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+    pfVar6 = &this->positionCenter.y;
+    *pfVar6 +=
+        verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+
+    if (this->positionCenter.x < g_GameManager.playerMovementAreaTopLeftPos.x)
+    {
+        this->positionCenter.x = g_GameManager.playerMovementAreaTopLeftPos.x;
+    }
+    else if (g_GameManager.playerMovementAreaTopLeftPos.x + g_GameManager.playerMovementAreaSize.x <
+             this->positionCenter.x)
+    {
+        this->positionCenter.x = g_GameManager.playerMovementAreaTopLeftPos.x + g_GameManager.playerMovementAreaSize.x;
+    }
+
+    if (this->positionCenter.y < g_GameManager.playerMovementAreaTopLeftPos.y)
+    {
+        this->positionCenter.y = g_GameManager.playerMovementAreaTopLeftPos.y;
+    }
+    else if (g_GameManager.playerMovementAreaTopLeftPos.y + g_GameManager.playerMovementAreaSize.y <
+             this->positionCenter.y)
+    {
+        this->positionCenter.y = g_GameManager.playerMovementAreaTopLeftPos.y + g_GameManager.playerMovementAreaSize.y;
+    }
+
+    this->hitboxTopLeft = this->positionCenter - this->hitboxSize;
+
+    this->hitboxBottomRight = this->positionCenter + this->hitboxSize;
+
+    this->grabItemTopLeft = this->positionCenter - this->grabItemSize;
+
+    this->grabItemBottomRight = this->positionCenter + this->grabItemSize;
+
+    this->orbsPosition[0] = this->positionCenter;
+    this->orbsPosition[1] = this->positionCenter;
+
+    verticalOrbOffset = 0.0;
+    horizontalOrbOffset = verticalOrbOffset;
+
+    if (g_GameManager.currentPower < 8)
+    {
+        this->orbState = ORB_HIDDEN;
+    }
+    else if (this->orbState == ORB_HIDDEN)
+    {
+        this->orbState = ORB_UNFOCUSED;
+    }
+
+    switch (this->orbState)
+    {
+    case ORB_HIDDEN:
+        this->focusMovementTimer.InitializeForPopup();
+        break;
+
+    case ORB_UNFOCUSED:
+        horizontalOrbOffset = 24.0;
+        this->focusMovementTimer.InitializeForPopup();
+        if (this->isFocus)
+        {
+            this->orbState = ORB_FOCUSING;
+        }
+        else
+        {
+            break;
+        }
+
+    CASE_ORB_FOCUSING:
+    case ORB_FOCUSING:
+        this->focusMovementTimer.Tick();
+
+        fVar1 = this->focusMovementTimer.AsFramesFloat() / 8.0f;
+        verticalOrbOffset = (1.0f - fVar1) * 32.0f + -32.0f;
+        fVar1 *= fVar1;
+        horizontalOrbOffset = -16.0f * fVar1 + 24.0f;
+
+        if ((ZunBool)(this->focusMovementTimer.current >= 8))
+        {
+            this->orbState = ORB_FOCUSED;
+        }
+        if (!this->isFocus)
+        {
+
+            this->orbState = ORB_UNFOCUSING;
+            this->focusMovementTimer.SetCurrent(8 - this->focusMovementTimer.AsFrames());
+
+            goto CASE_ORB_UNFOCUSING;
+        }
+        else
+        {
+            break;
+        }
+
+    case ORB_FOCUSED:
+        horizontalOrbOffset = 8.0;
+        verticalOrbOffset = -32.0;
+        this->focusMovementTimer.InitializeForPopup();
+        if (!this->isFocus)
+        {
+            this->orbState = ORB_UNFOCUSING;
+        }
+        else
+        {
+            break;
+        }
+
+    CASE_ORB_UNFOCUSING:
+    case ORB_UNFOCUSING:
+        this->focusMovementTimer.Tick();
+
+        fVar1 = this->focusMovementTimer.AsFramesFloat() / 8.0f;
+        verticalOrbOffset = (32.0f * fVar1) + -32.0f;
+        fVar1 *= fVar1;
+        fVar1 = 1.0f - fVar1;
+        horizontalOrbOffset = -16.0f * fVar1 + 24.0f;
+        if ((ZunBool)(this->focusMovementTimer.current >= 8))
+        {
+            this->orbState = ORB_UNFOCUSED;
+        }
+        if (this->isFocus)
+        {
+            this->orbState = ORB_FOCUSING;
+            this->focusMovementTimer.SetCurrent(8 - this->focusMovementTimer.AsFrames());
+            goto CASE_ORB_FOCUSING;
+        }
+    }
+
+    this->orbsPosition[0].x -= horizontalOrbOffset;
+    this->orbsPosition[1].x += horizontalOrbOffset;
+    this->orbsPosition[0].y += verticalOrbOffset;
+    this->orbsPosition[1].y += verticalOrbOffset;
+    if (IS_PRESSED(TH_BUTTON_SHOOT) && !g_Gui.HasCurrentMsgIdx())
+    {
+        this->StartFireBulletTimer(this);
+    }
+    this->previousFrameInput = g_CurFrameInput;
+    return ZUN_SUCCESS;
 }
