@@ -32,7 +32,7 @@ Stage::DeletedCallback,0x4045e0,0x66,default,,ZunResult,Stage*
 Stage::CutChain,0x404650,0x32,__stdcall,,void
 Stage::LoadStageData,0x404690,0x1c1,__thiscall,,ZunResult,Stage*,char*,char*
 Stage::UpdateObjects,0x404860,0x101,__thiscall,,ZunResult,Stage*
-Stage::FUN_00404970,0x404970,0x83d,__thiscall,,u32,Stage*,i32
+Stage::RenderObjects,0x404970,0x83d,__thiscall,,ZunResult,Stage*,i32
 AnmManager::ExecuteAnmIdx,0x4051b0,0xa9,__thiscall,,void,AnmManager*,AnmVm*,i32
 Player::BombReimuACalc,0x405260,0x9a4,default,,void,Player*
 Player::BombReimuADraw,0x405c10,0x410,default,,void,Player*
@@ -137,7 +137,7 @@ FUN_00416c50,0x416c50,0xf4,__stdcall,,void,Bullet*
 BulletManager::AddedCallback,0x416d60,0x509,__stdcall,,ZunResult,BulletManager*
 BulletManager::DeletedCallback,0x417270,0x31,default,,ZunResult,BulletManager*
 BulletManager::CutChain,0x4172b0,0x23,unknown,,u8
-Gui::FUN_004172d3,0x4172d3,0x41,__thiscall,,u32,Gui*
+Gui::IsStageFinished,0x4172d3,0x41,__thiscall,,u32,Gui*
 Gui::ImplVm5SetInterruptToOne,0x417314,0x18,__thiscall,,void,Gui*
 Gui::Vm6SetInterruptTo1,0x41732c,0x18,__thiscall,,void,Gui*
 Gui::IsDialogueSkippable,0x417344,0x16,__thiscall,,u8,Gui*
@@ -174,7 +174,7 @@ GameManager::RegisterChain,0x41ba6a,0x98,default,,ZunResult
 GameManager::AddedCallback,0x41bb02,0x6f5,default,,ZunResult,GameManager*
 GameManager::DeletedCallback,0x41c1f7,0x72,default,,ZunResult,GameManager*
 GameManager::CutChain,0x41c269,0x23,default,,void
-FUN_0041c28c,0x41c28c,0x167,unknown,,u8,u32
+SetupCameraStageBackground,0x41c28c,0x167,unknown,,u8,u32
 SetupCamera,0x41c3f3,0x18b,default,,void,f32
 GameManager::IncreaseSubrank,0x41c57e,0x7c,__thiscall,,void,GameManager*,i32
 GameManager::DecreaseSubrank,0x41c5fa,0x7c,__thiscall,,void,GameManager*,i32
