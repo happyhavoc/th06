@@ -125,6 +125,7 @@ Stage::AddedCallback
 Stage::LoadStageData
 Stage::OnUpdate
 Stage::OnDrawLowPrio
+Stage::OnDrawHighPrio
 StageMenu::StageMenu
 TextHelper::CreateTextBuffer
 Supervisor::AddedCallback

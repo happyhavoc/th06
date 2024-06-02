@@ -346,6 +346,26 @@ ChainCallbackResult Stage::OnUpdate(Stage *stage)
     }
 }
 
+ChainCallbackResult Stage::OnDrawHighPrio(Stage *stage)
+{
+    if (stage->skyFogNeedsSetup)
+    {
+        stage->skyFogNeedsSetup = 0;
+        g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, stage->skyFog.color);
+    }
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&stage->skyFog.nearPlane);
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&stage->skyFog.farPlane);
+    if (stage->spellcardState <= RUNNING)
+    {
+        if (!g_Gui.IsStageFinished())
+        {
+            stage->RenderObjects(0);
+            stage->RenderObjects(1);
+        }
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 #pragma var_order(val, stageToSpellcardBackgroundAlpha, gameRegion)
 ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
 {

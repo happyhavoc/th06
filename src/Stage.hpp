@@ -129,7 +129,7 @@ struct Stage
     StageCameraSky skyFogInterpFinal;
     i32 skyFogInterpDuration;
     ZunTimer skyFogInterpTimer;
-    u8 skyFogNeedsSetup;
+    i8 skyFogNeedsSetup;
     SpellcardState spellcardState;
     i32 ticksSinceSpellcardStarted;
     AnmVm spellcardBackground;
