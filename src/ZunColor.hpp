@@ -27,7 +27,11 @@
 #define COLOR_MENU_ITEM_DEFAULT 0x80202050
 
 // TODO: The following assumes little endian
+#define COLOR_RED_BYTE_IDX 0
+#define COLOR_GREEN_BYTE_IDX 1
+#define COLOR_BLUE_BYTE_IDX 2
 #define COLOR_ALPHA_BYTE_IDX 3
+
 #define COLOR_GET_COMPONENT(color, component) (((u8 *)&(color))[(component)])
 #define COLOR_SET_COMPONENT(color, component, value) ((u8 *)&(color))[(component)] = (value);
 

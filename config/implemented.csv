@@ -120,6 +120,7 @@ MidiTimer::~MidiTimer
 Stage::RegisterChain
 Stage::AddedCallback
 Stage::LoadStageData
+Stage::OnUpdate
 StageMenu::StageMenu
 Supervisor::CreateTextBuffer
 Supervisor::AddedCallback

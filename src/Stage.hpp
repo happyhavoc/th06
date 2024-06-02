@@ -89,6 +89,16 @@ struct StageFile
 };
 C_ASSERT(sizeof(StageFile) == 0x8);
 
+enum StageOpcode
+{
+    STDOP_CAMERA_POSITION_KEY,
+    STDOP_FOG,
+    STDOP_CAMERA_FACING,
+    STDOP_CAMERA_FACING_INTERP_LINEAR,
+    STDOP_FOG_INTERP,
+    STDOP_PAUSE,
+};
+
 struct Stage
 {
     static ZunResult RegisterChain(u32 stage);
@@ -99,6 +109,7 @@ struct Stage
     static ZunResult DeletedCallback(Stage *stage);
 
     ZunResult LoadStageData(char *anmpath, char *stdpath);
+    ZunResult UpdateObjects();
 
     AnmVm *quadVms;
     RawStageHeader *stdData;
@@ -120,7 +131,7 @@ struct Stage
     u8 skyFogNeedsSetup;
     SpellcardState spellcardState;
     i32 ticksSinceSpellcardStarted;
-    AnmVm unk1;
+    AnmVm spellcardBackground;
     AnmVm unk2;
     u8 unpauseFlag;
     D3DXVECTOR3 facingDirInterpInitial;

@@ -158,4 +158,190 @@ ZunResult Stage::LoadStageData(char *anmpath, char *stdpath)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(posInterpRatio, curInsn, pos, facingDirInterpRatio, skyFogInterpRatio, idx)
+ChainCallbackResult Stage::OnUpdate(Stage *stage)
+{
+    f32 posInterpRatio;
+    f32 facingDirInterpRatio;
+    D3DXVECTOR3 pos;
+    i32 idx;
+    f32 skyFogInterpRatio;
+    RawStageInstr *curInsn;
+
+    if (stage->stdData == NULL)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    if (g_GameManager.isTimeStopped)
+    {
+        // When Sakuya uses her time stop ability, we want to darken her
+        // spellcard background a bit, to give a visual indication of what's
+        // going on.
+        COLOR_SET_COMPONENT(stage->spellcardBackground.color, COLOR_ALPHA_BYTE_IDX, 0x60);
+        COLOR_SET_COMPONENT(stage->spellcardBackground.color, COLOR_BLUE_BYTE_IDX, 0x80);
+        COLOR_SET_COMPONENT(stage->spellcardBackground.color, COLOR_GREEN_BYTE_IDX, 0x30);
+        COLOR_SET_COMPONENT(stage->spellcardBackground.color, COLOR_RED_BYTE_IDX, 0x30);
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    for (;;)
+    {
+        curInsn = stage->beginningOfScript + stage->instructionIndex;
+        switch (curInsn->opcode)
+        {
+        case STDOP_CAMERA_POSITION_KEY:
+            if (curInsn->frame == -1)
+            {
+                stage->positionInterpInitial = *(D3DXVECTOR3 *)curInsn->args;
+                stage->position.x = stage->positionInterpInitial.x;
+                stage->position.y = stage->positionInterpInitial.y;
+                stage->position.z = stage->positionInterpInitial.z;
+            }
+            else if ((ZunBool)(stage->scriptTime.current >= curInsn->frame))
+            {
+                pos = *(D3DXVECTOR3 *)curInsn->args;
+                stage->position.x = pos.x;
+                stage->position.y = pos.y;
+                stage->position.z = pos.z;
+                stage->positionInterpInitial = pos;
+                stage->positionInterpStartTime = curInsn->frame;
+                stage->instructionIndex++;
+                curInsn++;
+                while (curInsn->opcode != 0)
+                {
+                    curInsn++;
+                }
+                stage->positionInterpEndTime = curInsn->frame;
+                stage->positionInterpFinal = *(D3DXVECTOR3 *)curInsn->args;
+            }
+            break;
+        case STDOP_FOG:
+            if ((ZunBool)(stage->scriptTime.current >= curInsn->frame))
+            {
+                stage->skyFog.color = curInsn->args[0];
+                stage->skyFog.nearPlane = ((f32 *)curInsn->args)[1];
+                stage->skyFog.farPlane = ((f32 *)curInsn->args)[2];
+                if (stage->skyFogInterpDuration == 0)
+                {
+                    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, stage->skyFog.color);
+                    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&stage->skyFog.nearPlane);
+                    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&stage->skyFog.farPlane);
+                }
+                stage->instructionIndex++;
+                stage->skyFogInterpFinal = stage->skyFog;
+                continue;
+            }
+            break;
+        case STDOP_FOG_INTERP:
+            if ((ZunBool)(stage->scriptTime.current >= curInsn->frame))
+            {
+                stage->skyFogInterpInitial = stage->skyFog;
+                stage->skyFogInterpDuration = curInsn->args[0];
+                stage->skyFogInterpTimer.InitializeForPopup();
+                stage->instructionIndex++;
+                continue;
+            }
+            break;
+        case STDOP_CAMERA_FACING:
+            if ((ZunBool)(stage->scriptTime.current >= curInsn->frame))
+            {
+                stage->facingDirInterpInitial = stage->facingDirInterpFinal;
+                stage->facingDirInterpFinal = *(D3DXVECTOR3 *)curInsn->args;
+                stage->instructionIndex++;
+                continue;
+            }
+            break;
+        case STDOP_CAMERA_FACING_INTERP_LINEAR:
+            if ((ZunBool)(stage->scriptTime.current >= curInsn->frame))
+            {
+                stage->facingDirInterpDuration = curInsn->args[0];
+                stage->facingDirInterpTimer.InitializeForPopup();
+                stage->instructionIndex++;
+                continue;
+            }
+            break;
+        case STDOP_PAUSE:
+            if (stage->unpauseFlag)
+            {
+                stage->instructionIndex++;
+                stage->unpauseFlag = '\0';
+                continue;
+            }
+            break;
+        }
+        if (curInsn->frame != -1)
+        {
+            posInterpRatio = (stage->scriptTime.AsFramesFloat() - stage->positionInterpStartTime) /
+                             (stage->positionInterpEndTime - stage->positionInterpStartTime);
+            pos = stage->positionInterpFinal;
+            stage->position.x =
+                (pos.x - stage->positionInterpInitial.x) * posInterpRatio + stage->positionInterpInitial.x;
+            stage->position.y =
+                (pos.y - stage->positionInterpInitial.y) * posInterpRatio + stage->positionInterpInitial.y;
+            stage->position.z =
+                (pos.z - stage->positionInterpInitial.z) * posInterpRatio + stage->positionInterpInitial.z;
+        }
+        if (stage->facingDirInterpDuration != 0)
+        {
+            if ((ZunBool)(stage->facingDirInterpTimer.current < stage->facingDirInterpDuration))
+            {
+                stage->facingDirInterpTimer.Tick();
+            }
+            else
+            {
+                stage->facingDirInterpTimer.SetCurrent(stage->facingDirInterpDuration);
+            }
+            pos = stage->facingDirInterpFinal - stage->facingDirInterpInitial;
+            facingDirInterpRatio = stage->facingDirInterpTimer.AsFramesFloat() / stage->facingDirInterpDuration;
+            g_GameManager.stageCameraFacingDir.x = pos.x * facingDirInterpRatio + stage->facingDirInterpInitial.x;
+            g_GameManager.stageCameraFacingDir.y = pos.y * facingDirInterpRatio + stage->facingDirInterpInitial.y;
+            g_GameManager.stageCameraFacingDir.z = pos.z * facingDirInterpRatio + stage->facingDirInterpInitial.z;
+        }
+        if (stage->skyFogInterpDuration != 0)
+        {
+            stage->skyFogInterpTimer.Tick();
+            skyFogInterpRatio = stage->skyFogInterpTimer.AsFramesFloat() / stage->skyFogInterpDuration;
+            if (skyFogInterpRatio >= 1.0f)
+            {
+                skyFogInterpRatio = 1.0;
+            }
+            for (idx = 0; idx < 4; idx++)
+            {
+                COLOR_SET_COMPONENT(stage->skyFog.color, idx,
+                                    (u8)(((f32)COLOR_GET_COMPONENT(stage->skyFogInterpFinal.color, idx) -
+                                          (f32)COLOR_GET_COMPONENT(stage->skyFogInterpInitial.color, idx)) *
+                                             skyFogInterpRatio +
+                                         (f32)COLOR_GET_COMPONENT(stage->skyFogInterpInitial.color, idx)));
+            }
+            stage->skyFog.nearPlane =
+                (stage->skyFogInterpFinal.nearPlane - stage->skyFogInterpInitial.nearPlane) * skyFogInterpRatio +
+                stage->skyFogInterpInitial.nearPlane;
+            stage->skyFog.farPlane =
+                (stage->skyFogInterpFinal.farPlane - stage->skyFogInterpInitial.farPlane) * skyFogInterpRatio +
+                stage->skyFogInterpInitial.farPlane;
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, stage->skyFog.color);
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&stage->skyFog.nearPlane);
+            g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&stage->skyFog.farPlane);
+            if ((ZunBool)(stage->skyFogInterpTimer.current >= stage->skyFogInterpDuration))
+            {
+                stage->skyFogInterpDuration = 0;
+            }
+        }
+        if (curInsn->opcode != STDOP_PAUSE)
+        {
+            stage->scriptTime.Tick();
+        }
+        stage->UpdateObjects();
+        if (stage->spellcardState >= RUNNING)
+        {
+            if (stage->ticksSinceSpellcardStarted == 60)
+            {
+                stage->spellcardState = static_cast<SpellcardState>(stage->spellcardState + 1);
+            }
+            stage->ticksSinceSpellcardStarted = stage->ticksSinceSpellcardStarted + 1;
+            g_AnmManager->ExecuteScript(&stage->spellcardBackground);
+        }
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+}
+
 DIFFABLE_STATIC(Stage, g_Stage)
