@@ -43,7 +43,14 @@ jobs:
         fileName: x86_64-windows-satsuki.exe
     - name: Add satsuki to prefix
       run: python scripts/create_devenv.py --only satsuki scripts/dls scripts/prefix
+    - name: Fetch game binary from cache.
+      uses: actions/cache@v4
+      id: cache
+      with:
+        path: resources/game.exe
+        key: 9f76483c46256804792399296619c1274363c31cd8f1775fafb55106fb852245
     - name: Download original game binary for comparison
+      if: steps.cache.outputs.cache-hit != 'true'
       run: |
         curl -L $env:ORIGINAL_URL -o resources/game.exe
         $hash = (Get-FileHash resources/game.exe).Hash
