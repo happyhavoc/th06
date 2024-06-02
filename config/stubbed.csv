@@ -6,10 +6,10 @@ AddNormalizeAngle
 EffectManager::OnUpdate
 EffectManager::OnDraw
 EffectManager::DeletedCallback
-Stage::OnUpdate
 Stage::DeletedCallback
 Stage::OnDrawHighPrio
 Stage::OnDrawLowPrio
+Stage::UpdateObjects
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu
