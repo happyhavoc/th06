@@ -7,6 +7,15 @@
 #include "Chain.hpp"
 #include "GuiImpl.hpp"
 
+struct GuiFlags
+{
+    u32 flag0 : 2;
+    u32 flag1 : 2;
+    u32 flag2 : 2;
+    u32 flag3 : 2;
+    u32 flag4 : 2;
+};
+
 struct Gui
 {
     static ZunResult RegisterChain();
@@ -19,16 +28,20 @@ struct Gui
     ZunResult LoadMsg(char *path);
     void FreeMsgFile();
 
+    void CalculateStageScore();
     ZunBool HasCurrentMsgIdx();
 
-    u32 flags;
+    void DrawStageElements();
+    void DrawGameScene();
+
+    GuiFlags flags;
     GuiImpl *impl;
     f32 unk_8;
     f32 blueSpellcardBarLength;
-    u32 unk_10;
+    u32 bossUIOpacity;
     i32 eclSetLives;
-    i32 eclSpellcardRelated;
-    i32 unk_1c;
+    i32 spellcardSecondsRemaining;
+    i32 lastSpellcardSecondsRemaining;
     bool bossPresent;
     f32 bossHealthBar1;
     f32 bossHealthBar2;

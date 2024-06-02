@@ -151,7 +151,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     {
         g_GameManager.bombsUsed++;
         g_GameManager.bombsRemaining--;
-        g_Gui.flags = g_Gui.flags & 0xfffffff3 | 8;
+        g_Gui.flags.flag1 = 2;
         p->bombInfo.isInUse = 1;
         p->bombInfo.timer.SetCurrent(0);
         p->bombInfo.duration = 999;
@@ -184,7 +184,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                     {
                         g_GameManager.currentPower -= 16;
                     }
-                    g_Gui.flags = g_Gui.flags & 0xffffffcf | 0x20;
+                    g_Gui.flags.flag2 = 2;
                 }
                 else
                 {
@@ -194,7 +194,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                     g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
                     g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
                     g_GameManager.currentPower = 0;
-                    g_Gui.flags = g_Gui.flags & 0xffffffcf | 0x20;
+                    g_Gui.flags.flag2 = 2;
                     g_GameManager.extraLives = 255;
                 }
                 g_GameManager.DecreaseSubrank(1600);
@@ -227,7 +227,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                 else
                 {
                     g_GameManager.livesRemaining--;
-                    g_Gui.flags = (g_Gui.flags & 0xfffffffc) | 0x2;
+                    g_Gui.flags.flag0 = 2;
                     if (g_GameManager.difficulty < 4 && g_GameManager.isInPracticeMode == 0)
                     {
                         g_GameManager.bombsRemaining = g_Supervisor.defaultConfig.bombCount;
@@ -236,7 +236,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                     {
                         g_GameManager.bombsRemaining = 3;
                     }
-                    g_Gui.flags = (g_Gui.flags & 0xfffffff3) | 0x8;
+                    g_Gui.flags.flag1 = 2;
                     goto spawning;
                 }
             }

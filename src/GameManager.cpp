@@ -74,12 +74,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
     {"data/stg7enm.anm", "data/stg7enm2.anm"},
 };
 
-#define GAME_REGION_TOP 16.0
-#define GAME_REGION_LEFT 32.0
-
-#define GAME_REGION_WIDTH 384.0
-#define GAME_REGION_HEIGHT 448.0
-
 #define MAX_SCORE 999999999
 #define MAX_CLEARS 99
 
@@ -513,7 +507,7 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
                 gameManager->livesRemaining++;
                 g_SoundPlayer.PlaySoundByIdx(SOUND_1UP, 0);
             }
-            g_Gui.flags = g_Gui.flags & 0xfffffffc | 2;
+            g_Gui.flags.flag0 = 2;
             gameManager->extraLives++;
             g_GameManager.IncreaseSubrank(200);
         }
