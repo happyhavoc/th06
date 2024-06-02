@@ -8,8 +8,8 @@ EffectManager::OnDraw
 EffectManager::DeletedCallback
 Stage::DeletedCallback
 Stage::OnDrawHighPrio
-Stage::OnDrawLowPrio
 Stage::UpdateObjects
+Stage::RenderObjects
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu
@@ -54,6 +54,7 @@ Gui::DrawStageElements
 Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
 Gui::FreeMsgFile
+Gui::IsStageFinished
 GuiImpl::RunMsg
 GuiImpl::DrawDialogue
 EffectManager::RegisterChain
@@ -74,6 +75,7 @@ ValidateReplayData
 DrawSquare
 Controller::GetControllerState
 SetupCamera
+SetupCameraStageBackground
 Player::DrawBullets
 Player::DrawBulletExplosions
 Player::DeletedCallback

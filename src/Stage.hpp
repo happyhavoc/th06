@@ -110,6 +110,7 @@ struct Stage
 
     ZunResult LoadStageData(char *anmpath, char *stdpath);
     ZunResult UpdateObjects();
+    ZunResult RenderObjects(i32 zLevel);
 
     AnmVm *quadVms;
     RawStageHeader *stdData;

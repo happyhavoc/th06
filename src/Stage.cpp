@@ -5,6 +5,8 @@
 #include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
+#include "Gui.hpp"
+#include "ScreenEffect.hpp"
 #include "Supervisor.hpp"
 #include "ZunColor.hpp"
 #include "utils.hpp"
@@ -342,6 +344,49 @@ ChainCallbackResult Stage::OnUpdate(Stage *stage)
         }
         return CHAIN_CALLBACK_RESULT_CONTINUE;
     }
+}
+
+#pragma var_order(val, stageToSpellcardBackgroundAlpha, gameRegion)
+ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
+{
+    f32 val;
+    i32 stageToSpellcardBackgroundAlpha;
+    ZunRect gameRegion;
+
+    if (stage->spellcardState <= RUNNING)
+    {
+        if (!g_Gui.IsStageFinished())
+        {
+            stage->RenderObjects(2);
+            stage->RenderObjects(3);
+            if (stage->spellcardState == RUNNING)
+            {
+                gameRegion.left = GAME_REGION_LEFT;
+                gameRegion.top = GAME_REGION_TOP;
+                gameRegion.right = GAME_REGION_LEFT + GAME_REGION_WIDTH;
+                gameRegion.bottom = GAME_REGION_TOP + GAME_REGION_HEIGHT;
+                stageToSpellcardBackgroundAlpha = (stage->ticksSinceSpellcardStarted * 255) / 60;
+                DrawSquare(&gameRegion, stageToSpellcardBackgroundAlpha << 24);
+            }
+        }
+    }
+    if (RUNNING <= stage->spellcardState)
+    {
+        if (stage->ticksSinceSpellcardStarted <= g_Supervisor.cfg.frameskipConfig)
+        {
+            g_AnmManager->SetAndExecuteScriptIdx(&stage->spellcardBackground, ANM_SCRIPT_EFFECTS_SPELLCARD_BACKGROUND);
+        }
+        g_AnmManager->Draw(&stage->spellcardBackground);
+    }
+    g_Supervisor.viewport.MinZ = 0.0;
+    g_Supervisor.viewport.MaxZ = 0.5;
+    SetupCameraStageBackground(0);
+    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    val = 1000.0f;
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&val);
+    val = 2000.0f;
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&val);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
 DIFFABLE_STATIC(Stage, g_Stage)

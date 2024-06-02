@@ -115,3 +115,4 @@ C_ASSERT(sizeof(GameManager) == 0x1a80);
 DIFFABLE_EXTERN(GameManager, g_GameManager);
 
 void SetupCamera(f32);
+void SetupCameraStageBackground(f32);

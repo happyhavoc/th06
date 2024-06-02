@@ -124,6 +124,7 @@ Stage::RegisterChain
 Stage::AddedCallback
 Stage::LoadStageData
 Stage::OnUpdate
+Stage::OnDrawLowPrio
 StageMenu::StageMenu
 TextHelper::CreateTextBuffer
 Supervisor::AddedCallback
