@@ -31,7 +31,7 @@ Stage::RegisterChain,0x4044c0,0x11e,default,,ZunResult,u32
 Stage::DeletedCallback,0x4045e0,0x66,default,,ZunResult,Stage*
 Stage::CutChain,0x404650,0x32,__stdcall,,void
 Stage::LoadStageData,0x404690,0x1c1,__thiscall,,ZunResult,Stage*,char*,char*
-Stage::FUN_00404860,0x404860,0x101,__thiscall,,u32,Stage*
+Stage::UpdateObjects,0x404860,0x101,__thiscall,,ZunResult,Stage*
 Stage::FUN_00404970,0x404970,0x83d,__thiscall,,u32,Stage*,i32
 AnmManager::ExecuteAnmIdx,0x4051b0,0xa9,__thiscall,,void,AnmManager*,AnmVm*,i32
 Player::BombReimuACalc,0x405260,0x9a4,default,,void,Player*
