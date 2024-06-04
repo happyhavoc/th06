@@ -358,14 +358,14 @@ ChainCallbackResult Player::OnDrawLowPrio(Player *p)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-#pragma var_order(playerDirection, verticalSpeed, horizontalSpeed, verticalOrbOffset, horizontalOrbOffset, fVar1,      \
-                  fVar2, pfVar6)
+#pragma var_order(playerDirection, verticalSpeed, horizontalSpeed, verticalOrbOffset, horizontalOrbOffset,             \
+                  intermediateFloat, posCenterY, posCenterX)
 ZunResult Player::HandlePlayerInputs()
 {
-    float fVar1;
-    float fVar2;
+    float intermediateFloat;
 
-    float *pfVar6;
+    float *posCenterY;
+    float *posCenterX;
     float horizontalOrbOffset;
     float verticalOrbOffset;
 
@@ -530,11 +530,11 @@ ZunResult Player::HandlePlayerInputs()
     this->previousVerticalSpeed = verticalSpeed;
 
     // TODO: Match stack variables here
-    pfVar6 = &this->positionCenter.x;
-    *pfVar6 +=
+    posCenterX = &this->positionCenter.x;
+    *posCenterX +=
         horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
-    pfVar6 = &this->positionCenter.y;
-    *pfVar6 +=
+    posCenterY = &this->positionCenter.y;
+    *posCenterY +=
         verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
 
     if (this->positionCenter.x < g_GameManager.playerMovementAreaTopLeftPos.x)
@@ -602,10 +602,10 @@ ZunResult Player::HandlePlayerInputs()
     case ORB_FOCUSING:
         this->focusMovementTimer.Tick();
 
-        fVar1 = this->focusMovementTimer.AsFramesFloat() / 8.0f;
-        verticalOrbOffset = (1.0f - fVar1) * 32.0f + -32.0f;
-        fVar1 *= fVar1;
-        horizontalOrbOffset = -16.0f * fVar1 + 24.0f;
+        intermediateFloat = this->focusMovementTimer.AsFramesFloat() / 8.0f;
+        verticalOrbOffset = (1.0f - intermediateFloat) * 32.0f + -32.0f;
+        intermediateFloat *= intermediateFloat;
+        horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
 
         if ((ZunBool)(this->focusMovementTimer.current >= 8))
         {
@@ -641,11 +641,11 @@ ZunResult Player::HandlePlayerInputs()
     case ORB_UNFOCUSING:
         this->focusMovementTimer.Tick();
 
-        fVar1 = this->focusMovementTimer.AsFramesFloat() / 8.0f;
-        verticalOrbOffset = (32.0f * fVar1) + -32.0f;
-        fVar1 *= fVar1;
-        fVar1 = 1.0f - fVar1;
-        horizontalOrbOffset = -16.0f * fVar1 + 24.0f;
+        intermediateFloat = this->focusMovementTimer.AsFramesFloat() / 8.0f;
+        verticalOrbOffset = (32.0f * intermediateFloat) + -32.0f;
+        intermediateFloat *= intermediateFloat;
+        intermediateFloat = 1.0f - intermediateFloat;
+        horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
         if ((ZunBool)(this->focusMovementTimer.current >= 8))
         {
             this->orbState = ORB_UNFOCUSED;
