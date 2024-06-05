@@ -10,6 +10,7 @@
 #define ZUN_RANGE(a, count) (ZUN_MASK((a) + (count)) & ~ZUN_MASK(a))
 #define ZUN_CLEAR_BITS(a, keep_mask) (a & ~keep_mask)
 
+#define IS_PRESSED(key) (g_CurFrameInput & (key))
 #define WAS_PRESSED(key) (((g_CurFrameInput & (key)) != 0) && (g_CurFrameInput & (key)) != (g_LastFrameInput & (key)))
 #define WAS_PRESSED_WEIRD(key)                                                                                         \
     (WAS_PRESSED(key) || (((g_CurFrameInput & (key)) != 0) && (g_IsEigthFrameOfHeldInput != 0)))
