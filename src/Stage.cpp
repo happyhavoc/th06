@@ -409,4 +409,202 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
+#pragma var_order(unk8, curQuadVm, instancesDrawn, instance, worldMatrix, obj, quadScaledPos, quadPos, curQuad,        \
+                  didDraw, projectSrc, quadWidth)
+ZunResult Stage::RenderObjects(i32 zLevel)
+{
+    f32 quadWidth;
+    D3DXVECTOR3 projectSrc;
+    ZunBool didDraw;
+    RawStageQuadBasic *curQuad;
+    D3DXVECTOR3 quadPos;
+    D3DXVECTOR3 quadScaledPos;
+    RawStageObject *obj;
+    D3DXMATRIX worldMatrix;
+    RawStageObjectInstance *instance;
+    i32 instancesDrawn;
+    AnmVm *curQuadVm;
+    i32 unk8;
+
+    instance = &this->objectInstances[0];
+    instancesDrawn = 0;
+    didDraw = 0;
+    projectSrc.x = 0.0;
+    projectSrc.y = 0.0;
+    projectSrc.z = 0.0;
+    D3DXMatrixIdentity(&worldMatrix);
+    while (instance->id >= 0)
+    {
+        obj = this->objects[instance->id];
+        if (obj->zLevel == zLevel)
+        {
+            curQuad = &obj->firstQuad;
+            unk8 = 0;
+
+            //  Say hello to helper cube:
+            //
+            //    ^
+            //    |           A------B.
+            //  y |           |`.    | `.
+            //    |           |  `C--+---D
+            //    |  x        |   |  |   |
+            //    o----->     E---+--F.  |
+            //     `.          `. |    `.|
+            //    z  `_          `G------H
+            //
+            //   It's beautiful, I know. E is at point 0, 0, 0 here.
+            //
+            // During this process, zun will project the world matrix to each of
+            // the 8 corner of the kube that reprents this object, and check if
+            // any of them is visible on the viewport.
+            //
+            // It will check them in the following order: C, G, E, A, D, H, F, B.
+
+            // It first starts by checking point C
+            worldMatrix.m[3][0] = obj->position.x + instance->position.x - this->position.x;
+            worldMatrix.m[3][1] = -(obj->position.y + instance->position.y - this->position.y);
+            worldMatrix.m[3][2] = obj->position.z + instance->position.z - this->position.z + obj->size.z;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // Then G:
+            worldMatrix.m[3][1] = worldMatrix.m[3][1] - obj->size.y;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // Then E
+            worldMatrix.m[3][2] = worldMatrix.m[3][2] - obj->size.z;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // Then A
+            worldMatrix.m[3][1] = worldMatrix.m[3][1] + obj->size.y;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // Then D
+            worldMatrix.m[3][0] = obj->position.x + instance->position.x - this->position.x + obj->size.x;
+            worldMatrix.m[3][1] = -(obj->position.y + instance->position.y - this->position.y);
+            worldMatrix.m[3][2] = obj->position.z + instance->position.z - this->position.z + obj->size.z;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // Then H
+            worldMatrix.m[3][1] = worldMatrix.m[3][1] - obj->size.y;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // Then F
+            worldMatrix.m[3][2] = worldMatrix.m[3][2] - (obj->size).z;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // And finally B
+            worldMatrix.m[3][1] = worldMatrix.m[3][1] + (obj->size).y;
+            D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                            &g_Supervisor.viewMatrix, &worldMatrix);
+            if (quadPos.y >= g_Supervisor.viewport.Y &&
+                quadPos.y <= g_Supervisor.viewport.Y + g_Supervisor.viewport.Height)
+            {
+                goto render;
+            }
+
+            // If none of the points were in the viewport, we can skip this object
+            // entirely.
+            goto skip;
+
+        render:
+            didDraw = 1;
+            while (0 <= curQuad->type)
+            {
+                curQuadVm = this->quadVms + curQuad->vmIdx;
+                switch (curQuad->type)
+                {
+                case 0:
+                    curQuadVm->pos.x = curQuad->position.x + instance->position.x - this->position.x;
+                    curQuadVm->pos.y = curQuad->position.y + instance->position.y - this->position.y;
+                    curQuadVm->pos.z = curQuad->position.z + instance->position.z - this->position.z;
+                    if (curQuad->size.x != 0.0f)
+                    {
+                        curQuadVm->scaleX = curQuad->size.x / curQuadVm->sprite->widthPx;
+                    }
+                    if (curQuad->size.y != 0.0f)
+                    {
+                        curQuadVm->scaleY = curQuad->size.y / curQuadVm->sprite->heightPx;
+                    }
+                    if (curQuadVm->autoRotate == 2)
+                    {
+                        if (curQuad->size.x != 0.0f)
+                        {
+                            quadWidth = curQuad->size.x;
+                        }
+                        else
+                        {
+                            quadWidth = curQuadVm->sprite->widthPx;
+                        }
+                        worldMatrix.m[3][0] = curQuadVm->pos.x;
+                        worldMatrix.m[3][1] = -curQuadVm->pos.y;
+                        worldMatrix.m[3][2] = curQuadVm->pos.z;
+                        D3DXVec3Project(&quadPos, &projectSrc, &g_Supervisor.viewport, &g_Supervisor.projectionMatrix,
+                                        &g_Supervisor.viewMatrix, &worldMatrix);
+                        worldMatrix.m[3][0] = quadWidth * curQuadVm->scaleX + worldMatrix.m[3][0];
+                        D3DXVec3Project(&quadScaledPos, &projectSrc, &g_Supervisor.viewport,
+                                        &g_Supervisor.projectionMatrix, &g_Supervisor.viewMatrix, &worldMatrix);
+                        curQuadVm->scaleX = (quadScaledPos.x - quadPos.x) / quadWidth;
+                        curQuadVm->scaleY = curQuadVm->scaleX;
+                        curQuadVm->pos = quadPos;
+                        g_AnmManager->DrawFacingCamera(curQuadVm);
+                    }
+                    else
+                    {
+                        g_AnmManager->Draw3(curQuadVm);
+                    }
+                    break;
+                }
+                curQuad = (RawStageQuadBasic *)((i32)&curQuad->type + curQuad->byteSize);
+            }
+            instancesDrawn++;
+        }
+    skip:
+        instance++;
+    }
+    return ZUN_SUCCESS;
+}
+
 DIFFABLE_STATIC(Stage, g_Stage)

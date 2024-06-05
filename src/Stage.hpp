@@ -42,7 +42,7 @@ C_ASSERT(sizeof(RawStageQuadBasic) == 0x1c);
 struct RawStageObject
 {
     i16 id;
-    i8 unk2;
+    i8 zLevel;
     i8 flags;
     D3DXVECTOR3 position;
     D3DXVECTOR3 size;

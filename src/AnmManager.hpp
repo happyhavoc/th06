@@ -127,6 +127,8 @@ struct AnmManager
     static void DrawStringFormat2(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
     ZunResult DrawNoRotation(AnmVm *vm);
     ZunResult DrawInner(AnmVm *vm, i32 unk);
+    ZunResult DrawFacingCamera(AnmVm *vm);
+    ZunResult Draw3(AnmVm *vm);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);

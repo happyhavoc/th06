@@ -146,7 +146,7 @@ struct AnmVm
 
     i16 alphaInterpEndTime;
     i16 scaleInterpEndTime;
-    u16 autoRotate;
+    i16 autoRotate;
     i16 pendingInterrupt;
     i16 posInterpEndTime;
     // Two padding bytes

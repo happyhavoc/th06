@@ -2,13 +2,14 @@ AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
+AnmManager::Draw3
+AnmManager::DrawFacingCamera
 AddNormalizeAngle
 EffectManager::OnUpdate
 EffectManager::OnDraw
 EffectManager::DeletedCallback
 Stage::DeletedCallback
 Stage::UpdateObjects
-Stage::RenderObjects
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu
