@@ -409,6 +409,54 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
+#pragma var_order(objQuadType1, vmsNotFinished, objIdx, vm, obj, objQuad)
+ZunResult Stage::UpdateObjects()
+{
+    AnmVm *vm;
+    RawStageQuadBasic *objQuad;
+    RawStageQuadBasic *objQuadType1;
+    i32 objIdx;
+    i32 vmsNotFinished;
+    RawStageObject *obj;
+
+    for (objIdx = 0; objIdx < this->objectsCount; objIdx++)
+    {
+        obj = this->objects[objIdx];
+        if (obj->flags & 1 != 0)
+        {
+            vmsNotFinished = 0;
+            objQuad = &obj->firstQuad;
+            while (0 <= objQuad->type)
+            {
+                vm = &this->quadVms[objQuad->vmIdx];
+                switch (objQuad->type)
+                {
+                case 0:
+                    g_AnmManager->ExecuteScript(vm);
+                    break;
+                case 1:
+                    // I assume this casts it, but this is all dead code
+                    // as the engine doesn't contain any other reference
+                    // to type 1 quads.
+                    objQuadType1 = objQuad;
+                    g_AnmManager->ExecuteScript(vm);
+                    break;
+                }
+                if (vm->currentInstruction != NULL)
+                {
+                    vmsNotFinished++;
+                }
+                objQuad = (RawStageQuadBasic *)((i32)&objQuad->type + objQuad->byteSize);
+            }
+            if (vmsNotFinished == 0)
+            {
+                obj->flags = obj->flags & ~1;
+            }
+        }
+    }
+    return ZUN_SUCCESS;
+}
+
 #pragma var_order(unk8, curQuadVm, instancesDrawn, instance, worldMatrix, obj, quadScaledPos, quadPos, curQuad,        \
                   didDraw, projectSrc, quadWidth)
 ZunResult Stage::RenderObjects(i32 zLevel)

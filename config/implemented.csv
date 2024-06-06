@@ -126,6 +126,7 @@ Stage::LoadStageData
 Stage::OnUpdate
 Stage::OnDrawLowPrio
 Stage::OnDrawHighPrio
+Stage::UpdateObjects
 Stage::RenderObjects
 StageMenu::StageMenu
 TextHelper::CreateTextBuffer

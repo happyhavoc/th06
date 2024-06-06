@@ -9,7 +9,6 @@ EffectManager::OnUpdate
 EffectManager::OnDraw
 EffectManager::DeletedCallback
 Stage::DeletedCallback
-Stage::UpdateObjects
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu
