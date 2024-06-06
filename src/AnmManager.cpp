@@ -1244,6 +1244,51 @@ ZunResult AnmManager::Draw(AnmVm *vm)
     return this->DrawInner(vm, 0);
 }
 
+ZunResult AnmManager::DrawFacingCamera(AnmVm *vm)
+{
+    f32 centerX;
+    f32 centerY;
+
+    if (!vm->flags.flag0)
+    {
+        return ZUN_ERROR;
+    }
+    if (!vm->flags.flag1)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->color == 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    centerX = vm->sprite->widthPx * vm->scaleX / 2.0f;
+    centerY = vm->sprite->heightPx * vm->scaleY / 2.0f;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x - centerX;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x = vm->pos.x + centerX;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x =
+            vm->pos.x + centerX + centerX;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y - centerY;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y = vm->pos.y + centerY;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y =
+            vm->pos.y + centerY + centerY;
+    }
+    return this->DrawInner(vm, 0);
+}
+
 ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
 {
     float fVar2;

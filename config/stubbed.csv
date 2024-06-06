@@ -3,7 +3,6 @@ AnmManager::SetActiveSprite
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
 AnmManager::Draw3
-AnmManager::DrawFacingCamera
 AddNormalizeAngle
 EffectManager::OnUpdate
 EffectManager::OnDraw

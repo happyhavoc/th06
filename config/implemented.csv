@@ -24,6 +24,7 @@ AnmManager::ExecuteScript
 AnmManager::DrawInner
 AnmManager::DrawNoRotation
 AnmManager::Draw
+AnmManager::DrawFacingCamera
 AnmManager::LoadAnm
 AnmManager::LoadSprite
 AnmManager::LoadSurface
