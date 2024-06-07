@@ -2,7 +2,6 @@ AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
-AnmManager::Draw3
 AddNormalizeAngle
 EffectManager::OnUpdate
 EffectManager::OnDraw
