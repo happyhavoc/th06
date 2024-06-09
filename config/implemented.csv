@@ -82,6 +82,7 @@ GameManager::DecreaseSubrank
 GameManager::IsInBounds
 GameManager::OnUpdate
 GameManager::OnDraw
+SetupCameraStageBackground
 Gui::RegisterChain
 Gui::AddedCallback
 Gui::ActualAddedCallback

@@ -71,7 +71,6 @@ ValidateReplayData
 DrawSquare
 Controller::GetControllerState
 SetupCamera
-SetupCameraStageBackground
 Player::DrawBullets
 Player::DrawBulletExplosions
 Player::DeletedCallback

@@ -102,7 +102,7 @@ struct GameManager
     D3DXVECTOR2 arcadeRegionSize;
     D3DXVECTOR2 playerMovementAreaTopLeftPos;
     D3DXVECTOR2 playerMovementAreaSize;
-    i32 unk_1a5c;
+    f32 cameraDistance;
     D3DXVECTOR3 stageCameraFacingDir;
     u32 counat;
     i32 rank;
