@@ -21,7 +21,6 @@ def create_status_profile():
     impl = get_file(script_path / "config" / "implemented.csv")
     maps = get_file(script_path / "config" / "mapping.csv")
 
-
     total_func_bytes = 246112  # number of function bytes
     impl_bytes = 0
     num_funcs = 0
