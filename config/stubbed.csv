@@ -63,7 +63,6 @@ BulletManager::OnDraw
 BulletManager::InitializeToZero
 BulletManager::RemoveAllBullets
 ItemManager::SpawnItem
-Stage::RegisterChain
 ReplayManager::RegisterChain
 SaveReplay
 ValidateReplayData
