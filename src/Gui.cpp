@@ -662,7 +662,7 @@ void Gui::DrawGameScene()
         }
         if (g_GameManager.currentPower < 128)
         {
-            g_AsciiManager.AddFormatText(&D3DXVECTOR3(196.0f, 186.0f, 0.0f), "%d", g_GameManager.currentPower);
+            g_AsciiManager.AddFormatText(&D3DXVECTOR3(496.0f, 186.0f, 0.0f), "%d", g_GameManager.currentPower);
         }
     }
     {
