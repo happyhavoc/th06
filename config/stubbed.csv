@@ -2,14 +2,10 @@ AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
-AddNormalizeAngle
 EffectManager::OnUpdate
 EffectManager::OnDraw
 EffectManager::DeletedCallback
 Stage::DeletedCallback
-Stage::OnDrawHighPrio
-Stage::OnDrawLowPrio
-Stage::UpdateObjects
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu
@@ -45,7 +41,6 @@ MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
-MainMenu::DeletedCallback
 MainMenu::LoadDiffCharSelect
 MainMenu::DrawReplayMenu
 MainMenu::SelectRelated
@@ -54,6 +49,7 @@ Gui::DrawStageElements
 Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
 Gui::FreeMsgFile
+Gui::IsStageFinished
 GuiImpl::RunMsg
 GuiImpl::DrawDialogue
 EffectManager::RegisterChain
@@ -67,13 +63,11 @@ BulletManager::OnDraw
 BulletManager::InitializeToZero
 BulletManager::RemoveAllBullets
 ItemManager::SpawnItem
-Stage::RegisterChain
 ReplayManager::RegisterChain
 SaveReplay
 ValidateReplayData
 DrawSquare
 Controller::GetControllerState
-SetupCamera
 Player::DrawBullets
 Player::DrawBulletExplosions
 Player::DeletedCallback

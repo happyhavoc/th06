@@ -42,7 +42,7 @@ C_ASSERT(sizeof(RawStageQuadBasic) == 0x1c);
 struct RawStageObject
 {
     i16 id;
-    i8 unk2;
+    i8 zLevel;
     i8 flags;
     D3DXVECTOR3 position;
     D3DXVECTOR3 size;
@@ -110,6 +110,7 @@ struct Stage
 
     ZunResult LoadStageData(char *anmpath, char *stdpath);
     ZunResult UpdateObjects();
+    ZunResult RenderObjects(i32 zLevel);
 
     AnmVm *quadVms;
     RawStageHeader *stdData;
@@ -128,7 +129,7 @@ struct Stage
     StageCameraSky skyFogInterpFinal;
     i32 skyFogInterpDuration;
     ZunTimer skyFogInterpTimer;
-    u8 skyFogNeedsSetup;
+    i8 skyFogNeedsSetup;
     SpellcardState spellcardState;
     i32 ticksSinceSpellcardStarted;
     AnmVm spellcardBackground;

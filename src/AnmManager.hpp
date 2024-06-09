@@ -127,6 +127,9 @@ struct AnmManager
     static void DrawStringFormat2(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
     ZunResult DrawNoRotation(AnmVm *vm);
     ZunResult DrawInner(AnmVm *vm, i32 unk);
+    ZunResult DrawFacingCamera(AnmVm *vm);
+    ZunResult Draw2(AnmVm *vm);
+    ZunResult Draw3(AnmVm *vm);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
@@ -173,8 +176,6 @@ struct AnmManager
     i32 screenshotHeight;
 };
 C_ASSERT(sizeof(AnmManager) == 0x2112c);
-
-f32 AddNormalizeAngle(f32 a, f32 b);
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
 DIFFABLE_EXTERN(D3DFORMAT, g_TextureFormatD3D8Mapping[6]);

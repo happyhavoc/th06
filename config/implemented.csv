@@ -24,6 +24,9 @@ AnmManager::ExecuteScript
 AnmManager::DrawInner
 AnmManager::DrawNoRotation
 AnmManager::Draw
+AnmManager::Draw2
+AnmManager::Draw3
+AnmManager::DrawFacingCamera
 AnmManager::LoadAnm
 AnmManager::LoadSprite
 AnmManager::LoadSurface
@@ -79,6 +82,8 @@ GameManager::DecreaseSubrank
 GameManager::IsInBounds
 GameManager::OnUpdate
 GameManager::OnDraw
+SetupCameraStageBackground
+SetupCamera
 Gui::RegisterChain
 Gui::AddedCallback
 Gui::ActualAddedCallback
@@ -98,6 +103,8 @@ EnumGameControllersCb
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MainMenu::AddedCallback
+MainMenu::DeletedCallback
+MainMenu::ReleaseTitleAnm
 MainMenu::BeginStartup
 MainMenu::ChoosePracticeLevel
 MainMenu::LoadTitleAnm
@@ -124,6 +131,10 @@ Stage::RegisterChain
 Stage::AddedCallback
 Stage::LoadStageData
 Stage::OnUpdate
+Stage::OnDrawLowPrio
+Stage::OnDrawHighPrio
+Stage::UpdateObjects
+Stage::RenderObjects
 StageMenu::StageMenu
 TextHelper::CreateTextBuffer
 Supervisor::AddedCallback
@@ -141,6 +152,7 @@ InitD3dDevice
 InitD3dRendering
 Clear
 SetViewport
+AddNormalizeAngle
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav

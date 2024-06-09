@@ -28,6 +28,8 @@ struct Gui
     ZunResult LoadMsg(char *path);
     void FreeMsgFile();
 
+    ZunBool IsStageFinished();
+
     void CalculateStageScore();
     ZunBool HasCurrentMsgIdx();
 
