@@ -77,7 +77,7 @@ struct MainMenu
     static ZunResult DeletedCallback(MainMenu *s);
     static ZunResult LoadDiffCharSelect(MainMenu *s);
 
-    static void ReleaseAnm();
+    static void ReleaseTitleAnm();
 
     AnmVm vm[122];
     i32 cursor;

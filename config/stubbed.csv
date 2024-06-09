@@ -45,7 +45,6 @@ ScreenEffect::RegisterChain
 MainMenu::LoadDiffCharSelect
 MainMenu::DrawReplayMenu
 MainMenu::SelectRelated
-MainMenu::ReleaseAnm
 Gui::DeletedCallback
 Gui::DrawStageElements
 Gui::CalculateStageScore

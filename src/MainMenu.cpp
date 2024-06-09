@@ -699,7 +699,7 @@ ZunResult MainMenu::DeletedCallback(MainMenu *menu)
     i32 i1, i2;
 
     g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
-    MainMenu::ReleaseAnm();
+    MainMenu::ReleaseTitleAnm();
     for (i1 = ANM_FILE_SELECT01; i1 <= ANM_FILE_REPLAY; i1++)
     {
         g_AnmManager->ReleaseAnm(i1);
@@ -719,6 +719,19 @@ ZunResult MainMenu::DeletedCallback(MainMenu *menu)
     replay = menu->currentReplay;
     free(replay);
     return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void MainMenu::ReleaseTitleAnm()
+{
+    // There's a bit of an off-by-one error here, where it frees
+    // ANM_FILE_SELECT01 in addition to the titles. I'm pretty sure this is
+    // unintentional.
+    for (i32 i = ANM_FILE_TITLE01; i <= ANM_FILE_SELECT01; i++)
+    {
+        g_AnmManager->ReleaseAnm(i);
+    }
 }
 #pragma optimize("", on)
 

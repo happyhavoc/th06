@@ -102,6 +102,7 @@ FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MainMenu::AddedCallback
 MainMenu::DeletedCallback
+MainMenu::ReleaseTitleAnm
 MainMenu::BeginStartup
 MainMenu::ChoosePracticeLevel
 MainMenu::LoadTitleAnm
