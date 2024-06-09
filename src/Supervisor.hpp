@@ -116,8 +116,6 @@ struct Supervisor
 
     ZunResult SetupMidiPlayback(char *path);
 
-    static void CreateTextBuffer();
-
     static ZunResult SetupDInput(Supervisor *s);
 
     i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
