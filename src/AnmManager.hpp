@@ -177,7 +177,5 @@ struct AnmManager
 };
 C_ASSERT(sizeof(AnmManager) == 0x2112c);
 
-f32 AddNormalizeAngle(f32 a, f32 b);
-
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
 DIFFABLE_EXTERN(D3DFORMAT, g_TextureFormatD3D8Mapping[6]);

@@ -16,3 +16,5 @@ struct ZunVec3
     f32 z;
 };
 C_ASSERT(sizeof(ZunVec3) == 0xC);
+
+#define ZUN_PI ((f32)(3.14159265358979323846))

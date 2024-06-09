@@ -152,6 +152,7 @@ InitD3dDevice
 InitD3dRendering
 Clear
 SetViewport
+AddNormalizeAngle
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
