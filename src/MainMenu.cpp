@@ -85,7 +85,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     ZunResult loadedTitle04s;
 
     g_Supervisor.LoadPbg3(3, TH_TL_DAT_FILE);
-    for (i = 0x1b; i <= 0x24; i++)
+    for (i = ANM_FILE_SELECT01; i <= ANM_FILE_SELECT05; i++)
     {
         g_AnmManager->ReleaseAnm(i);
     }
@@ -686,6 +686,38 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     }
     g_GameManager.demoMode = 0;
     g_GameManager.demoFrames = 0;
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma var_order(i1, i2, mgr, replay)
+#pragma optimize("s", on)
+ZunResult MainMenu::DeletedCallback(MainMenu *menu)
+{
+    AnmManager *mgr;
+    void *replay;
+    i32 i1, i2;
+
+    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+    MainMenu::ReleaseAnm();
+    for (i1 = ANM_FILE_SELECT01; i1 <= ANM_FILE_REPLAY; i1++)
+    {
+        g_AnmManager->ReleaseAnm(i1);
+    }
+    g_AnmManager->ReleaseSurface(0);
+
+    // TODO: Inline function, but when inlining it, I lose control over the
+    // stack slots, and it stops matching.
+    mgr = g_AnmManager;
+    for (i2 = 0; i2 < ANM_OFFSET_TITLE01S - ANM_OFFSET_TITLE01; i2++)
+    {
+        mgr->scripts[ANM_OFFSET_TITLE01 + i2] = NULL;
+    }
+    g_Chain.Cut(menu->chainDraw);
+    menu->chainDraw = NULL;
+
+    replay = menu->currentReplay;
+    free(replay);
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
@@ -2245,7 +2277,7 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
     D3DXVECTOR3 pos;
     i32 padding[6];
 
-    for (i = 21; i <= 26; i++)
+    for (i = ANM_FILE_TITLE01; i <= ANM_FILE_TITLE04; i++)
     {
         g_AnmManager->ReleaseAnm(i);
     }

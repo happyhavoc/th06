@@ -42,10 +42,10 @@ MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
-MainMenu::DeletedCallback
 MainMenu::LoadDiffCharSelect
 MainMenu::DrawReplayMenu
 MainMenu::SelectRelated
+MainMenu::ReleaseAnm
 Gui::DeletedCallback
 Gui::DrawStageElements
 Gui::CalculateStageScore

@@ -101,6 +101,7 @@ EnumGameControllersCb
 FileSystem::OpenPath
 FileSystem::WriteDataToFile
 MainMenu::AddedCallback
+MainMenu::DeletedCallback
 MainMenu::BeginStartup
 MainMenu::ChoosePracticeLevel
 MainMenu::LoadTitleAnm
