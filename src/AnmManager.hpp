@@ -128,6 +128,7 @@ struct AnmManager
     ZunResult DrawNoRotation(AnmVm *vm);
     ZunResult DrawInner(AnmVm *vm, i32 unk);
     ZunResult DrawFacingCamera(AnmVm *vm);
+    ZunResult Draw2(AnmVm *vm);
     ZunResult Draw3(AnmVm *vm);
 
     void LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite);

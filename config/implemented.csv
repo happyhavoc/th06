@@ -24,6 +24,7 @@ AnmManager::ExecuteScript
 AnmManager::DrawInner
 AnmManager::DrawNoRotation
 AnmManager::Draw
+AnmManager::Draw2
 AnmManager::Draw3
 AnmManager::DrawFacingCamera
 AnmManager::LoadAnm

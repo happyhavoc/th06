@@ -1403,6 +1403,86 @@ ZunResult AnmManager::Draw3(AnmVm *vm)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(textureMatrix, unusedMatrix, worldTransformMatrix)
+ZunResult AnmManager::Draw2(AnmVm *vm)
+{
+    D3DXMATRIX worldTransformMatrix;
+    D3DXMATRIX unusedMatrix;
+    D3DXMATRIX textureMatrix;
+
+    if (!vm->flags.flag0)
+    {
+        return ZUN_ERROR;
+    }
+    if (!vm->flags.flag1)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (vm->rotation.x != 0 || vm->rotation.y != 0 || vm->rotation.z != 0)
+    {
+        return this->Draw3(vm);
+    }
+
+    if (vm->color == 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    worldTransformMatrix = vm->matrix;
+    worldTransformMatrix.m[3][0] = rintf(vm->pos.x) - 0.5f;
+    worldTransformMatrix.m[3][1] = -rintf(vm->pos.y) + 0.5f;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) != 0)
+    {
+        worldTransformMatrix.m[3][0] += (vm->sprite->widthPx * vm->scaleX) / 2.0f;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) != 0)
+    {
+        worldTransformMatrix.m[3][1] -= (vm->sprite->heightPx * vm->scaleY) / 2.0f;
+    }
+    worldTransformMatrix.m[3][2] = vm->pos.z;
+    worldTransformMatrix.m[0][0] *= vm->scaleX;
+    worldTransformMatrix.m[1][1] *= -vm->scaleY;
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_WORLD, &worldTransformMatrix);
+
+    if (this->currentSprite != vm->sprite)
+    {
+        this->currentSprite = vm->sprite;
+        textureMatrix = vm->matrix;
+        textureMatrix.m[2][0] = vm->sprite->uvStart.x + vm->uvScrollPos.x;
+        textureMatrix.m[2][1] = vm->sprite->uvStart.y + vm->uvScrollPos.y;
+        g_Supervisor.d3dDevice->SetTransform(D3DTS_TEXTURE0, &textureMatrix);
+        if (this->currentTexture != this->textures[vm->sprite->sourceFileIndex])
+        {
+            this->currentTexture = this->textures[vm->sprite->sourceFileIndex];
+            g_Supervisor.d3dDevice->SetTexture(0, this->currentTexture);
+        }
+        if (this->currentVertexShader != 3)
+        {
+            if ((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF & 1) == 0)
+            {
+                g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_XYZ);
+                g_Supervisor.d3dDevice->SetStreamSource(0, this->vertexBuffer, 0x14);
+            }
+            else
+            {
+                g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ);
+            }
+            this->currentVertexShader = 3;
+        }
+    }
+    this->SetRenderStateForVm(vm);
+    if ((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF & 1) == 0)
+    {
+        g_Supervisor.d3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    }
+    else
+    {
+        g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, g_PrimitivesToDrawUnknown, 0x18);
+    }
+    return ZUN_SUCCESS;
+}
+
 ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
 {
     float fVar2;
