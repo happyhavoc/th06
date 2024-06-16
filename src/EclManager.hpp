@@ -6,6 +6,10 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+// Forward declaration to avoid include loop.
+struct Enemy;
+struct EnemyEclContext;
+
 struct EclRawInstr
 {
     i32 time;
@@ -44,6 +48,8 @@ C_ASSERT(sizeof(EclRawHeader) == 0x10);
 struct EclManager
 {
     ZunResult Load(char *ecl);
+    ZunResult RunEcl(Enemy *enemy);
+    ZunResult CallEclSub(EnemyEclContext *enemyEcl, i16 subId);
 
     EclRawHeader *eclFile;
     void **subTable;

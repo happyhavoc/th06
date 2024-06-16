@@ -55,6 +55,11 @@ struct GameManager
     void DecreaseSubrank(i32 amount);
     i32 IsInBounds(f32 x, f32 y, f32 width, f32 height);
 
+    void AddScore(u32 points)
+    {
+        this->score += points;
+    }
+
     u32 guiScore;
     u32 score;
     u32 nextScoreIncrement;

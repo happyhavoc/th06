@@ -69,6 +69,7 @@ EffectManager::OnUpdate
 EffectManager::OnDraw
 EnemyManager::RegisterChain
 EnemyManager::AddedCallback
+EnemyManager::OnUpdate
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush

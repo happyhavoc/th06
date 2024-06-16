@@ -81,16 +81,62 @@ struct EnemyEclContext
 };
 C_ASSERT(sizeof(EnemyEclContext) == 0x4c);
 
+struct EnemyFlags
+{
+    // First byte
+    u8 unk1 : 2;
+    u8 unk2 : 3;
+    u8 unk3 : 1;
+    u8 unk4 : 1;
+    u8 unk5 : 1;
+
+    // Second byte
+    u8 unk6 : 1;
+    u8 unk7 : 1;
+    u8 unk8 : 1;
+    u8 unk9 : 1;
+    u8 unk10 : 1;
+    u8 unk11 : 3;
+
+    // Third byte
+    u8 unk12 : 1;
+    u8 unk13 : 1;
+    u8 unk14 : 1;
+    u8 unk15 : 1;
+    u8 unk16 : 1;
+
+    // Rest is padding.
+};
+
 struct Enemy
 {
+    void Move();
+    void ClampPos();
+    ZunBool HandleLifeCallback();
+    ZunBool HandleTimerCallback();
+    void Despawn();
+
+    static void ResetEffectArray(Enemy *enemy);
+    static void UpdateEffects(Enemy *enemy);
+
+    f32 LifePercent()
+    {
+        return (f32)this->life / (f32)this->maxLife;
+    }
+
+    D3DXVECTOR3 HitboxDimensions(f32 shrinkFactor)
+    {
+        return (1.0f / shrinkFactor) * this->hitboxDimensions;
+    }
+
     AnmVm primaryVm;
     AnmVm vms[8];
     EnemyEclContext currentContext;
     EnemyEclContext savedContextStack[8];
     i32 stackDepth;
     i32 unk_c40;
-    i16 deathCallbackSub;
-    i16 interrupts[16];
+    i32 deathCallbackSub;
+    i32 interrupts[8];
     i32 runInterrupt;
     D3DXVECTOR3 position;
     D3DXVECTOR3 hitboxDimensions;
@@ -121,16 +167,14 @@ struct Enemy
     EnemyLaserShooter laserProps;
     void *lasers[32]; // This looks like a structure
     i32 laserStore;
-    i8 deathAnm1;
-    i8 deathAnm2;
-    i8 deathAnm3;
+    u8 deathAnm1;
+    u8 deathAnm2;
+    u8 deathAnm3;
     i8 itemDrop;
     i8 bossId;
-    i8 unk_e41;
+    u8 unk_e41;
     ZunTimer unk_e44;
-    i8 flags1;
-    i8 flags2;
-    i8 flags3;
+    EnemyFlags flags;
     i8 anmExFlags;
     i16 anmExDefaults;
     i16 anmExFarLeft;
