@@ -66,6 +66,7 @@ EffectManager::Reset
 EffectManager::AddedCallback
 EffectManager::RegisterChain
 EffectManager::OnUpdate
+EffectManager::OnDraw
 EnemyManager::RegisterChain
 EnemyManager::AddedCallback
 GameErrorContextFatal

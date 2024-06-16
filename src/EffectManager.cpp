@@ -117,3 +117,21 @@ ChainCallbackResult EffectManager::OnUpdate(EffectManager *mgr)
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
+
+ChainCallbackResult EffectManager::OnDraw(EffectManager *mgr)
+{
+    int effectIdx;
+    Effect *effect;
+
+    effect = &mgr->effects[0];
+    for (effectIdx = 0; effectIdx < ARRAY_SIZE_SIGNED(mgr->effects); effectIdx++, effect++)
+    {
+        if (effect->inUseFlag == 0)
+        {
+            continue;
+        }
+        effect->vm.pos = effect->pos1;
+        g_AnmManager->Draw3(&effect->vm);
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
