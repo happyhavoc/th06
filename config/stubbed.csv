@@ -2,7 +2,6 @@ AnmManager::TakeScreenshotIfRequested
 AnmManager::SetActiveSprite
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
-EffectManager::OnUpdate
 EffectManager::OnDraw
 EffectManager::DeletedCallback
 Stage::DeletedCallback

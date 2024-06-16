@@ -65,6 +65,7 @@ EclManager::Load
 EffectManager::Reset
 EffectManager::AddedCallback
 EffectManager::RegisterChain
+EffectManager::OnUpdate
 EnemyManager::RegisterChain
 EnemyManager::AddedCallback
 GameErrorContextFatal
