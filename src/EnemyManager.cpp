@@ -300,3 +300,60 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
     mgr->timelineTime.Tick();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
+
+#pragma var_order(curEnemyIdx, curEnemyVm, curEnemyVmIdx, curEnemy)
+ChainCallbackResult EnemyManager::OnDraw(EnemyManager *mgr)
+{
+    AnmVm *curEnemyVm;
+    Enemy *curEnemy;
+    i32 curEnemyVmIdx;
+    i32 curEnemyIdx;
+
+    for (curEnemy = &mgr->enemies[0], curEnemyIdx = 0; curEnemyIdx < ARRAY_SIZE_SIGNED(mgr->enemies);
+         curEnemyIdx++, curEnemy++)
+    {
+        if (!curEnemy->flags.unk5)
+        {
+            continue;
+        }
+        if (curEnemy->flags.unk15)
+        {
+            continue;
+        }
+
+        for (curEnemyVm = &curEnemy->vms[0], curEnemyVmIdx = 0; curEnemyVmIdx < 4; curEnemyVmIdx++, curEnemyVm++)
+        {
+            if (0 <= curEnemyVm->anmFileIndex)
+            {
+                if (curEnemyVm->autoRotate != 0)
+                {
+                    curEnemyVm->rotation.z = curEnemy->angle;
+                }
+                curEnemyVm->pos = curEnemy->position + curEnemyVm->posOffset;
+                curEnemyVm->pos.z = 0.495f;
+                g_AnmManager->Draw2(curEnemyVm);
+            }
+        }
+        if (curEnemy->flags.unk13 != 0)
+        {
+            curEnemy->primaryVm.rotation.z = curEnemy->angle;
+        }
+        curEnemy->primaryVm.pos = curEnemy->position + curEnemy->primaryVm.posOffset;
+        curEnemy->primaryVm.pos.z = 0.494f;
+        g_AnmManager->Draw2(&curEnemy->primaryVm);
+        for (curEnemyVmIdx = 4; curEnemyVmIdx < 8; curEnemyVmIdx++, curEnemyVm++)
+        {
+            if (0 <= curEnemyVm->anmFileIndex)
+            {
+                if (curEnemyVm->autoRotate != 0)
+                {
+                    curEnemyVm->rotation.z = curEnemy->angle;
+                }
+                curEnemyVm->pos = curEnemy->position + curEnemyVm->posOffset;
+                curEnemyVm->pos.z = 0.495f;
+                g_AnmManager->Draw2(curEnemyVm);
+            }
+        }
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
