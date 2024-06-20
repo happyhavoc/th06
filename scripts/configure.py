@@ -112,6 +112,7 @@ def configure(build_type):
             "utils",
             "ZunTimer",
             "zwave",
+            "Ending",
         ]
 
         pbg3_sources = [
