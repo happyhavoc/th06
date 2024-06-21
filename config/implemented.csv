@@ -172,6 +172,7 @@ Player::AddedCallback
 Player::RegisterChain
 Player::HandlePlayerInputs
 Player::DrawBullets
+Player::StartFireBulletTimer
 Player::OnUpdate
 Player::Player
 CSoundManager::CSoundManager

@@ -689,3 +689,11 @@ void Player::DrawBullets(Player *p)
         g_AnmManager->Draw2(&bullets->sprite);
     }
 }
+
+void Player::StartFireBulletTimer(Player *p)
+{
+    if (p->fireBulletTimer.AsFrames() < 0)
+    {
+        p->fireBulletTimer.InitializeForPopup();
+    }
+}
