@@ -77,7 +77,6 @@ ValidateReplayData
 DrawSquare
 Controller::GetControllerState
 Player::CalcKillBoxCollision
-Player::DrawBullets
 Player::DrawBulletExplosions
 Player::DidHitEnemy
 Player::DeletedCallback

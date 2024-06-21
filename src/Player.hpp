@@ -46,6 +46,13 @@ enum OrbState
     ORB_UNFOCUSING,
 };
 
+enum BulletState
+{
+    BULLET_STATE_UNUSED,
+    BULLET_STATE_FIRED,
+    BULLET_STATE_COLLIDED,
+};
+
 struct BombData
 {
     void (*calc)(Player *p);
@@ -69,7 +76,7 @@ struct PlayerBullet
     D3DXVECTOR3 unk_134;
     ZunTimer unk_140;
     u16 unk_14c;
-    u16 bulletState;
+    i16 bulletState;
     u16 bulletType;
     u16 unk_152;
     u16 unk_154;

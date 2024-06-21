@@ -171,6 +171,7 @@ SoundPlayer::InitSoundBuffers
 Player::AddedCallback
 Player::RegisterChain
 Player::HandlePlayerInputs
+Player::DrawBullets
 Player::OnUpdate
 Player::Player
 CSoundManager::CSoundManager

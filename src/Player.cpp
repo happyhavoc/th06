@@ -669,3 +669,23 @@ ZunResult Player::HandlePlayerInputs()
     this->previousFrameInput = g_CurFrameInput;
     return ZUN_SUCCESS;
 }
+
+#pragma var_order(bulletIdx, bullets)
+void Player::DrawBullets(Player *p)
+{
+    int bulletIdx;
+    PlayerBullet *bullets = p->bullets;
+
+    for (bulletIdx = 0; bulletIdx < ARRAY_SIZE_SIGNED(p->bullets); bulletIdx++, bullets++)
+    {
+        if (bullets->bulletState != BULLET_STATE_FIRED)
+        {
+            continue;
+        }
+        if (bullets->sprite.autoRotate)
+        {
+            bullets->sprite.rotation.z = ZUN_PI / 2 - AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
+        }
+        g_AnmManager->Draw2(&bullets->sprite);
+    }
+}
