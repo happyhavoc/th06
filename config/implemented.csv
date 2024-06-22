@@ -173,6 +173,7 @@ Player::RegisterChain
 Player::HandlePlayerInputs
 Player::DrawBullets
 Player::StartFireBulletTimer
+Player::UpdateFireBulletsTimer
 Player::OnUpdate
 Player::Player
 CSoundManager::CSoundManager

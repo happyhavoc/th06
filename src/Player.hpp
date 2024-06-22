@@ -29,6 +29,12 @@ enum Character
     CHARA_MARISA,
 };
 
+enum ShotType
+{
+    SHOT_TYPE_A,
+    SHOT_TYPE_B,
+};
+
 enum PlayerState
 {
     PLAYER_STATE_ALIVE,
@@ -144,6 +150,7 @@ struct Player
     static void UpdatePlayerBullets(Player *);
     static ZunResult UpdateFireBulletsTimer(Player *);
 
+    static void SpawnBullets(Player *, u32 timer);
     static void DrawBullets(Player *);
     static void DrawBulletExplosions(Player *);
 

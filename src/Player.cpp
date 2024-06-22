@@ -697,3 +697,26 @@ void Player::StartFireBulletTimer(Player *p)
         p->fireBulletTimer.InitializeForPopup();
     }
 }
+
+ZunResult Player::UpdateFireBulletsTimer(Player *p)
+{
+    if (p->fireBulletTimer.AsFrames() < 0)
+    {
+        return ZUN_SUCCESS;
+    }
+
+    if (p->fireBulletTimer.HasTicked() && (!g_Player.bombInfo.isInUse || g_GameManager.character != CHARA_MARISA ||
+                                           g_GameManager.shotType != SHOT_TYPE_B))
+    {
+        p->SpawnBullets(p, p->fireBulletTimer.AsFrames());
+    }
+
+    p->fireBulletTimer.Tick();
+
+    if (p->fireBulletTimer.AsFrames() >= 30 || p->playerState == PLAYER_STATE_DEAD ||
+        p->playerState == PLAYER_STATE_SPAWNING)
+    {
+        p->fireBulletTimer.SetCurrent(-1);
+    }
+    return ZUN_SUCCESS;
+}
