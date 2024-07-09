@@ -311,7 +311,7 @@ Player::DidHitEnemy,0x4264b0,0x77d,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECT
 Player::CalcKillBoxCollision,0x426c40,0x1b0,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECTOR3*
 Player::CheckGraze,0x426df0,0x1dd,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECTOR3*
 Player::CalcBoxCollision,0x426fd0,0x1ba,__thiscall,,u32,Player*,D3DXVECTOR3*,D3DXVECTOR3*
-Player::FUN_00427190,0x427190,0x49c,__thiscall,,u32,Player*,D3DXVECTOR3*,D3DXVECTOR3*,D3DXVECTOR3*,f32,i32
+Player::CalcLaserHitbox,0x427190,0x49c,__thiscall,,u32,Player*,D3DXVECTOR3*,D3DXVECTOR3*,D3DXVECTOR3*,f32,i32
 Player::ScoreGraze,0x427630,0x139,__thiscall,,void,Player*,D3DXVECTOR3*
 Player::Die,0x427770,0xe6,__thiscall,,void,Player*
 Player::HandlePlayerInputs,0x427860,0xd9a,__thiscall,,ZunResult,Player*
