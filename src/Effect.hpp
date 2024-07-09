@@ -21,7 +21,7 @@ struct Effect
     f32 angleRelated;
     ZunTimer timer;
     i32 unk_170;
-    i32 *effectUpdateCallback;
+    i32 (*updateCallback)(Effect *);
     i8 inUseFlag;
     i8 effectId;
     i8 unk_17a;

@@ -8,7 +8,7 @@
 struct EffectManager
 {
     i32 nextIndex;
-    EffectManager *nextManager;
+    i32 activeEffects;
     Effect effects[512];
     Effect dummyEffect;
 

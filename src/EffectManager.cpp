@@ -5,6 +5,7 @@
 #include "ChainPriorities.hpp"
 #include "GameManager.hpp"
 #include "ZunResult.hpp"
+#include "utils.hpp"
 
 DIFFABLE_STATIC(EffectManager, g_EffectManager);
 
@@ -88,4 +89,49 @@ ZunResult EffectManager::AddedCallback(EffectManager *mgr)
 void EffectManager::Reset()
 {
     memset(this, 0, sizeof(*this));
+}
+
+ChainCallbackResult EffectManager::OnUpdate(EffectManager *mgr)
+{
+    i32 effectIdx;
+    Effect *effect;
+
+    effect = &mgr->effects[0];
+    mgr->activeEffects = 0;
+    for (effectIdx = 0; effectIdx < ARRAY_SIZE_SIGNED(mgr->effects); effectIdx++, effect++)
+    {
+        if (effect->inUseFlag == 0)
+        {
+            continue;
+        }
+        mgr->activeEffects++;
+        if (effect->updateCallback != NULL && (effect->updateCallback)(effect) != 1)
+        {
+            effect->inUseFlag = 0;
+        }
+        if (g_AnmManager->ExecuteScript(&effect->vm) != 0)
+        {
+            effect->inUseFlag = 0;
+        }
+        effect->timer.Tick();
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult EffectManager::OnDraw(EffectManager *mgr)
+{
+    int effectIdx;
+    Effect *effect;
+
+    effect = &mgr->effects[0];
+    for (effectIdx = 0; effectIdx < ARRAY_SIZE_SIGNED(mgr->effects); effectIdx++, effect++)
+    {
+        if (effect->inUseFlag == 0)
+        {
+            continue;
+        }
+        effect->vm.pos = effect->pos1;
+        g_AnmManager->Draw3(&effect->vm);
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
