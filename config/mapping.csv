@@ -114,7 +114,7 @@ Enemy::FUN_004121b0,0x4121b0,0x84,__thiscall,,void,Enemy*
 Enemy::ClampPos,0x412240,0xd9,__thiscall,,void,Enemy*
 EnemyManager::RegisterChain,0x412320,0xc0,default,,ZunResult,char*,char*
 EnemyManager::OnUpdate,0x4123e0,0xa5f,default,,ChainCallbackResult,EnemyManager*
-Enemy::UpdateEffects,0x412e50,0xbd,__stdcall,,void,Enemy*
+Enemy::UpdateEffects,0x412e50,0xbd,default,,void,Enemy*
 EnemyManager::OnDraw,0x412f10,0x304,default,,ChainCallbackResult,EnemyManager*
 EnemyManager::AddedCallback,0x413220,0xff,__stdcall,,ZunResult,EnemyManager*
 EnemyManager::DeletedCallback,0x413320,0x21,default,,ZunResult,EnemyManager*
