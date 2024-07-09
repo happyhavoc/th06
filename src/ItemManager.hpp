@@ -36,6 +36,7 @@ C_ASSERT(sizeof(Item) == 0x144);
 struct ItemManager
 {
     void SpawnItem(D3DXVECTOR3 *position, ItemType type, i32 state);
+    void OnUpdate();
 
     Item items[512];
     Item dummyItemForFailedSpawns;

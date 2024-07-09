@@ -66,11 +66,11 @@ EclManager::RunEcl
 EclManager::CallEclSub
 BulletManager::DespawnBullets
 BulletManager::DeletedCallback
-BulletManager::OnUpdate
 BulletManager::OnDraw
 BulletManager::InitializeToZero
 BulletManager::RemoveAllBullets
 ItemManager::SpawnItem
+ItemManager::OnUpdate
 ReplayManager::RegisterChain
 SaveReplay
 ValidateReplayData
@@ -96,4 +96,7 @@ Player::BombMarisaBDraw
 Player::StartFireBulletTimer
 Player::UpdateFireBulletsTimer
 Player::UpdatePlayerBullets
+Player::CalcLaserHitbox
+Player::CheckGraze
+Player::AngleToPlayer
 Pbg3Archive::Pbg3Archive

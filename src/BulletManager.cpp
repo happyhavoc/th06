@@ -2,7 +2,11 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "GameManager.hpp"
 #include "ItemManager.hpp"
+#include "Player.hpp"
+#include "ZunMath.hpp"
+#include "utils.hpp"
 
 DIFFABLE_STATIC(BulletManager, g_BulletManager);
 DIFFABLE_STATIC(ChainElem, g_BulletManagerCalcChain);
@@ -84,6 +88,8 @@ ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
     g_Chain.AddToDrawChain(&g_BulletManagerDrawChain, TH_CHAIN_PRIO_DRAW_BULLETMANAGER);
     return ZUN_SUCCESS;
 }
+
+#define ZUN_MIN(x, y) ((x) > (y) ? (y) : (x))
 
 ZunResult BulletManager::AddedCallback(BulletManager *mgr)
 {
@@ -167,4 +173,424 @@ ZunResult BulletManager::AddedCallback(BulletManager *mgr)
     }
     memset(&g_ItemManager, 0, sizeof(ItemManager));
     return ZUN_SUCCESS;
+}
+
+void __inline sincosmul(D3DXVECTOR3 *out_vel, f32 input, f32 multiplier)
+{
+    __asm {
+        mov eax, out_vel
+        fld input
+        fsincos
+        fmul [multiplier]
+        fstp [eax]
+        fmul [multiplier]
+        fstp [eax+4]
+    }
+}
+
+f32 __inline invertf(f32 x)
+{
+    return 1.f / x;
+}
+
+#pragma var_order(local_8, idx, local_10, local_14, local_20, curBullet, local_28, curLaser, local_38, res)
+ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
+{
+    i32 res;
+    D3DXVECTOR3 local_20;
+    i32 local_28;
+    D3DXVECTOR3 local_38;
+    f32 local_14;
+
+    Bullet *curBullet;
+    Laser *curLaser;
+    f32 local_10;
+    i32 idx;
+    i32 local_8;
+
+    curBullet = &mgr->bullets[0];
+    if (g_GameManager.isTimeStopped)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    g_ItemManager.OnUpdate();
+    mgr->bulletCount = 0;
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet++)
+    {
+        if (curBullet->state == 0)
+            continue;
+
+        mgr->bulletCount++;
+        switch (curBullet->state)
+        {
+        case 2:
+            curBullet->pos += invertf(2.f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectFast) == 0)
+            {
+                break;
+            }
+            goto HELL;
+        case 3:
+            curBullet->pos += invertf(2.5f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectNormal) == 0)
+            {
+                break;
+            }
+            goto HELL;
+        case 4:
+            curBullet->pos += invertf(3.f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectSlow) == 0)
+            {
+                break;
+            }
+        HELL:
+            curBullet->state = 1;
+            curBullet->timer.InitializeForPopup();
+        case 1:
+            if (curBullet->exFlags != 0)
+            {
+                if (curBullet->exFlags & 1)
+                {
+                    if ((ZunBool)(curBullet->timer.current <= 16))
+                    {
+                        local_10 = 5.0f - curBullet->timer.AsFramesFloat() * 5.0f / 16.0f;
+                        sincosmul(&curBullet->velocity, curBullet->angle, local_10 + curBullet->speed);
+                    }
+                    else
+                    {
+                        curBullet->exFlags ^= 1;
+                    }
+                }
+                else if (curBullet->exFlags & 0x10)
+                {
+                    if ((ZunBool)(curBullet->timer.current >= curBullet->ex5Int0))
+                    {
+                        curBullet->exFlags &= ~0x10;
+                    }
+                    else
+                    {
+                        curBullet->velocity += curBullet->ex4Acceleration * g_Supervisor.effectiveFramerateMultiplier;
+                        curBullet->angle = atan2f(curBullet->velocity.y, curBullet->velocity.x);
+                    }
+                }
+                else if (curBullet->exFlags & 0x20)
+                {
+                    if ((ZunBool)(curBullet->timer.current >= curBullet->ex5Int0))
+                    {
+                        curBullet->exFlags &= ~0x20;
+                    }
+                    else
+                    {
+                        curBullet->angle = AddNormalizeAngle(
+                            curBullet->angle, g_Supervisor.effectiveFramerateMultiplier * curBullet->ex5Float1);
+                        curBullet->speed += g_Supervisor.effectiveFramerateMultiplier * curBullet->ex5Float0;
+                        // Has to be done in asm. Just, great.
+                        sincosmul(&curBullet->velocity, curBullet->angle, curBullet->speed);
+                    }
+                }
+                if (curBullet->exFlags & 0x40)
+                {
+                    if ((ZunBool)(curBullet->timer.current >=
+                                  curBullet->dirChangeInterval * (curBullet->dirChangeNumTimes + 1)))
+                    {
+                        curBullet->dirChangeNumTimes++;
+                        if (curBullet->dirChangeNumTimes >= curBullet->dirChangeMaxTimes)
+                        {
+                            curBullet->exFlags &= ~0x40;
+                        }
+                        curBullet->angle = curBullet->angle + curBullet->dirChangeRotation;
+                        curBullet->speed = curBullet->dirChangeSpeed;
+                        local_10 = curBullet->speed;
+                    }
+                    else
+                    {
+                        local_10 = curBullet->speed - ((curBullet->timer.AsFramesFloat() -
+                                                        (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
+                                                       curBullet->speed) /
+                                                          curBullet->dirChangeInterval;
+                    }
+                    sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                }
+                else if (curBullet->exFlags & 0x100)
+                {
+                    if ((ZunBool)(curBullet->timer.current >=
+                                  curBullet->dirChangeInterval * (curBullet->dirChangeNumTimes + 1)))
+                    {
+                        curBullet->dirChangeNumTimes++;
+                        if (curBullet->dirChangeNumTimes >= curBullet->dirChangeMaxTimes)
+                        {
+                            curBullet->exFlags &= ~0x100;
+                        }
+                        curBullet->angle = curBullet->dirChangeRotation;
+                        curBullet->speed = curBullet->dirChangeSpeed;
+                        local_10 = curBullet->speed;
+                    }
+                    else
+                    {
+                        local_10 = curBullet->speed - ((curBullet->timer.AsFramesFloat() -
+                                                        (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
+                                                       curBullet->speed) /
+                                                          curBullet->dirChangeInterval;
+                    }
+                    sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                }
+                else if (curBullet->exFlags & 0x80)
+                {
+                    if ((ZunBool)(curBullet->timer.current >=
+                                  curBullet->dirChangeInterval * (curBullet->dirChangeNumTimes + 1)))
+                    {
+                        curBullet->dirChangeNumTimes++;
+                        if (curBullet->dirChangeNumTimes >= curBullet->dirChangeMaxTimes)
+                        {
+                            curBullet->exFlags &= ~0x80;
+                        }
+                        curBullet->angle = g_Player.AngleToPlayer(&curBullet->pos) + curBullet->dirChangeRotation;
+                        curBullet->speed = curBullet->dirChangeSpeed;
+                        local_10 = curBullet->speed;
+                    }
+                    else
+                    {
+                        local_10 = curBullet->speed - ((curBullet->timer.AsFramesFloat() -
+                                                        (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
+                                                       curBullet->speed) /
+                                                          curBullet->dirChangeInterval;
+                    }
+                    sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                }
+                else if (curBullet->exFlags & 0x400)
+                {
+                    if (g_GameManager.IsInBounds(curBullet->pos.x, curBullet->pos.y,
+                                                 curBullet->sprites.spriteBullet.sprite->widthPx,
+                                                 curBullet->sprites.spriteBullet.sprite->heightPx) == 0)
+                    {
+                        if (curBullet->pos.x < 0.0f || curBullet->pos.x >= 384.0f)
+                        {
+                            curBullet->angle = -curBullet->angle - ZUN_PI;
+                            curBullet->angle = AddNormalizeAngle(curBullet->angle, 0.0);
+                        }
+                        if (curBullet->pos.y < 0.0f || curBullet->pos.y >= 448.0f)
+                        {
+                            curBullet->angle = -curBullet->angle;
+                        }
+                        curBullet->speed = curBullet->dirChangeSpeed;
+                        local_10 = curBullet->speed;
+                        sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                        curBullet->dirChangeNumTimes++;
+                        if (curBullet->dirChangeNumTimes >= curBullet->dirChangeMaxTimes)
+                        {
+                            curBullet->exFlags &= ~0x400;
+                        }
+                    }
+                }
+                else if (curBullet->exFlags & 0x800)
+                {
+                    if (g_GameManager.IsInBounds(curBullet->pos.x, curBullet->pos.y,
+                                                 curBullet->sprites.spriteBullet.sprite->widthPx,
+                                                 curBullet->sprites.spriteBullet.sprite->heightPx) == 0)
+                    {
+                        if (curBullet->pos.x < 0.0f || curBullet->pos.x >= 384.0f)
+                        {
+                            curBullet->angle = -curBullet->angle - ZUN_PI;
+                            curBullet->angle = AddNormalizeAngle(curBullet->angle, 0.0f);
+                        }
+                        if (curBullet->pos.y < 0.0f)
+                        {
+                            curBullet->angle = -curBullet->angle;
+                        }
+                        curBullet->speed = curBullet->dirChangeSpeed;
+                        local_10 = curBullet->speed;
+                        sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                        curBullet->dirChangeNumTimes++;
+                        if (curBullet->dirChangeNumTimes >= curBullet->dirChangeMaxTimes)
+                        {
+                            curBullet->exFlags &= ~0x800;
+                        }
+                    }
+                }
+            }
+            curBullet->pos += g_Supervisor.FramerateMultiplier() * curBullet->velocity;
+            if (g_GameManager.IsInBounds(curBullet->pos.x, curBullet->pos.y,
+                                         curBullet->sprites.spriteBullet.sprite->widthPx,
+                                         curBullet->sprites.spriteBullet.sprite->heightPx) == 0)
+            {
+                if ((curBullet->exFlags & 0x40) == 0 && (curBullet->exFlags & 0x100) == 0 &&
+                    (curBullet->exFlags & 0x80) == 0 && (curBullet->exFlags & 0x400) == 0 &&
+                    (curBullet->exFlags & 0x800) == 0 && curBullet->unk_5c0 == 0)
+                {
+                    memset(curBullet, 0, sizeof(Bullet));
+                    continue;
+                }
+                else
+                {
+                    curBullet->unk_5c0++;
+                    if (curBullet->unk_5c0 >= 0x100)
+                    {
+                        memset(curBullet, 0, sizeof(Bullet));
+                        continue;
+                    }
+                }
+            }
+            else
+            {
+                curBullet->unk_5c0 = 0;
+            }
+            if (curBullet->isGrazed == 0)
+            {
+                local_8 = g_Player.CheckGraze(&curBullet->pos, &curBullet->sprites.grazeSize);
+                if (local_8 == 1)
+                {
+                    curBullet->isGrazed = 1;
+                    goto bulletGrazed;
+                }
+                else if (local_8 == 2)
+                {
+                    curBullet->state = 5;
+                    g_ItemManager.SpawnItem(&curBullet->pos, ITEM_POINT_BULLET, 1);
+                }
+            }
+            else if (curBullet->isGrazed == 1)
+            {
+            bulletGrazed:
+                local_8 = g_Player.CalcKillBoxCollision(&curBullet->pos, &curBullet->sprites.grazeSize);
+                if (local_8 != 0)
+                {
+                    curBullet->state = 5;
+                    if (local_8 == 2)
+                    {
+                        g_ItemManager.SpawnItem(&curBullet->pos, ITEM_POINT_BULLET, 1);
+                    }
+                }
+            }
+            g_AnmManager->ExecuteScript(&curBullet->sprites.spriteBullet);
+            break;
+        case 5:
+            curBullet->pos += invertf(2.0f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectDonut) != 0)
+            {
+                memset(curBullet, 0, sizeof(Bullet));
+                continue;
+            }
+            break;
+        }
+        curBullet->timer.Tick();
+    }
+
+    curLaser = &mgr->lasers[0];
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->lasers); idx++, curLaser++)
+    {
+        if (!curLaser->inUse)
+        {
+            continue;
+        }
+
+        curLaser->endOffset += g_Supervisor.effectiveFramerateMultiplier * curLaser->speed;
+        if (curLaser->startLength < curLaser->endOffset - curLaser->startOffset)
+        {
+            curLaser->startOffset = curLaser->endOffset - curLaser->startLength;
+        }
+        if (curLaser->startOffset < 0.0f)
+        {
+            curLaser->startOffset = 0.0f;
+        }
+        local_20.y = curLaser->width / 2.0f;
+        local_20.x = curLaser->endOffset - curLaser->startOffset;
+        local_38.x = (curLaser->endOffset - curLaser->startOffset) / 2.0f + curLaser->startOffset + curLaser->pos.x;
+        local_38.y = curLaser->pos.y;
+        curLaser->vm0.scaleX = curLaser->width / curLaser->vm0.sprite->widthPx;
+        local_14 = curLaser->endOffset - curLaser->startOffset;
+        curLaser->vm0.scaleY = local_14 / curLaser->vm0.sprite->heightPx;
+        curLaser->vm0.rotation.z = ZUN_PI / 2.0f - curLaser->angle;
+        switch (curLaser->state)
+        {
+        case 0:
+            if (curLaser->flags & 1)
+            {
+                local_28 = curLaser->timer.AsFramesFloat() * 255.0f / curLaser->startTime;
+                if (255 < local_28)
+                {
+                    local_28 = 255;
+                }
+                curLaser->vm0.color = local_28 << 24;
+            }
+            else
+            {
+                res = ZUN_MIN(curLaser->startTime, 30);
+                if (curLaser->startTime - res < curLaser->timer.AsFrames())
+                {
+                    local_14 = curLaser->timer.AsFramesFloat() * curLaser->width / curLaser->startTime;
+                }
+                else
+                {
+                    local_14 = 1.2f;
+                }
+                curLaser->vm0.scaleX = local_14 / 16.0f;
+                local_20.x = local_14 / 2.0f;
+            }
+            if ((ZunBool)(curLaser->timer.current >= curLaser->grazeDelay))
+            {
+                g_Player.CalcLaserHitbox(&local_38, &local_20, &curLaser->pos, curLaser->angle,
+                                         curLaser->timer.AsFrames() % 12 == 0);
+            }
+            if ((ZunBool)(curLaser->timer.current < curLaser->startTime))
+            {
+                break;
+            }
+            curLaser->timer.InitializeForPopup();
+            curLaser->state++;
+        case 1:
+            g_Player.CalcLaserHitbox(&local_38, &local_20, &curLaser->pos, curLaser->angle,
+                                     curLaser->timer.AsFrames() % 12 == 0);
+            if ((ZunBool)(curLaser->timer.current < curLaser->duration))
+            {
+                break;
+            }
+            curLaser->timer.InitializeForPopup();
+            curLaser->state++;
+            if (curLaser->endTime == 0)
+            {
+                curLaser->inUse = 0;
+                continue;
+            }
+        case 2:
+            if (curLaser->flags & 1)
+            {
+                local_28 = curLaser->timer.AsFramesFloat() * 255.0f / curLaser->startTime;
+                if (255 < local_28)
+                {
+                    local_28 = 255;
+                }
+                curLaser->vm0.color = local_28 << 24;
+            }
+            else
+            {
+                if (0 < curLaser->endTime)
+                {
+                    local_14 =
+                        curLaser->width - (curLaser->timer.AsFramesFloat() * curLaser->width) / curLaser->endTime;
+                    curLaser->vm0.scaleX = local_14 / 16.0f;
+                    local_20.x = local_14 / 2.0f;
+                }
+            }
+            if ((ZunBool)(curLaser->timer.current < curLaser->grazeInterval))
+            {
+                g_Player.CalcLaserHitbox(&local_38, &local_20, &curLaser->pos, curLaser->angle,
+                                         curLaser->timer.AsFrames() % 12 == 0);
+            }
+            if ((ZunBool)(curLaser->timer.current < curLaser->endTime))
+            {
+                break;
+            }
+            curLaser->inUse = 0;
+            continue;
+        }
+        if (curLaser->startOffset >= 640.0f)
+        {
+            curLaser->inUse = 0;
+        }
+        curLaser->timer.Tick();
+        g_AnmManager->ExecuteScript(&curLaser->vm0);
+    }
+
+    mgr->time.Tick();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }

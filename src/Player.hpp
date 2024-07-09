@@ -4,6 +4,7 @@
 
 #include "AnmVm.hpp"
 #include "Chain.hpp"
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
@@ -139,7 +140,11 @@ struct Player
     static void DrawBullets(Player *);
     static void DrawBulletExplosions(Player *);
 
+    f32 AngleToPlayer(D3DXVECTOR3 *pos);
+    i32 CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *hitbox);
     ZunBool CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize);
+    i32 CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
+                        i32 canGraze);
     i32 DidHitEnemy(D3DXVECTOR3 *enemyPos, D3DXVECTOR3 *enemySize, i32 *unk);
 
     AnmVm playerSprite;

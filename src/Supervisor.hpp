@@ -125,6 +125,11 @@ struct Supervisor
 
     void TickTimer(i32 *frames, f32 *subframes);
 
+    f32 FramerateMultiplier()
+    {
+        return this->effectiveFramerateMultiplier;
+    }
+
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
     PDIRECT3DDEVICE8 d3dDevice;
