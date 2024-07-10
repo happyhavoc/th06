@@ -132,8 +132,8 @@ BulletManager::FUN_00414670,0x414670,0x27b,__thiscall,,void*,BulletManager*,Enem
 BulletManager::RegisterChain,0x4148f0,0xd3,default,,ZunResult,char*
 BulletManager::OnUpdate,0x4149d0,0x1b10,default,,ChainCallbackResult,BulletManager*
 BulletManager::OnDraw,0x416500,0x647,default,,ChainCallbackResult,BulletManager*
-Draw,0x416b50,0xea,default,,void,Bullet*
-FUN_00416c50,0x416c50,0xf4,__stdcall,,void,Bullet*
+BulletManager::DrawBullet,0x416b50,0xea,default,,void,Bullet*
+BulletManager::DrawBulletNoHwVertex,0x416c50,0xf4,default,,void,Bullet*
 BulletManager::AddedCallback,0x416d60,0x509,__stdcall,,ZunResult,BulletManager*
 BulletManager::DeletedCallback,0x417270,0x31,default,,ZunResult,BulletManager*
 BulletManager::CutChain,0x4172b0,0x23,unknown,,u8
