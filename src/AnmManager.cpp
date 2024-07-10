@@ -3,6 +3,7 @@
 #include "GameErrorContext.hpp"
 #include "Rng.hpp"
 #include "Supervisor.hpp"
+#include "ZunMath.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -1174,15 +1175,6 @@ f32 __inline rintf(f32 float_in)
     }
     return float_in;
 }
-
-#define sincos(in, out_sine, out_cosine)                                                                               \
-    {                                                                                                                  \
-        __asm { \
-        __asm fld in \
-        __asm fsincos \
-        __asm fstp out_cosine \
-        __asm fstp out_sine }                                            \
-    }
 
 #pragma var_order(spriteXCenter, spriteYCenter, yOffset, xOffset, zSine, z, zCosine)
 ZunResult AnmManager::Draw(AnmVm *vm)

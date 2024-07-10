@@ -5,6 +5,7 @@
 #include "GameManager.hpp"
 #include "ItemManager.hpp"
 #include "Player.hpp"
+#include "ZunColor.hpp"
 #include "ZunMath.hpp"
 #include "utils.hpp"
 
@@ -592,5 +593,167 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
     }
 
     mgr->time.Tick();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+void __inline fsincos_wrapper(f32 *out_sine, f32 *out_cosine, f32 angle)
+{
+    __asm {
+        fld [angle]
+        fsincos
+        mov eax, [out_cosine]
+        fstp [eax]
+        mov eax, [out_sine]
+        fstp [eax]
+    }
+}
+
+#pragma var_order(idx, sine, curLaser, laserOffset, cosine, curBullet1, curBullet2)
+ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
+{
+    i32 idx;
+    f32 sine;
+    Laser *curLaser;
+    f32 laserOffset;
+    f32 cosine;
+    Bullet *curBullet1;
+    Bullet *curBullet2;
+
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+    for (curLaser = &mgr->lasers[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->lasers); idx++, curLaser++)
+    {
+        if (!curLaser->inUse)
+        {
+            continue;
+        }
+        fsincos_wrapper(&sine, &cosine, curLaser->angle);
+        laserOffset = (curLaser->endOffset - curLaser->startOffset) / 2.0f + curLaser->startOffset;
+        curLaser->vm0.pos.x = cosine * laserOffset + curLaser->pos.x;
+        curLaser->vm0.pos.y = sine * laserOffset + curLaser->pos.y;
+        curLaser->vm0.pos.z = 0.0f;
+        curLaser->color = COLOR_COMBINE_ALPHA(COLOR_WHITE, curLaser->color);
+        g_AnmManager->Draw3(&curLaser->vm0);
+        if (curLaser->startOffset < 16.0f || curLaser->speed == 0.0f)
+        {
+            curLaser->vm1.pos.x = cosine * curLaser->startOffset + curLaser->pos.x;
+            curLaser->vm1.pos.y = sine * curLaser->startOffset + curLaser->pos.y;
+            curLaser->vm1.pos.z = 0.0f;
+            curLaser->vm1.color = curLaser->vm0.color;
+            curLaser->vm1.flags.colorOp = AnmVmColorOp_Add;
+            curLaser->vm1.color = COLOR_SET_ALPHA2(curLaser->vm1.color, 0xff);
+            curLaser->vm1.scaleX = (curLaser->width / 10.0f) * ((16.0f - curLaser->startOffset) / 16.0f);
+            curLaser->vm1.scaleY = curLaser->vm1.scaleX;
+            if (curLaser->vm1.scaleY < 0.0f)
+            {
+                curLaser->vm1.scaleX = curLaser->width / 10.0f;
+                curLaser->vm1.scaleY = curLaser->vm1.scaleX;
+            }
+            g_AnmManager->Draw3(&curLaser->vm1);
+        }
+    }
+    g_ItemManager.OnDraw();
+    if (g_Supervisor.hasD3dHardwareVertexProcessing)
+    {
+        for (curBullet1 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet1++)
+        {
+            if (curBullet1->state == 0)
+            {
+                continue;
+            }
+            if (curBullet1->sprites.bulletHeight > 16)
+            {
+                BulletManager::DrawBullet(curBullet1);
+            }
+        }
+        for (curBullet1 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet1++)
+        {
+            if (curBullet1->state == 0)
+            {
+                continue;
+            }
+            if (curBullet1->sprites.bulletHeight == 16 &&
+                (curBullet1->sprites.spriteBullet.anmFileIndex == ANM_SCRIPT_BULLET3_RING_BALL ||
+                 curBullet1->sprites.spriteBullet.anmFileIndex == ANM_SCRIPT_BULLET3_BALL))
+            {
+                BulletManager::DrawBullet(curBullet1);
+            }
+        }
+        for (curBullet1 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet1++)
+        {
+            if (curBullet1->state == 0)
+            {
+                continue;
+            }
+            if (curBullet1->sprites.bulletHeight == 16 &&
+                curBullet1->sprites.spriteBullet.anmFileIndex != ANM_SCRIPT_BULLET3_RING_BALL &&
+                curBullet1->sprites.spriteBullet.anmFileIndex != ANM_SCRIPT_BULLET3_BALL)
+            {
+                BulletManager::DrawBullet(curBullet1);
+            }
+        }
+        for (curBullet1 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet1++)
+        {
+            if (curBullet1->state == 0)
+            {
+                continue;
+            }
+            if (curBullet1->sprites.bulletHeight == 8)
+            {
+                BulletManager::DrawBullet(curBullet1);
+            }
+        }
+    }
+    else
+    {
+        for (curBullet2 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet2++)
+        {
+            if (curBullet2->state == 0)
+            {
+                continue;
+            }
+            if (curBullet2->sprites.bulletHeight > 16)
+            {
+                BulletManager::DrawBulletNoHwVertex(curBullet2);
+            }
+        }
+        for (curBullet2 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet2++)
+        {
+            if (curBullet2->state == 0)
+            {
+                continue;
+            }
+            if (curBullet2->sprites.bulletHeight == 16 &&
+                (curBullet2->sprites.spriteBullet.anmFileIndex == ANM_SCRIPT_BULLET3_RING_BALL ||
+                 curBullet2->sprites.spriteBullet.anmFileIndex == ANM_SCRIPT_BULLET3_BALL))
+            {
+                BulletManager::DrawBulletNoHwVertex(curBullet2);
+            }
+        }
+        for (curBullet2 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet2++)
+        {
+            if (curBullet2->state == 0)
+            {
+                continue;
+            }
+            if (curBullet2->sprites.bulletHeight == 16 &&
+                curBullet2->sprites.spriteBullet.anmFileIndex != ANM_SCRIPT_BULLET3_RING_BALL &&
+                curBullet2->sprites.spriteBullet.anmFileIndex != ANM_SCRIPT_BULLET3_BALL)
+            {
+                BulletManager::DrawBulletNoHwVertex(curBullet2);
+            }
+        }
+        for (curBullet2 = &mgr->bullets[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->bullets); idx++, curBullet2++)
+        {
+            if (curBullet2->state == 0)
+            {
+                continue;
+            }
+            if (curBullet2->sprites.bulletHeight == 8)
+            {
+                BulletManager::DrawBulletNoHwVertex(curBullet2);
+            }
+        }
+    }
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }

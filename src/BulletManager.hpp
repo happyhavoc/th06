@@ -79,6 +79,9 @@ struct BulletManager
     static ChainCallbackResult OnUpdate(BulletManager *mgr);
     static ChainCallbackResult OnDraw(BulletManager *mgr);
 
+    static void DrawBulletNoHwVertex(Bullet *bullet);
+    static void DrawBullet(Bullet *bullet);
+
     void RemoveAllBullets(ZunBool turnIntoItem);
     void InitializeToZero();
     i32 DespawnBullets(i32 unk, ZunBool awardPoints);

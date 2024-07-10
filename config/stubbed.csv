@@ -66,11 +66,13 @@ EclManager::RunEcl
 EclManager::CallEclSub
 BulletManager::DespawnBullets
 BulletManager::DeletedCallback
-BulletManager::OnDraw
+BulletManager::DrawBulletNoHwVertex
+BulletManager::DrawBullet
 BulletManager::InitializeToZero
 BulletManager::RemoveAllBullets
 ItemManager::SpawnItem
 ItemManager::OnUpdate
+ItemManager::OnDraw
 ReplayManager::RegisterChain
 SaveReplay
 ValidateReplayData
