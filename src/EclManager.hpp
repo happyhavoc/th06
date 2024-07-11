@@ -5,10 +5,36 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 #include <Windows.h>
+#include <d3dx8math.h>
 
 // Forward declaration to avoid include loop.
 struct Enemy;
 struct EnemyEclContext;
+struct EnemyManager;
+
+struct EclTimelineInstrArgs
+{
+    u32 uintVar1;
+    u32 uintVar2;
+    u32 uintVar3;
+    u16 ushortVar1;
+    u16 ushortVar2;
+    u32 uintVar4;
+
+    D3DXVECTOR3 *Var1AsVec()
+    {
+        return (D3DXVECTOR3 *)&this->uintVar1;
+    }
+};
+
+struct EclTimelineInstr
+{
+    i16 time;
+    i16 arg0;
+    i16 opCode;
+    i16 size;
+    EclTimelineInstrArgs args;
+};
 
 struct EclRawInstr
 {
@@ -40,7 +66,7 @@ struct EclRawHeader
 {
     i16 subCount;
     i16 mainCount;
-    void *timelineOffsets[3];
+    EclTimelineInstr *timelineOffsets[3];
     void *subOffsets[0];
 };
 C_ASSERT(sizeof(EclRawHeader) == 0x10);
@@ -53,7 +79,7 @@ struct EclManager
 
     EclRawHeader *eclFile;
     void **subTable;
-    void *timeline;
+    EclTimelineInstr *timeline;
 };
 C_ASSERT(sizeof(EclManager) == 0xc);
 

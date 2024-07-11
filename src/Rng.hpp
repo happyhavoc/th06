@@ -16,6 +16,11 @@ struct Rng
     {
         return range != 0 ? this->GetRandomU16() % range : 0;
     }
+
+    f32 GetRandomF32InRange(f32 range)
+    {
+        return this->GetRandomF32ZeroToOne() * range;
+    }
 };
 
 DIFFABLE_EXTERN(Rng, g_Rng);
