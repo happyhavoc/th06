@@ -1,5 +1,4 @@
 AnmManager::TakeScreenshotIfRequested
-AnmManager::SetActiveSprite
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
 EffectManager::DeletedCallback
@@ -40,8 +39,6 @@ MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
-MainMenu::LoadDiffCharSelect
-MainMenu::DrawReplayMenu
 MainMenu::SelectRelated
 Gui::DeletedCallback
 Gui::DrawStageElements
@@ -53,7 +50,6 @@ Gui::MsgRead
 Gui::MsgWait
 GuiImpl::RunMsg
 GuiImpl::DrawDialogue
-EffectManager::RegisterChain
 EnemyManager::Initialize
 EnemyManager::DeletedCallback
 EnemyManager::SpawnEnemy
