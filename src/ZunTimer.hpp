@@ -48,5 +48,10 @@ struct ZunTimer
     {
         return this->current;
     }
+
+    ZunBool HasTicked()
+    {
+        return this->current != this->previous;
+    }
 };
 C_ASSERT(sizeof(ZunTimer) == 0xc);

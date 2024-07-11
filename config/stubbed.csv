@@ -49,12 +49,14 @@ Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
 Gui::FreeMsgFile
 Gui::IsStageFinished
+Gui::MsgRead
+Gui::MsgWait
 GuiImpl::RunMsg
 GuiImpl::DrawDialogue
 EffectManager::RegisterChain
 EnemyManager::Initialize
 EnemyManager::DeletedCallback
-EnemyManager::RunEclTimeline
+EnemyManager::SpawnEnemy
 Enemy::UpdateEffects
 Enemy::ResetEffectArray
 Enemy::Despawn

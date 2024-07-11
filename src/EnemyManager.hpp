@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Chain.hpp"
+#include "EclManager.hpp"
 #include "Enemy.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
@@ -16,6 +17,7 @@ struct EnemyManager
     static ZunResult DeletedCallback(EnemyManager *enemyManager);
 
     void RunEclTimeline();
+    Enemy *SpawnEnemy(i32 eclSubId, D3DXVECTOR3 *pos, i16 life, i16 itemDrop, i32 score);
 
     char *stgEnmAnmFilename;
     char *stgEnm2AnmFilename;
@@ -33,7 +35,7 @@ struct EnemyManager
     i32 spellcardNumber;
     i32 unk_ee5d4;
     i32 unk_ee5d8;
-    void *timelineInstr;
+    EclTimelineInstr *timelineInstr;
     ZunTimer timelineTime;
 };
 C_ASSERT(sizeof(EnemyManager) == 0xee5ec);

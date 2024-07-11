@@ -36,9 +36,17 @@ struct Gui
     void DrawStageElements();
     void DrawGameScene();
 
+    void MsgRead(i32 msgIdx);
+    ZunBool MsgWait();
+
     void SetBossHealthBar(f32 val)
     {
         this->bossHealthBar1 = val;
+    }
+
+    bool BossPresent()
+    {
+        return this->bossPresent;
     }
 
     GuiFlags flags;

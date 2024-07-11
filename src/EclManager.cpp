@@ -15,7 +15,8 @@ ZunResult EclManager::Load(char *eclPath)
         GameErrorContextLog(&g_GameErrorContext, TH_ERR_ECLMANAGER_ENEMY_DATA_CORRUPT);
         return ZUN_ERROR;
     }
-    this->eclFile->timelineOffsets[0] = (void *)((int)this->eclFile->timelineOffsets[0] + (int)this->eclFile);
+    this->eclFile->timelineOffsets[0] =
+        (EclTimelineInstr *)((int)this->eclFile->timelineOffsets[0] + (int)this->eclFile);
     this->subTable = &this->eclFile->subOffsets[0];
     for (idx = 0; idx < this->eclFile->subCount; idx++)
     {
