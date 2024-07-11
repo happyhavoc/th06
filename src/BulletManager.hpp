@@ -43,7 +43,7 @@ struct Bullet
     u16 state;
     u16 unk_5c0;
     u8 unk_5c2;
-    u8 unk_5c3;
+    u8 isGrazed;
 };
 C_ASSERT(sizeof(Bullet) == 0x5c4);
 
@@ -65,7 +65,7 @@ struct Laser
     i32 grazeInterval;
     i32 inUse;
     ZunTimer timer;
-    i16 flags;
+    u16 flags;
     i16 color;
     u8 state;
 };
@@ -78,6 +78,9 @@ struct BulletManager
     static ZunResult DeletedCallback(BulletManager *mgr);
     static ChainCallbackResult OnUpdate(BulletManager *mgr);
     static ChainCallbackResult OnDraw(BulletManager *mgr);
+
+    static void DrawBulletNoHwVertex(Bullet *bullet);
+    static void DrawBullet(Bullet *bullet);
 
     void RemoveAllBullets(ZunBool turnIntoItem);
     void InitializeToZero();

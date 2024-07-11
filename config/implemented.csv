@@ -45,6 +45,8 @@ AnmManager::TranslateRotation
 AnmManager::ExecuteAnmIdx
 BulletManager::RegisterChain
 BulletManager::AddedCallback
+BulletManager::OnUpdate
+BulletManager::OnDraw
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem
