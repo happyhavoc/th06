@@ -81,6 +81,7 @@ struct BulletManager
 
     void RemoveAllBullets(ZunBool turnIntoItem);
     void InitializeToZero();
+    i32 DespawnBullets(i32 unk, ZunBool awardPoints);
 
     BulletTypeSprites bulletTypeTemplates[16];
     Bullet bullets[640];

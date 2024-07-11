@@ -15,6 +15,8 @@ struct EnemyManager
     static ZunResult AddedCallback(EnemyManager *enemyManager);
     static ZunResult DeletedCallback(EnemyManager *enemyManager);
 
+    void RunEclTimeline();
+
     char *stgEnmAnmFilename;
     char *stgEnm2AnmFilename;
     Enemy enemyTemplate;
@@ -29,7 +31,8 @@ struct EnemyManager
     i32 spellcardCapture;
     i32 spellcardBonus;
     i32 spellcardNumber;
-    i8 unk_ee5d4[8];
+    i32 unk_ee5d4;
+    i32 unk_ee5d8;
     void *timelineInstr;
     ZunTimer timelineTime;
 };

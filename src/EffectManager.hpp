@@ -2,6 +2,7 @@
 
 #include "Chain.hpp"
 #include "Effect.hpp"
+#include "ZunColor.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
@@ -18,6 +19,7 @@ struct EffectManager
     static ZunResult DeletedCallback(EffectManager *mgr);
     static ChainCallbackResult OnDraw(EffectManager *mgr);
     void Reset();
+    Effect *SpawnEffect(i32 effectIdx, D3DXVECTOR3 *pos, i32 count, ZunColor color);
 };
 C_ASSERT(sizeof(EffectManager) == 0x2f984);
 

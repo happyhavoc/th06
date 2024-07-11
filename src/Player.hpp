@@ -139,6 +139,9 @@ struct Player
     static void DrawBullets(Player *);
     static void DrawBulletExplosions(Player *);
 
+    ZunBool CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize);
+    i32 DidHitEnemy(D3DXVECTOR3 *enemyPos, D3DXVECTOR3 *enemySize, i32 *unk);
+
     AnmVm playerSprite;
     AnmVm orbsSprite[3];
     D3DXVECTOR3 positionCenter;
@@ -183,3 +186,5 @@ struct Player
     ChainElem *chainDraw2;
 };
 C_ASSERT(sizeof(Player) == 0x98f0);
+
+DIFFABLE_EXTERN(Player, g_Player);
