@@ -171,6 +171,10 @@ SoundPlayer::InitSoundBuffers
 Player::AddedCallback
 Player::RegisterChain
 Player::HandlePlayerInputs
+Player::DrawBullets
+Player::SpawnBullets
+Player::StartFireBulletTimer
+Player::UpdateFireBulletsTimer
 Player::OnUpdate
 Player::Player
 CSoundManager::CSoundManager

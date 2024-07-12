@@ -29,6 +29,12 @@ enum Character
     CHARA_MARISA,
 };
 
+enum ShotType
+{
+    SHOT_TYPE_A,
+    SHOT_TYPE_B,
+};
+
 enum PlayerState
 {
     PLAYER_STATE_ALIVE,
@@ -44,6 +50,13 @@ enum OrbState
     ORB_FOCUSING,
     ORB_FOCUSED,
     ORB_UNFOCUSING,
+};
+
+enum BulletState
+{
+    BULLET_STATE_UNUSED,
+    BULLET_STATE_FIRED,
+    BULLET_STATE_COLLIDED,
 };
 
 struct BombData
@@ -69,7 +82,7 @@ struct PlayerBullet
     D3DXVECTOR3 unk_134;
     ZunTimer unk_140;
     u16 unk_14c;
-    u16 bulletState;
+    i16 bulletState;
     u16 bulletType;
     u16 unk_152;
     u16 unk_154;
@@ -91,7 +104,7 @@ struct PlayerBombInfo
 };
 C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
 
-typedef u32 FireBulletResult;
+typedef i32 FireBulletResult;
 #define FBR_STOP_SPAWNING (-2)
 #define FBR_SPAWN_MORE (-1)
 
@@ -137,6 +150,7 @@ struct Player
     static void UpdatePlayerBullets(Player *);
     static ZunResult UpdateFireBulletsTimer(Player *);
 
+    static void SpawnBullets(Player *, u32 timer);
     static void DrawBullets(Player *);
     static void DrawBulletExplosions(Player *);
 

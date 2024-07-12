@@ -669,3 +669,103 @@ ZunResult Player::HandlePlayerInputs()
     this->previousFrameInput = g_CurFrameInput;
     return ZUN_SUCCESS;
 }
+
+#pragma var_order(bulletIdx, bullets)
+void Player::DrawBullets(Player *p)
+{
+    int bulletIdx;
+    PlayerBullet *bullets = p->bullets;
+
+    for (bulletIdx = 0; bulletIdx < ARRAY_SIZE_SIGNED(p->bullets); bulletIdx++, bullets++)
+    {
+        if (bullets->bulletState != BULLET_STATE_FIRED)
+        {
+            continue;
+        }
+        if (bullets->sprite.autoRotate)
+        {
+            bullets->sprite.rotation.z = ZUN_PI / 2 - AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
+        }
+        g_AnmManager->Draw2(&bullets->sprite);
+    }
+}
+
+void Player::StartFireBulletTimer(Player *p)
+{
+    if (p->fireBulletTimer.AsFrames() < 0)
+    {
+        p->fireBulletTimer.InitializeForPopup();
+    }
+}
+
+ZunResult Player::UpdateFireBulletsTimer(Player *p)
+{
+    if (p->fireBulletTimer.AsFrames() < 0)
+    {
+        return ZUN_SUCCESS;
+    }
+
+    if (p->fireBulletTimer.HasTicked() && (!g_Player.bombInfo.isInUse || g_GameManager.character != CHARA_MARISA ||
+                                           g_GameManager.shotType != SHOT_TYPE_B))
+    {
+        p->SpawnBullets(p, p->fireBulletTimer.AsFrames());
+    }
+
+    p->fireBulletTimer.Tick();
+
+    if (p->fireBulletTimer.AsFrames() >= 30 || p->playerState == PLAYER_STATE_DEAD ||
+        p->playerState == PLAYER_STATE_SPAWNING)
+    {
+        p->fireBulletTimer.SetCurrent(-1);
+    }
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(idx, curBulletIdx, curBullet, bulletResult)
+void Player::SpawnBullets(Player *p, u32 timer)
+{
+    FireBulletResult bulletResult;
+    PlayerBullet *curBullet;
+    i32 curBulletIdx;
+    u32 idx;
+
+    idx = 0;
+    curBullet = p->bullets;
+
+    for (curBulletIdx = 0; curBulletIdx < ARRAY_SIZE_SIGNED(p->bullets); curBulletIdx++, curBullet++)
+    {
+        if (curBullet->bulletState != BULLET_STATE_UNUSED)
+        {
+            continue;
+        }
+    WHILE_LOOP:
+        if (!p->isFocus)
+        {
+            bulletResult = (*p->fireBulletCallback)(p, curBullet, idx, timer);
+        }
+        else
+        {
+            bulletResult = (*p->fireBulletFocusCallback)(p, curBullet, idx, timer);
+        }
+        if (bulletResult >= 0)
+        {
+            curBullet->sprite.pos.x = curBullet->position.x;
+            curBullet->sprite.pos.y = curBullet->position.y;
+            curBullet->sprite.pos.z = 0.495;
+            curBullet->bulletState = BULLET_STATE_FIRED;
+        }
+        if (bulletResult == FBR_STOP_SPAWNING)
+        {
+            return;
+        }
+        if (bulletResult > 0)
+        {
+            return;
+        }
+        idx++;
+        if (bulletResult == FBR_SPAWN_MORE)
+        {
+            goto WHILE_LOOP;
+        }
+    }
+}
