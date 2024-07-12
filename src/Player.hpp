@@ -104,7 +104,7 @@ struct PlayerBombInfo
 };
 C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
 
-typedef u32 FireBulletResult;
+typedef i32 FireBulletResult;
 #define FBR_STOP_SPAWNING (-2)
 #define FBR_SPAWN_MORE (-1)
 

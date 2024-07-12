@@ -720,3 +720,52 @@ ZunResult Player::UpdateFireBulletsTimer(Player *p)
     }
     return ZUN_SUCCESS;
 }
+
+#pragma var_order(idx, curBulletIdx, curBullet, bulletResult)
+void Player::SpawnBullets(Player *p, u32 timer)
+{
+    FireBulletResult bulletResult;
+    PlayerBullet *curBullet;
+    i32 curBulletIdx;
+    u32 idx;
+
+    idx = 0;
+    curBullet = p->bullets;
+
+    for (curBulletIdx = 0; curBulletIdx < ARRAY_SIZE_SIGNED(p->bullets); curBulletIdx++, curBullet++)
+    {
+        if (curBullet->bulletState != BULLET_STATE_UNUSED)
+        {
+            continue;
+        }
+    WHILE_LOOP:
+        if (!p->isFocus)
+        {
+            bulletResult = (*p->fireBulletCallback)(p, curBullet, idx, timer);
+        }
+        else
+        {
+            bulletResult = (*p->fireBulletFocusCallback)(p, curBullet, idx, timer);
+        }
+        if (bulletResult >= 0)
+        {
+            curBullet->sprite.pos.x = curBullet->position.x;
+            curBullet->sprite.pos.y = curBullet->position.y;
+            curBullet->sprite.pos.z = 0.495;
+            curBullet->bulletState = BULLET_STATE_FIRED;
+        }
+        if (bulletResult == FBR_STOP_SPAWNING)
+        {
+            return;
+        }
+        if (bulletResult > 0)
+        {
+            return;
+        }
+        idx++;
+        if (bulletResult == FBR_SPAWN_MORE)
+        {
+            goto WHILE_LOOP;
+        }
+    }
+}

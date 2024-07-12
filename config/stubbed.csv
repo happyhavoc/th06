@@ -92,7 +92,6 @@ Player::BombReimuADraw
 Player::BombReimuBDraw
 Player::BombMarisaADraw
 Player::BombMarisaBDraw
-Player::SpawnBullets
 Player::UpdatePlayerBullets
 Player::CalcLaserHitbox
 Player::CheckGraze
