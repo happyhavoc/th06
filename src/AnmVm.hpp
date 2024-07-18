@@ -110,7 +110,7 @@ union AnmVmFlags {
     u32 flags;
     struct
     {
-        u32 flag0 : 1;
+        u32 isVisible : 1;
         u32 flag1 : 1;
         u32 blendMode : 1;
         u32 colorOp : 1;

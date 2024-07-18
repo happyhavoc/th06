@@ -41,7 +41,6 @@ ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
 MainMenu::SelectRelated
 Gui::DeletedCallback
-Gui::DrawStageElements
 Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
 Gui::FreeMsgFile
