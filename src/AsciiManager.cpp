@@ -178,7 +178,7 @@ void AsciiManager::DrawStrings(void)
 
     guiString = TRUE;
     string = this->strings;
-    this->vm0.flags.flag0 = 1;
+    this->vm0.flags.isVisible = 1;
     this->vm0.flags.anchor = AnmVmAnchor_TopLeft;
     for (i = 0; i < this->numStrings; i++, string++)
     {

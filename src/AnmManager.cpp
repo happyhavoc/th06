@@ -342,7 +342,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
     timer->subFrame = 0.0;
     timer->previous = -999;
 
-    vm->flags.flag0 = 0;
+    vm->flags.isVisible = 0;
     if (beginingOfScript)
     {
         this->ExecuteScript(vm);
@@ -676,18 +676,18 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         switch (curInstr->opcode)
         {
         case AnmOpcode_Exit:
-            vm->flags.flag0 = 0;
+            vm->flags.isVisible = 0;
         case AnmOpcode_ExitHide:
             vm->currentInstruction = NULL;
             return 1;
         case AnmOpcode_SetActiveSprite:
-            vm->flags.flag0 = 1;
+            vm->flags.isVisible = 1;
             this->SetActiveSprite(vm, curInstr->args[0] + this->spriteIndices[vm->anmFileIndex]);
             local_68 = vm->currentTimeInScript.current;
             vm->timeOfLastSpriteSet = local_68;
             break;
         case AnmOpcode_SetRandomSprite:
-            vm->flags.flag0 = 1;
+            vm->flags.isVisible = 1;
             local_c = &curInstr->args[0];
             local_6a = local_c[1];
             if (local_6a != 0)
@@ -808,7 +808,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->posInterpTime.InitializeForPopup();
             break;
         case AnmOpcode_StopHide:
-            vm->flags.flag0 = 0;
+            vm->flags.isVisible = 0;
         case AnmOpcode_Stop:
             if (vm->pendingInterrupt == 0)
             {
@@ -844,10 +844,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             curInstr = (AnmRawInstr *)((i32)curInstr->args + curInstr->argsCount);
             vm->currentInstruction = curInstr;
             vm->currentTimeInScript.SetCurrent(vm->currentInstruction->time);
-            vm->flags.flag0 = 1;
+            vm->flags.isVisible = 1;
             continue;
         case AnmOpcode_SetVisibility:
-            vm->flags.flag0 = curInstr->args[0];
+            vm->flags.isVisible = curInstr->args[0];
             break;
         case AnmOpcode_23:
             vm->flags.anchor = AnmVmAnchor_TopLeft;
@@ -1191,7 +1191,7 @@ ZunResult AnmManager::Draw(AnmVm *vm)
     {
         return this->DrawNoRotation(vm);
     }
-    if (vm->flags.flag0 == 0)
+    if (vm->flags.isVisible == 0)
     {
         return ZUN_ERROR;
     }
@@ -1241,7 +1241,7 @@ ZunResult AnmManager::DrawFacingCamera(AnmVm *vm)
     f32 centerX;
     f32 centerY;
 
-    if (!vm->flags.flag0)
+    if (!vm->flags.isVisible)
     {
         return ZUN_ERROR;
     }
@@ -1290,7 +1290,7 @@ ZunResult AnmManager::Draw3(AnmVm *vm)
     f32 scaledXCenter;
     f32 scaledYCenter;
 
-    if (!vm->flags.flag0)
+    if (!vm->flags.isVisible)
     {
         return ZUN_ERROR;
     }
@@ -1402,7 +1402,7 @@ ZunResult AnmManager::Draw2(AnmVm *vm)
     D3DXMATRIX unusedMatrix;
     D3DXMATRIX textureMatrix;
 
-    if (!vm->flags.flag0)
+    if (!vm->flags.isVisible)
     {
         return ZUN_ERROR;
     }
@@ -1480,7 +1480,7 @@ ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
     float fVar2;
     float fVar3;
 
-    if (vm->flags.flag0 == 0)
+    if (vm->flags.isVisible == 0)
     {
         return ZUN_ERROR;
     }
