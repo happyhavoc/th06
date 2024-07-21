@@ -15,11 +15,11 @@ C_ASSERT(sizeof(Th6k) == 0xc);
 struct Catk
 {
     Th6k base;
-    u32 unk_c;
+    i32 captureScore;
     u16 idx;
     u8 nameCsum;
-    u8 unk_13;
-    u8 unk_14;
+    u8 characterShotType;
+    u32 unk_14;
     char name[32];
     u32 numAttempts;
     u16 numSuccess;

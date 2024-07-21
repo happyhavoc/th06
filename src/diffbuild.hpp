@@ -33,6 +33,7 @@
 #ifdef DIFFBUILD
 #define DIFFABLE_EXTERN(type, name) extern "C" type name;
 #define DIFFABLE_STATIC(type, name) extern "C" type name;
+#define DIFFABLE_STATIC_ARRAY(type, size, name) extern "C" type name[size];
 // This macro is meant to be used like so:
 // DIFFABLE_STATIC_ARRAY_ASSIGN(u32, g_ArrayName) = 12;
 //
@@ -54,6 +55,7 @@
 #else
 #define DIFFABLE_EXTERN(type, name) extern type name;
 #define DIFFABLE_STATIC(type, name) type name;
+#define DIFFABLE_STATIC_ARRAY(type, size, name) type name[size];
 #define DIFFABLE_STATIC_ASSIGN(type, name) type name
 #define DIFFABLE_STATIC_ARRAY_ASSIGN(type, size, name) type name[size]
 #endif
