@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AnmVm.hpp"
+#include "BulletManager.hpp"
 #include "EclManager.hpp"
 #include "Effect.hpp"
 #include "ItemManager.hpp"
@@ -26,9 +27,10 @@ struct EnemyBulletShooter
     f32 exFloats[4];
     i32 exInts[4];
     i32 unk_40;
-    u16 count1;
-    u16 count2;
+    i16 count1;
+    i16 count2;
     u16 aimMode;
+    u16 unk_4a;
     u32 flags;
     SoundIdx sfx;
 };
@@ -54,7 +56,7 @@ struct EnemyLaserShooter
     i32 grazeDistance;
     u32 unk_44;
     u16 type;
-    u32 unk_4c;
+    u32 flags;
     u32 unk_50;
 };
 C_ASSERT(sizeof(EnemyLaserShooter) == 0x54);
@@ -63,7 +65,7 @@ struct EnemyEclContext
 {
     EclRawInstr *currentInstr;
     ZunTimer time;
-    void (*funcSetFunc)(Enemy *);
+    void (*funcSetFunc)(Enemy *, EclRawInstr *);
     i32 var0;
     i32 var1;
     i32 var2;
@@ -108,6 +110,14 @@ struct EnemyFlags
     // Rest is padding.
 };
 
+enum EclValueType
+{
+    ECL_VALUE_TYPE_INT,
+    ECL_VALUE_TYPE_FLOAT,
+    ECL_VALUE_TYPE_READONLY,
+    ECL_VALUE_TYPE_UNDEFINED,
+};
+
 struct Enemy
 {
     void Move();
@@ -119,6 +129,21 @@ struct Enemy
     static void ResetEffectArray(Enemy *enemy);
     static void UpdateEffects(Enemy *enemy);
 
+    static i32 *GetVar(Enemy *enemy, EclVarId *varId, EclValueType *valueType);
+    static f32 *GetVarFloat(Enemy *enemy, f32 *varId, EclValueType *valueType);
+    static void SetVar(Enemy *enemy, EclVarId lhs, void *rhs);
+
+    static void MathAdd(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
+    static void MathSub(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
+    static void MathMul(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
+    static void MathDiv(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
+    static void MathMod(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
+    static void MathAtan2(Enemy *enemy, EclVarId out, f32 *a1, f32 *a2, f32 *b1, f32 *b2);
+
+    static void MoveDirTime(Enemy *enemy, EclRawInstr *instr);
+    static void MovePosTime(Enemy *enemy, EclRawInstr *instr);
+    static void MoveTime(Enemy *enemy, EclRawInstr *instr);
+
     f32 LifePercent()
     {
         return (f32)this->life / (f32)this->maxLife;
@@ -127,6 +152,41 @@ struct Enemy
     D3DXVECTOR3 HitboxDimensions(f32 shrinkFactor)
     {
         return (1.0f / shrinkFactor) * this->hitboxDimensions;
+    }
+
+    static i32 BulletRankAmountInner(i32 low, i32 high, i32 scaleFactor)
+    {
+        return scaleFactor * (high - low) / 32 + low;
+    }
+
+    i32 BulletRankAmount1(i32 scaleFactor)
+    {
+        return Enemy::BulletRankAmountInner(this->bulletRankAmount1Low, this->bulletRankAmount1High, scaleFactor);
+    }
+
+    i32 BulletRankAmount2(i32 scaleFactor)
+    {
+        return Enemy::BulletRankAmountInner(this->bulletRankAmount2Low, this->bulletRankAmount2High, scaleFactor);
+    }
+
+    static f32 BulletRankSpeedInner(f32 low, f32 high, f32 scaleFactor)
+    {
+        return scaleFactor * (high - low) / 32 + low;
+    }
+
+    f32 BulletRankSpeed(f32 scaleFactor)
+    {
+        return Enemy::BulletRankSpeedInner(this->bulletRankSpeedLow, this->bulletRankSpeedHigh, scaleFactor);
+    }
+
+    static i32 ShootIntervalInner(i32 low, i32 high, i32 scaleFactor)
+    {
+        return scaleFactor * (high - low) / 32 + low;
+    }
+
+    i32 ShootInterval(i32 scaleFactor)
+    {
+        return Enemy::ShootIntervalInner(this->shootInterval / 5, -this->shootInterval / 5, scaleFactor);
     }
 
     AnmVm primaryVm;
@@ -152,10 +212,10 @@ struct Enemy
     i32 moveInterpStartTime;
     f32 bulletRankSpeedLow;
     f32 bulletRankSpeedHigh;
-    u16 bulletRankAmount1Low;
-    u16 bulletRankAmount1High;
-    u16 bulletRankAmount2Low;
-    u16 bulletRankAmount2High;
+    i16 bulletRankAmount1Low;
+    i16 bulletRankAmount1High;
+    i16 bulletRankAmount2Low;
+    i16 bulletRankAmount2High;
     i32 life;
     i32 maxLife;
     i32 score;
@@ -165,17 +225,17 @@ struct Enemy
     i32 shootInterval;
     ZunTimer shootIntervalTimer;
     EnemyLaserShooter laserProps;
-    void *lasers[32]; // This looks like a structure
+    Laser *lasers[32]; // This looks like a structure
     i32 laserStore;
     u8 deathAnm1;
     u8 deathAnm2;
     u8 deathAnm3;
     i8 itemDrop;
-    i8 bossId;
+    u8 bossId;
     u8 unk_e41;
     ZunTimer unk_e44;
     EnemyFlags flags;
-    i8 anmExFlags;
+    u8 anmExFlags;
     i16 anmExDefaults;
     i16 anmExFarLeft;
     i16 anmExFarRight;
@@ -184,7 +244,7 @@ struct Enemy
     D3DXVECTOR2 lowerMoveLimit;
     D3DXVECTOR2 upperMoveLimit;
     Effect *effectArray[12];
-    i32 effectIdx;
+    u32 effectIdx;
     f32 effectDistance;
     i32 lifeCallbackThreshold;
     i32 lifeCallbackSub;

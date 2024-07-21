@@ -6,6 +6,9 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+struct EnemyBulletShooter;
+struct EnemyLaserShooter;
+
 struct BulletTypeSprites
 {
     AnmVm spriteBullet;
@@ -84,7 +87,12 @@ struct BulletManager
 
     void RemoveAllBullets(ZunBool turnIntoItem);
     void InitializeToZero();
+
+    void TurnAllBulletsIntoPoints();
+
     i32 DespawnBullets(i32 unk, ZunBool awardPoints);
+    ZunResult SpawnBulletPattern(EnemyBulletShooter *bulletProps);
+    Laser *SpawnLaserPattern(EnemyLaserShooter *bulletProps);
 
     BulletTypeSprites bulletTypeTemplates[16];
     Bullet bullets[640];
@@ -96,4 +104,5 @@ struct BulletManager
 };
 C_ASSERT(sizeof(BulletManager) == 0xf5c18);
 
+DIFFABLE_EXTERN(u32 *, g_EffectsColor);
 DIFFABLE_EXTERN(BulletManager, g_BulletManager);

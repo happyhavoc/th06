@@ -39,3 +39,5 @@ struct EnemyManager
     ZunTimer timelineTime;
 };
 C_ASSERT(sizeof(EnemyManager) == 0xee5ec);
+
+DIFFABLE_EXTERN(EnemyManager, g_EnemyManager)
