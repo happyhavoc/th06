@@ -59,7 +59,6 @@ Enemy::Despawn
 Enemy::HandleLifeCallback
 Enemy::HandleTimerCallback
 Enemy::ClampPos
-Enemy::Move
 EclManager::RunEcl
 EclManager::CallEclSub
 BulletManager::DespawnBullets

@@ -74,6 +74,7 @@ EnemyManager::AddedCallback
 EnemyManager::OnUpdate
 EnemyManager::OnDraw
 EnemyManager::RunEclTimeline
+Enemy::Move
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
