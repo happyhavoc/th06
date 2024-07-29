@@ -76,6 +76,7 @@ EnemyManager::OnDraw
 EnemyManager::RunEclTimeline
 Enemy::Move
 Enemy::ClampPos
+Enemy::HandleLifeCallback
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
