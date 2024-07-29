@@ -58,7 +58,6 @@ Enemy::ResetEffectArray
 Enemy::Despawn
 Enemy::HandleLifeCallback
 Enemy::HandleTimerCallback
-Enemy::ClampPos
 EclManager::RunEcl
 EclManager::CallEclSub
 BulletManager::DespawnBullets

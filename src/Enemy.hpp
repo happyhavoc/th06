@@ -99,7 +99,7 @@ struct EnemyFlags
     u8 unk11 : 3;
 
     // Third byte
-    u8 unk12 : 1;
+    bool shouldClampPos : 1;
     u8 unk13 : 1;
     u8 unk14 : 1;
     u8 unk15 : 1;
