@@ -80,6 +80,7 @@ Enemy::HandleLifeCallback
 Enemy::HandleTimerCallback
 Enemy::Despawn
 Enemy::ResetEffectArray
+Enemy::UpdateEffects
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush

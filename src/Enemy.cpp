@@ -189,4 +189,28 @@ void Enemy::ResetEffectArray(Enemy *enemy)
     enemy->effectIdx = 0;
 }
 
+#pragma var_order(effect, i)
+void Enemy::UpdateEffects(Enemy *enemy)
+{
+    Effect *effect;
+    i32 i;
+
+    for (i = 0; i < enemy->effectIdx; i++)
+    {
+        effect = enemy->effectArray[i];
+        if (!effect)
+        {
+            continue;
+        }
+
+        effect->position = enemy->position;
+        if (effect->unk_15c < enemy->effectDistance)
+        {
+            effect->unk_15c += 0.3f;
+        }
+
+        effect->angleRelated = AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
+    }
+}
+
 DIFFABLE_STATIC(Enemy, g_Enemies[256])
