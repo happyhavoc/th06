@@ -95,7 +95,7 @@ struct EnemyFlags
     u8 unk6 : 1;
     u8 unk7 : 1;
     u8 unk8 : 1;
-    u8 unk9 : 1;
+    u8 isBoss : 1;
     u8 unk10 : 1;
     u8 unk11 : 3;
 

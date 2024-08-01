@@ -71,7 +71,7 @@ ZunBool Enemy::HandleLifeCallback()
             {
                 continue;
             }
-            if (curEnemy->flags.unk9)
+            if (curEnemy->flags.isBoss)
             {
                 continue;
             }
@@ -96,7 +96,7 @@ ZunBool Enemy::HandleTimerCallback()
     Enemy *curEnemy;
     int i;
 
-    if (this->flags.unk9)
+    if (this->flags.isBoss)
     {
         g_Gui.SetSpellcardSeconds((this->timerCallbackThreshold - this->bossTimer.AsFrames()) / 60);
     }
@@ -129,7 +129,7 @@ ZunBool Enemy::HandleTimerCallback()
             {
                 continue;
             }
-            if (curEnemy->flags.unk9)
+            if (curEnemy->flags.isBoss)
             {
                 continue;
             }
@@ -151,6 +151,26 @@ ZunBool Enemy::HandleTimerCallback()
         return true;
     }
     return false;
+}
+
+void Enemy::Despawn()
+{
+    if (!this->flags.unk11)
+    {
+        this->flags.unk5 = 0;
+    }
+    else
+    {
+        this->flags.unk6 = 0;
+    }
+    if (this->flags.isBoss)
+    {
+        g_Gui.bossPresent = false;
+    }
+    if (this->effectIdx != 0)
+    {
+        this->ResetEffectArray(this);
+    }
 }
 
 DIFFABLE_STATIC(Enemy, g_Enemies[256])

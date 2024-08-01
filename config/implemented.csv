@@ -78,6 +78,7 @@ Enemy::Move
 Enemy::ClampPos
 Enemy::HandleLifeCallback
 Enemy::HandleTimerCallback
+Enemy::Despawn
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
