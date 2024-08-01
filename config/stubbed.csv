@@ -54,7 +54,6 @@ EnemyManager::Initialize
 EnemyManager::DeletedCallback
 EnemyManager::SpawnEnemy
 Enemy::UpdateEffects
-Enemy::ResetEffectArray
 EclManager::RunEcl
 EclManager::CallEclSub
 BulletManager::DespawnBullets

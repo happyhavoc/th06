@@ -94,7 +94,7 @@ ZunBool Enemy::HandleTimerCallback()
 {
 
     Enemy *curEnemy;
-    int i;
+    i32 i;
 
     if (this->flags.isBoss)
     {
@@ -171,6 +171,22 @@ void Enemy::Despawn()
     {
         this->ResetEffectArray(this);
     }
+}
+
+void Enemy::ResetEffectArray(Enemy *enemy)
+{
+    i32 idx;
+
+    for (idx = 0; idx < enemy->effectIdx; idx++)
+    {
+        if (!enemy->effectArray[idx])
+        {
+            continue;
+        }
+        enemy->effectArray[idx]->unk_17a = 1;
+        enemy->effectArray[idx] = NULL;
+    }
+    enemy->effectIdx = 0;
 }
 
 DIFFABLE_STATIC(Enemy, g_Enemies[256])

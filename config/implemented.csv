@@ -79,6 +79,7 @@ Enemy::ClampPos
 Enemy::HandleLifeCallback
 Enemy::HandleTimerCallback
 Enemy::Despawn
+Enemy::ResetEffectArray
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush
