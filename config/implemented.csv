@@ -77,6 +77,7 @@ EnemyManager::RunEclTimeline
 Enemy::Move
 Enemy::ClampPos
 Enemy::HandleLifeCallback
+Enemy::HandleTimerCallback
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush

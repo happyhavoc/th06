@@ -5,6 +5,7 @@
 #include "Effect.hpp"
 #include "ItemManager.hpp"
 #include "SoundPlayer.hpp"
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
@@ -127,6 +128,11 @@ struct Enemy
     D3DXVECTOR3 HitboxDimensions(f32 shrinkFactor)
     {
         return (1.0f / shrinkFactor) * this->hitboxDimensions;
+    }
+
+    ZunBool HasBossTimerFinished()
+    {
+        return this->bossTimer.current >= this->timerCallbackThreshold;
     }
 
     AnmVm primaryVm;
