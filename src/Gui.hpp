@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Enemy.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 #include <Windows.h>
@@ -47,6 +48,11 @@ struct Gui
     bool BossPresent()
     {
         return this->bossPresent;
+    }
+
+    void SetSpellcardSeconds(i32 val)
+    {
+        this->spellcardSecondsRemaining = val;
     }
 
     GuiFlags flags;

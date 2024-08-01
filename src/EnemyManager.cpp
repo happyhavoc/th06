@@ -148,7 +148,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                 // There's something weird going on here, stack-wise.
                 enemyHitbox = curEnemy->HitboxDimensions(1.5f);
                 if (g_Player.CalcKillBoxCollision(&curEnemy->position, &enemyHitbox) == 1 && curEnemy->flags.unk6 &&
-                    !curEnemy->flags.unk9)
+                    !curEnemy->flags.isBoss)
                 {
                     curEnemy->life -= 10;
                 }
@@ -222,7 +222,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                     g_GameManager.AddScore(curEnemy->score);
                     curEnemy->flags.unk5 = 0;
                 LAB_00412a4d:
-                    if (curEnemy->flags.unk9)
+                    if (curEnemy->flags.isBoss)
                     {
                         g_Gui.bossPresent = 0;
                         Enemy::ResetEffectArray(curEnemy);
@@ -248,7 +248,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                         }
                         mgr->randomItemSpawnIndex++;
                     }
-                    if (curEnemy->flags.unk9 && !g_RunningSpellcardInfo.isActive)
+                    if (curEnemy->flags.isBoss && !g_RunningSpellcardInfo.isActive)
                     {
                         g_BulletManager.DespawnBullets(12800, false);
                     }
@@ -271,7 +271,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                     curEnemy->deathCallbackSub = -1;
                 }
             }
-            if (curEnemy->flags.unk9 != 0 && !g_Gui.HasCurrentMsgIdx())
+            if (curEnemy->flags.isBoss != 0 && !g_Gui.HasCurrentMsgIdx())
             {
                 g_Gui.SetBossHealthBar(curEnemy->LifePercent());
             }

@@ -74,6 +74,13 @@ EnemyManager::AddedCallback
 EnemyManager::OnUpdate
 EnemyManager::OnDraw
 EnemyManager::RunEclTimeline
+Enemy::Move
+Enemy::ClampPos
+Enemy::HandleLifeCallback
+Enemy::HandleTimerCallback
+Enemy::Despawn
+Enemy::ResetEffectArray
+Enemy::UpdateEffects
 GameErrorContextFatal
 GameErrorContextLog
 GameErrorContext::Flush

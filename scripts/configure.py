@@ -91,6 +91,7 @@ def configure(build_type):
             "Chain",
             "EclManager",
             "EnemyManager",
+            "Enemy",
             "FileSystem",
             "Supervisor",
             "GameErrorContext",

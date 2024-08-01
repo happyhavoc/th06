@@ -5,6 +5,7 @@
 #include "Effect.hpp"
 #include "ItemManager.hpp"
 #include "SoundPlayer.hpp"
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
@@ -94,12 +95,12 @@ struct EnemyFlags
     u8 unk6 : 1;
     u8 unk7 : 1;
     u8 unk8 : 1;
-    u8 unk9 : 1;
+    u8 isBoss : 1;
     u8 unk10 : 1;
     u8 unk11 : 3;
 
     // Third byte
-    u8 unk12 : 1;
+    bool shouldClampPos : 1;
     u8 unk13 : 1;
     u8 unk14 : 1;
     u8 unk15 : 1;
@@ -127,6 +128,11 @@ struct Enemy
     D3DXVECTOR3 HitboxDimensions(f32 shrinkFactor)
     {
         return (1.0f / shrinkFactor) * this->hitboxDimensions;
+    }
+
+    ZunBool HasBossTimerFinished()
+    {
+        return this->bossTimer.current >= this->timerCallbackThreshold;
     }
 
     AnmVm primaryVm;
@@ -194,3 +200,5 @@ struct Enemy
     ZunTimer unk_ebc;
 };
 C_ASSERT(sizeof(Enemy) == 0xec8);
+
+DIFFABLE_EXTERN(Enemy, g_Enemies[256]);
