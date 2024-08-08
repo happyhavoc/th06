@@ -1,0 +1,255 @@
+{
+    "custom_make": "python",
+    "custom_args": [
+        "./scripts/build.py",
+        "--build-type=objdiffbuild",
+        "--object-name"
+    ],
+
+    "target_dir": "build/objdiff/asm",
+    "base_dir": "build/objdiff/src",
+
+    "build_target": false,
+    "build_base": true,
+    "watch_patterns": [
+        "*.c",
+        "*.cpp",
+        "*.h",
+        "*.hpp"
+    ],
+    "objects": [
+        {
+            "name": "AnmManager",
+
+            "target_path": "build/objdiff/asm/AnmManager.obj",
+            "base_path": "build/objdiff/src/AnmManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "AnmVm",
+
+            "target_path": "build/objdiff/asm/AnmVm.obj",
+            "base_path": "build/objdiff/src/AnmVm.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "AsciiManager",
+
+            "target_path": "build/objdiff/asm/AsciiManager.obj",
+            "base_path": "build/objdiff/src/AsciiManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "BulletManager",
+
+            "target_path": "build/objdiff/asm/BulletManager.obj",
+            "base_path": "build/objdiff/src/BulletManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Chain",
+
+            "target_path": "build/objdiff/asm/Chain.obj",
+            "base_path": "build/objdiff/src/Chain.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "EclManager",
+
+            "target_path": "build/objdiff/asm/EclManager.obj",
+            "base_path": "build/objdiff/src/EclManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "EffectManager",
+
+            "target_path": "build/objdiff/asm/EffectManager.obj",
+            "base_path": "build/objdiff/src/EffectManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Enemy",
+
+            "target_path": "build/objdiff/asm/Enemy.obj",
+            "base_path": "build/objdiff/src/Enemy.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "EnemyManager",
+
+            "target_path": "build/objdiff/asm/EnemyManager.obj",
+            "base_path": "build/objdiff/src/EnemyManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "FileAbstraction",
+
+            "target_path": "build/objdiff/asm/FileAbstraction.obj",
+            "base_path": "build/objdiff/src/FileAbstraction.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "FileSystem",
+
+            "target_path": "build/objdiff/asm/FileSystem.obj",
+            "base_path": "build/objdiff/src/FileSystem.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "GameErrorContext",
+
+            "target_path": "build/objdiff/asm/GameErrorContext.obj",
+            "base_path": "build/objdiff/src/GameErrorContext.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "GameManager",
+
+            "target_path": "build/objdiff/asm/GameManager.obj",
+            "base_path": "build/objdiff/src/GameManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "GameWindow",
+
+            "target_path": "build/objdiff/asm/GameWindow.obj",
+            "base_path": "build/objdiff/src/GameWindow.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Gui",
+
+            "target_path": "build/objdiff/asm/Gui.obj",
+            "base_path": "build/objdiff/src/Gui.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "IPbg3Parser",
+
+            "target_path": "build/objdiff/asm/IPbg3Parser.obj",
+            "base_path": "build/objdiff/src/IPbg3Parser.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "ItemManager",
+
+            "target_path": "build/objdiff/asm/ItemManager.obj",
+            "base_path": "build/objdiff/src/ItemManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "MainMenu",
+
+            "target_path": "build/objdiff/asm/MainMenu.obj",
+            "base_path": "build/objdiff/src/MainMenu.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "MidiOutput",
+
+            "target_path": "build/objdiff/asm/MidiOutput.obj",
+            "base_path": "build/objdiff/src/MidiOutput.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Pbg3Archive",
+
+            "target_path": "build/objdiff/asm/Pbg3Archive.obj",
+            "base_path": "build/objdiff/src/Pbg3Archive.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Pbg3Parser",
+
+            "target_path": "build/objdiff/asm/Pbg3Parser.obj",
+            "base_path": "build/objdiff/src/Pbg3Parser.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Player",
+
+            "target_path": "build/objdiff/asm/Player.obj",
+            "base_path": "build/objdiff/src/Player.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Rng",
+
+            "target_path": "build/objdiff/asm/Rng.obj",
+            "base_path": "build/objdiff/src/Rng.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "ScreenEffect",
+
+            "target_path": "build/objdiff/asm/ScreenEffect.obj",
+            "base_path": "build/objdiff/src/ScreenEffect.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "SoundPlayer",
+
+            "target_path": "build/objdiff/asm/SoundPlayer.obj",
+            "base_path": "build/objdiff/src/SoundPlayer.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Stage",
+
+            "target_path": "build/objdiff/asm/Stage.obj",
+            "base_path": "build/objdiff/src/Stage.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "Supervisor",
+
+            "target_path": "build/objdiff/asm/Supervisor.obj",
+            "base_path": "build/objdiff/src/Supervisor.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "TextHelper",
+
+            "target_path": "build/objdiff/asm/TextHelper.obj",
+            "base_path": "build/objdiff/src/TextHelper.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "ZunTimer",
+
+            "target_path": "build/objdiff/asm/ZunTimer.obj",
+            "base_path": "build/objdiff/src/ZunTimer.obj",
+
+            "reverse_fn_order": false
+        }
+    ]
+
+}

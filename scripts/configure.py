@@ -11,6 +11,7 @@ class BuildType(Enum):
     DIFFBUILD = 2
     TESTS = 3
     DLLBUILD = 4
+    OBJDIFFBUILD = 5
 
 
 def configure(build_type):
