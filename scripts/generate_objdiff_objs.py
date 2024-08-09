@@ -28,15 +28,18 @@ def rename_symbols(filename):
             seen[line] = True
 
             parts = line.split("@")
-            if class_name not in line:
-                continue
             if len(parts) > 1:
-                if parts[1] != class_name:
+                func_name = parts[0].replace("?", "", 2)
+                namespace = parts[1]
+                if class_name not in line:
                     continue
-            else:
-                continue
-            objcopy_argument = "{} {}".format(line, parts[0].removeprefix("?"))
-            f.write(objcopy_argument + os.linesep)
+                if class_name == func_name[1:]:
+                    func_name = ("~" if func_name[0] == "1" else "") + func_name[1:]
+                elif namespace != class_name:
+                    continue
+
+                objcopy_argument = "{} {}".format(line, func_name)
+                f.write(objcopy_argument + os.linesep)
 
     if not out_folder.exists():
         out_folder.mkdir(parents=True, exist_ok=True)
