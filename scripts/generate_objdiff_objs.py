@@ -1,6 +1,6 @@
-from winhelpers import run_windows_program_output, run_windows_program
-import os
+import coff
 from pathlib import Path
+import struct
 
 SCRIPTS_DIR = Path(__file__).parent
 
@@ -10,47 +10,37 @@ def rename_symbols(filename):
     asm_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "asm"
 
     class_name = filename.removesuffix(".obj")
-    nm_arguments = ["nm", "build" / Path(filename), "-j"]
-
-    # We run nm to get the list of symbols of that specific .obj
-    out = run_windows_program_output(nm_arguments).decode().splitlines()
-
-    objcopy_arguments = ["objcopy", "--input-target=pe-i386", "--output-target=pe-i386"]
+    obj = coff.ObjectModule()
+    with open(Path("build") / filename, "rb") as f:
+        obj.unpack(f.read(), 0)
 
     # We filter to only the symbols with the namespace=filename, and we scrape everything but the function name
     # and we save all the renames onto syms.txt
     # TODO: Implement constructors/destructors
     seen = {}
-    with open("syms.txt", "w") as f:
-        for line in out:
-            if seen.get(line, False):
+    for sym_obj in obj.symbols:
+        sym = sym_obj.get_name(obj.string_table)
+        if seen.get(sym, False):
+            continue
+        seen[sym] = True
+
+        parts = sym.split(b"@")
+        if len(parts) > 1:
+            func_name = parts[0].replace(b"?", b"", 2)
+            namespace = parts[1]
+            if class_name.encode("utf8") not in sym:
                 continue
-            seen[line] = True
+            if class_name == func_name[1:]:
+                func_name = (b"~" if func_name[0] == b"1" else b"") + func_name[1:]
+            elif namespace != class_name.encode("utf8"):
+                continue
 
-            parts = line.split("@")
-            if len(parts) > 1:
-                func_name = parts[0].replace("?", "", 2)
-                namespace = parts[1]
-                if class_name not in line:
-                    continue
-                if class_name == func_name[1:]:
-                    func_name = ("~" if func_name[0] == "1" else "") + func_name[1:]
-                elif namespace != class_name:
-                    continue
-
-                objcopy_argument = "{} {}".format(line, func_name)
-                f.write(objcopy_argument + os.linesep)
+            offset = obj.string_table.append(func_name)
+            sym_obj.name = b"\0\0\0\0" + struct.pack("I", offset)
 
     if not out_folder.exists():
         out_folder.mkdir(parents=True, exist_ok=True)
         asm_folder.mkdir(parents=True, exist_ok=True)
 
-    run_windows_program(
-        objcopy_arguments
-        + [
-            "--redefine-syms=syms.txt",
-            SCRIPTS_DIR.parent / "build" / filename,
-            SCRIPTS_DIR.parent / "build" / "objdiff" / "src" / filename,
-        ]
-    )
-    os.remove("syms.txt")
+    with open(out_folder / filename, "wb") as f:
+        f.write(obj.get_buffer())
