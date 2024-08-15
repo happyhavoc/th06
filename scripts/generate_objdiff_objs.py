@@ -1,6 +1,7 @@
 import coff
 from pathlib import Path
 import struct
+import sys
 
 SCRIPTS_DIR = Path(__file__).parent
 
@@ -11,7 +12,7 @@ def rename_symbols(filename):
 
     class_name = filename.removesuffix(".obj")
     obj = coff.ObjectModule()
-    with open(Path("build") / filename, "rb") as f:
+    with open(str(filename), "rb") as f:
         obj.unpack(f.read(), 0)
 
     # We filter to only the symbols with the namespace=filename, and we scrape everything but the function name
@@ -42,5 +43,9 @@ def rename_symbols(filename):
         out_folder.mkdir(parents=True, exist_ok=True)
         asm_folder.mkdir(parents=True, exist_ok=True)
 
-    with open(out_folder / filename, "wb") as f:
+    with open(str(out_folder / filename.name), "wb") as f:
         f.write(obj.get_buffer())
+
+
+if __name__ == "__main__":
+    rename_symbols(Path(sys.argv[1]))

@@ -3,7 +3,6 @@ from pathlib import Path
 
 from configure import BuildType, configure
 from winhelpers import run_windows_program
-from generate_objdiff_objs import rename_symbols
 
 SCRIPTS_DIR = Path(__file__).parent
 
@@ -22,8 +21,10 @@ def build(build_type, verbose=False, jobs=1, object_name=None):
         ninja_args += ["build/th06e-tests.exe"]
     elif build_type == BuildType.DLLBUILD:
         ninja_args += ["build/th06e.dll"]
+    elif build_type == BuildType.OBJDIFFBUILD and object_name is not None:
+        ninja_args += [f"build/objdiff/src/{object_name}"]
     elif build_type == BuildType.OBJDIFFBUILD:
-        ninja_args += [f"build/{object_name}"]
+        ninja_args += ["objdiff"]
     else:
         ninja_args += ["build/th06e.exe"]
 
@@ -34,8 +35,6 @@ def build(build_type, verbose=False, jobs=1, object_name=None):
         [str(SCRIPTS_DIR / "th06run.bat"), "ninja"] + ninja_args,
         cwd=str(SCRIPTS_DIR.parent),
     )
-    if build_type == BuildType.OBJDIFFBUILD:
-        rename_symbols(object_name)
 
 
 def main():
@@ -69,6 +68,8 @@ def main():
         build_type = BuildType.DLLBUILD
     elif args.build_type == "objdiffbuild":
         build_type = BuildType.OBJDIFFBUILD
+
+    if args.object_name is not None:
         object_name = Path(args.object_name).name
     build(build_type, args.verbose, args.jobs, object_name=object_name)
 
