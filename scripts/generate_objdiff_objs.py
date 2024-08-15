@@ -1,5 +1,6 @@
 import coff
 from pathlib import Path
+import re
 import struct
 import sys
 
@@ -10,7 +11,7 @@ def rename_symbols(filename):
     out_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "src"
     asm_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "asm"
 
-    class_name = filename.removesuffix(".obj")
+    class_name = re.sub("\\.obj$", "", filename.name)
     obj = coff.ObjectModule()
     with open(str(filename), "rb") as f:
         obj.unpack(f.read(), 0)

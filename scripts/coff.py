@@ -316,7 +316,9 @@ class Relocation:
         return offset + self.struct.size
 
 
-class SectionFlags(enum.IntFlag):
+# Using intflag would be better, but that requires python 3.6+. We're stuck in
+# 3.4 land for XP support.
+class SectionFlags(enum.IntEnum):
     CNT_CODE = 0x00000020
     CNT_INITIALIZED_DATA = 0x00000040
     CNT_UNINITIALIZED_DATA = 0x00000080
