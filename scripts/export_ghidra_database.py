@@ -13,32 +13,9 @@ import tomllib
 from typing import Optional
 import shutil
 
+import ghidra_helpers
+
 SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
-
-
-def runAnalyze(args, extraArgs):
-    commonAnalyzeHeadlessArgs = ["analyzeHeadless", args.GHIDRA_REPO_NAME]
-    commonAnalyzeHeadlessArgs += [
-        "-noanalysis",
-        "-readOnly",
-        "-scriptPath",
-        str(SCRIPT_PATH / "ghidra"),
-    ]
-    if args.ssh_key:
-        commonAnalyzeHeadlessArgs += ["-keystore", args.ssh_key]
-
-    # TODO: If program is not provided, export all files from server.
-    if args.program:
-        commonAnalyzeHeadlessArgs += ["-process", args.program]
-
-    commonAnalyzeHeadlessEnv = os.environ.copy()
-    commonAnalyzeHeadlessEnv["_JAVA_OPTIONS"] = (
-        f"-Duser.name={args.username} " + os.environ.get("_JAVA_OPTIONS", "")
-    )
-
-    return subprocess.run(
-        commonAnalyzeHeadlessArgs + extraArgs, env=commonAnalyzeHeadlessEnv, check=True
-    )
 
 
 def fetchVersions(args):
@@ -46,7 +23,13 @@ def fetchVersions(args):
     Fetches all the versions of the program being exported.
     """
     with tempfile.NamedTemporaryFile(prefix="versions") as f:
-        runAnalyze(args, ["-preScript", "ExportFileVersions.java", f.name])
+        ghidra_helpers.runAnalyze(
+            args.GHIDRA_REPO_NAME,
+            args.program,
+            args.username,
+            args.ssh_key,
+            ["-preScript", "ExportFileVersions.java", f.name],
+        )
         versions = json.loads(f.read())
     versions.sort(key=lambda x: x["version"])
     return versions
@@ -74,7 +57,13 @@ def export(args, version: dict):
         out.mkdir(parents=True, exist_ok=True)
         script = "ExportDecomp.java"
 
-    runAnalyze(args, ["-preScript", script, str(out), str(version["version"])])
+    ghidra_helpers.runAnalyze(
+        args.GHIDRA_REPO_NAME,
+        args.program,
+        args.username,
+        args.ssh_key,
+        ["-preScript", script, str(out), str(version["version"])],
+    )
 
     if args.EXPORT_TYPE == XML:
         # The XML contains the timestamp of when the export was done. This is kinda
