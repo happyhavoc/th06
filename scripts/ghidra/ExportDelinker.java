@@ -7,10 +7,13 @@
 //@keybinding
 //@menupath Skeleton
 //@toolbar Skeleton
+import ghidra.app.analyzers.RelocationTableSynthesizerAnalyzer;
 import ghidra.app.script.GhidraScript;
+import ghidra.app.services.Analyzer;
 import ghidra.app.util.DomainObjectService;
 import ghidra.app.util.Option;
 import ghidra.app.util.exporter.CoffRelocatableObjectExporter;
+import ghidra.app.util.importer.MessageLog;
 import ghidra.framework.model.DomainFile;
 import ghidra.framework.model.DomainObject;
 import ghidra.program.model.listing.GhidraClass;
@@ -31,6 +34,12 @@ public class ExportDelinker extends GhidraScript
 
     @Override protected void run() throws Exception
     {
+        // First run the Relocation Table Synthesizer, to pickup any potentially
+        // new globals in the reloc table.
+        Analyzer analyzer = new RelocationTableSynthesizerAnalyzer();
+        analyzer.added(currentProgram, currentProgram.getMemory(), monitor, new MessageLog());
+
+        // Then, export the COFFs.
         CoffRelocatableObjectExporter exporter = new CoffRelocatableObjectExporter();
 
         List<Option> exporterOptions = exporter.getOptions(new DomainObjectService() {
