@@ -11,6 +11,7 @@
 #include "Player.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
+#include "ZunColor.hpp"
 #include "utils.hpp"
 
 DIFFABLE_STATIC(Gui, g_Gui);
@@ -237,10 +238,10 @@ ZunResult Gui::ActualAddedCallback()
     this->impl->bombSpellcardName.currentInstruction = NULL;
     this->impl->enemySpellcardPortrait.currentInstruction = NULL;
     this->impl->enemySpellcardName.currentInstruction = NULL;
-    this->impl->playerSpellcardPortrait.flags.flag0 = 0;
-    this->impl->bombSpellcardName.flags.flag0 = 0;
-    this->impl->enemySpellcardPortrait.flags.flag0 = 0;
-    this->impl->enemySpellcardName.flags.flag0 = 0;
+    this->impl->playerSpellcardPortrait.flags.isVisible = 0;
+    this->impl->bombSpellcardName.flags.isVisible = 0;
+    this->impl->enemySpellcardPortrait.flags.isVisible = 0;
+    this->impl->enemySpellcardName.flags.isVisible = 0;
     this->impl->bombSpellcardName.fontWidth = 15;
     this->impl->bombSpellcardName.fontHeight = 15;
     this->impl->enemySpellcardName.fontWidth = 15;
@@ -702,5 +703,100 @@ void Gui::DrawGameScene()
         this->flags.flag4--;
     }
     return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(stageTextPos, stageTextColor, demoTextColor)
+void Gui::DrawStageElements()
+{
+    D3DXVECTOR3 stageTextPos;
+    ZunColor stageTextColor;
+    ZunColor demoTextColor;
+
+    if (this->impl->stageNameSprite.flags.isVisible)
+    {
+
+        stageTextPos.x = 168.0f;
+        stageTextPos.y = 198.0f;
+        stageTextPos.z = 0.0f;
+        if (!g_GameManager.demoMode)
+        {
+            g_AnmManager->Draw2(&this->impl->stageNameSprite);
+
+            // this looks like an inline function, maybe ZunColor is a struct?
+            stageTextColor = COLOR_COMBINE_ALPHA(COLOR_YELLOW, this->impl->stageNameSprite.color);
+            g_AsciiManager.color = stageTextColor;
+
+            if (g_GameManager.currentStage < EXTRA_STAGE)
+            {
+                stageTextPos.x = 168.0f;
+                g_AsciiManager.AddFormatText(&stageTextPos, "STAGE %d", g_GameManager.currentStage);
+            }
+            else if (g_GameManager.currentStage == EXTRA_STAGE)
+            {
+                stageTextPos.x = 136.0f;
+                g_AsciiManager.AddFormatText(&stageTextPos, "FINAL STAGE");
+            }
+            else
+            {
+                stageTextPos.x = 136.0f;
+                g_AsciiManager.AddFormatText(&stageTextPos, "EXTRA STAGE");
+            }
+        }
+        else
+        {
+            demoTextColor = COLOR_COMBINE_ALPHA(COLOR_YELLOW, this->impl->stageNameSprite.color);
+            g_AsciiManager.color = demoTextColor;
+
+            stageTextPos.x = 136.0f;
+
+            g_AsciiManager.AddFormatText(&stageTextPos, " DEMO PLAY");
+        }
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+
+    if (this->impl->songNameSprite.flags.isVisible && !g_GameManager.demoMode)
+    {
+        g_AnmManager->Draw2(&this->impl->songNameSprite);
+    }
+    if (this->impl->playerSpellcardPortrait.flags.isVisible)
+    {
+        g_AnmManager->DrawNoRotation(&this->impl->playerSpellcardPortrait);
+    }
+    if (this->impl->enemySpellcardPortrait.flags.isVisible)
+    {
+        g_AnmManager->DrawNoRotation(&this->impl->enemySpellcardPortrait);
+    }
+
+    if (this->impl->bombSpellcardName.flags.isVisible)
+    {
+        this->impl->bombSpellcardBackground.pos = this->impl->bombSpellcardName.pos;
+        this->impl->bombSpellcardBackground.pos.x +=
+            this->bombSpellcardBarLength * 16.0f / 15.0f / 2.0f + -128.0f - 16.0f;
+        this->impl->bombSpellcardBackground.scaleX = this->bombSpellcardBarLength / 14.0f;
+        g_AnmManager->DrawNoRotation(&this->impl->bombSpellcardBackground);
+        g_AnmManager->DrawNoRotation(&this->impl->bombSpellcardName);
+    }
+    if (this->impl->enemySpellcardName.flags.isVisible)
+    {
+
+        this->impl->enemySpellcardBackground.pos = this->impl->enemySpellcardName.pos;
+        this->impl->enemySpellcardBackground.pos.x += 128.0f - this->blueSpellcardBarLength * 16.0f / 15.0f / 2.0f;
+        this->impl->enemySpellcardBackground.scaleX = this->blueSpellcardBarLength / 14.0f;
+        g_AnmManager->DrawNoRotation(&this->impl->enemySpellcardBackground);
+        g_AnmManager->DrawNoRotation(&this->impl->enemySpellcardName);
+    }
+    if (this->impl->loadingScreenSprite.activeSpriteIndex >= 0)
+    {
+        g_Supervisor.viewport.X = g_GameManager.arcadeRegionTopLeftPos.x;
+        g_Supervisor.viewport.Y = g_GameManager.arcadeRegionTopLeftPos.y;
+
+        g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
+        g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
+
+        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+        g_AnmManager->DrawNoRotation(&this->impl->loadingScreenSprite);
+    }
 }
 #pragma optimize("", on)

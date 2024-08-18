@@ -105,6 +105,7 @@ Gui::LoadMsg
 Gui::OnUpdate
 Gui::OnDraw
 Gui::DrawGameScene
+Gui::DrawStageElements
 ResetKeyboard
 WindowProc
 CreateGameWindow

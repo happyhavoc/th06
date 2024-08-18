@@ -117,7 +117,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     for (i = 0; i < 80; i++)
     {
         g_AnmManager->ExecuteAnmIdx(&menu->vm[i], ANM_SCRIPT_TITLE01_START + i);
-        menu->vm[i].flags.flag0 = 0;
+        menu->vm[i].flags.isVisible = 0;
         menu->vm[i].baseSpriteIndex = menu->vm[i].activeSpriteIndex;
         menu->vm[i].flags.zWriteDisable = 1;
     }
@@ -1313,7 +1313,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         for (i = 0; i < 2; i++, vmList++)
         {
             vmList->flags.colorOp = AnmVmColorOp_Add;
-            vmList->flags.flag0 = 1;
+            vmList->flags.isVisible = 1;
             if (i != menu->cursor)
             {
                 if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
@@ -2153,7 +2153,7 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
     for (fileIdx = ANM_SCRIPT_REPLAY_START; fileIdx <= ANM_SCRIPT_REPLAY_END; fileIdx++, vm++)
     {
         g_AnmManager->ExecuteAnmIdx(vm, fileIdx);
-        vm->flags.flag0 = 0;
+        vm->flags.isVisible = 0;
         vm->flags.colorOp = AnmVmColorOp_Add;
 
         if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
@@ -2337,7 +2337,7 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
     for (vm = &menu->vm[0x50], i = ANM_OFFSET_SELECT01; i <= 0x15f; i++, vm++)
     {
         g_AnmManager->ExecuteAnmIdx(vm, i);
-        vm->flags.flag0 = 0;
+        vm->flags.isVisible = 0;
         vm->flags.colorOp = AnmVmColorOp_Add;
         if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
         {

@@ -57,7 +57,7 @@ struct Gui
 
     GuiFlags flags;
     GuiImpl *impl;
-    f32 unk_8;
+    f32 bombSpellcardBarLength;
     f32 blueSpellcardBarLength;
     u32 bossUIOpacity;
     i32 eclSetLives;
