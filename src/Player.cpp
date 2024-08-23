@@ -5,6 +5,7 @@
 #include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
 #include "EclManager.hpp"
+#include "EnemyManager.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"
 #include "ItemManager.hpp"
@@ -158,9 +159,9 @@ ChainCallbackResult Player::OnUpdate(Player *p)
         p->bombInfo.timer.SetCurrent(0);
         p->bombInfo.duration = 999;
         p->bombInfo.calc(p);
-        g_RunningSpellcardInfo.isCapturing = false;
+        g_EnemyManager.spellcardInfo.isCapturing = false;
         g_GameManager.DecreaseSubrank(200);
-        g_RunningSpellcardInfo.usedBomb = g_RunningSpellcardInfo.isActive;
+        g_EnemyManager.spellcardInfo.usedBomb = g_EnemyManager.spellcardInfo.isActive;
     }
     if (p->playerState == PLAYER_STATE_DEAD)
     {

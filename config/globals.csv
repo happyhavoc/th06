@@ -1,6 +1,8 @@
 _g_BulletTypeInfos,                     0x0046a6e8
 _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_StageFiles,                          0x004760e0
+_g_SpellcardScore,                      0x00476120
+_g_EclExInsn,                           0x00476220
 _g_RandomItems,                         0x00476338
 _g_EffectsColorWithTextureBlending,     0x00476358
 _g_EffectsColorWithoutTextureBlending,  0x004763c8
@@ -33,8 +35,6 @@ _g_EffectManagerCalcChain,              0x004b7964
 _g_EffectManagerDrawChain,              0x004b7984
 _g_EnemyManager,                        0x004b79c8
 _g_EnemyManagerDrawChain,               0x004b79a8
-_g_Enemies,                             0x004b8898
-_g_RunningSpellcardInfo,                0x005a5f8c
 _g_EnemyManagerCalcChain,               0x005a5fb4
 _g_BulletManagerDrawChain,              0x005a5fd8
 _g_BulletManager,                       0x005a5ff8

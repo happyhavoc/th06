@@ -63,7 +63,7 @@ ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
     enemyManager->randomItemSpawnIndex = g_Rng.GetRandomU16InRange(ITEM_SPAWNS);
     enemyManager->randomItemTableIndex = g_Rng.GetRandomU16InRange(ITEM_TABLES);
 
-    enemyManager->spellcardCapture = 0;
+    enemyManager->spellcardInfo.isActive = 0;
     enemyManager->timelineInstr = NULL;
 
     return ZUN_SUCCESS;
@@ -161,7 +161,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                     damage = 70;
                 }
                 g_GameManager.score = (damage / 5) * 10 + g_GameManager.score;
-                if (mgr->spellcardCapture != 0)
+                if (mgr->spellcardInfo.isActive != 0)
                 {
                     if (local_8 == 0)
                     {
@@ -174,7 +174,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                             damage = 1;
                         }
                     }
-                    else if (mgr->unk_ee5d4 != 0)
+                    else if (mgr->spellcardInfo.usedBomb != 0)
                     {
                         if (damage > 3)
                         {
@@ -249,7 +249,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                         }
                         mgr->randomItemSpawnIndex++;
                     }
-                    if (curEnemy->flags.isBoss && !g_RunningSpellcardInfo.isActive)
+                    if (curEnemy->flags.isBoss && !g_EnemyManager.spellcardInfo.isActive)
                     {
                         g_BulletManager.DespawnBullets(12800, false);
                     }

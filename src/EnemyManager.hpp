@@ -7,6 +7,16 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+struct RunningSpellcardInfo
+{
+    ZunBool isCapturing;
+    ZunBool isActive;
+    i32 captureScore;
+    u32 idx;
+    ZunBool usedBomb;
+};
+C_ASSERT(sizeof(RunningSpellcardInfo) == 0x14);
+
 struct EnemyManager
 {
     void Initialize();
@@ -29,13 +39,11 @@ struct EnemyManager
     u16 randomItemTableIndex;
     i32 enemyCount;
     i8 unk_ee5c0[4];
-    i32 spellcardRelated;
-    i32 spellcardCapture;
-    i32 spellcardBonus;
-    i32 spellcardNumber;
-    i32 unk_ee5d4;
+    RunningSpellcardInfo spellcardInfo;
     i32 unk_ee5d8;
     EclTimelineInstr *timelineInstr;
     ZunTimer timelineTime;
 };
 C_ASSERT(sizeof(EnemyManager) == 0xee5ec);
+
+DIFFABLE_EXTERN(EnemyManager, g_EnemyManager)

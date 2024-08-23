@@ -1,6 +1,7 @@
 #include "Enemy.hpp"
 #include "BulletManager.hpp"
 #include "EclManager.hpp"
+#include "EnemyManager.hpp"
 #include "Gui.hpp"
 #include "ZunBool.hpp"
 #include "utils.hpp"
@@ -64,8 +65,8 @@ ZunBool Enemy::HandleLifeCallback()
         this->bulletRankAmount2High = 0;
         this->stackDepth = 0;
 
-        curEnemy = g_Enemies;
-        for (i = 0; i < ARRAY_SIZE_SIGNED(g_Enemies); i++, curEnemy++)
+        curEnemy = g_EnemyManager.enemies;
+        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies); i++, curEnemy++)
         {
             if (!curEnemy->flags.unk5)
             {
@@ -114,16 +115,16 @@ ZunBool Enemy::HandleTimerCallback()
         this->bossTimer.InitializeForPopup();
         if (!this->flags.unk16)
         {
-            g_RunningSpellcardInfo.isCapturing = false;
-            if (g_RunningSpellcardInfo.isActive)
+            g_EnemyManager.spellcardInfo.isCapturing = false;
+            if (g_EnemyManager.spellcardInfo.isActive)
             {
-                g_RunningSpellcardInfo.isActive++;
+                g_EnemyManager.spellcardInfo.isActive++;
             }
             g_BulletManager.RemoveAllBullets(0);
         }
 
-        curEnemy = g_Enemies;
-        for (i = 0; i < ARRAY_SIZE_SIGNED(g_Enemies); i++, curEnemy++)
+        curEnemy = g_EnemyManager.enemies;
+        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies); i++, curEnemy++)
         {
             if (!curEnemy->flags.unk5)
             {
@@ -212,5 +213,3 @@ void Enemy::UpdateEffects(Enemy *enemy)
         effect->angleRelated = AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
     }
 }
-
-DIFFABLE_STATIC(Enemy, g_Enemies[256])
