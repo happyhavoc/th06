@@ -200,5 +200,3 @@ struct Enemy
     ZunTimer unk_ebc;
 };
 C_ASSERT(sizeof(Enemy) == 0xec8);
-
-DIFFABLE_EXTERN(Enemy, g_Enemies[256]);

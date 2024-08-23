@@ -65,8 +65,8 @@ ZunBool Enemy::HandleLifeCallback()
         this->bulletRankAmount2High = 0;
         this->stackDepth = 0;
 
-        curEnemy = g_Enemies;
-        for (i = 0; i < ARRAY_SIZE_SIGNED(g_Enemies); i++, curEnemy++)
+        curEnemy = g_EnemyManager.enemies;
+        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies); i++, curEnemy++)
         {
             if (!curEnemy->flags.unk5)
             {
@@ -123,8 +123,8 @@ ZunBool Enemy::HandleTimerCallback()
             g_BulletManager.RemoveAllBullets(0);
         }
 
-        curEnemy = g_Enemies;
-        for (i = 0; i < ARRAY_SIZE_SIGNED(g_Enemies); i++, curEnemy++)
+        curEnemy = g_EnemyManager.enemies;
+        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies); i++, curEnemy++)
         {
             if (!curEnemy->flags.unk5)
             {
@@ -213,5 +213,3 @@ void Enemy::UpdateEffects(Enemy *enemy)
         effect->angleRelated = AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
     }
 }
-
-DIFFABLE_STATIC(Enemy, g_Enemies[256])
