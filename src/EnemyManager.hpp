@@ -11,7 +11,7 @@ struct RunningSpellcardInfo
 {
     ZunBool isCapturing;
     ZunBool isActive;
-    u32 captureScore;
+    i32 captureScore;
     u32 idx;
     ZunBool usedBomb;
 };
@@ -45,3 +45,5 @@ struct EnemyManager
     ZunTimer timelineTime;
 };
 C_ASSERT(sizeof(EnemyManager) == 0xee5ec);
+
+DIFFABLE_EXTERN(EnemyManager, g_EnemyManager)

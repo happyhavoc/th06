@@ -40,6 +40,10 @@ struct Gui
     void MsgRead(i32 msgIdx);
     ZunBool MsgWait();
 
+    void ShowSpellcard(i32 spellcardSprite, char *spellcardName);
+    void ShowSpellcardBonus(u32 spellcardScore);
+    void Vm6SetInterruptTo1();
+
     void SetBossHealthBar(f32 val)
     {
         this->bossHealthBar1 = val;
@@ -53,6 +57,11 @@ struct Gui
     void SetSpellcardSeconds(i32 val)
     {
         this->spellcardSecondsRemaining = val;
+    }
+
+    i32 SpellcardSecondsRemaining()
+    {
+        return this->spellcardSecondsRemaining;
     }
 
     GuiFlags flags;

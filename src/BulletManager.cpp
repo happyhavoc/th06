@@ -90,8 +90,6 @@ ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
     return ZUN_SUCCESS;
 }
 
-#define ZUN_MIN(x, y) ((x) > (y) ? (y) : (x))
-
 ZunResult BulletManager::AddedCallback(BulletManager *mgr)
 {
     u32 idx;
@@ -174,19 +172,6 @@ ZunResult BulletManager::AddedCallback(BulletManager *mgr)
     }
     memset(&g_ItemManager, 0, sizeof(ItemManager));
     return ZUN_SUCCESS;
-}
-
-void __inline sincosmul(D3DXVECTOR3 *out_vel, f32 input, f32 multiplier)
-{
-    __asm {
-        mov eax, out_vel
-        fld input
-        fsincos
-        fmul [multiplier]
-        fstp [eax]
-        fmul [multiplier]
-        fstp [eax+4]
-    }
 }
 
 f32 __inline invertf(f32 x)
