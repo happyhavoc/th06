@@ -155,7 +155,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
             }
             if (curEnemy->flags.unk6 != 0)
             {
-                damage = g_Player.DidHitEnemy(&curEnemy->position, &curEnemy->hitboxDimensions, &local_8);
+                damage = g_Player.CalcDamageToEnemy(&curEnemy->position, &curEnemy->hitboxDimensions, &local_8);
                 if (70 <= damage)
                 {
                     damage = 70;
@@ -210,9 +210,9 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                     curEnemy->flags.unk10 = 0;
                     curEnemy->flags.unk11 = 0;
                     g_Gui.bossPresent = 0;
-                    g_EffectManager.SpawnEffect(curEnemy->deathAnm1, &curEnemy->position, 1, COLOR_WHITE);
-                    g_EffectManager.SpawnEffect(curEnemy->deathAnm1, &curEnemy->position, 1, COLOR_WHITE);
-                    g_EffectManager.SpawnEffect(curEnemy->deathAnm1, &curEnemy->position, 1, COLOR_WHITE);
+                    g_EffectManager.SpawnParticles(curEnemy->deathAnm1, &curEnemy->position, 1, COLOR_WHITE);
+                    g_EffectManager.SpawnParticles(curEnemy->deathAnm1, &curEnemy->position, 1, COLOR_WHITE);
+                    g_EffectManager.SpawnParticles(curEnemy->deathAnm1, &curEnemy->position, 1, COLOR_WHITE);
                     break;
                 case 1:
                     g_GameManager.AddScore(curEnemy->score);
@@ -230,14 +230,15 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                 case 2:
                     if (curEnemy->itemDrop >= 0)
                     {
-                        g_EffectManager.SpawnEffect(curEnemy->deathAnm2 + 4, &curEnemy->position, 3, 0xffffffff);
+                        g_EffectManager.SpawnParticles(curEnemy->deathAnm2 + 4, &curEnemy->position, 3, 0xffffffff);
                         g_ItemManager.SpawnItem(&curEnemy->position, (ItemType)curEnemy->itemDrop, local_8);
                     }
                     else if (curEnemy->itemDrop == ITEM_NO_ITEM)
                     {
                         if (mgr->randomItemSpawnIndex % 3 == 0)
                         {
-                            g_EffectManager.SpawnEffect(curEnemy->deathAnm2 + 4, &curEnemy->position, 6, COLOR_WHITE);
+                            g_EffectManager.SpawnParticles(curEnemy->deathAnm2 + 4, &curEnemy->position, 6,
+                                                           COLOR_WHITE);
                             g_ItemManager.SpawnItem(&curEnemy->position,
                                                     (ItemType)g_RandomItems[mgr->randomItemTableIndex], local_8);
                             mgr->randomItemTableIndex++;
@@ -256,8 +257,8 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                     break;
                 }
                 g_SoundPlayer.PlaySoundByIdx((SoundIdx)((enemyIdx % 2) + SOUND_2), 0);
-                g_EffectManager.SpawnEffect(curEnemy->deathAnm1, &curEnemy->position, 1, 0xffffffff);
-                g_EffectManager.SpawnEffect(curEnemy->deathAnm2 + 4, &curEnemy->position, 4, 0xffffffff);
+                g_EffectManager.SpawnParticles(curEnemy->deathAnm1, &curEnemy->position, 1, 0xffffffff);
+                g_EffectManager.SpawnParticles(curEnemy->deathAnm2 + 4, &curEnemy->position, 4, 0xffffffff);
                 if (0 <= curEnemy->deathCallbackSub)
                 {
                     curEnemy->bulletRankSpeedLow = -0.5;
