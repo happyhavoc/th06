@@ -155,7 +155,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
             }
             if (curEnemy->flags.unk6 != 0)
             {
-                damage = g_Player.DidHitEnemy(&curEnemy->position, &curEnemy->hitboxDimensions, &local_8);
+                damage = g_Player.CalcDamageToEnemy(&curEnemy->position, &curEnemy->hitboxDimensions, &local_8);
                 if (70 <= damage)
                 {
                     damage = 70;

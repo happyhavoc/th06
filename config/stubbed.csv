@@ -70,7 +70,7 @@ DrawSquare
 Controller::GetControllerState
 Player::CalcKillBoxCollision
 Player::DrawBulletExplosions
-Player::DidHitEnemy
+Player::CalcDamageToEnemy
 Player::DeletedCallback
 Player::FireBulletReimuA
 Player::FireBulletReimuB
