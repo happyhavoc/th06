@@ -2,7 +2,6 @@
 #include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 
-DIFFABLE_STATIC(RunningSpellcardInfo, g_RunningSpellcardInfo);
 DIFFABLE_STATIC(EclManager, g_EclManager);
 
 ZunResult EclManager::Load(char *eclPath)

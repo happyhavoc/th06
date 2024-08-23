@@ -52,16 +52,6 @@ struct EclRawInstr
 };
 C_ASSERT(sizeof(EclRawInstr) == 0x24);
 
-struct RunningSpellcardInfo
-{
-    ZunBool isCapturing;
-    ZunBool isActive;
-    u32 captureScore;
-    u32 idx;
-    ZunBool usedBomb;
-};
-C_ASSERT(sizeof(RunningSpellcardInfo) == 0x14);
-
 struct EclRawHeader
 {
     i16 subCount;
@@ -83,5 +73,4 @@ struct EclManager
 };
 C_ASSERT(sizeof(EclManager) == 0xc);
 
-DIFFABLE_EXTERN(RunningSpellcardInfo, g_RunningSpellcardInfo);
 DIFFABLE_EXTERN(EclManager, g_EclManager);

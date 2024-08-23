@@ -34,7 +34,6 @@ _g_EffectManagerDrawChain,              0x004b7984
 _g_EnemyManager,                        0x004b79c8
 _g_EnemyManagerDrawChain,               0x004b79a8
 _g_Enemies,                             0x004b8898
-_g_RunningSpellcardInfo,                0x005a5f8c
 _g_EnemyManagerCalcChain,               0x005a5fb4
 _g_BulletManagerDrawChain,              0x005a5fd8
 _g_BulletManager,                       0x005a5ff8

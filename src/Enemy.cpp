@@ -1,6 +1,7 @@
 #include "Enemy.hpp"
 #include "BulletManager.hpp"
 #include "EclManager.hpp"
+#include "EnemyManager.hpp"
 #include "Gui.hpp"
 #include "ZunBool.hpp"
 #include "utils.hpp"
@@ -114,10 +115,10 @@ ZunBool Enemy::HandleTimerCallback()
         this->bossTimer.InitializeForPopup();
         if (!this->flags.unk16)
         {
-            g_RunningSpellcardInfo.isCapturing = false;
-            if (g_RunningSpellcardInfo.isActive)
+            g_EnemyManager.spellcardInfo.isCapturing = false;
+            if (g_EnemyManager.spellcardInfo.isActive)
             {
-                g_RunningSpellcardInfo.isActive++;
+                g_EnemyManager.spellcardInfo.isActive++;
             }
             g_BulletManager.RemoveAllBullets(0);
         }
