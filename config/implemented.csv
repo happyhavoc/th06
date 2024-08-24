@@ -183,6 +183,7 @@ Player::HandlePlayerInputs
 Player::DrawBullets
 Player::SpawnBullets
 Player::StartFireBulletTimer
+Player::FireSingleBullet
 Player::UpdateFireBulletsTimer
 Player::OnUpdate
 Player::Player
