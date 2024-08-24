@@ -2,6 +2,7 @@
 
 #include "AnmManager.hpp"
 #include "AnmVm.hpp"
+#include "BulletData.hpp"
 #include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
 #include "EclManager.hpp"
@@ -853,4 +854,28 @@ FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, 
     {
         return FBR_SPAWN_MORE;
     }
+}
+
+FireBulletResult Player::FireBulletReimuA(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                          u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataReimuA);
+}
+
+FireBulletResult Player::FireBulletReimuB(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                          u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataReimuB);
+}
+
+FireBulletResult Player::FireBulletMarisaA(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                           u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaA);
+}
+
+FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                           u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
 }

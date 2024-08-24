@@ -89,10 +89,6 @@ Player::CalcKillBoxCollision
 Player::DrawBulletExplosions
 Player::CalcDamageToEnemy
 Player::DeletedCallback
-Player::FireBulletReimuA
-Player::FireBulletReimuB
-Player::FireBulletMarisaA
-Player::FireBulletMarisaB
 Player::BombReimuACalc
 Player::BombReimuBCalc
 Player::BombMarisaACalc
