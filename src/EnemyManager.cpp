@@ -554,3 +554,38 @@ void EnemyManager::RunEclTimeline()
     }
     return;
 }
+
+Enemy *EnemyManager::SpawnEnemy(i32 eclSubId, D3DXVECTOR3 *pos, i16 life, i16 itemDrop, i32 score)
+{
+    Enemy *newEnemy;
+    i32 idx;
+
+    newEnemy = this->enemies;
+    idx = 0;
+    for (; idx < ARRAY_SIZE_SIGNED(this->enemies); idx++, newEnemy++)
+    {
+        if (newEnemy->flags.unk5)
+            continue;
+
+        *newEnemy = this->enemyTemplate;
+
+        if (0 <= life)
+            newEnemy->life = life;
+
+        newEnemy->position = *pos;
+        g_EclManager.CallEclSub(&newEnemy->currentContext, eclSubId);
+        g_EclManager.RunEcl(newEnemy);
+        newEnemy->color = newEnemy->primaryVm.color;
+        newEnemy->itemDrop = itemDrop;
+
+        if (0 <= life)
+            newEnemy->life = life;
+
+        if (0 <= score)
+            newEnemy->score = score;
+
+        newEnemy->maxLife = newEnemy->life;
+        break;
+    }
+    return newEnemy;
+}
