@@ -1,8 +1,10 @@
 #pragma once
 
+#include <cmath>
 #include <d3dx8math.h>
 
 #include "AnmVm.hpp"
+#include "BulletManager.hpp"
 #include "Chain.hpp"
 #include "ZunBool.hpp"
 #include "ZunResult.hpp"
@@ -33,6 +35,14 @@ enum ShotType
 {
     SHOT_TYPE_A,
     SHOT_TYPE_B,
+};
+
+enum BulletType
+{
+    BULLET_TYPE_0,
+    BULLET_TYPE_1,
+    BULLET_TYPE_2,
+    BULLET_TYPE_LASER
 };
 
 enum PlayerState
@@ -85,7 +95,7 @@ struct PlayerBullet
     i16 bulletState;
     u16 bulletType;
     u16 unk_152;
-    u16 unk_154;
+    u16 spawnPositionIdx;
 };
 C_ASSERT(sizeof(PlayerBullet) == 0x158);
 
@@ -120,6 +130,40 @@ struct CharacterData
 };
 C_ASSERT(sizeof(CharacterData) == 0x18);
 
+struct CharacterPowerBulletData
+{
+    i16 waitBetweenBullets;
+    i16 bulletFrame;
+    ZunVec2 motion;
+    ZunVec2 size;
+    f32 direction;
+    f32 velocity;
+    u16 unk_1c;
+    u8 spawnPositionIdx;
+    u8 bulletType;
+    i16 anmFileIdx;
+    i16 bulletSoundIdx;
+
+    f32 HorizontalDirection(f32 direction)
+    {
+        return cos(direction);
+    }
+
+    f32 VerticalDirection(f32 direction)
+    {
+        return sin(direction);
+    }
+};
+C_ASSERT(sizeof(CharacterPowerBulletData) == 0x24);
+
+struct CharacterPowerData
+{
+    i32 numBullets;
+    i32 power;
+    CharacterPowerBulletData *bullets;
+};
+C_ASSERT(sizeof(CharacterPowerData) == 0xc);
+
 struct Player
 {
     Player();
@@ -130,6 +174,9 @@ struct Player
     static ChainCallbackResult OnDrawLowPrio(Player *p);
     static ZunResult AddedCallback(Player *p);
     static ZunResult DeletedCallback(Player *p);
+
+    static FireBulletResult FireSingleBullet(Player *, PlayerBullet *bullet, i32 bullet_idx, i32 framesSinceLastBullet,
+                                             CharacterPowerData *powerData);
 
     static FireBulletResult FireBulletReimuA(Player *, PlayerBullet *, u32, u32);
     static FireBulletResult FireBulletReimuB(Player *, PlayerBullet *, u32, u32);

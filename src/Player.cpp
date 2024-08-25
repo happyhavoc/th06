@@ -2,6 +2,7 @@
 
 #include "AnmManager.hpp"
 #include "AnmVm.hpp"
+#include "BulletData.hpp"
 #include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
 #include "EclManager.hpp"
@@ -9,6 +10,7 @@
 #include "GameManager.hpp"
 #include "Gui.hpp"
 #include "ItemManager.hpp"
+#include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
 #include "ZunBool.hpp"
 #include "utils.hpp"
@@ -769,4 +771,111 @@ void Player::SpawnBullets(Player *p, u32 timer)
             goto WHILE_LOOP;
         }
     }
+}
+
+#pragma var_order(bulletData, bulletFrame, pfVar4, unused, unused2)
+FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, i32 bulletIdx,
+                                          i32 framesSinceLastBullet, CharacterPowerData *powerData)
+{
+    CharacterPowerBulletData *bulletData;
+    f32 *pfVar4;
+    i32 bulletFrame;
+    i32 unused;
+    i32 unused2;
+
+    while (g_GameManager.currentPower >= powerData->power)
+    {
+        powerData++;
+    }
+
+    bulletData = powerData->bullets + bulletIdx;
+
+    if (bulletData->bulletType == BULLET_TYPE_LASER)
+    {
+        bulletFrame = bulletData->bulletFrame;
+        if (!player->laserTimer[bulletFrame].AsFrames())
+        {
+            player->laserTimer[bulletFrame].SetCurrent(bulletData->waitBetweenBullets);
+
+            bullet->unk_152 = bulletFrame;
+            bullet->spawnPositionIdx = bulletData->spawnPositionIdx;
+            bullet->sidewaysMotion = bulletData->motion.x;
+            bullet->unk_134.x = bulletData->motion.y;
+            goto SHOOT_BULLET;
+        }
+    }
+    else if (framesSinceLastBullet % bulletData->waitBetweenBullets == bulletData->bulletFrame)
+    {
+    SHOOT_BULLET:
+
+        g_AnmManager->SetAndExecuteScriptIdx(&bullet->sprite, bulletData->anmFileIdx);
+        if (!bulletData->spawnPositionIdx)
+        {
+            bullet->position = player->positionCenter;
+        }
+        else
+        {
+            bullet->position = player->orbsPosition[bulletData->spawnPositionIdx - 1];
+        }
+        pfVar4 = &bullet->position.x;
+        *pfVar4 = *pfVar4 + bulletData->motion.x;
+        pfVar4 = &bullet->position.y;
+        *pfVar4 = *pfVar4 + bulletData->motion.y;
+
+        bullet->position.z = 0.495f;
+
+        bullet->size.x = bulletData->size.x;
+        bullet->size.y = bulletData->size.y;
+        bullet->size.z = 1.0f;
+        bullet->unk_134.z = bulletData->direction;
+        bullet->unk_134.y = bulletData->velocity;
+
+        bullet->velocity.x = bulletData->HorizontalDirection(bulletData->direction) * bulletData->velocity;
+
+        bullet->velocity.y = bulletData->VerticalDirection(bulletData->direction) * bulletData->velocity;
+
+        bullet->unk_140.InitializeForPopup();
+
+        bullet->bulletType = bulletData->bulletType;
+        bullet->unk_14c = bulletData->unk_1c;
+        if (bulletData->bulletSoundIdx >= 0)
+        {
+            g_SoundPlayer.PlaySoundByIdx((SoundIdx)bulletData->bulletSoundIdx, 0);
+        }
+
+        return bulletIdx >= powerData->numBullets - 1;
+    }
+
+    if (bulletIdx >= powerData->numBullets - 1)
+    {
+        return FBR_STOP_SPAWNING;
+    }
+    else
+    {
+        return FBR_SPAWN_MORE;
+    }
+}
+
+FireBulletResult Player::FireBulletReimuA(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                          u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataReimuA);
+}
+
+FireBulletResult Player::FireBulletReimuB(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                          u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataReimuB);
+}
+
+FireBulletResult Player::FireBulletMarisaA(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                           u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaA);
+}
+
+FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                           u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
 }
