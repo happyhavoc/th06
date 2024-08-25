@@ -69,6 +69,9 @@ _g_StageOnDrawHighPrioChain,            0x00487af0
 _g_Stage,                               0x00487b10
 _g_StageOnDrawLowPrioChain,             0x00487e04
 _g_StageCalcChain,                      0x00487e24
+_g_PlayerShot,                          0x00487e44
+_g_PlayerDistance,                      0x00487e48
+_g_PlayerAngle,                         0x00487e4c
 _g_EclManager,                          0x00487e50
 _g_EffectManager,                       0x00487fe0
 _g_EffectManagerCalcChain,              0x004b7964

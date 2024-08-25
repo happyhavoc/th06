@@ -54,7 +54,6 @@ GuiImpl::RunMsg
 GuiImpl::DrawDialogue
 EnemyManager::Initialize
 EnemyManager::DeletedCallback
-Enemy::GetVar
 Enemy::GetVarFloat
 Enemy::SetVar
 Enemy::MathAdd
