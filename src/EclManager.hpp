@@ -327,7 +327,7 @@ struct EclRawHeader
     i16 subCount;
     i16 mainCount;
     EclTimelineInstr *timelineOffsets[3];
-    void *subOffsets[0];
+    EclRawInstr *subOffsets[0];
 };
 C_ASSERT(sizeof(EclRawHeader) == 0x10);
 
@@ -478,7 +478,7 @@ struct EclManager
     ZunResult CallEclSub(EnemyEclContext *enemyEcl, i16 subId);
 
     EclRawHeader *eclFile;
-    void **subTable;
+    EclRawInstr **subTable;
     EclTimelineInstr *timeline;
 };
 C_ASSERT(sizeof(EclManager) == 0xc);

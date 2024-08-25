@@ -38,9 +38,17 @@ ZunResult EclManager::Load(char *eclPath)
     this->subTable = &this->eclFile->subOffsets[0];
     for (idx = 0; idx < this->eclFile->subCount; idx++)
     {
-        this->subTable[idx] = (void *)((int)this->subTable[idx] + (int)this->eclFile);
+        this->subTable[idx] = (EclRawInstr *)((int)this->subTable[idx] + (int)this->eclFile);
     }
     this->timeline = this->eclFile->timelineOffsets[0];
+    return ZUN_SUCCESS;
+}
+
+ZunResult EclManager::CallEclSub(EnemyEclContext *ctx, i16 subId)
+{
+    ctx->currentInstr = this->subTable[subId];
+    ctx->time.InitializeForPopup();
+    ctx->subId = subId;
     return ZUN_SUCCESS;
 }
 
