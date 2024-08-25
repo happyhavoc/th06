@@ -67,7 +67,6 @@ Enemy::MathAtan2
 Enemy::MovePosTime
 Enemy::MoveDirTime
 Enemy::MoveTime
-EclManager::CallEclSub
 BulletManager::DespawnBullets
 BulletManager::DeletedCallback
 BulletManager::DrawBulletNoHwVertex
