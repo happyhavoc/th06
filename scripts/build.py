@@ -71,7 +71,7 @@ def main():
     """),
     )
     args = parser.parse_args()
-    object_name = None
+    target = None
 
     # First, create the build.ninja file that will be used to build.
     if args.build_type == "normal":

@@ -17,8 +17,6 @@ def rename_symbols(filename):
         obj.unpack(f.read(), 0)
 
     # We filter to only the symbols with the namespace=filename, and we scrape everything but the function name
-    # and we save all the renames onto syms.txt
-    # TODO: Implement constructors/destructors
     seen = {}
     for sym_obj in obj.symbols:
         sym = sym_obj.get_name(obj.string_table)
