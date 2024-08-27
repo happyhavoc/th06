@@ -71,6 +71,7 @@ EffectManager::AddedCallback
 EffectManager::RegisterChain
 EffectManager::OnUpdate
 EffectManager::OnDraw
+EnemyManager::Initialize
 EnemyManager::RegisterChain
 EnemyManager::AddedCallback
 EnemyManager::OnUpdate

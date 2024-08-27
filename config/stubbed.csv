@@ -52,7 +52,6 @@ Gui::ShowSpellcardBonus
 Gui::Vm6SetInterruptTo1
 GuiImpl::RunMsg
 GuiImpl::DrawDialogue
-EnemyManager::Initialize
 EnemyManager::DeletedCallback
 Enemy::GetVar
 Enemy::GetVarFloat
