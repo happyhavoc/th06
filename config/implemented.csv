@@ -77,6 +77,8 @@ EnemyManager::OnUpdate
 EnemyManager::OnDraw
 EnemyManager::RunEclTimeline
 EnemyManager::SpawnEnemy
+Enemy::GetVar
+Enemy::GetVarFloat
 Enemy::Move
 Enemy::ClampPos
 Enemy::HandleLifeCallback
