@@ -150,6 +150,20 @@ i32 *Enemy::GetVar(Enemy *enemy, EclVarId *eclVarId, EclValueType *valueType)
     return (i32 *)eclVarId;
 }
 
+f32 *Enemy::GetVarFloat(Enemy *enemy, f32 *eclVarId, EclValueType *valueType)
+{
+    i32 varId = *eclVarId;
+    i32 *res = Enemy::GetVar(enemy, (EclVarId *)&varId, valueType);
+    if (res == &varId)
+    {
+        return eclVarId;
+    }
+    else
+    {
+        return (f32 *)res;
+    }
+}
+
 void Enemy::Move()
 {
     if (!this->flags.unk4)
