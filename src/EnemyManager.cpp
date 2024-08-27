@@ -18,6 +18,61 @@ DIFFABLE_STATIC(EnemyManager, g_EnemyManager)
 DIFFABLE_STATIC(ChainElem, g_EnemyManagerCalcChain)
 DIFFABLE_STATIC(ChainElem, g_EnemyManagerDrawChain)
 
+void EnemyManager::Initialize()
+{
+    i32 i;
+    Enemy *enemy;
+
+    enemy = &this->enemies[0];
+    memset(this, 0, sizeof(EnemyManager));
+    enemy = &this->enemyTemplate;
+    memset(enemy, 0, sizeof(Enemy));
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->enemyTemplate.vms); i++)
+    {
+        enemy->vms[i].anmFileIndex = -1;
+    }
+    enemy->flags.unk5 = 1;
+    enemy->bossTimer.InitializeForPopup();
+    enemy->flags.unk6 = 1;
+    enemy->flags.unk7 = 1;
+    enemy->flags.unk8 = 0;
+    enemy->hitboxDimensions = D3DXVECTOR3(12.0f, 12.0f, 12.0f);
+    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    enemy->angularVelocity = 0.0f;
+    enemy->angle = 0.0f;
+    enemy->acceleration = 0.0f;
+    enemy->speed = 0.0f;
+    enemy->flags.unk1 = 0;
+    enemy->flags.unk3 = 0;
+    enemy->flags.unk4 = 0;
+    enemy->flags.isBoss = 0;
+    enemy->stackDepth = 0;
+    enemy->life = 1;
+    enemy->score = 100;
+    enemy->deathAnm1 = 0;
+    enemy->deathAnm2 = 0;
+    enemy->deathAnm3 = 0;
+    enemy->shootInterval = 0;
+    enemy->shootIntervalTimer.InitializeForPopup();
+    enemy->shootOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    enemy->anmExLeft = -1;
+    enemy->anmExRight = -1;
+    enemy->anmExDefaults = -1;
+    enemy->flags.unk10 = 1;
+    enemy->flags.unk11 = 0;
+    enemy->deathCallbackSub = -1;
+    enemy->flags.shouldClampPos = 0;
+    enemy->effectIdx = 0;
+    enemy->runInterrupt = -1;
+    enemy->lifeCallbackThreshold = -1;
+    enemy->timerCallbackThreshold = -1;
+    enemy->laserStore = 0;
+    enemy->unk_e41 = 0;
+    enemy->flags.unk13 = 0;
+    enemy->bulletRankSpeedLow = -0.5f;
+    enemy->bulletRankSpeedHigh = 0.5f;
+}
+
 ZunResult EnemyManager::RegisterChain(char *stgEnm1, char *stgEnm2)
 {
     EnemyManager *mgr = &g_EnemyManager;
