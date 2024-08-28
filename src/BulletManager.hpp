@@ -93,6 +93,7 @@ struct BulletManager
     i32 DespawnBullets(i32 unk, ZunBool awardPoints);
     ZunResult SpawnBulletPattern(EnemyBulletShooter *bulletProps);
     Laser *SpawnLaserPattern(EnemyLaserShooter *bulletProps);
+    u32 SpawnSingleBullet(EnemyBulletShooter *bulletProps, u32 bulletIdx1, i32 bulletIdx2, f32 angle);
 
     BulletTypeSprites bulletTypeTemplates[16];
     Bullet bullets[640];

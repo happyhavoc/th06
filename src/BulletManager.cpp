@@ -2,6 +2,7 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "Enemy.hpp"
 #include "GameManager.hpp"
 #include "ItemManager.hpp"
 #include "Player.hpp"
@@ -58,6 +59,30 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BulletTypeInfo, 10, g_BulletTypeInfos) = {
     {ASB4(BUBBLE), ASB4(SPAWN_BUBBLE_SLOW), ASB4(SPAWN_BUBBLE_SLOW), ASB4(SPAWN_BUBBLE_SLOW),
      ASB4(SPAWN_BUBBLE_NORMAL)},
 };
+
+ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
+{
+    i32 idx1, idx2;
+    f32 angle;
+
+    angle = g_Player.AngleToPlayer(&bulletProps->position);
+    for (idx1 = 0; idx1 < bulletProps->count2; idx1++)
+    {
+        for (idx2 = 0; idx2 < bulletProps->count1; idx2++)
+        {
+            if (this->SpawnSingleBullet(bulletProps, idx2, idx1, angle) != 0)
+            {
+                goto out;
+            }
+        }
+    }
+out:
+    if ((bulletProps->flags & 0x200) != 0)
+    {
+        g_SoundPlayer.PlaySoundByIdx(bulletProps->sfx, 0);
+    }
+    return ZUN_SUCCESS;
+}
 
 ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
 {
