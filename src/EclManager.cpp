@@ -372,7 +372,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 local_58->flags = local_54->flags;
                 local_14 = local_54->color;
                 // TODO: Strict aliasing rule be like.
-                local_58->color = *Enemy::GetVar(enemy, (EclVarId *)&local_14, NULL);
+                local_58->spriteOffset = *Enemy::GetVar(enemy, (EclVarId *)&local_14, NULL);
                 if (enemy->flags.unk3 == 0)
                 {
                     g_BulletManager.SpawnBulletPattern(local_58);

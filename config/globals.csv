@@ -7,6 +7,8 @@ _g_RandomItems,                         0x00476338
 _g_EffectsColorWithTextureBlending,     0x00476358
 _g_EffectsColorWithoutTextureBlending,  0x004763c8
 _g_EffectsColor,                        0x00476438
+_g_BulletSpriteOffset16Px,              0x00476440
+_g_BulletSpriteOffset32Px,              0x00476480
 _g_ExtraLivesScores,                    0x004764b0
 _g_EclFiles,                            0x004764c4
 _g_AnmStageFiles,                       0x004764e8

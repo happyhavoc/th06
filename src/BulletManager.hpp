@@ -9,6 +9,19 @@
 struct EnemyBulletShooter;
 struct EnemyLaserShooter;
 
+enum BulletAimMode
+{
+    FAN_AIMED,
+    FAN,
+    CIRCLE_AIMED,
+    CIRCLE,
+    OFFSET_CIRCLE_AIMED,
+    OFFSET_CIRCLE,
+    RANDOM_ANGLE,
+    RANDOM_SPEED,
+    RANDOM,
+};
+
 struct BulletTypeSprites
 {
     AnmVm spriteBullet;
@@ -41,7 +54,7 @@ struct Bullet
     i32 dirChangeNumTimes;
     i32 dirChangeMaxTimes;
     u16 exFlags;
-    u16 color;
+    i16 spriteOffset;
     u16 unk_5bc;
     u16 state;
     u16 unk_5c0;
@@ -93,8 +106,7 @@ struct BulletManager
     i32 DespawnBullets(i32 unk, ZunBool awardPoints);
     ZunResult SpawnBulletPattern(EnemyBulletShooter *bulletProps);
     Laser *SpawnLaserPattern(EnemyLaserShooter *bulletProps);
-    u32 SpawnSingleBullet(EnemyBulletShooter *bulletProps, u32 bulletIdx1, i32 bulletIdx2, f32 angle);
-
+    u32 SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bulletIdx1, i32 bulletIdx2, f32 angle);
     BulletTypeSprites bulletTypeTemplates[16];
     Bullet bullets[640];
     Laser lasers[64];
