@@ -20,7 +20,6 @@ MidiOutput::ReleaseFileData
 MidiOutput::Play
 MidiOutput::LoadFile
 SoundPlayer::PlaySoundByIdx
-SoundPlayer::GetWavFormatData
 SoundPlayer::Release
 SoundPlayer::PlaySounds
 SoundPlayer::LoadPos

@@ -225,6 +225,22 @@ ZunResult SoundPlayer::InitSoundBuffers()
     return ZUN_SUCCESS;
 }
 
+WAVEFORMATEX *SoundPlayer::GetWavFormatData(u8 *soundData, char *formatString, i32 *formatSize,
+                                            u32 fileSizeExcludingFormat)
+{
+    while (fileSizeExcludingFormat > 0)
+    {
+        *formatSize = *(i32 *)(soundData + 4);
+        if (strncmp((char *)soundData, formatString, 4) == 0)
+        {
+            return (WAVEFORMATEX *)(soundData + 8);
+        }
+        fileSizeExcludingFormat -= (*formatSize + 8);
+        soundData += *formatSize + 8;
+    }
+    return NULL;
+}
+
 #pragma var_order(fileSize, soundFileData, audioPtr1, audioSize1, audioPtr2, audioSize2, formatSize, wavDataPtr,       \
                   dsBuffer, wavData, sFDCursor)
 ZunResult SoundPlayer::LoadSound(i32 idx, char *path)

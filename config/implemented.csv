@@ -179,6 +179,7 @@ AddNormalizeAngle
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav
+SoundPlayer::GetWavFormatData
 SoundPlayer::LoadSound
 SoundPlayer::PlayBGM
 SoundPlayer::StopBGM
