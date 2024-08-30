@@ -226,7 +226,7 @@ ZunResult SoundPlayer::InitSoundBuffers()
 }
 
 WAVEFORMATEX *SoundPlayer::GetWavFormatData(u8 *soundData, char *formatString, i32 *formatSize,
-                                            i32 fileSizeExcludingFormat)
+                                            u32 fileSizeExcludingFormat)
 {
     while (fileSizeExcludingFormat > 0)
     {
