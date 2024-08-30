@@ -2,9 +2,11 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "Enemy.hpp"
 #include "GameManager.hpp"
 #include "ItemManager.hpp"
 #include "Player.hpp"
+#include "Rng.hpp"
 #include "ZunColor.hpp"
 #include "ZunMath.hpp"
 #include "utils.hpp"
@@ -23,6 +25,9 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 28, g_EffectsColorWithoutTextureBlending) = {
     0xffffe0ff, 0xffffe0ff, 0xffe0e0ff, 0xffe0e0ff, 0xffe0e0ff, 0xffe0ffff, 0xffe0ffff,
     0xffe0ffff, 0xffe0ffe0, 0xffe0ffe0, 0xffe0ffe0, 0xffe0ffe0, 0xffe0ffe0, 0xffe0ffe0,
     0xffffffe0, 0xffffffe0, 0xffffffe0, 0xffffe0e0, 0xffffe0e0, 0xffffe0e0, 0xffffffff};
+DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 16, g_BulletSpriteOffset16Px) = {0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 4, 0};
+DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 8, g_BulletSpriteOffset32Px) = {0, 1, 1, 2, 2, 3, 4, 0};
+
 DIFFABLE_STATIC_ASSIGN(u32 *, g_EffectsColor) = g_EffectsColorWithTextureBlending;
 
 struct BulletTypeInfo
@@ -58,6 +63,306 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BulletTypeInfo, 10, g_BulletTypeInfos) = {
     {ASB4(BUBBLE), ASB4(SPAWN_BUBBLE_SLOW), ASB4(SPAWN_BUBBLE_SLOW), ASB4(SPAWN_BUBBLE_SLOW),
      ASB4(SPAWN_BUBBLE_NORMAL)},
 };
+
+#pragma var_order(bulletSpeed, local_c, bullet, bulletAngle)
+u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bulletIdx1, i32 bulletIdx2, f32 angle)
+{
+    f32 bulletAngle;
+    Bullet *bullet;
+    i32 local_c;
+    f32 bulletSpeed;
+
+    local_c = 0;
+    bullet = &this->bullets[this->nextBulletIndex];
+    for (local_c = 0; local_c < ARRAY_SIZE_SIGNED(this->bullets); local_c++)
+    {
+        this->nextBulletIndex++;
+        if (ARRAY_SIZE_SIGNED(this->bullets) <= this->nextBulletIndex)
+        {
+            this->nextBulletIndex = 0;
+        }
+        if (bullet->state != 0)
+        {
+            bullet++;
+            if (this->nextBulletIndex == 0)
+            {
+                bullet = &this->bullets[0];
+            }
+            continue;
+        }
+        break;
+    }
+    if (local_c >= ARRAY_SIZE_SIGNED(this->bullets))
+    {
+        return 1;
+    }
+    bulletAngle = 0.0f;
+    bulletSpeed = bulletProps->speed1 - (bulletProps->speed1 - bulletProps->speed2) * bulletIdx2 / bulletProps->count2;
+    switch (bulletProps->aimMode)
+    {
+    case FAN_AIMED:
+    case FAN:
+        if ((bulletProps->count1 & 1) != 0)
+        {
+            bulletAngle = ((bulletIdx1 + 1) / 2) * bulletProps->angle2 + bulletAngle;
+        }
+        else
+        {
+            bulletAngle = (bulletIdx1 / 2) * bulletProps->angle2 + bulletProps->angle2 * 0.5f + bulletAngle;
+        }
+        if ((bulletIdx1 & 1) != 0)
+        {
+            bulletAngle *= -1.0f;
+        }
+        if (bulletProps->aimMode == FAN_AIMED)
+        {
+            bulletAngle += angle;
+        }
+        bulletAngle += bulletProps->angle1;
+        break;
+    case CIRCLE_AIMED:
+        bulletAngle += angle;
+    case CIRCLE:
+        bulletAngle += bulletIdx1 * (ZUN_PI * 2.0f) / bulletProps->count1;
+        bulletAngle += bulletIdx2 * bulletProps->angle2 + bulletProps->angle1;
+        break;
+    case OFFSET_CIRCLE_AIMED:
+        bulletAngle += angle;
+    case OFFSET_CIRCLE:
+        bulletAngle += ZUN_PI / bulletProps->count1;
+        bulletAngle += bulletIdx1 * (ZUN_PI * 2.0f) / bulletProps->count1;
+        bulletAngle += bulletProps->angle1;
+        break;
+    case RANDOM_ANGLE:
+        bulletAngle = g_Rng.GetRandomF32InRange(bulletProps->angle1 - bulletProps->angle2) + bulletProps->angle2;
+        break;
+    case RANDOM_SPEED:
+        bulletSpeed = g_Rng.GetRandomF32InRange(bulletProps->speed1 - bulletProps->speed2) + bulletProps->speed2;
+        bulletAngle += bulletIdx1 * (ZUN_PI * 2.0f) / bulletProps->count1;
+        bulletAngle += bulletIdx2 * bulletProps->angle2 + bulletProps->angle1;
+        break;
+    case RANDOM:
+        bulletAngle = g_Rng.GetRandomF32InRange(bulletProps->angle1 - bulletProps->angle2) + bulletProps->angle2;
+        bulletSpeed = g_Rng.GetRandomF32InRange(bulletProps->speed1 - bulletProps->speed2) + bulletProps->speed2;
+    }
+    bullet->state = 1;
+    bullet->unk_5c2 = 1;
+    bullet->speed = bulletSpeed;
+    bullet->angle = AddNormalizeAngle(bulletAngle, 0.0f);
+    bullet->pos = bulletProps->position;
+    bullet->pos.z = 0.1f;
+    sincosmul(&bullet->velocity, bullet->angle, bulletSpeed);
+    bullet->exFlags = bulletProps->flags;
+    bullet->spriteOffset = bulletProps->spriteOffset;
+    bullet->sprites.spriteBullet = this->bulletTypeTemplates[bulletProps->sprite].spriteBullet;
+    bullet->sprites.spriteSpawnEffectDonut = this->bulletTypeTemplates[bulletProps->sprite].spriteSpawnEffectDonut;
+    bullet->sprites.grazeSize = this->bulletTypeTemplates[bulletProps->sprite].grazeSize;
+    bullet->sprites.unk_55c = this->bulletTypeTemplates[bulletProps->sprite].unk_55c;
+    bullet->sprites.bulletHeight = this->bulletTypeTemplates[bulletProps->sprite].bulletHeight;
+    if (bullet->exFlags & 2)
+    {
+        // TODO: Make an inline function for this?
+        // It's the same damn code, copy pasted four times.
+        bullet->sprites.spriteSpawnEffectFast = this->bulletTypeTemplates[bulletProps->sprite].spriteSpawnEffectFast;
+        if (bullet->sprites.spriteBullet.sprite->heightPx <= 16.0f)
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectFast,
+                                          bullet->sprites.spriteSpawnEffectFast.activeSpriteIndex +
+                                              g_BulletSpriteOffset16Px[bulletProps->spriteOffset]);
+        }
+        else if (bullet->sprites.spriteBullet.sprite->heightPx <= 32.0f)
+        {
+            if (bullet->sprites.spriteBullet.anmFileIndex != 0x207)
+            {
+                g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectFast,
+                                              bullet->sprites.spriteSpawnEffectFast.activeSpriteIndex +
+                                                  g_BulletSpriteOffset32Px[bulletProps->spriteOffset]);
+            }
+            else
+            {
+                g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectFast,
+                                              bullet->sprites.spriteSpawnEffectFast.activeSpriteIndex + 1);
+            }
+        }
+        else
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectFast,
+                                          bullet->sprites.spriteSpawnEffectFast.activeSpriteIndex +
+                                              bulletProps->spriteOffset);
+        }
+        bullet->state = 2;
+    }
+    else if (bullet->exFlags & 4)
+    {
+        bullet->sprites.spriteSpawnEffectNormal =
+            this->bulletTypeTemplates[bulletProps->sprite].spriteSpawnEffectNormal;
+        if (bullet->sprites.spriteBullet.sprite->heightPx <= 16.0f)
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectNormal,
+                                          bullet->sprites.spriteSpawnEffectNormal.activeSpriteIndex +
+                                              g_BulletSpriteOffset16Px[bulletProps->spriteOffset]);
+        }
+        else if (bullet->sprites.spriteBullet.sprite->heightPx <= 32.0f)
+        {
+            if (bullet->sprites.spriteBullet.anmFileIndex != 0x207)
+            {
+                g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectNormal,
+                                              bullet->sprites.spriteSpawnEffectNormal.activeSpriteIndex +
+                                                  g_BulletSpriteOffset32Px[bulletProps->spriteOffset]);
+            }
+            else
+            {
+                g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectNormal,
+                                              bullet->sprites.spriteSpawnEffectNormal.activeSpriteIndex + 1);
+            }
+        }
+        else
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectNormal,
+                                          bullet->sprites.spriteSpawnEffectNormal.activeSpriteIndex +
+                                              bulletProps->spriteOffset);
+        }
+        bullet->state = 3;
+    }
+    else if (bullet->exFlags & 8)
+    {
+        bullet->sprites.spriteSpawnEffectSlow = this->bulletTypeTemplates[bulletProps->sprite].spriteSpawnEffectSlow;
+        if (bullet->sprites.spriteBullet.sprite->heightPx <= 16.0f)
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectSlow,
+                                          bullet->sprites.spriteSpawnEffectSlow.activeSpriteIndex +
+                                              g_BulletSpriteOffset16Px[bulletProps->spriteOffset]);
+        }
+        else if (bullet->sprites.spriteBullet.sprite->heightPx <= 32.0f)
+        {
+            if (bullet->sprites.spriteBullet.anmFileIndex != 0x207)
+            {
+                g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectSlow,
+                                              bullet->sprites.spriteSpawnEffectSlow.activeSpriteIndex +
+                                                  g_BulletSpriteOffset32Px[bulletProps->spriteOffset]);
+            }
+            else
+            {
+                g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectSlow,
+                                              bullet->sprites.spriteSpawnEffectSlow.activeSpriteIndex + 1);
+            }
+        }
+        else
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectSlow,
+                                          bullet->sprites.spriteSpawnEffectSlow.activeSpriteIndex +
+                                              bulletProps->spriteOffset);
+        }
+        bullet->state = 4;
+    }
+    g_AnmManager->SetActiveSprite(&bullet->sprites.spriteBullet,
+                                  bullet->sprites.spriteBullet.activeSpriteIndex + bulletProps->spriteOffset);
+    if (bullet->sprites.spriteBullet.sprite->heightPx <= 16.0f)
+    {
+        g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectDonut,
+                                      bullet->sprites.spriteSpawnEffectDonut.activeSpriteIndex +
+                                          g_BulletSpriteOffset16Px[bulletProps->spriteOffset]);
+    }
+    else if (bullet->sprites.spriteBullet.sprite->heightPx <= 32.0f)
+    {
+        if (bullet->sprites.spriteBullet.anmFileIndex != 0x207)
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectDonut,
+                                          bullet->sprites.spriteSpawnEffectDonut.activeSpriteIndex +
+                                              g_BulletSpriteOffset32Px[bulletProps->spriteOffset]);
+        }
+        else
+        {
+            g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectDonut,
+                                          bullet->sprites.spriteSpawnEffectDonut.activeSpriteIndex + 1);
+        }
+    }
+    else
+    {
+        g_AnmManager->SetActiveSprite(&bullet->sprites.spriteSpawnEffectDonut,
+                                      bullet->sprites.spriteSpawnEffectDonut.activeSpriteIndex +
+                                          bulletProps->spriteOffset);
+    }
+    if (bullet->exFlags & 0x10)
+    {
+        if (bulletProps->exFloats[1] <= -999.0f)
+        {
+            sincosmul(&bullet->ex4Acceleration, bulletAngle, bulletProps->exFloats[0]);
+        }
+        else
+        {
+            sincosmul(&bullet->ex4Acceleration, bulletProps->exFloats[1], bulletProps->exFloats[0]);
+        }
+        if (bulletProps->exInts[0] > 0)
+        {
+            bullet->ex5Int0 = bulletProps->exInts[0];
+        }
+        else
+        {
+            bullet->ex5Int0 = 99999;
+        }
+        bullet->ex4Acceleration.z = 0.0f;
+    }
+    else if (bullet->exFlags & 0x20)
+    {
+        bullet->ex5Float0 = bulletProps->exFloats[0];
+        bullet->ex5Float1 = bulletProps->exFloats[1];
+        bullet->ex5Int0 = bulletProps->exInts[0];
+    }
+    if (bullet->exFlags & 0x1c0)
+    {
+        bullet->dirChangeRotation = bulletProps->exFloats[0];
+        if (bulletProps->exFloats[1] >= 0.0f)
+        {
+            bullet->dirChangeSpeed = bulletProps->exFloats[1];
+        }
+        else
+        {
+            bullet->dirChangeSpeed = bulletSpeed;
+        }
+        bullet->dirChangeInterval = bulletProps->exInts[0];
+        bullet->dirChangeMaxTimes = bulletProps->exInts[1];
+        bullet->dirChangeNumTimes = 0;
+    }
+    if (bullet->exFlags & 0xc00)
+    {
+        if (bulletProps->exFloats[0] >= 0.0f)
+        {
+            bullet->dirChangeSpeed = bulletProps->exFloats[0];
+        }
+        else
+        {
+            bullet->dirChangeSpeed = bulletSpeed;
+        }
+        bullet->dirChangeMaxTimes = bulletProps->exInts[0];
+        bullet->dirChangeNumTimes = 0;
+    }
+    return 0;
+}
+
+ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
+{
+    i32 idx1, idx2;
+    f32 angle;
+
+    angle = g_Player.AngleToPlayer(&bulletProps->position);
+    for (idx1 = 0; idx1 < bulletProps->count2; idx1++)
+    {
+        for (idx2 = 0; idx2 < bulletProps->count1; idx2++)
+        {
+            if (this->SpawnSingleBullet(bulletProps, idx2, idx1, angle) != 0)
+            {
+                goto out;
+            }
+        }
+    }
+out:
+    if ((bulletProps->flags & 0x200) != 0)
+    {
+        g_SoundPlayer.PlaySoundByIdx(bulletProps->sfx, 0);
+    }
+    return ZUN_SUCCESS;
+}
 
 ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
 {

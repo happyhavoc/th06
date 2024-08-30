@@ -18,8 +18,8 @@ struct Enemy;
 
 struct EnemyBulletShooter
 {
-    u16 sprite;
-    u16 color;
+    i16 sprite;
+    i16 spriteOffset;
     D3DXVECTOR3 position;
     f32 angle1;
     f32 angle2;

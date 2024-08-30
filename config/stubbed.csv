@@ -69,7 +69,6 @@ BulletManager::DrawBulletNoHwVertex
 BulletManager::DrawBullet
 BulletManager::InitializeToZero
 BulletManager::RemoveAllBullets
-BulletManager::SpawnBulletPattern
 BulletManager::SpawnLaserPattern
 BulletManager::TurnAllBulletsIntoPoints
 ItemManager::SpawnItem
