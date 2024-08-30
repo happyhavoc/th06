@@ -9,6 +9,7 @@
 
 enum SoundIdx
 {
+    NO_SOUND = -1,
     SOUND_SHOOT = 0,
     SOUND_1 = 1,
     SOUND_2 = 2,

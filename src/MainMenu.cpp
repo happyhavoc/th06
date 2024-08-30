@@ -20,6 +20,11 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 5, g_DifficultyList) = {"Easy   ", "Normal ", "Hard   ", "Lunatic", "Extra  "};
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 7, g_StageList) = {"Stage1", "Stage2", "Stage3", "Stage4",
+                                                        "Stage5", "Stage6", "Extra "};
+
 #pragma optimize("s", on)
 #pragma var_order(time, i, vector3Ptr)
 ZunResult MainMenu::BeginStartup()
@@ -80,7 +85,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     ZunResult loadedTitle04s;
 
     g_Supervisor.LoadPbg3(3, TH_TL_DAT_FILE);
-    for (i = 0x1b; i <= 0x24; i++)
+    for (i = ANM_FILE_SELECT01; i <= ANM_FILE_SELECT05; i++)
     {
         g_AnmManager->ReleaseAnm(i);
     }
@@ -112,7 +117,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     for (i = 0; i < 80; i++)
     {
         g_AnmManager->ExecuteAnmIdx(&menu->vm[i], ANM_SCRIPT_TITLE01_START + i);
-        menu->vm[i].flags.flag0 = 0;
+        menu->vm[i].flags.isVisible = 0;
         menu->vm[i].baseSpriteIndex = menu->vm[i].activeSpriteIndex;
         menu->vm[i].flags.zWriteDisable = 1;
     }
@@ -685,6 +690,51 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
 }
 #pragma optimize("", on)
 
+#pragma var_order(i1, i2, mgr, replay)
+#pragma optimize("s", on)
+ZunResult MainMenu::DeletedCallback(MainMenu *menu)
+{
+    AnmManager *mgr;
+    void *replay;
+    i32 i1, i2;
+
+    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+    MainMenu::ReleaseTitleAnm();
+    for (i1 = ANM_FILE_SELECT01; i1 <= ANM_FILE_REPLAY; i1++)
+    {
+        g_AnmManager->ReleaseAnm(i1);
+    }
+    g_AnmManager->ReleaseSurface(0);
+
+    // TODO: Inline function, but when inlining it, I lose control over the
+    // stack slots, and it stops matching.
+    mgr = g_AnmManager;
+    for (i2 = 0; i2 < ANM_OFFSET_TITLE01S - ANM_OFFSET_TITLE01; i2++)
+    {
+        mgr->scripts[ANM_OFFSET_TITLE01 + i2] = NULL;
+    }
+    g_Chain.Cut(menu->chainDraw);
+    menu->chainDraw = NULL;
+
+    replay = menu->currentReplay;
+    free(replay);
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void MainMenu::ReleaseTitleAnm()
+{
+    // There's a bit of an off-by-one error here, where it frees
+    // ANM_FILE_SELECT01 in addition to the titles. I'm pretty sure this is
+    // unintentional.
+    for (i32 i = ANM_FILE_TITLE01; i <= ANM_FILE_SELECT01; i++)
+    {
+        g_AnmManager->ReleaseAnm(i);
+    }
+}
+#pragma optimize("", on)
+
 DIFFABLE_STATIC(i16, g_LastJoystickInput)
 
 #pragma function(strcpy)
@@ -845,7 +895,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         }
         if (32 <= menu->stateTimer)
         {
-            controllerData = GetControllerState();
+            controllerData = Controller::GetControllerState();
             for (sVar1 = 0; sVar1 < 32; sVar1++)
             {
                 if ((controllerData[sVar1] & 0x80) != 0)
@@ -1263,7 +1313,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         for (i = 0; i < 2; i++, vmList++)
         {
             vmList->flags.colorOp = AnmVmColorOp_Add;
-            vmList->flags.flag0 = 1;
+            vmList->flags.isVisible = 1;
             if (i != menu->cursor)
             {
                 if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
@@ -2103,7 +2153,7 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
     for (fileIdx = ANM_SCRIPT_REPLAY_START; fileIdx <= ANM_SCRIPT_REPLAY_END; fileIdx++, vm++)
     {
         g_AnmManager->ExecuteAnmIdx(vm, fileIdx);
-        vm->flags.flag0 = 0;
+        vm->flags.isVisible = 0;
         vm->flags.colorOp = AnmVmColorOp_Add;
 
         if ((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1) == 0)
@@ -2125,6 +2175,112 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+#pragma var_order(vmRef, i, replayAmount, isSelected, isSelected2)
+ZunResult MainMenu::DrawReplayMenu()
+{
+    i32 replayAmount;
+    i32 i;
+    AnmVm *vmRef;
+    ZunBool isSelected;
+    ZunBool isSelected2;
+
+    vmRef = &this->vm[98];
+    g_AsciiManager.AddFormatText(&vmRef->pos, "No.   Name      Date     Player   Rank");
+
+    for (i = this->chosenReplay - this->chosenReplay % 15, replayAmount = i; i < replayAmount + 15; i++)
+    {
+        if (i >= this->replayFilesNum)
+        {
+            break;
+        }
+        vmRef++;
+        if (!g_Supervisor.cfg.IsSoftwareTexturing())
+        {
+            if (i == this->chosenReplay)
+            {
+                g_AsciiManager.color = COLOR_LIGHT_RED;
+            }
+            else
+            {
+                g_AsciiManager.color = COLOR_GREY;
+            }
+        }
+        else
+        {
+            isSelected = (i == this->chosenReplay);
+            g_AsciiManager.isSelected = isSelected;
+
+            if (i == this->chosenReplay)
+            {
+                g_AsciiManager.color = COLOR_WHITE;
+            }
+            else
+            {
+                g_AsciiManager.color = COLOR_GREY;
+            }
+        }
+
+        g_AsciiManager.AddFormatText(&vmRef->pos, "%s %8s  %8s %7s  %7s", this->replayFileName[i],
+                                     this->replayFileData[i].name, this->replayFileData[i].date,
+                                     g_ShortCharacterList[this->replayFileData[i].shottypeChara],
+                                     g_DifficultyList[this->replayFileData[i].difficulty]);
+    }
+    if (this->gameState == STATE_REPLAY_SELECT && this->currentReplay)
+    {
+        g_AsciiManager.color = COLOR_WHITE;
+        g_AsciiManager.isSelected = false;
+
+        vmRef = &this->vm[97];
+        g_AsciiManager.AddFormatText(&vmRef->pos, "       %2.3f%%", this->currentReplay->slowdownRate);
+
+        vmRef = &this->vm[114];
+        g_AsciiManager.AddFormatText(&vmRef->pos, "Stage  LastScore");
+
+        for (i = 0; i < 7; i++)
+        {
+            vmRef++;
+            if (!g_Supervisor.cfg.IsSoftwareTexturing())
+            {
+                if (i == this->cursor)
+                {
+                    g_AsciiManager.color = COLOR_LIGHT_RED;
+                }
+                else
+                {
+                    g_AsciiManager.color = COLOR_GREY;
+                }
+            }
+            else
+            {
+                isSelected2 = (i == this->cursor);
+                g_AsciiManager.isSelected = isSelected2;
+                if (i == this->cursor)
+                {
+                    g_AsciiManager.color = COLOR_WHITE;
+                }
+                else
+                {
+                    g_AsciiManager.color = COLOR_GREY;
+                }
+            }
+            if (this->currentReplay->stageScore[i])
+            {
+                g_AsciiManager.AddFormatText(&vmRef->pos, "%s %9d", g_StageList[i],
+                                             this->currentReplay->stageScore[i]->score);
+            }
+            else
+            {
+                g_AsciiManager.AddFormatText(&vmRef->pos, "%s ---------", g_StageList[i]);
+            }
+        }
+    }
+    g_AsciiManager.color = COLOR_WHITE;
+    g_AsciiManager.isSelected = false;
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
 #pragma var_order(i, vm, pos, padding)
 #pragma optimize("s", on)
 ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
@@ -2134,7 +2290,7 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
     D3DXVECTOR3 pos;
     i32 padding[6];
 
-    for (i = 21; i <= 26; i++)
+    for (i = ANM_FILE_TITLE01; i <= ANM_FILE_TITLE04; i++)
     {
         g_AnmManager->ReleaseAnm(i);
     }
@@ -2181,7 +2337,7 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
     for (vm = &menu->vm[0x50], i = ANM_OFFSET_SELECT01; i <= 0x15f; i++, vm++)
     {
         g_AnmManager->ExecuteAnmIdx(vm, i);
-        vm->flags.flag0 = 0;
+        vm->flags.isVisible = 0;
         vm->flags.colorOp = AnmVmColorOp_Add;
         if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
         {

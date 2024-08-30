@@ -83,6 +83,11 @@ struct AsciiManager
     void CreatePopup1(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);
     void CreatePopup2(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);
 
+    void SetColor(ZunColor color)
+    {
+        this->color = color;
+    }
+
     AnmVm vm0;
     AnmVm vm1;
     AsciiManagerString strings[256];
@@ -93,7 +98,7 @@ struct AsciiManager
     u32 isGui;
     // If true, we are drawing the currently selected element of the MainMenu
     // class.
-    u32 isSelected;
+    ZunBool isSelected;
     i32 nextPopupIndex1;
     i32 nextPopupIndex2;
     // Seems unused

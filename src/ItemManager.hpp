@@ -16,7 +16,7 @@ enum ItemType // This enum is 1 byte in size on Enemy
     ITEM_FULL_POWER,
     ITEM_LIFE,
     ITEM_POINT_BULLET,
-    ITEM_NO_ITEM
+    ITEM_NO_ITEM = 0xffffffff,
 };
 
 struct Item
@@ -36,6 +36,8 @@ C_ASSERT(sizeof(Item) == 0x144);
 struct ItemManager
 {
     void SpawnItem(D3DXVECTOR3 *position, ItemType type, i32 state);
+    void OnUpdate();
+    void OnDraw();
 
     Item items[512];
     Item dummyItemForFailedSpawns;

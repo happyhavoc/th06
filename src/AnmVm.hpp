@@ -110,7 +110,7 @@ union AnmVmFlags {
     u32 flags;
     struct
     {
-        u32 flag0 : 1;
+        u32 isVisible : 1;
         u32 flag1 : 1;
         u32 blendMode : 1;
         u32 colorOp : 1;
@@ -146,7 +146,7 @@ struct AnmVm
 
     i16 alphaInterpEndTime;
     i16 scaleInterpEndTime;
-    u16 autoRotate;
+    i16 autoRotate;
     i16 pendingInterrupt;
     i16 posInterpEndTime;
     // Two padding bytes

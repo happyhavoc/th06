@@ -4,38 +4,20 @@
 import argparse
 import os
 from pathlib import Path
-import subprocess
+
+import ghidra_helpers
 
 SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
 
 
-def runAnalyze(args, extraArgs):
-    commonAnalyzeHeadlessArgs = ["analyzeHeadless", args.GHIDRA_REPO_NAME]
-    commonAnalyzeHeadlessArgs += [
-        "-noanalysis",
-        "-readOnly",
-        "-scriptPath",
-        str(SCRIPT_PATH / "ghidra"),
-    ]
-    if args.ssh_key:
-        commonAnalyzeHeadlessArgs += ["-keystore", args.ssh_key]
-
-    # TODO: If program is not provided, export all files from server.
-    if args.program:
-        commonAnalyzeHeadlessArgs += ["-process", args.program]
-
-    commonAnalyzeHeadlessEnv = os.environ.copy()
-    commonAnalyzeHeadlessEnv["_JAVA_OPTIONS"] = (
-        f"-Duser.name={args.username} " + os.environ.get("_JAVA_OPTIONS", "")
-    )
-
-    return subprocess.run(
-        commonAnalyzeHeadlessArgs + extraArgs, env=commonAnalyzeHeadlessEnv, check=True
-    )
-
-
 def updateMapping(args, mapping_path):
-    runAnalyze(args, ["-preScript", "GenerateMapping.java", mapping_path])
+    ghidra_helpers.runAnalyze(
+        args.GHIDRA_REPO_NAME,
+        args.program,
+        args.username,
+        args.ssh_key,
+        ["-preScript", "GenerateMapping.java", mapping_path],
+    )
 
 
 def main():

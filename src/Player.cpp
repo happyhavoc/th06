@@ -1,13 +1,18 @@
 #include "Player.hpp"
 
 #include "AnmManager.hpp"
+#include "AnmVm.hpp"
+#include "BulletData.hpp"
 #include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
 #include "EclManager.hpp"
+#include "EnemyManager.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"
 #include "ItemManager.hpp"
+#include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
+#include "ZunBool.hpp"
 #include "utils.hpp"
 
 DIFFABLE_STATIC(Player, g_Player);
@@ -94,7 +99,7 @@ ZunResult Player::AddedCallback(Player *p)
     p->grabItemSize.x = 12.0;
     p->grabItemSize.y = 12.0;
     p->grabItemSize.z = 5.0;
-    p->playerDirection = 0;
+    p->playerDirection = MOVEMENT_NONE;
     memcpy(&p->characterData, &g_CharData[g_GameManager.character * 2 + g_GameManager.shotType], sizeof(CharacterData));
     p->characterData.diagonalMovementSpeed = p->characterData.orthogonalMovementSpeed / sqrtf(2.0);
     p->characterData.diagonalMovementSpeedFocus = p->characterData.orthogonalMovementSpeedFocus / sqrtf(2.0);
@@ -151,14 +156,14 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     {
         g_GameManager.bombsUsed++;
         g_GameManager.bombsRemaining--;
-        g_Gui.flags = g_Gui.flags & 0xfffffff3 | 8;
+        g_Gui.flags.flag1 = 2;
         p->bombInfo.isInUse = 1;
         p->bombInfo.timer.SetCurrent(0);
         p->bombInfo.duration = 999;
         p->bombInfo.calc(p);
-        g_RunningSpellcardInfo.isCapturing = false;
+        g_EnemyManager.spellcardInfo.isCapturing = false;
         g_GameManager.DecreaseSubrank(200);
-        g_RunningSpellcardInfo.usedBomb = g_RunningSpellcardInfo.isActive;
+        g_EnemyManager.spellcardInfo.usedBomb = g_EnemyManager.spellcardInfo.isActive;
     }
     if (p->playerState == PLAYER_STATE_DEAD)
     {
@@ -184,7 +189,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                     {
                         g_GameManager.currentPower -= 16;
                     }
-                    g_Gui.flags = g_Gui.flags & 0xffffffcf | 0x20;
+                    g_Gui.flags.flag2 = 2;
                 }
                 else
                 {
@@ -194,7 +199,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                     g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
                     g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
                     g_GameManager.currentPower = 0;
-                    g_Gui.flags = g_Gui.flags & 0xffffffcf | 0x20;
+                    g_Gui.flags.flag2 = 2;
                     g_GameManager.extraLives = 255;
                 }
                 g_GameManager.DecreaseSubrank(1600);
@@ -227,7 +232,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                 else
                 {
                     g_GameManager.livesRemaining--;
-                    g_Gui.flags = (g_Gui.flags & 0xfffffffc) | 0x2;
+                    g_Gui.flags.flag0 = 2;
                     if (g_GameManager.difficulty < 4 && g_GameManager.isInPracticeMode == 0)
                     {
                         g_GameManager.bombsRemaining = g_Supervisor.defaultConfig.bombCount;
@@ -236,7 +241,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                     {
                         g_GameManager.bombsRemaining = 3;
                     }
-                    g_Gui.flags = (g_Gui.flags & 0xfffffff3) | 0x8;
+                    g_Gui.flags.flag1 = 2;
                     goto spawning;
                 }
             }
@@ -354,4 +359,523 @@ ChainCallbackResult Player::OnDrawLowPrio(Player *p)
 {
     Player::DrawBulletExplosions(p);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(playerDirection, verticalSpeed, horizontalSpeed, verticalOrbOffset, horizontalOrbOffset,             \
+                  intermediateFloat, posCenterY, posCenterX)
+ZunResult Player::HandlePlayerInputs()
+{
+    float intermediateFloat;
+
+    float *posCenterY;
+    float *posCenterX;
+    float horizontalOrbOffset;
+    float verticalOrbOffset;
+
+    float horizontalSpeed = 0.0;
+    float verticalSpeed = 0.0;
+    PlayerDirection playerDirection = this->playerDirection;
+
+    this->playerDirection = MOVEMENT_NONE;
+    if (IS_PRESSED(TH_BUTTON_UP))
+    {
+        this->playerDirection = MOVEMENT_UP;
+        if (IS_PRESSED(TH_BUTTON_LEFT))
+        {
+            this->playerDirection = MOVEMENT_UP_LEFT;
+        }
+        if (IS_PRESSED(TH_BUTTON_RIGHT))
+        {
+            this->playerDirection = MOVEMENT_UP_RIGHT;
+        }
+    }
+    else
+    {
+        if (IS_PRESSED(TH_BUTTON_DOWN))
+        {
+            this->playerDirection = MOVEMENT_DOWN;
+            if (IS_PRESSED(TH_BUTTON_LEFT))
+            {
+                this->playerDirection = MOVEMENT_DOWN_LEFT;
+            }
+            if (IS_PRESSED(TH_BUTTON_RIGHT))
+            {
+                this->playerDirection = MOVEMENT_DOWN_RIGHT;
+            }
+        }
+        else
+        {
+            if (IS_PRESSED(TH_BUTTON_LEFT))
+            {
+                this->playerDirection = MOVEMENT_LEFT;
+            }
+            if (IS_PRESSED(TH_BUTTON_RIGHT))
+            {
+                this->playerDirection = MOVEMENT_RIGHT;
+            }
+        }
+    }
+    if (IS_PRESSED(TH_BUTTON_FOCUS))
+    {
+        this->isFocus = true;
+    }
+    else
+    {
+        this->isFocus = false;
+    }
+
+    switch (this->playerDirection)
+    {
+    case MOVEMENT_RIGHT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_LEFT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = -this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = -this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_UP:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            verticalSpeed = -this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            verticalSpeed = -this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_DOWN:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            verticalSpeed = this->characterData.orthogonalMovementSpeedFocus;
+        }
+        else
+        {
+            verticalSpeed = this->characterData.orthogonalMovementSpeed;
+        }
+        break;
+    case MOVEMENT_UP_LEFT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = horizontalSpeed;
+        break;
+    case MOVEMENT_DOWN_LEFT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = -this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = -horizontalSpeed;
+        break;
+    case MOVEMENT_UP_RIGHT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = -horizontalSpeed;
+        break;
+    case MOVEMENT_DOWN_RIGHT:
+        if (IS_PRESSED(TH_BUTTON_FOCUS))
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeedFocus;
+        }
+        else
+        {
+            horizontalSpeed = this->characterData.diagonalMovementSpeed;
+        }
+        verticalSpeed = horizontalSpeed;
+    }
+
+    if (horizontalSpeed < 0.0f && this->previousHorizontalSpeed >= 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_MOVING_LEFT);
+    }
+    else if (!horizontalSpeed && this->previousHorizontalSpeed < 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_STOPPING_LEFT);
+    }
+
+    if (horizontalSpeed > 0.0f && this->previousHorizontalSpeed <= 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_MOVING_RIGHT);
+    }
+    else if (!horizontalSpeed && this->previousHorizontalSpeed > 0.0f)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&this->playerSprite, ANM_SCRIPT_PLAYER_STOPPING_RIGHT);
+    }
+
+    this->previousHorizontalSpeed = horizontalSpeed;
+    this->previousVerticalSpeed = verticalSpeed;
+
+    // TODO: Match stack variables here
+    posCenterX = &this->positionCenter.x;
+    *posCenterX +=
+        horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+    posCenterY = &this->positionCenter.y;
+    *posCenterY +=
+        verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+
+    if (this->positionCenter.x < g_GameManager.playerMovementAreaTopLeftPos.x)
+    {
+        this->positionCenter.x = g_GameManager.playerMovementAreaTopLeftPos.x;
+    }
+    else if (g_GameManager.playerMovementAreaTopLeftPos.x + g_GameManager.playerMovementAreaSize.x <
+             this->positionCenter.x)
+    {
+        this->positionCenter.x = g_GameManager.playerMovementAreaTopLeftPos.x + g_GameManager.playerMovementAreaSize.x;
+    }
+
+    if (this->positionCenter.y < g_GameManager.playerMovementAreaTopLeftPos.y)
+    {
+        this->positionCenter.y = g_GameManager.playerMovementAreaTopLeftPos.y;
+    }
+    else if (g_GameManager.playerMovementAreaTopLeftPos.y + g_GameManager.playerMovementAreaSize.y <
+             this->positionCenter.y)
+    {
+        this->positionCenter.y = g_GameManager.playerMovementAreaTopLeftPos.y + g_GameManager.playerMovementAreaSize.y;
+    }
+
+    this->hitboxTopLeft = this->positionCenter - this->hitboxSize;
+
+    this->hitboxBottomRight = this->positionCenter + this->hitboxSize;
+
+    this->grabItemTopLeft = this->positionCenter - this->grabItemSize;
+
+    this->grabItemBottomRight = this->positionCenter + this->grabItemSize;
+
+    this->orbsPosition[0] = this->positionCenter;
+    this->orbsPosition[1] = this->positionCenter;
+
+    verticalOrbOffset = 0.0;
+    horizontalOrbOffset = verticalOrbOffset;
+
+    if (g_GameManager.currentPower < 8)
+    {
+        this->orbState = ORB_HIDDEN;
+    }
+    else if (this->orbState == ORB_HIDDEN)
+    {
+        this->orbState = ORB_UNFOCUSED;
+    }
+
+    switch (this->orbState)
+    {
+    case ORB_HIDDEN:
+        this->focusMovementTimer.InitializeForPopup();
+        break;
+
+    case ORB_UNFOCUSED:
+        horizontalOrbOffset = 24.0;
+        this->focusMovementTimer.InitializeForPopup();
+        if (this->isFocus)
+        {
+            this->orbState = ORB_FOCUSING;
+        }
+        else
+        {
+            break;
+        }
+
+    CASE_ORB_FOCUSING:
+    case ORB_FOCUSING:
+        this->focusMovementTimer.Tick();
+
+        intermediateFloat = this->focusMovementTimer.AsFramesFloat() / 8.0f;
+        verticalOrbOffset = (1.0f - intermediateFloat) * 32.0f + -32.0f;
+        intermediateFloat *= intermediateFloat;
+        horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
+
+        if ((ZunBool)(this->focusMovementTimer.current >= 8))
+        {
+            this->orbState = ORB_FOCUSED;
+        }
+        if (!this->isFocus)
+        {
+
+            this->orbState = ORB_UNFOCUSING;
+            this->focusMovementTimer.SetCurrent(8 - this->focusMovementTimer.AsFrames());
+
+            goto CASE_ORB_UNFOCUSING;
+        }
+        else
+        {
+            break;
+        }
+
+    case ORB_FOCUSED:
+        horizontalOrbOffset = 8.0;
+        verticalOrbOffset = -32.0;
+        this->focusMovementTimer.InitializeForPopup();
+        if (!this->isFocus)
+        {
+            this->orbState = ORB_UNFOCUSING;
+        }
+        else
+        {
+            break;
+        }
+
+    CASE_ORB_UNFOCUSING:
+    case ORB_UNFOCUSING:
+        this->focusMovementTimer.Tick();
+
+        intermediateFloat = this->focusMovementTimer.AsFramesFloat() / 8.0f;
+        verticalOrbOffset = (32.0f * intermediateFloat) + -32.0f;
+        intermediateFloat *= intermediateFloat;
+        intermediateFloat = 1.0f - intermediateFloat;
+        horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
+        if ((ZunBool)(this->focusMovementTimer.current >= 8))
+        {
+            this->orbState = ORB_UNFOCUSED;
+        }
+        if (this->isFocus)
+        {
+            this->orbState = ORB_FOCUSING;
+            this->focusMovementTimer.SetCurrent(8 - this->focusMovementTimer.AsFrames());
+            goto CASE_ORB_FOCUSING;
+        }
+    }
+
+    this->orbsPosition[0].x -= horizontalOrbOffset;
+    this->orbsPosition[1].x += horizontalOrbOffset;
+    this->orbsPosition[0].y += verticalOrbOffset;
+    this->orbsPosition[1].y += verticalOrbOffset;
+    if (IS_PRESSED(TH_BUTTON_SHOOT) && !g_Gui.HasCurrentMsgIdx())
+    {
+        this->StartFireBulletTimer(this);
+    }
+    this->previousFrameInput = g_CurFrameInput;
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(bulletIdx, bullets)
+void Player::DrawBullets(Player *p)
+{
+    int bulletIdx;
+    PlayerBullet *bullets = p->bullets;
+
+    for (bulletIdx = 0; bulletIdx < ARRAY_SIZE_SIGNED(p->bullets); bulletIdx++, bullets++)
+    {
+        if (bullets->bulletState != BULLET_STATE_FIRED)
+        {
+            continue;
+        }
+        if (bullets->sprite.autoRotate)
+        {
+            bullets->sprite.rotation.z = ZUN_PI / 2 - AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
+        }
+        g_AnmManager->Draw2(&bullets->sprite);
+    }
+}
+
+void Player::StartFireBulletTimer(Player *p)
+{
+    if (p->fireBulletTimer.AsFrames() < 0)
+    {
+        p->fireBulletTimer.InitializeForPopup();
+    }
+}
+
+ZunResult Player::UpdateFireBulletsTimer(Player *p)
+{
+    if (p->fireBulletTimer.AsFrames() < 0)
+    {
+        return ZUN_SUCCESS;
+    }
+
+    if (p->fireBulletTimer.HasTicked() && (!g_Player.bombInfo.isInUse || g_GameManager.character != CHARA_MARISA ||
+                                           g_GameManager.shotType != SHOT_TYPE_B))
+    {
+        p->SpawnBullets(p, p->fireBulletTimer.AsFrames());
+    }
+
+    p->fireBulletTimer.Tick();
+
+    if (p->fireBulletTimer.AsFrames() >= 30 || p->playerState == PLAYER_STATE_DEAD ||
+        p->playerState == PLAYER_STATE_SPAWNING)
+    {
+        p->fireBulletTimer.SetCurrent(-1);
+    }
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(idx, curBulletIdx, curBullet, bulletResult)
+void Player::SpawnBullets(Player *p, u32 timer)
+{
+    FireBulletResult bulletResult;
+    PlayerBullet *curBullet;
+    i32 curBulletIdx;
+    u32 idx;
+
+    idx = 0;
+    curBullet = p->bullets;
+
+    for (curBulletIdx = 0; curBulletIdx < ARRAY_SIZE_SIGNED(p->bullets); curBulletIdx++, curBullet++)
+    {
+        if (curBullet->bulletState != BULLET_STATE_UNUSED)
+        {
+            continue;
+        }
+    WHILE_LOOP:
+        if (!p->isFocus)
+        {
+            bulletResult = (*p->fireBulletCallback)(p, curBullet, idx, timer);
+        }
+        else
+        {
+            bulletResult = (*p->fireBulletFocusCallback)(p, curBullet, idx, timer);
+        }
+        if (bulletResult >= 0)
+        {
+            curBullet->sprite.pos.x = curBullet->position.x;
+            curBullet->sprite.pos.y = curBullet->position.y;
+            curBullet->sprite.pos.z = 0.495;
+            curBullet->bulletState = BULLET_STATE_FIRED;
+        }
+        if (bulletResult == FBR_STOP_SPAWNING)
+        {
+            return;
+        }
+        if (bulletResult > 0)
+        {
+            return;
+        }
+        idx++;
+        if (bulletResult == FBR_SPAWN_MORE)
+        {
+            goto WHILE_LOOP;
+        }
+    }
+}
+
+#pragma var_order(bulletData, bulletFrame, pfVar4, unused, unused2)
+FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, i32 bulletIdx,
+                                          i32 framesSinceLastBullet, CharacterPowerData *powerData)
+{
+    CharacterPowerBulletData *bulletData;
+    f32 *pfVar4;
+    i32 bulletFrame;
+    i32 unused;
+    i32 unused2;
+
+    while (g_GameManager.currentPower >= powerData->power)
+    {
+        powerData++;
+    }
+
+    bulletData = powerData->bullets + bulletIdx;
+
+    if (bulletData->bulletType == BULLET_TYPE_LASER)
+    {
+        bulletFrame = bulletData->bulletFrame;
+        if (!player->laserTimer[bulletFrame].AsFrames())
+        {
+            player->laserTimer[bulletFrame].SetCurrent(bulletData->waitBetweenBullets);
+
+            bullet->unk_152 = bulletFrame;
+            bullet->spawnPositionIdx = bulletData->spawnPositionIdx;
+            bullet->sidewaysMotion = bulletData->motion.x;
+            bullet->unk_134.x = bulletData->motion.y;
+            goto SHOOT_BULLET;
+        }
+    }
+    else if (framesSinceLastBullet % bulletData->waitBetweenBullets == bulletData->bulletFrame)
+    {
+    SHOOT_BULLET:
+
+        g_AnmManager->SetAndExecuteScriptIdx(&bullet->sprite, bulletData->anmFileIdx);
+        if (!bulletData->spawnPositionIdx)
+        {
+            bullet->position = player->positionCenter;
+        }
+        else
+        {
+            bullet->position = player->orbsPosition[bulletData->spawnPositionIdx - 1];
+        }
+        pfVar4 = &bullet->position.x;
+        *pfVar4 = *pfVar4 + bulletData->motion.x;
+        pfVar4 = &bullet->position.y;
+        *pfVar4 = *pfVar4 + bulletData->motion.y;
+
+        bullet->position.z = 0.495f;
+
+        bullet->size.x = bulletData->size.x;
+        bullet->size.y = bulletData->size.y;
+        bullet->size.z = 1.0f;
+        bullet->unk_134.z = bulletData->direction;
+        bullet->unk_134.y = bulletData->velocity;
+
+        bullet->velocity.x = bulletData->HorizontalDirection(bulletData->direction) * bulletData->velocity;
+
+        bullet->velocity.y = bulletData->VerticalDirection(bulletData->direction) * bulletData->velocity;
+
+        bullet->unk_140.InitializeForPopup();
+
+        bullet->bulletType = bulletData->bulletType;
+        bullet->unk_14c = bulletData->unk_1c;
+        if (bulletData->bulletSoundIdx >= 0)
+        {
+            g_SoundPlayer.PlaySoundByIdx((SoundIdx)bulletData->bulletSoundIdx, 0);
+        }
+
+        return bulletIdx >= powerData->numBullets - 1;
+    }
+
+    if (bulletIdx >= powerData->numBullets - 1)
+    {
+        return FBR_STOP_SPAWNING;
+    }
+    else
+    {
+        return FBR_SPAWN_MORE;
+    }
+}
+
+FireBulletResult Player::FireBulletReimuA(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                          u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataReimuA);
+}
+
+FireBulletResult Player::FireBulletReimuB(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                          u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataReimuB);
+}
+
+FireBulletResult Player::FireBulletMarisaA(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                           u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaA);
+}
+
+FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet, u32 bulletIdx,
+                                           u32 framesSinceLastBullet)
+{
+    return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
 }

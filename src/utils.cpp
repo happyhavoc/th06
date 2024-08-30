@@ -5,6 +5,7 @@
 
 #include <windows.h>
 
+#include "ZunMath.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -39,6 +40,27 @@ void DebugPrint(const char *fmt, ...)
 
     printf("DEBUG2: %s\n", tmpBuffer);
 #endif
+}
+
+f32 AddNormalizeAngle(f32 a, f32 b)
+{
+    i32 i;
+
+    i = 0;
+    a += b;
+    while (a > ZUN_PI)
+    {
+        a -= 2 * ZUN_PI;
+        if (i++ > 16)
+            break;
+    }
+    while (a < -ZUN_PI)
+    {
+        a += 2 * ZUN_PI;
+        if (i++ > 16)
+            break;
+    }
+    return a;
 }
 
 void DebugPrint2(const char *fmt, ...)

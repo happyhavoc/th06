@@ -19,6 +19,11 @@ struct ZunTimer
     void Increment(i32 value);
     void Decrement(i32 value);
 
+    void IncrementInline(i32 value)
+    {
+        this->Increment(value);
+    }
+
     void InitializeForPopup()
     {
         this->current = 0;
@@ -47,6 +52,11 @@ struct ZunTimer
     i32 AsFrames()
     {
         return this->current;
+    }
+
+    ZunBool HasTicked()
+    {
+        return this->current != this->previous;
     }
 };
 C_ASSERT(sizeof(ZunTimer) == 0xc);

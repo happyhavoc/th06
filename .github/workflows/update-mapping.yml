@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+env:
+  GHIDRA_VERSION: 11.1.2
+  GHIDRA_DATE: 20240709
+
 jobs:
   update-mapping:
     runs-on: ubuntu-latest
@@ -21,7 +25,7 @@ jobs:
         python-version: '3.11'
     - name: Get ghidra
       run: |
-        curl -L https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_11.0_build/ghidra_11.0_PUBLIC_20231222.zip -o /tmp/ghidra.zip
+        curl -L https://github.com/NationalSecurityAgency/ghidra/releases/download/Ghidra_${GHIDRA_VERSION}_build/ghidra_${GHIDRA_VERSION}_PUBLIC_${GHIDRA_DATE}.zip -o /tmp/ghidra.zip
         unzip -d /tmp /tmp/ghidra.zip
         echo /tmp/ghidra_*/support >> $GITHUB_PATH
     - name: Update mapping

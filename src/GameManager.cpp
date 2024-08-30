@@ -17,6 +17,7 @@
 #include "utils.hpp"
 
 #include <d3d8types.h>
+#include <d3dx8math.h>
 
 DIFFABLE_STATIC(GameManager, g_GameManager);
 
@@ -73,12 +74,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
     {"data/stg6enm.anm", "data/stg6enm2.anm"},
     {"data/stg7enm.anm", "data/stg7enm2.anm"},
 };
-
-#define GAME_REGION_TOP 16.0
-#define GAME_REGION_LEFT 32.0
-
-#define GAME_REGION_WIDTH 384.0
-#define GAME_REGION_HEIGHT 448.0
 
 #define MAX_SCORE 999999999
 #define MAX_CLEARS 99
@@ -513,7 +508,7 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
                 gameManager->livesRemaining++;
                 g_SoundPlayer.PlaySoundByIdx(SOUND_1UP, 0);
             }
-            g_Gui.flags = g_Gui.flags & 0xfffffffc | 2;
+            g_Gui.flags.flag0 = 2;
             gameManager->extraLives++;
             g_GameManager.IncreaseSubrank(200);
         }
@@ -535,5 +530,87 @@ ChainCallbackResult GameManager::OnDraw(GameManager *gameManager)
         gameManager->isInGameMenu = 2;
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec)
+void SetupCameraStageBackground(f32 extraRenderDistance)
+{
+    D3DXVECTOR3 eyeVec;
+    D3DXVECTOR3 atVec;
+    D3DXVECTOR3 upVec;
+    f32 fov;
+    f32 aspectRatio;
+    f32 viewportMiddleWidth;
+    f32 viewportMiddleHeight;
+    f32 cameraDistance;
+
+    viewportMiddleWidth = g_Supervisor.viewport.Width / 2.0f;
+    viewportMiddleHeight = g_Supervisor.viewport.Height / 2.0f;
+    aspectRatio = (f32)g_Supervisor.viewport.Width / (f32)g_Supervisor.viewport.Height;
+    fov = D3DXToRadian(30);
+    cameraDistance = viewportMiddleHeight / tanf(fov / 2);
+    upVec.x = 0.0f;
+    upVec.y = 1.0f;
+    upVec.z = 0.0f;
+    atVec.x = viewportMiddleWidth;
+    atVec.y = -viewportMiddleHeight;
+    atVec.z = 0.0f;
+    eyeVec.x = viewportMiddleWidth;
+    eyeVec.y = -viewportMiddleHeight;
+    eyeVec.z = -cameraDistance;
+    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
+    g_GameManager.cameraDistance = fabsf(cameraDistance);
+    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
+                               10000.0f + extraRenderDistance);
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
+    return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec,   \
+                  atVecY, atVecX, eyeVecZ)
+void SetupCamera(f32 extraRenderDistance)
+{
+    D3DXVECTOR3 eyeVec;
+    D3DXVECTOR3 atVec;
+    D3DXVECTOR3 upVec;
+    f32 fov;
+    f32 aspectRatio;
+    f32 viewportMiddleWidth;
+    f32 viewportMiddleHeight;
+    f32 cameraDistance;
+
+    f32 atVecY;
+    f32 atVecX;
+    f32 eyeVecZ;
+
+    viewportMiddleWidth = g_Supervisor.viewport.Width / 2.0f;
+    viewportMiddleHeight = g_Supervisor.viewport.Height / 2.0f;
+    aspectRatio = (f32)g_Supervisor.viewport.Width / (f32)g_Supervisor.viewport.Height;
+    fov = D3DXToRadian(30);
+    cameraDistance = viewportMiddleHeight / tanf(fov / 2);
+    upVec.x = 0.0f;
+    upVec.y = 1.0f;
+    upVec.z = 0.0f;
+    atVecY = -viewportMiddleHeight + (f32)g_GameManager.stageCameraFacingDir.y;
+    atVecX = viewportMiddleWidth + (f32)g_GameManager.stageCameraFacingDir.x;
+    atVec.x = atVecX;
+    atVec.y = atVecY;
+    atVec.z = 0;
+    eyeVecZ = -cameraDistance * (f32)g_GameManager.stageCameraFacingDir.z;
+    eyeVec.x = viewportMiddleWidth;
+    eyeVec.y = -viewportMiddleHeight;
+    eyeVec.z = eyeVecZ;
+    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
+    g_GameManager.cameraDistance = fabsf(cameraDistance);
+    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
+                               10000.0f + extraRenderDistance);
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
+    return;
 }
 #pragma optimize("", on)

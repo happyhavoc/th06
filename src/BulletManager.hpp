@@ -6,6 +6,22 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+struct EnemyBulletShooter;
+struct EnemyLaserShooter;
+
+enum BulletAimMode
+{
+    FAN_AIMED,
+    FAN,
+    CIRCLE_AIMED,
+    CIRCLE,
+    OFFSET_CIRCLE_AIMED,
+    OFFSET_CIRCLE,
+    RANDOM_ANGLE,
+    RANDOM_SPEED,
+    RANDOM,
+};
+
 struct BulletTypeSprites
 {
     AnmVm spriteBullet;
@@ -38,12 +54,12 @@ struct Bullet
     i32 dirChangeNumTimes;
     i32 dirChangeMaxTimes;
     u16 exFlags;
-    u16 color;
+    i16 spriteOffset;
     u16 unk_5bc;
     u16 state;
     u16 unk_5c0;
     u8 unk_5c2;
-    u8 unk_5c3;
+    u8 isGrazed;
 };
 C_ASSERT(sizeof(Bullet) == 0x5c4);
 
@@ -65,7 +81,7 @@ struct Laser
     i32 grazeInterval;
     i32 inUse;
     ZunTimer timer;
-    i16 flags;
+    u16 flags;
     i16 color;
     u8 state;
 };
@@ -79,9 +95,18 @@ struct BulletManager
     static ChainCallbackResult OnUpdate(BulletManager *mgr);
     static ChainCallbackResult OnDraw(BulletManager *mgr);
 
+    static void DrawBulletNoHwVertex(Bullet *bullet);
+    static void DrawBullet(Bullet *bullet);
+
     void RemoveAllBullets(ZunBool turnIntoItem);
     void InitializeToZero();
 
+    void TurnAllBulletsIntoPoints();
+
+    i32 DespawnBullets(i32 unk, ZunBool awardPoints);
+    ZunResult SpawnBulletPattern(EnemyBulletShooter *bulletProps);
+    Laser *SpawnLaserPattern(EnemyLaserShooter *bulletProps);
+    u32 SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bulletIdx1, i32 bulletIdx2, f32 angle);
     BulletTypeSprites bulletTypeTemplates[16];
     Bullet bullets[640];
     Laser lasers[64];
@@ -92,4 +117,5 @@ struct BulletManager
 };
 C_ASSERT(sizeof(BulletManager) == 0xf5c18);
 
+DIFFABLE_EXTERN(u32 *, g_EffectsColor);
 DIFFABLE_EXTERN(BulletManager, g_BulletManager);

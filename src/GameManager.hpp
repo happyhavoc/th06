@@ -34,6 +34,12 @@ enum StageNumber
 #define PSCR_NUM_STAGES 6
 #define PSCR_NUM_DIFFICULTIES 4
 
+#define GAME_REGION_TOP 16.0
+#define GAME_REGION_LEFT 32.0
+
+#define GAME_REGION_WIDTH 384.0
+#define GAME_REGION_HEIGHT 448.0
+
 struct GameManager
 {
     GameManager();
@@ -48,6 +54,11 @@ struct GameManager
     void IncreaseSubrank(i32 amount);
     void DecreaseSubrank(i32 amount);
     i32 IsInBounds(f32 x, f32 y, f32 width, f32 height);
+
+    void AddScore(u32 points)
+    {
+        this->score += points;
+    }
 
     u32 guiScore;
     u32 score;
@@ -96,7 +107,7 @@ struct GameManager
     D3DXVECTOR2 arcadeRegionSize;
     D3DXVECTOR2 playerMovementAreaTopLeftPos;
     D3DXVECTOR2 playerMovementAreaSize;
-    i32 unk_1a5c;
+    f32 cameraDistance;
     D3DXVECTOR3 stageCameraFacingDir;
     u32 counat;
     i32 rank;
@@ -109,3 +120,4 @@ C_ASSERT(sizeof(GameManager) == 0x1a80);
 DIFFABLE_EXTERN(GameManager, g_GameManager);
 
 void SetupCamera(f32);
+void SetupCameraStageBackground(f32);

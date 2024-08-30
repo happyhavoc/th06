@@ -1,10 +1,21 @@
 #pragma once
 
 #include "Chain.hpp"
+#include "EclManager.hpp"
 #include "Enemy.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 #include <Windows.h>
+
+struct RunningSpellcardInfo
+{
+    ZunBool isCapturing;
+    ZunBool isActive;
+    i32 captureScore;
+    u32 idx;
+    ZunBool usedBomb;
+};
+C_ASSERT(sizeof(RunningSpellcardInfo) == 0x14);
 
 struct EnemyManager
 {
@@ -14,6 +25,9 @@ struct EnemyManager
     static ChainCallbackResult OnDraw(EnemyManager *enemyManager);
     static ZunResult AddedCallback(EnemyManager *enemyManager);
     static ZunResult DeletedCallback(EnemyManager *enemyManager);
+
+    void RunEclTimeline();
+    Enemy *SpawnEnemy(i32 eclSubId, D3DXVECTOR3 *pos, i16 life, i16 itemDrop, i32 score);
 
     char *stgEnmAnmFilename;
     char *stgEnm2AnmFilename;
@@ -25,12 +39,11 @@ struct EnemyManager
     u16 randomItemTableIndex;
     i32 enemyCount;
     i8 unk_ee5c0[4];
-    i32 spellcardRelated;
-    i32 spellcardCapture;
-    i32 spellcardBonus;
-    i32 spellcardNumber;
-    i8 unk_ee5d4[8];
-    void *timelineInstr;
+    RunningSpellcardInfo spellcardInfo;
+    i32 unk_ee5d8;
+    EclTimelineInstr *timelineInstr;
     ZunTimer timelineTime;
 };
 C_ASSERT(sizeof(EnemyManager) == 0xee5ec);
+
+DIFFABLE_EXTERN(EnemyManager, g_EnemyManager)

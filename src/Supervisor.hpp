@@ -72,6 +72,11 @@ struct GameConfiguration
     {
         return this->opts >> GCOS_NO_COLOR_COMP & 1 | this->opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1;
     }
+
+    u32 IsUnknown()
+    {
+        return this->opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH & 1 | this->opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1;
+    }
 };
 
 #define IN_PBG3_INDEX 0
@@ -111,8 +116,6 @@ struct Supervisor
 
     ZunResult SetupMidiPlayback(char *path);
 
-    static void CreateTextBuffer();
-
     static ZunResult SetupDInput(Supervisor *s);
 
     i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
@@ -121,6 +124,11 @@ struct Supervisor
     ZunResult LoadConfig(char *path);
 
     void TickTimer(i32 *frames, f32 *subframes);
+
+    f32 FramerateMultiplier()
+    {
+        return this->effectiveFramerateMultiplier;
+    }
 
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
@@ -200,11 +208,16 @@ u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, e
 
 unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest,
                                               enum TouhouButton touhouButton, u8 *inputButtons);
+
+namespace Controller
+{
 u16 GetControllerInput(u16 buttons);
+u8 *GetControllerState();
+}; // namespace Controller
+
 u16 GetInput(void);
 BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef);
 BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext);
-u8 *GetControllerState();
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
 DIFFABLE_EXTERN(Supervisor, g_Supervisor)

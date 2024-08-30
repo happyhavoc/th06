@@ -3,6 +3,7 @@
 #include "GameErrorContext.hpp"
 #include "Rng.hpp"
 #include "Supervisor.hpp"
+#include "ZunMath.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -341,7 +342,7 @@ void AnmManager::SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript)
     timer->subFrame = 0.0;
     timer->previous = -999;
 
-    vm->flags.flag0 = 0;
+    vm->flags.isVisible = 0;
     if (beginingOfScript)
     {
         this->ExecuteScript(vm);
@@ -675,18 +676,18 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         switch (curInstr->opcode)
         {
         case AnmOpcode_Exit:
-            vm->flags.flag0 = 0;
+            vm->flags.isVisible = 0;
         case AnmOpcode_ExitHide:
             vm->currentInstruction = NULL;
             return 1;
         case AnmOpcode_SetActiveSprite:
-            vm->flags.flag0 = 1;
+            vm->flags.isVisible = 1;
             this->SetActiveSprite(vm, curInstr->args[0] + this->spriteIndices[vm->anmFileIndex]);
             local_68 = vm->currentTimeInScript.current;
             vm->timeOfLastSpriteSet = local_68;
             break;
         case AnmOpcode_SetRandomSprite:
-            vm->flags.flag0 = 1;
+            vm->flags.isVisible = 1;
             local_c = &curInstr->args[0];
             local_6a = local_c[1];
             if (local_6a != 0)
@@ -807,7 +808,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->posInterpTime.InitializeForPopup();
             break;
         case AnmOpcode_StopHide:
-            vm->flags.flag0 = 0;
+            vm->flags.isVisible = 0;
         case AnmOpcode_Stop:
             if (vm->pendingInterrupt == 0)
             {
@@ -843,10 +844,10 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             curInstr = (AnmRawInstr *)((i32)curInstr->args + curInstr->argsCount);
             vm->currentInstruction = curInstr;
             vm->currentTimeInScript.SetCurrent(vm->currentInstruction->time);
-            vm->flags.flag0 = 1;
+            vm->flags.isVisible = 1;
             continue;
         case AnmOpcode_SetVisibility:
-            vm->flags.flag0 = curInstr->args[0];
+            vm->flags.isVisible = curInstr->args[0];
             break;
         case AnmOpcode_23:
             vm->flags.anchor = AnmVmAnchor_TopLeft;
@@ -1175,15 +1176,6 @@ f32 __inline rintf(f32 float_in)
     return float_in;
 }
 
-#define sincos(in, out_sine, out_cosine)                                                                               \
-    {                                                                                                                  \
-        __asm { \
-        __asm fld in \
-        __asm fsincos \
-        __asm fstp out_cosine \
-        __asm fstp out_sine }                                            \
-    }
-
 #pragma var_order(spriteXCenter, spriteYCenter, yOffset, xOffset, zSine, z, zCosine)
 ZunResult AnmManager::Draw(AnmVm *vm)
 {
@@ -1199,7 +1191,7 @@ ZunResult AnmManager::Draw(AnmVm *vm)
     {
         return this->DrawNoRotation(vm);
     }
-    if (vm->flags.flag0 == 0)
+    if (vm->flags.isVisible == 0)
     {
         return ZUN_ERROR;
     }
@@ -1244,12 +1236,251 @@ ZunResult AnmManager::Draw(AnmVm *vm)
     return this->DrawInner(vm, 0);
 }
 
+ZunResult AnmManager::DrawFacingCamera(AnmVm *vm)
+{
+    f32 centerX;
+    f32 centerY;
+
+    if (!vm->flags.isVisible)
+    {
+        return ZUN_ERROR;
+    }
+    if (!vm->flags.flag1)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->color == 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    centerX = vm->sprite->widthPx * vm->scaleX / 2.0f;
+    centerY = vm->sprite->heightPx * vm->scaleY / 2.0f;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x - centerX;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x = vm->pos.x + centerX;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.x = g_PrimitivesToDrawVertexBuf[2].position.x = vm->pos.x;
+        g_PrimitivesToDrawVertexBuf[1].position.x = g_PrimitivesToDrawVertexBuf[3].position.x =
+            vm->pos.x + centerX + centerX;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) == 0)
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y - centerY;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y = vm->pos.y + centerY;
+    }
+    else
+    {
+        g_PrimitivesToDrawVertexBuf[0].position.y = g_PrimitivesToDrawVertexBuf[1].position.y = vm->pos.y;
+        g_PrimitivesToDrawVertexBuf[2].position.y = g_PrimitivesToDrawVertexBuf[3].position.y =
+            vm->pos.y + centerY + centerY;
+    }
+    return this->DrawInner(vm, 0);
+}
+
+#pragma var_order(textureMatrix, rotationMatrix, worldTransformMatrix, scaledXCenter, scaledYCenter)
+ZunResult AnmManager::Draw3(AnmVm *vm)
+{
+    D3DXMATRIX worldTransformMatrix;
+    D3DXMATRIX rotationMatrix;
+    D3DXMATRIX textureMatrix;
+    f32 scaledXCenter;
+    f32 scaledYCenter;
+
+    if (!vm->flags.isVisible)
+    {
+        return ZUN_ERROR;
+    }
+    if (!vm->flags.flag1)
+    {
+        return ZUN_ERROR;
+    }
+    if (vm->color == 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    worldTransformMatrix = vm->matrix;
+    worldTransformMatrix.m[0][0] *= vm->scaleX;
+    worldTransformMatrix.m[1][1] *= -vm->scaleY;
+
+    if (vm->rotation.x != 0.0)
+    {
+        D3DXMatrixRotationX(&rotationMatrix, vm->rotation.x);
+        D3DXMatrixMultiply(&worldTransformMatrix, &worldTransformMatrix, &rotationMatrix);
+    }
+
+    if (vm->rotation.y != 0.0)
+    {
+        D3DXMatrixRotationY(&rotationMatrix, vm->rotation.y);
+        D3DXMatrixMultiply(&worldTransformMatrix, &worldTransformMatrix, &rotationMatrix);
+    }
+
+    if (vm->rotation.z != 0.0)
+    {
+        D3DXMatrixRotationZ(&rotationMatrix, vm->rotation.z);
+        D3DXMatrixMultiply(&worldTransformMatrix, &worldTransformMatrix, &rotationMatrix);
+    }
+
+    if ((vm->flags.anchor & AnmVmAnchor_Left) == 0)
+    {
+        worldTransformMatrix.m[3][0] = vm->pos.x;
+    }
+    else
+    {
+        scaledXCenter = vm->sprite->widthPx * vm->scaleX / 2.0f;
+        worldTransformMatrix.m[3][0] = fabsf(scaledXCenter) + vm->pos.x;
+    }
+
+    if ((vm->flags.anchor & AnmVmAnchor_Top) == 0)
+    {
+        worldTransformMatrix.m[3][1] = -vm->pos.y;
+    }
+    else
+    {
+        scaledYCenter = vm->sprite->heightPx * vm->scaleY / 2.0f;
+        worldTransformMatrix.m[3][1] = -vm->pos.y - fabsf(scaledYCenter);
+    }
+
+    worldTransformMatrix.m[3][2] = vm->pos.z;
+
+    // Now, set transform matrix.
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_WORLD, &worldTransformMatrix);
+
+    // Load sprite if vm->sprite is not the same as current sprite.
+    if (this->currentSprite != vm->sprite)
+    {
+        this->currentSprite = vm->sprite;
+        textureMatrix = vm->matrix;
+        textureMatrix.m[2][0] = vm->sprite->uvStart.x + vm->uvScrollPos.x;
+        textureMatrix.m[2][1] = vm->sprite->uvStart.y + vm->uvScrollPos.y;
+        g_Supervisor.d3dDevice->SetTransform(D3DTS_TEXTURE0, &textureMatrix);
+        if (this->currentTexture != this->textures[vm->sprite->sourceFileIndex])
+        {
+            this->currentTexture = this->textures[vm->sprite->sourceFileIndex];
+            g_Supervisor.d3dDevice->SetTexture(0, this->currentTexture);
+        }
+    }
+
+    // Set vertex shader to TEX1 | XYZ
+    if (this->currentVertexShader != 3)
+    {
+        if ((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF & 1) == 0)
+        {
+            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_XYZ);
+            g_Supervisor.d3dDevice->SetStreamSource(0, this->vertexBuffer, 0x14);
+        }
+        else
+        {
+            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ);
+        }
+        this->currentVertexShader = 3;
+    }
+
+    // Reset the render state based on the settings fo the given VM.
+    this->SetRenderStateForVm(vm);
+
+    // Draw the VM.
+    if ((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF & 1) == 0)
+    {
+        g_Supervisor.d3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    }
+    else
+    {
+        g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, g_PrimitivesToDrawUnknown, 0x18);
+    }
+    return ZUN_SUCCESS;
+}
+
+#pragma var_order(textureMatrix, unusedMatrix, worldTransformMatrix)
+ZunResult AnmManager::Draw2(AnmVm *vm)
+{
+    D3DXMATRIX worldTransformMatrix;
+    D3DXMATRIX unusedMatrix;
+    D3DXMATRIX textureMatrix;
+
+    if (!vm->flags.isVisible)
+    {
+        return ZUN_ERROR;
+    }
+    if (!vm->flags.flag1)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (vm->rotation.x != 0 || vm->rotation.y != 0 || vm->rotation.z != 0)
+    {
+        return this->Draw3(vm);
+    }
+
+    if (vm->color == 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    worldTransformMatrix = vm->matrix;
+    worldTransformMatrix.m[3][0] = rintf(vm->pos.x) - 0.5f;
+    worldTransformMatrix.m[3][1] = -rintf(vm->pos.y) + 0.5f;
+    if ((vm->flags.anchor & AnmVmAnchor_Left) != 0)
+    {
+        worldTransformMatrix.m[3][0] += (vm->sprite->widthPx * vm->scaleX) / 2.0f;
+    }
+    if ((vm->flags.anchor & AnmVmAnchor_Top) != 0)
+    {
+        worldTransformMatrix.m[3][1] -= (vm->sprite->heightPx * vm->scaleY) / 2.0f;
+    }
+    worldTransformMatrix.m[3][2] = vm->pos.z;
+    worldTransformMatrix.m[0][0] *= vm->scaleX;
+    worldTransformMatrix.m[1][1] *= -vm->scaleY;
+    g_Supervisor.d3dDevice->SetTransform(D3DTS_WORLD, &worldTransformMatrix);
+
+    if (this->currentSprite != vm->sprite)
+    {
+        this->currentSprite = vm->sprite;
+        textureMatrix = vm->matrix;
+        textureMatrix.m[2][0] = vm->sprite->uvStart.x + vm->uvScrollPos.x;
+        textureMatrix.m[2][1] = vm->sprite->uvStart.y + vm->uvScrollPos.y;
+        g_Supervisor.d3dDevice->SetTransform(D3DTS_TEXTURE0, &textureMatrix);
+        if (this->currentTexture != this->textures[vm->sprite->sourceFileIndex])
+        {
+            this->currentTexture = this->textures[vm->sprite->sourceFileIndex];
+            g_Supervisor.d3dDevice->SetTexture(0, this->currentTexture);
+        }
+        if (this->currentVertexShader != 3)
+        {
+            if ((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF & 1) == 0)
+            {
+                g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_XYZ);
+                g_Supervisor.d3dDevice->SetStreamSource(0, this->vertexBuffer, 0x14);
+            }
+            else
+            {
+                g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ);
+            }
+            this->currentVertexShader = 3;
+        }
+    }
+    this->SetRenderStateForVm(vm);
+    if ((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF & 1) == 0)
+    {
+        g_Supervisor.d3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    }
+    else
+    {
+        g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, g_PrimitivesToDrawUnknown, 0x18);
+    }
+    return ZUN_SUCCESS;
+}
+
 ZunResult AnmManager::DrawNoRotation(AnmVm *vm)
 {
     float fVar2;
     float fVar3;
 
-    if (vm->flags.flag0 == 0)
+    if (vm->flags.isVisible == 0)
     {
         return ZUN_ERROR;
     }
