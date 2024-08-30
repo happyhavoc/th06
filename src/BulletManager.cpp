@@ -1047,3 +1047,69 @@ ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
     g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
+
+void BulletManager::DrawBullet(Bullet *bullet)
+{
+    AnmVm *anmVm;
+
+    switch (bullet->state)
+    {
+    case 2:
+        anmVm = &bullet->sprites.spriteSpawnEffectFast;
+        break;
+    case 3:
+        anmVm = &bullet->sprites.spriteSpawnEffectNormal;
+        break;
+    case 4:
+        anmVm = &bullet->sprites.spriteSpawnEffectSlow;
+        break;
+    case 5:
+        anmVm = &bullet->sprites.spriteSpawnEffectDonut;
+        break;
+    default:
+        anmVm = &bullet->sprites.spriteBullet;
+    }
+    anmVm->pos.x = bullet->pos.x;
+    anmVm->pos.y = bullet->pos.y;
+    anmVm->pos.z = 0.0;
+    anmVm->color = COLOR_COMBINE_ALPHA(COLOR_WHITE, anmVm->color);
+    if (anmVm->autoRotate != 0)
+    {
+        anmVm->rotation.z = (ZUN_PI / 2.0f) - bullet->angle;
+    }
+    g_AnmManager->Draw2(anmVm);
+    return;
+}
+
+void BulletManager::DrawBulletNoHwVertex(Bullet *bullet)
+{
+    AnmVm *anmVm;
+
+    switch (bullet->state)
+    {
+    case 2:
+        anmVm = &bullet->sprites.spriteSpawnEffectFast;
+        break;
+    case 3:
+        anmVm = &bullet->sprites.spriteSpawnEffectNormal;
+        break;
+    case 4:
+        anmVm = &bullet->sprites.spriteSpawnEffectSlow;
+        break;
+    case 5:
+        anmVm = &bullet->sprites.spriteSpawnEffectDonut;
+        break;
+    default:
+        anmVm = &bullet->sprites.spriteBullet;
+    }
+    anmVm->pos.x = g_GameManager.arcadeRegionTopLeftPos.x + bullet->pos.x;
+    anmVm->pos.y = g_GameManager.arcadeRegionTopLeftPos.y + bullet->pos.y;
+    anmVm->pos.z = 0.0;
+    anmVm->color = COLOR_COMBINE_ALPHA(COLOR_WHITE, anmVm->color);
+    if (anmVm->autoRotate != 0)
+    {
+        anmVm->rotation.z = (ZUN_PI / 2.0f) - bullet->angle;
+    }
+    g_AnmManager->Draw(anmVm);
+    return;
+}

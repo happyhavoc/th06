@@ -65,8 +65,6 @@ Enemy::MoveDirTime
 Enemy::MoveTime
 BulletManager::DespawnBullets
 BulletManager::DeletedCallback
-BulletManager::DrawBulletNoHwVertex
-BulletManager::DrawBullet
 BulletManager::InitializeToZero
 BulletManager::RemoveAllBullets
 BulletManager::SpawnLaserPattern
