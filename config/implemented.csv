@@ -49,6 +49,8 @@ BulletManager::SpawnBulletPattern
 BulletManager::SpawnSingleBullet
 BulletManager::OnUpdate
 BulletManager::OnDraw
+BulletManager::DrawBullet
+BulletManager::DrawBulletNoHwVertex
 ChainElem::ChainElem
 ChainElem::~ChainElem
 Chain::CreateElem
