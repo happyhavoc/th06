@@ -76,8 +76,8 @@ SaveReplay
 ValidateReplayData
 DrawSquare
 Controller::GetControllerState
-Player::CalcKillBoxCollision
 Player::DrawBulletExplosions
+Player::Die
 Player::CalcDamageToEnemy
 Player::DeletedCallback
 Player::BombReimuACalc
