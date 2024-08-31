@@ -9,16 +9,22 @@ SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
 
 
 def findAnalyzeHeadless():
+    ghidra_home = None
+    if (SCRIPT_PATH / "prefix" / "ghidra").exists():
+        ghidra_home = SCRIPT_PATH / "prefix" / "ghidra"
+
     # The standard way to locate ghidra is to look at the GHIDRA_HOME
     # environment variable, which points to the ghidra installation folder.
-    if os.getenv("GHIDRA_HOME") is not None:
+    elif os.getenv("GHIDRA_HOME") is not None:
         ghidra_home = Path(os.getenv("GHIDRA_HOME"))
+
+    if ghidra_home is not None:
         if os.name == "nt":
             analyze_headless = ghidra_home / "support" / "analyzeHeadless.bat"
         else:
             analyze_headless = ghidra_home / "support" / "analyzeHeadless"
         if analyze_headless.exists():
-            return analyze_headless
+            return str(analyze_headless)
 
     # ArchLinux and Nix add a ghidra-analyzeHeadless symlink that points to the
     # analyzeHeadless script of the ghidra installation.
