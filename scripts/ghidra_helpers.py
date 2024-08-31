@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import re
+import shlex
 import shutil
 import subprocess
 
@@ -95,7 +96,7 @@ def runAnalyze(
             f"-Duser.name={username} " + os.environ.get("_JAVA_OPTIONS", "")
         )
 
-    print("Running " + str(commonAnalyzeHeadlessArgs))
+    print("Running " + " ".join(shlex.quote(x) for x in commonAnalyzeHeadlessArgs))
     return subprocess.run(
         commonAnalyzeHeadlessArgs, env=commonAnalyzeHeadlessEnv, check=True
     )
