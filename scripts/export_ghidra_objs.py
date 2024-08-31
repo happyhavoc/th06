@@ -34,13 +34,12 @@ def main():
                 "Touhou 06",
                 import_file=str(SCRIPT_PATH.parent / "resources" / "game.exe"),
                 analysis=True,
-                extraArgs=[
-                    "-postScript",
-                    SCRIPT_PATH / "ghidra" / "ImportFromXml.java",
-                    filename,
-                    "-postScript",
-                    SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+                post_scripts=[
+                    ["ImportFromXml.java", filename],
+                    [
+                        "ExportDelinker.java",
+                        str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+                    ],
                 ],
             )
     else:
@@ -52,10 +51,11 @@ def main():
             repo,
             project_name,
             process=program,
-            extraArgs=[
-                "-preScript",
-                SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+            pre_scripts=[
+                [
+                    "ExportDelinker.java",
+                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+                ]
             ],
         )
 

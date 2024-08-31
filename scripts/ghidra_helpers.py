@@ -43,7 +43,8 @@ def runAnalyze(
     analysis=False,
     username=None,
     ssh_key=None,
-    extraArgs=[],
+    pre_scripts=[],
+    post_scripts=[],
 ):
     commonAnalyzeHeadlessArgs = [findAnalyzeHeadless(), ghidra_repo_name]
 
@@ -70,12 +71,25 @@ def runAnalyze(
     if ssh_key:
         commonAnalyzeHeadlessArgs += ["-keystore", ssh_key]
 
+    for pre_script in pre_scripts:
+        if isinstance(pre_script, list):
+            commonAnalyzeHeadlessArgs += ["-prescript"] + pre_script
+        elif isinstance(pre_script, str):
+            commonAnalyzeHeadlessArgs += ["-prescript", pre_script]
+
+    for post_script in post_scripts:
+        if isinstance(post_script, list):
+            commonAnalyzeHeadlessArgs += ["-postscript"] + post_script
+        elif isinstance(post_script, str):
+            commonAnalyzeHeadlessArgs += ["-postscript", post_script]
+
     commonAnalyzeHeadlessEnv = os.environ.copy()
     if username is not None:
         commonAnalyzeHeadlessEnv["_JAVA_OPTIONS"] = (
             f"-Duser.name={username} " + os.environ.get("_JAVA_OPTIONS", "")
         )
 
-    allArgs = commonAnalyzeHeadlessArgs + extraArgs
-    print("Running " + str(allArgs))
-    return subprocess.run(allArgs, env=commonAnalyzeHeadlessEnv, check=True)
+    print("Running " + str(commonAnalyzeHeadlessArgs))
+    return subprocess.run(
+        commonAnalyzeHeadlessArgs, env=commonAnalyzeHeadlessEnv, check=True
+    )

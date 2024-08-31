@@ -28,7 +28,7 @@ def fetchVersions(args):
             process=args.program,
             username=args.username,
             ssh_key=args.ssh_key,
-            extraArgs=["-preScript", "ExportFileVersions.java", f.name],
+            pre_scripts=[["ExportFileVersions.java", f.name]],
         )
         versions = json.loads(f.read())
     versions.sort(key=lambda x: x["version"])
@@ -62,7 +62,7 @@ def export(args, version: dict):
         program=args.program,
         username=args.username,
         ssh_key=args.ssh_key,
-        extraArgs=["-preScript", script, str(out), str(version["version"])],
+        pre_scripts=[[script, str(out), str(version["version"])]],
     )
 
     if args.EXPORT_TYPE == XML:
