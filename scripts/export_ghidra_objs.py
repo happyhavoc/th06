@@ -22,7 +22,7 @@ def main():
     parser.add_argument("--program", help="Program to export", default="th06_102h.exe")
     args = parser.parse_args()
 
-    os.makedirs(str(SCRIPT_PATH.parent / "build" / "objdiff" / "asm"), exist_ok=True)
+    os.makedirs(str(SCRIPT_PATH.parent / "build" / "objdiff" / "reimpl"), exist_ok=True)
 
     if args.import_xml:
         with tempfile.TemporaryDirectory() as tempdir:
@@ -41,7 +41,7 @@ def main():
                     filename,
                     "-postScript",
                     SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "asm"),
+                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
                 ],
             )
     else:
@@ -56,7 +56,7 @@ def main():
             extraArgs=[
                 "-preScript",
                 SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                str(SCRIPT_PATH.parent / "build" / "objdiff" / "asm"),
+                str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
             ],
         )
 

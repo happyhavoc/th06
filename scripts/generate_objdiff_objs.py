@@ -8,8 +8,8 @@ SCRIPTS_DIR = Path(__file__).parent
 
 
 def rename_symbols(filename):
-    out_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "src"
-    asm_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "asm"
+    reimpl_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "reimpl"
+    orig_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "orig"
 
     class_name = re.sub("\\.obj$", "", filename.name)
     obj = coff.ObjectModule()
@@ -38,11 +38,11 @@ def rename_symbols(filename):
             offset = obj.string_table.append(func_name)
             sym_obj.name = b"\0\0\0\0" + struct.pack("I", offset)
 
-    if not out_folder.exists():
-        out_folder.mkdir(parents=True, exist_ok=True)
-        asm_folder.mkdir(parents=True, exist_ok=True)
+    if not reimpl_folder.exists():
+        reimpl_folder.mkdir(parents=True, exist_ok=True)
+        orig_folder.mkdir(parents=True, exist_ok=True)
 
-    with open(str(out_folder / filename.name), "wb") as f:
+    with open(str(reimpl_folder / filename.name), "wb") as f:
         f.write(obj.get_buffer())
 
 
