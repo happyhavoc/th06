@@ -13,10 +13,10 @@ SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
 def updateMapping(args, mapping_path):
     ghidra_helpers.runAnalyze(
         args.GHIDRA_REPO_NAME,
-        args.program,
-        args.username,
-        args.ssh_key,
-        ["-preScript", "GenerateMapping.java", mapping_path],
+        program=args.program,
+        username=args.username,
+        ssh_key=args.ssh_key,
+        extraArgs=["-preScript", "GenerateMapping.java", mapping_path],
     )
 
 
