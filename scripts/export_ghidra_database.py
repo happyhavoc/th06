@@ -25,7 +25,7 @@ def fetchVersions(args):
     with tempfile.NamedTemporaryFile(prefix="versions") as f:
         ghidra_helpers.runAnalyze(
             args.GHIDRA_REPO_NAME,
-            program=args.program,
+            process=args.program,
             username=args.username,
             ssh_key=args.ssh_key,
             extraArgs=["-preScript", "ExportFileVersions.java", f.name],

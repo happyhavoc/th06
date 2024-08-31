@@ -32,10 +32,9 @@ def main():
             ghidra_helpers.runAnalyze(
                 str(tempdir),
                 "Touhou 06",
+                import_file=str(SCRIPT_PATH.parent / "resources" / "game.exe"),
                 analysis=True,
                 extraArgs=[
-                    "-import",
-                    SCRIPT_PATH.parent / "resources" / "game.exe",
                     "-postScript",
                     SCRIPT_PATH / "ghidra" / "ImportFromXml.java",
                     filename,
@@ -52,7 +51,7 @@ def main():
         ghidra_helpers.runAnalyze(
             repo,
             project_name,
-            program,
+            process=program,
             extraArgs=[
                 "-preScript",
                 SCRIPT_PATH / "ghidra" / "ExportDelinker.java",

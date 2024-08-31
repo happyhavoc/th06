@@ -38,7 +38,8 @@ def findAnalyzeHeadless():
 def runAnalyze(
     ghidra_repo_name,
     project_name="Touhou 06",
-    program=None,
+    process=None,
+    import_file=None,
     analysis=False,
     username=None,
     ssh_key=None,
@@ -49,6 +50,13 @@ def runAnalyze(
     if not re.match("^ghidra://", ghidra_repo_name):
         # Set a project name
         commonAnalyzeHeadlessArgs += [project_name]
+
+    if process and import_file:
+        raise Exception("Cannot provide both import and process")
+    elif process:
+        commonAnalyzeHeadlessArgs += ["-process", process]
+    elif import_file:
+        commonAnalyzeHeadlessArgs += ["-import", import_file]
 
     commonAnalyzeHeadlessArgs += [
         "-readOnly",
@@ -61,10 +69,6 @@ def runAnalyze(
 
     if ssh_key:
         commonAnalyzeHeadlessArgs += ["-keystore", ssh_key]
-
-    # TODO: If program is not provided, export all files from server.
-    if program:
-        commonAnalyzeHeadlessArgs += ["-process", program]
 
     commonAnalyzeHeadlessEnv = os.environ.copy()
     if username is not None:
