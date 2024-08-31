@@ -143,9 +143,9 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     {
         p->unk_638[idx].x = 0.0;
     }
-    for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->unk_8b8); idx++)
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->bombProjectiles); idx++)
     {
-        p->unk_8b8[idx].size.x = 0.0;
+        p->bombProjectiles[idx].size.x = 0.0;
     }
     if (p->bombInfo.isInUse)
     {
@@ -878,4 +878,52 @@ FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet,
                                            u32 framesSinceLastBullet)
 {
     return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
+}
+
+#pragma var_order(padding1, bombProjectileBottom, bombProjectileRight, curBombIdx, padding2, bulletBottom,             \
+                  bulletRight, padding3, bulletTop, bulletLeft, curBombProjectile, padding4, bombProjectileTop,        \
+                  bombProjectileLeft)
+i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize)
+{
+    PlayerRect *curBombProjectile;
+    f32 bulletLeft, bulletTop, bulletRight, bulletBottom;
+    f32 bombProjectileLeft, bombProjectileTop, bombProjectileRight, bombProjectileBottom;
+    i32 curBombIdx;
+    i32 padding1, padding2, padding3, padding4;
+
+    curBombProjectile = this->bombProjectiles;
+    bulletLeft = bulletCenter->x - bulletSize->x / 2.0f;
+    bulletTop = bulletCenter->y - bulletSize->y / 2.0f;
+    bulletRight = bulletCenter->x + bulletSize->x / 2.0f;
+    bulletBottom = bulletCenter->y + bulletSize->y / 2.0f;
+    for (curBombIdx = 0; curBombIdx < ARRAY_SIZE_SIGNED(this->bombProjectiles); curBombIdx++, curBombProjectile++)
+    {
+        if (curBombProjectile->size.x == 0.0f)
+        {
+            continue;
+        }
+        bombProjectileRight = curBombProjectile->pos.x - curBombProjectile->size.x / 2.0f;
+        bombProjectileBottom = curBombProjectile->pos.y - curBombProjectile->size.y / 2.0f;
+        bombProjectileLeft = curBombProjectile->pos.x + curBombProjectile->size.x / 2.0f;
+        bombProjectileTop = curBombProjectile->pos.y + curBombProjectile->size.y / 2.0f;
+        if (!(bombProjectileRight > bulletRight || bombProjectileLeft < bulletLeft ||
+              bombProjectileBottom > bulletBottom || bombProjectileTop < bulletTop))
+        {
+            return 2;
+        }
+    }
+    if (this->hitboxTopLeft.x > bulletRight || this->hitboxTopLeft.y > bulletBottom ||
+        this->hitboxBottomRight.x < bulletLeft || this->hitboxBottomRight.y < bulletTop)
+    {
+        return 0;
+    }
+    else if (this->playerState != PLAYER_STATE_ALIVE)
+    {
+        return 1;
+    }
+    else
+    {
+        this->Die();
+        return 1;
+    }
 }

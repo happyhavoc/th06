@@ -203,10 +203,11 @@ struct Player
 
     f32 AngleToPlayer(D3DXVECTOR3 *pos);
     i32 CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *hitbox);
-    ZunBool CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize);
+    i32 CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize);
     i32 CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
                         i32 canGraze);
     i32 CalcDamageToEnemy(D3DXVECTOR3 *enemyPos, D3DXVECTOR3 *enemySize, i32 *unk);
+    void Die();
 
     AnmVm playerSprite;
     AnmVm orbsSprite[3];
@@ -223,7 +224,7 @@ struct Player
     D3DXVECTOR3 unk_638[32];
     i32 unk_7b8[32];
     i32 unk_838[32];
-    PlayerRect unk_8b8[16];
+    PlayerRect bombProjectiles[16];
     ZunTimer laserTimer[2];
     f32 horizontalMovementSpeedMultiplierDuringBomb;
     f32 verticalMovementSpeedMultiplierDuringBomb;

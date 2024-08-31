@@ -25,10 +25,10 @@ def fetchVersions(args):
     with tempfile.NamedTemporaryFile(prefix="versions") as f:
         ghidra_helpers.runAnalyze(
             args.GHIDRA_REPO_NAME,
-            args.program,
-            args.username,
-            args.ssh_key,
-            ["-preScript", "ExportFileVersions.java", f.name],
+            program=args.program,
+            username=args.username,
+            ssh_key=args.ssh_key,
+            extraArgs=["-preScript", "ExportFileVersions.java", f.name],
         )
         versions = json.loads(f.read())
     versions.sort(key=lambda x: x["version"])
@@ -59,10 +59,10 @@ def export(args, version: dict):
 
     ghidra_helpers.runAnalyze(
         args.GHIDRA_REPO_NAME,
-        args.program,
-        args.username,
-        args.ssh_key,
-        ["-preScript", script, str(out), str(version["version"])],
+        program=args.program,
+        username=args.username,
+        ssh_key=args.ssh_key,
+        extraArgs=["-preScript", script, str(out), str(version["version"])],
     )
 
     if args.EXPORT_TYPE == XML:
