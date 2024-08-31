@@ -41,7 +41,7 @@ def main():
                     filename,
                     "-postScript",
                     SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "asm"),
+                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
                 ],
             )
     else:
@@ -56,7 +56,7 @@ def main():
             extraArgs=[
                 "-preScript",
                 SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                str(SCRIPT_PATH.parent / "build" / "objdiff" / "asm"),
+                str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
             ],
         )
 

@@ -6,8 +6,8 @@
         "--object-name"
     ],
 
-    "target_dir": "build/objdiff/asm",
-    "base_dir": "build/objdiff/src",
+    "target_dir": "build/objdiff/orig",
+    "base_dir": "build/objdiff/reimpl",
 
     "build_target": false,
     "build_base": true,
