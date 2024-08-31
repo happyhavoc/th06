@@ -9,6 +9,7 @@ import shutil
 import stat
 import subprocess
 import sys
+import zipfile
 
 try:
     from typing import Optional
@@ -127,8 +128,8 @@ def parse_arguments() -> Namespace:
     parser.add_argument(
         "--only",
         action="append",
-        choices=["vs", "dx8", "py", "pragma", "ninja", "satsuki"],
-        help="Only run certain steps. Possible values are vs, dx8, py, pragma, ninja and satsuki.",
+        choices=["vs", "dx8", "py", "pragma", "ninja", "satsuki", "ghidra"],
+        help="Only run certain steps. Possible values are vs, dx8, py, pragma, ninja, satsuki and ghidra.",
     )
     parser.add_argument("dl_cache_path", help="Path to download the requirements in")
     parser.add_argument("output_path", help="The output directory")
@@ -341,6 +342,20 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "filename": "satsuki",
             "sha256": "e7a5f586b0f8febe5a1a6a3a0178486ec124c5dabc8ffb17bf0b892194dd8116",
         },
+        {
+            "name": "ghidra",
+            "only": "ghidra",
+            "url": "https://github.com/happyhavoc/ghidra-ci/releases/download/2024-08-31/release.zip",
+            "filename": "ghidra.zip",
+            "sha256": "524f6bdfa134afbe722498953eb21efacd93a876842e31fd04f93592270976a3",
+        },
+        {
+            "name": "ghidra-delinker",
+            "only": "ghidra",
+            "url": "https://github.com/happyhavoc/ghidra-delinker-extension/releases/download/v0.5.0-th06.1/ghidra_11.1_PUBLIC_20240831_ghidra-delinker-extension.zip",
+            "filename": "ghidra-delinker.zip",
+            "sha256": "a9b063294412fb095d749d06905a05cdd42714b82818141d6844955f11680691",
+        },
     ]
 
     if should_torrent:
@@ -536,6 +551,30 @@ def install_satsuki(dl_cache_path, output_path):
     os.chmod(str(install_path / satsuki_name), mode)
 
 
+def install_ghidra(dl_cache_path, tmp_dir, output_path):
+    install_path = output_path / "ghidra"
+    with zipfile.ZipFile(str(dl_cache_path / "ghidra.zip")) as ghidra_zip:
+        ghidra_zip.extractall(str(tmp_dir))
+        for item in ghidra_zip.infolist():
+            if not item.filename.endswith("/"):
+                file_attr = item.external_attr >> 16
+                os.chmod(str(tmp_dir / item.filename), file_attr)
+
+    # Find the ghidra folder, and move it.
+    for item in tmp_dir.iterdir():
+        if item.name.startswith("ghidra_") and item.is_dir():
+            print(str(item) + "->" + str(install_path))
+            shutil.move(str(item), str(install_path))
+            break
+
+    # Next, install ghidra-delinker-extension
+    shutil.unpack_archive(
+        str(dl_cache_path / "ghidra-delinker.zip"),
+        str(install_path / "Ghidra" / "Extensions"),
+        format="zip",
+    )
+
+
 def main(args: Namespace) -> int:
     dl_cache_path = Path(args.dl_cache_path).absolute()
     output_path = Path(args.output_path).absolute()
@@ -573,6 +612,8 @@ def main(args: Namespace) -> int:
             install_ninja(ninja_zip_path, output_path)
         if "satsuki" in steps:
             install_satsuki(dl_cache_path, output_path)
+        if "ghidra" in steps:
+            install_ghidra(dl_cache_path, tmp_dir, output_path)
 
     return 0
 
