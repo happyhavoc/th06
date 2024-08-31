@@ -35,7 +35,7 @@ def rename_symbols(filename):
             elif namespace != class_name.encode("utf8"):
                 continue
 
-            offset = obj.string_table.append(func_name)
+            offset = obj.string_table.append(namespace + b"::" + func_name)
             sym_obj.name = b"\0\0\0\0" + struct.pack("I", offset)
 
     if not reimpl_folder.exists():
