@@ -16,10 +16,6 @@ AsciiManager::AsciiManager()
 {
 }
 
-StageMenu::StageMenu()
-{
-}
-
 ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
 {
     if (!g_GameManager.isInGameMenu && !g_GameManager.isInRetryMenu)

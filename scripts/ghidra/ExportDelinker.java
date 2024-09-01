@@ -30,7 +30,7 @@ public class ExportDelinker extends GhidraScript
         "EffectManager", "Enemy",       "EnemyManager", "FileAbstraction", "FileSystem",  "GameErrorContext",
         "GameManager",   "GameWindow",  "Gui",          "IPbg3Parser",     "ItemManager", "MainMenu",
         "MidiOutput",    "Pbg3Archive", "Pbg3Parser",   "Player",          "Rng",         "ScreenEffect",
-        "SoundPlayer",   "Stage",       "Supervisor",   "TextHelper",      "ZunTimer"};
+        "SoundPlayer",   "Stage",       "StageMenu",    "Supervisor",      "TextHelper",  "ZunTimer"};
 
     @Override protected void run() throws Exception
     {
