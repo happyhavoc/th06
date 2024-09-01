@@ -175,9 +175,9 @@ Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count
         }
         if (effect->inUseFlag)
         {
-            if (!this->nextIndex)
+            if (this->nextIndex == 0)
             {
-                effect = this->effects;
+                effect = &this->effects[0];
             }
             else
             {
@@ -202,9 +202,9 @@ Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count
         if (count == 0)
             break;
 
-        if (!this->nextIndex)
+        if (this->nextIndex == 0)
         {
-            effect = this->effects;
+            effect = &this->effects[0];
         }
         else
         {
