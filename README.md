@@ -54,14 +54,41 @@ python3 ./scripts/build.py
 This will automatically generate a ninja build script `build.ninja`, and run
 ninja on it.
 
-## Reverse Engineering
+## Contributing
+
+### Reverse Engineering
 
 You can find an XML export of our Ghidra RE in the companion repository
-[th06-re]. This repo is updated nightly through [`scripts/export_ghidra_database.py`],
-and its history matches the checkin history from our team's Ghidra Server.
+[th06-re], in the `xml` branch. This repo is updated nightly through
+[`scripts/export_ghidra_database.py`], and its history matches the checkin
+history from our team's Ghidra Server.
 
 If you wish to help us in our Reverse Engineering effort, please contact
 @roblabla on discord so we can give you an account on the Ghidra Server.
+
+### Reimplementation
+
+The easiest way to work on the reimplementation is through the use of
+[`objdiff`](https://github.com/encounter/objdiff). Here's how to get started:
+
+1. First, follow the instruction above to get a devenv setup.
+1. Copy the original `東方紅魔郷.exe` file (version 1.02h) to the
+   `resources/game.exe` folder. This will be used as the source to compare the
+   reimplementations against.
+1. Download the latest version of objdiff.
+1. Run `python3 scripts/export_ghidra_objs.py --import-xml`. This will extract
+   from `resources/game.exe` the object files that objdiff can compare against.
+1. Finally, run objdiff and open the th06 project.
+
+#### Choosing a function to decompile
+
+The easiest is to look at the `config/stubbed.csv` files. Those are all
+functions that are automatically stubbed out. You should pick one of them, open
+the associated object file in objdiff, and click on the function of interest.
+
+Then, open the correct `cpp` file, copy/paste the declaration, and start
+hacking! It may be useful to take the ghidra decompiler output as a base. You
+can find this output in the [th06-re] repository.
 
 # Credits
 
