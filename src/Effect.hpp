@@ -4,6 +4,9 @@
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
 
+struct Effect;
+
+typedef i32 (*EffectUpdateCallback)(Effect *);
 struct Effect
 {
     AnmVm vm;
@@ -21,10 +24,17 @@ struct Effect
     f32 angleRelated;
     ZunTimer timer;
     i32 unk_170;
-    i32 (*updateCallback)(Effect *);
+    EffectUpdateCallback updateCallback;
     i8 inUseFlag;
     i8 effectId;
     i8 unk_17a;
     i8 unk_17b;
 };
 C_ASSERT(sizeof(Effect) == 0x17c);
+
+struct EffectInfo
+{
+    i32 anmIdx;
+    EffectUpdateCallback updateCallback;
+};
+C_ASSERT(sizeof(EffectInfo) == 0x8);

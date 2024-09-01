@@ -75,6 +75,7 @@ EffectManager::AddedCallback
 EffectManager::RegisterChain
 EffectManager::OnUpdate
 EffectManager::OnDraw
+EffectManager::SpawnParticles
 EnemyManager::Initialize
 EnemyManager::RegisterChain
 EnemyManager::AddedCallback

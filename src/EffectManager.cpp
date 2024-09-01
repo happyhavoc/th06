@@ -12,6 +12,29 @@ DIFFABLE_STATIC(EffectManager, g_EffectManager);
 DIFFABLE_STATIC(ChainElem, g_EffectManagerCalcChain);
 DIFFABLE_STATIC(ChainElem, g_EffectManagerDrawChain);
 
+DIFFABLE_STATIC_ARRAY_ASSIGN(EffectInfo, 20, g_Effects) = {
+    {ANM_SCRIPT_BULLET4_SPAWN_BUBBLE_EXPLOSION_SMALL, NULL},
+    {ANM_SCRIPT_BULLET4_SPAWN_BUBBLE_EXPLOSION_SPIRAL, NULL},
+    {ANM_SCRIPT_BULLET4_SPAWN_BUBBLE_EXPLOSION_NORMAL, NULL},
+    {ANM_SCRIPT_BULLET4_SPAWN_GLOW_1, EffectManager::EffectUpdateCallback2},
+    {ANM_SCRIPT_BULLET4_SPAWN_WHITE_PARTICLE, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SPAWN_RED_PARTICLE, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SPAWN_GREEN_PARTICLE, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SPAWN_BLUE_PARTICLE, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SPAWN_WHITE_PARTICLE_SMALL, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SPAWN_RED_PARTICLE_SMALL, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SPAWN_GREEN_PARTICLE_SMALL, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SPAWN_BLUE_PARTICLE_SMALL, EffectManager::EffectUpdateCallback1},
+    {ANM_SCRIPT_BULLET4_SCRIPT_17, NULL},
+    {ANM_SCRIPT_BULLET4_SCRIPT_18, EffectManager::EffectUpdateCallback4},
+    {ANM_SCRIPT_BULLET4_SCRIPT_18, EffectManager::EffectUpdateCallback4},
+    {ANM_SCRIPT_BULLET4_SCRIPT_18, EffectManager::EffectUpdateCallback4},
+    {ANM_SCRIPT_EFFECTS_SPELLCARD_BACKGROUND, NULL},
+    {ANM_SCRIPT_BULLET4_SPAWN_GLOW_2, EffectManager::EffectUpdateCallback5},
+    {ANM_SCRIPT_BULLET4_SPAWN_WHITE_PARTICLE, EffectManager::EffectUpdateCallback6},
+    {ANM_SCRIPT_BULLET4_SCRIPT_19, EffectManager::EffectUpdateCallback3},
+};
+
 ZunResult EffectManager::RegisterChain()
 {
     EffectManager *mgr = &g_EffectManager;
@@ -134,4 +157,59 @@ ChainCallbackResult EffectManager::OnDraw(EffectManager *mgr)
         g_AnmManager->Draw3(&effect->vm);
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(effect, idx)
+Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count, ZunColor color)
+{
+    i32 idx;
+    Effect *effect;
+
+    effect = &this->effects[this->nextIndex];
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->effects); idx++)
+    {
+        this->nextIndex++;
+        if (this->nextIndex >= ARRAY_SIZE_SIGNED(this->effects))
+        {
+            this->nextIndex = 0;
+        }
+        if (effect->inUseFlag)
+        {
+            if (!this->nextIndex)
+            {
+                effect = this->effects;
+            }
+            else
+            {
+                effect++;
+            }
+            continue;
+        }
+
+        effect->inUseFlag = 1;
+        effect->effectId = effectIdx;
+        effect->pos1 = *pos;
+
+        g_AnmManager->SetAndExecuteScriptIdx(&effect->vm, g_Effects[effectIdx].anmIdx);
+
+        effect->vm.color = color;
+        effect->updateCallback = g_Effects[effectIdx].updateCallback;
+        effect->timer.InitializeForPopup();
+        effect->unk_17a = 0;
+        effect->unk_17b = 0;
+        count--;
+
+        if (count == 0)
+            break;
+
+        if (!this->nextIndex)
+        {
+            effect = this->effects;
+        }
+        else
+        {
+            effect++;
+        }
+    }
+    return idx >= ARRAY_SIZE_SIGNED(this->effects) ? &this->dummyEffect : effect;
 }
