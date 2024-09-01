@@ -11,6 +11,9 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.4'
     - name: Get toolchain from cache
       id: cache-toolchain
       uses: actions/cache/restore@v3
@@ -44,6 +47,9 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.4'
     - name: Get toolchain from cache
       id: cache-toolchain
       uses: actions/cache/restore@v3
@@ -79,6 +85,9 @@ jobs:
     - uses: actions/checkout@v3
       with:
         submodules: true
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.4'
     - name: Get toolchain from cache
       id: cache-toolchain
       uses: actions/cache/restore@v3
