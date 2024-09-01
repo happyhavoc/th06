@@ -17,8 +17,8 @@ struct StageMenu
     u32 curState;
     // Number of frames since last state change. Used to delay certain actions
     // until an animation is finished.
-    u32 numFrames;
-    AnmVm vms0[6];
-    AnmVm vm1;
+    i32 numFrames;
+    AnmVm menuSprites[6];
+    AnmVm menuBackground;
 };
 C_ASSERT(sizeof(StageMenu) == 0x778);

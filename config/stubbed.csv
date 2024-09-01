@@ -4,7 +4,6 @@ AnmManager::DrawStringFormat2
 EffectManager::DeletedCallback
 EffectManager::SpawnParticles
 Stage::DeletedCallback
-StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawGameMenu
 StageMenu::OnDrawRetryMenu

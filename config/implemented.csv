@@ -161,6 +161,7 @@ Stage::OnDrawHighPrio
 Stage::UpdateObjects
 Stage::RenderObjects
 StageMenu::StageMenu
+StageMenu::OnUpdateGameMenu
 TextHelper::CreateTextBuffer
 Supervisor::AddedCallback
 Supervisor::ReleasePbg3

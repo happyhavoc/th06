@@ -131,6 +131,10 @@ struct AnmVm
     AnmVm();
 
     void Initialize();
+    void SetInvisible()
+    {
+        this->flags.isVisible = 0;
+    }
 
     D3DXVECTOR3 rotation;
     D3DXVECTOR3 angleVel;
