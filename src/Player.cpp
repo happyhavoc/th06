@@ -880,9 +880,9 @@ FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet,
     return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
 }
 
-#pragma var_order(padding1, bombProjectileBottom, bombProjectileRight, curBombIdx, padding2, bulletBottom,             \
-                  bulletRight, padding3, bulletTop, bulletLeft, curBombProjectile, padding4, bombProjectileTop,        \
-                  bombProjectileLeft)
+#pragma var_order(padding1, bombProjectileTop, bombProjectileLeft, curBombIdx, padding2, bulletBottom, bulletRight,    \
+                  padding3, bulletTop, bulletLeft, curBombProjectile, padding4, bombProjectileBottom,                  \
+                  bombProjectileRight)
 i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize)
 {
     PlayerRect *curBombProjectile;
@@ -902,12 +902,12 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
         {
             continue;
         }
-        bombProjectileRight = curBombProjectile->pos.x - curBombProjectile->size.x / 2.0f;
-        bombProjectileBottom = curBombProjectile->pos.y - curBombProjectile->size.y / 2.0f;
-        bombProjectileLeft = curBombProjectile->pos.x + curBombProjectile->size.x / 2.0f;
-        bombProjectileTop = curBombProjectile->pos.y + curBombProjectile->size.y / 2.0f;
-        if (!(bombProjectileRight > bulletRight || bombProjectileLeft < bulletLeft ||
-              bombProjectileBottom > bulletBottom || bombProjectileTop < bulletTop))
+        bombProjectileLeft = curBombProjectile->pos.x - curBombProjectile->size.x / 2.0f;
+        bombProjectileTop = curBombProjectile->pos.y - curBombProjectile->size.y / 2.0f;
+        bombProjectileRight = curBombProjectile->pos.x + curBombProjectile->size.x / 2.0f;
+        bombProjectileBottom = curBombProjectile->pos.y + curBombProjectile->size.y / 2.0f;
+        if (!(bombProjectileLeft > bulletRight || bombProjectileRight < bulletLeft ||
+              bombProjectileTop > bulletBottom || bombProjectileBottom < bulletTop))
         {
             return 2;
         }
