@@ -77,7 +77,6 @@ ValidateReplayData
 DrawSquare
 Controller::GetControllerState
 Player::DrawBulletExplosions
-Player::Die
 Player::CalcDamageToEnemy
 Player::DeletedCallback
 Player::BombReimuACalc

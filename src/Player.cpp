@@ -6,6 +6,7 @@
 #include "BulletManager.hpp"
 #include "ChainPriorities.hpp"
 #include "EclManager.hpp"
+#include "EffectManager.hpp"
 #include "EnemyManager.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"
@@ -926,4 +927,23 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
         this->Die();
         return 1;
     }
+}
+
+#pragma var_order(curLaserTimerIdx)
+void Player::Die()
+{
+    int curLaserTimerIdx;
+
+    g_EnemyManager.spellcardInfo.isCapturing = 0;
+    g_EffectManager.SpawnParticles(12, &this->positionCenter, 1, COLOR_NEONBLUE);
+    g_EffectManager.SpawnParticles(6, &this->positionCenter, 16, COLOR_WHITE);
+    this->playerState = PLAYER_STATE_DEAD;
+    this->invulnerabilityTimer.InitializeForPopup();
+    g_SoundPlayer.PlaySoundByIdx(SOUND_PICHUN, 0);
+    g_GameManager.deaths++;
+    for (curLaserTimerIdx = 0; curLaserTimerIdx < ARRAY_SIZE_SIGNED(this->laserTimer); curLaserTimerIdx++)
+    {
+        this->laserTimer[curLaserTimerIdx].SetCurrent(2);
+    }
+    return;
 }

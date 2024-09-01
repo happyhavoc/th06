@@ -190,6 +190,7 @@ SoundPlayer::InitSoundBuffers
 Player::AddedCallback
 Player::RegisterChain
 Player::CalcKillBoxCollision
+Player::Die
 Player::HandlePlayerInputs
 Player::DrawBullets
 Player::SpawnBullets
