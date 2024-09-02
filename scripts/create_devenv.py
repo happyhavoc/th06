@@ -69,7 +69,7 @@ def msiextract(msi_file_path: Path, output_dir: Path) -> int:
 
         for entry in dir.glob("*"):
             new_entry = parent_dir / entry.name
-            print(f"Renaming {entry} -> {new_entry}")
+            print("Renaming " + str(entry) + " -> " + str(new_entry))
             if not new_entry.exists():
                 shutil.move(str(entry), str(new_entry))
             else:
@@ -92,7 +92,7 @@ def msiextract(msi_file_path: Path, output_dir: Path) -> int:
                 new_entry = entry.parent / new_name
 
                 if entry != new_entry:
-                    print(f"Renaming {entry} -> {new_entry}")
+                    print("Renaming " + str(entry) + " -> " + str(new_entry))
                     if not new_entry.exists():
                         shutil.move(str(entry), str(new_entry))
                         renamed_something = True
