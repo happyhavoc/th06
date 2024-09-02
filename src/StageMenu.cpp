@@ -230,3 +230,31 @@ i32 StageMenu::OnUpdateGameMenu()
     this->numFrames++;
     return 0;
 }
+
+void StageMenu::OnDrawGameMenu()
+{
+    i32 vmIdx;
+
+    if (g_GameManager.isInGameMenu)
+    {
+        g_Supervisor.viewport.X = g_GameManager.arcadeRegionTopLeftPos.x;
+        g_Supervisor.viewport.Y = g_GameManager.arcadeRegionTopLeftPos.y;
+        g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
+        g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
+        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+        if (g_Supervisor.lockableBackbuffer && this->curState != GAME_MENU_PAUSE_OPENING)
+        {
+            AnmVm menuBackground = this->menuBackground;
+            menuBackground.flags.zWriteDisable = 1;
+            g_AnmManager->DrawNoRotation(&menuBackground);
+        }
+        for (vmIdx = 0; vmIdx < ARRAY_SIZE_SIGNED(this->menuSprites); vmIdx++)
+        {
+            if (this->menuSprites[vmIdx].flags.isVisible)
+            {
+                g_AnmManager->DrawNoRotation(&this->menuSprites[vmIdx]);
+            }
+        }
+    }
+    return;
+}

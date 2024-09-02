@@ -5,7 +5,6 @@ EffectManager::DeletedCallback
 EffectManager::SpawnParticles
 Stage::DeletedCallback
 StageMenu::OnUpdateRetryMenu
-StageMenu::OnDrawGameMenu
 StageMenu::OnDrawRetryMenu
 AsciiManager::DrawPopupsWithHwVertexProcessing
 AsciiManager::DrawPopupsWithoutHwVertexProcessing
