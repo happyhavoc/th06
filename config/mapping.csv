@@ -29,7 +29,7 @@ Stage::OnDrawLowPrio,0x404180,0x180,default,,ChainCallbackResult,Stage*
 Stage::AddedCallback,0x404300,0x1b4,default,,ZunResult,Stage*
 Stage::RegisterChain,0x4044c0,0x11e,default,,ZunResult,u32
 Stage::DeletedCallback,0x4045e0,0x66,default,,ZunResult,Stage*
-Stage::CutChain,0x404650,0x32,__stdcall,,void
+Stage::CutChain,0x404650,0x32,default,,void
 Stage::LoadStageData,0x404690,0x1c1,__thiscall,,ZunResult,Stage*,char*,char*
 Stage::UpdateObjects,0x404860,0x101,__thiscall,,ZunResult,Stage*
 Stage::RenderObjects,0x404970,0x83d,__thiscall,,ZunResult,Stage*,i32
@@ -44,7 +44,7 @@ Player::BombMarisaADraw,0x406b10,0x354,default,,void,Player*
 Player::BombMarisaBCalc,0x406e70,0x33e,default,,void,Player*
 Player::BombMarisaBDraw,0x4071b0,0x185,default,,void,Player*
 EclManager::Load,0x407340,0xb2,__thiscall,,ZunResult,EclManager*,char*
-EclManager::operator_delete,0x407400,0x32,__thiscall,,void,EclManager*
+EclManager::Unload,0x407400,0x32,__thiscall,,void,EclManager*
 EclManager::CallEclSub,0x407440,0x54,__thiscall,,ZunResult,EclManager*,EnemyEclContext*,i16
 EclManager::RunEcl,0x4074a0,0x3504,__thiscall,,ZunResult,EclManager*,Enemy*
 Enemy::MoveDirTime,0x40abe0,0x123,default,,void,Enemy*,EclRawInstr*
@@ -123,7 +123,7 @@ Enemy::Move,0x413380,0xaa,__thiscall,,void,Enemy*
 BulletManager::InitializeToZero,0x413430,0x19,__thiscall,,void,BulletManager*
 BulletManager::BulletManager,0x413450,0x10e,__thiscall,,BulletManager*,BulletManager*
 BulletTypeVms::BulletTypeVms,0x413560,0x50,__thiscall,,AnmVm*,BulletTypeVms*
-BulletManager::SpawnSingleBullet,0x4135b0,0xb8b,__thiscall,,u32,BulletManager*,EnemyBulletShooter*,u32,i32,f32
+BulletManager::SpawnSingleBullet,0x4135b0,0xb8b,__thiscall,,i32,BulletManager*,EnemyBulletShooter*,i32,i32,f32
 BulletManager::RemoveAllBullets,0x414160,0x1d2,__thiscall,,void,BulletManager*,i32
 BulletManager::TurnAllBulletsIntoPoints,0x414340,0x15,__thiscall,,void,BulletManager*
 BulletManager::DespawnBullets,0x414360,0x25f,__thiscall,,i32,BulletManager*,i32,i32
@@ -295,7 +295,7 @@ SoundPlayer::FadeOut,0x424e41,0x4e,__thiscall,,void,SoundPlayer*,f32
 MusicRoom::FUN_00424e8f,0x424e8f,0x1e,__thiscall,,ZunResult,MusicRoom*
 MusicRoom::drawMusicList,0x424ead,0x38d,__thiscall,,void,MusicRoom*
 MusicRoom::RegisterChain,0x42523a,0xde,default,,ZunResult
-MusicRoom::FUN_00425318,0x425318,0xc5,__thiscall,,u32*,MusicRoom*
+MusicRoom::MusicRoom,0x425318,0xc5,__thiscall,,u32*,MusicRoom*
 MusicRoom::OnUpdate,0x4253dd,0x7d,__stdcall,,ChainCallbackResult,MusicRoom*
 MusicRoom::OnDraw,0x42545a,0x1f2,default,,ChainCallbackResult,MusicRoom*
 MusicRoom::AddedCallback,0x42564c,0x74b,__stdcall,,ZunResult,MusicRoom*
@@ -339,7 +339,7 @@ ReplayManager::OnDraw,0x42a670,0xa,unknown,,u8
 ReplayManager::AddedCallback,0x42a680,0x1bd,default,,ZunResult,ReplayManager*
 ReplayManager::DemoAddedCallback,0x42a840,0x1d5,__stdcall,,ZunResult,ReplayManager*
 ReplayManager::DeletedCallback,0x42aa20,0x8c,unknown,,u8,ReplayManager*
-ReplayManager::FUN_0042aab0,0x42aab0,0x7b,unknown,,u8
+ReplayManager::StopRecording,0x42aab0,0x7b,unknown,,u8
 SaveReplay,0x42ab30,0x5a9,default,,void,char*,char*
 ResultScreen::OpenScore,0x42b0d9,0x1a7,default,,ScoreDat*,char*
 ResultScreen::GetHighScore,0x42b280,0x126,default,,u32,ScoreDat*,ScoreListNode*,u32,u32
