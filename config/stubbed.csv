@@ -2,7 +2,12 @@ AnmManager::TakeScreenshotIfRequested
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
 EffectManager::DeletedCallback
-EffectManager::SpawnParticles
+EffectManager::EffectUpdateCallback1
+EffectManager::EffectUpdateCallback2
+EffectManager::EffectUpdateCallback3
+EffectManager::EffectUpdateCallback4
+EffectManager::EffectUpdateCallback5
+EffectManager::EffectUpdateCallback6
 Stage::DeletedCallback
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
