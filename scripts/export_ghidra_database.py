@@ -59,7 +59,7 @@ def export(args, version: dict):
 
     ghidra_helpers.runAnalyze(
         args.GHIDRA_REPO_NAME,
-        program=args.program,
+        process=args.program,
         username=args.username,
         ssh_key=args.ssh_key,
         pre_scripts=[[script, str(out), str(version["version"])]],
