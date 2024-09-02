@@ -87,7 +87,7 @@ def main():
 
     if args.object_name is not None:
         object_name = Path(args.object_name).name
-        target = f"build/objdiff/reimpl/{object_name}"
+        target = "build/objdiff/reimpl/" + object_name
     elif args.target is not None:
         target = args.target
 

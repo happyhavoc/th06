@@ -22,7 +22,7 @@ def main():
     parser.add_argument("--program", help="Program to export", default="th06_102h.exe")
     args = parser.parse_args()
 
-    os.makedirs(str(SCRIPT_PATH.parent / "build" / "objdiff" / "reimpl"), exist_ok=True)
+    os.makedirs(str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"), exist_ok=True)
 
     if args.import_xml:
         with tempfile.TemporaryDirectory() as tempdir:
@@ -32,16 +32,14 @@ def main():
             ghidra_helpers.runAnalyze(
                 str(tempdir),
                 "Touhou 06",
+                import_file=str(SCRIPT_PATH.parent / "resources" / "game.exe"),
                 analysis=True,
-                extraArgs=[
-                    "-import",
-                    SCRIPT_PATH.parent / "resources" / "game.exe",
-                    "-postScript",
-                    SCRIPT_PATH / "ghidra" / "ImportFromXml.java",
-                    filename,
-                    "-postScript",
-                    SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+                post_scripts=[
+                    ["ImportFromXml.java", filename],
+                    [
+                        "ExportDelinker.java",
+                        str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+                    ],
                 ],
             )
     else:
@@ -52,11 +50,12 @@ def main():
         ghidra_helpers.runAnalyze(
             repo,
             project_name,
-            program,
-            extraArgs=[
-                "-preScript",
-                SCRIPT_PATH / "ghidra" / "ExportDelinker.java",
-                str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+            process=program,
+            pre_scripts=[
+                [
+                    "ExportDelinker.java",
+                    str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
+                ]
             ],
         )
 
