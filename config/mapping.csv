@@ -91,7 +91,7 @@ EffectManager::OnDraw,0x40f1f0,0x81,default,,ChainCallbackResult,EffectManager*
 EffectManager::AddedCallback,0x40f280,0x12c,__stdcall,,ZunResult,EffectManager*
 EffectManager::DeletedCallback,0x40f3d0,0x14,default,,ZunResult,EffectManager*
 EffectManager::RegisterChain,0x40f3f0,0xa5,__stdcall,,ZunResult
-EffectManager::CutChain,0x40f4a0,0x23,unknown,,u8
+EffectManager::CutChain,0x40f4a0,0x23,default,,void
 readEndFileParameter,0x40f4d0,0x73,__fastcall,,long,Ending*
 Ending::FadingEffect,0x40f550,0x254,__thiscall,,void,Ending*
 Ending::ParseEndFile,0x40f7c0,0xe23,__thiscall,,void,Ending*
@@ -136,7 +136,7 @@ BulletManager::DrawBullet,0x416b50,0xea,default,,void,Bullet*
 BulletManager::DrawBulletNoHwVertex,0x416c50,0xf4,default,,void,Bullet*
 BulletManager::AddedCallback,0x416d60,0x509,__stdcall,,ZunResult,BulletManager*
 BulletManager::DeletedCallback,0x417270,0x31,default,,ZunResult,BulletManager*
-BulletManager::CutChain,0x4172b0,0x23,unknown,,u8
+BulletManager::CutChain,0x4172b0,0x23,default,,void
 Gui::IsStageFinished,0x4172d3,0x41,__thiscall,,i32,Gui*
 Gui::ImplVm5SetInterruptToOne,0x417314,0x18,__thiscall,,void,Gui*
 Gui::Vm6SetInterruptTo1,0x41732c,0x18,__thiscall,,void,Gui*
@@ -339,7 +339,7 @@ ReplayManager::OnDraw,0x42a670,0xa,unknown,,u8
 ReplayManager::AddedCallback,0x42a680,0x1bd,default,,ZunResult,ReplayManager*
 ReplayManager::DemoAddedCallback,0x42a840,0x1d5,__stdcall,,ZunResult,ReplayManager*
 ReplayManager::DeletedCallback,0x42aa20,0x8c,unknown,,u8,ReplayManager*
-ReplayManager::StopRecording,0x42aab0,0x7b,unknown,,u8
+ReplayManager::StopRecording,0x42aab0,0x7b,default,,void
 SaveReplay,0x42ab30,0x5a9,default,,void,char*,char*
 ResultScreen::OpenScore,0x42b0d9,0x1a7,default,,ScoreDat*,char*
 ResultScreen::GetHighScore,0x42b280,0x126,default,,u32,ScoreDat*,ScoreListNode*,u32,u32
