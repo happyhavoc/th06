@@ -20,6 +20,7 @@ struct GuiFlags
 struct Gui
 {
     static ZunResult RegisterChain();
+    static void CutChain();
     static ZunResult AddedCallback(Gui *);
     static ZunResult DeletedCallback(Gui *);
     static ChainCallbackResult OnUpdate(Gui *);

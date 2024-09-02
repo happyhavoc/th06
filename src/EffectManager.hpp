@@ -14,6 +14,7 @@ struct EffectManager
     Effect dummyEffect;
 
     static ZunResult RegisterChain();
+    static void CutChain();
     static ChainCallbackResult OnUpdate(EffectManager *mgr);
     static ZunResult AddedCallback(EffectManager *mgr);
     static ZunResult DeletedCallback(EffectManager *mgr);

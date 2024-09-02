@@ -99,6 +99,7 @@ GameWindow::Present
 GameWindow::Render
 GameManager::GameManager
 GameManager::AddedCallback
+GameManager::DeletedCallback
 GameManager::RegisterChain
 GameManager::CutChain
 GameManager::HasReachedMaxClears

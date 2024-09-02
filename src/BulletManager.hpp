@@ -90,6 +90,7 @@ C_ASSERT(sizeof(Laser) == 0x270);
 struct BulletManager
 {
     static ZunResult RegisterChain(char *bulletAnmPath);
+    static void CutChain();
     static ZunResult AddedCallback(BulletManager *mgr);
     static ZunResult DeletedCallback(BulletManager *mgr);
     static ChainCallbackResult OnUpdate(BulletManager *mgr);

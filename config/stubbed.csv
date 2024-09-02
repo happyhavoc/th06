@@ -1,6 +1,8 @@
 AnmManager::TakeScreenshotIfRequested
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
+EclManager::Unload
+EffectManager::CutChain
 EffectManager::DeletedCallback
 EffectManager::EffectUpdateCallback1
 EffectManager::EffectUpdateCallback2
@@ -8,6 +10,7 @@ EffectManager::EffectUpdateCallback3
 EffectManager::EffectUpdateCallback4
 EffectManager::EffectUpdateCallback5
 EffectManager::EffectUpdateCallback6
+Stage::CutChain
 Stage::DeletedCallback
 StageMenu::OnUpdateGameMenu
 StageMenu::OnUpdateRetryMenu
@@ -37,13 +40,13 @@ Supervisor::DeletedCallback
 Supervisor::StopAudio
 Supervisor::SetupMidiPlayback
 Supervisor::ReadMidiFile
-GameManager::DeletedCallback
 Ending::RegisterChain
 MusicRoom::RegisterChain
 ResultScreen::RegisterChain
 ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
 MainMenu::SelectRelated
+Gui::CutChain
 Gui::DeletedCallback
 Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
@@ -56,6 +59,7 @@ Gui::ShowSpellcardBonus
 Gui::Vm6SetInterruptTo1
 GuiImpl::RunMsg
 GuiImpl::DrawDialogue
+EnemyManager::CutChain
 EnemyManager::DeletedCallback
 Enemy::SetVar
 Enemy::MathAdd
@@ -67,6 +71,7 @@ Enemy::MathAtan2
 Enemy::MovePosTime
 Enemy::MoveDirTime
 Enemy::MoveTime
+BulletManager::CutChain
 BulletManager::DespawnBullets
 BulletManager::DeletedCallback
 BulletManager::InitializeToZero
@@ -77,10 +82,12 @@ ItemManager::SpawnItem
 ItemManager::OnUpdate
 ItemManager::OnDraw
 ReplayManager::RegisterChain
+ReplayManager::StopRecording
 SaveReplay
 ValidateReplayData
 DrawSquare
 Controller::GetControllerState
+Player::CutChain
 Player::DrawBulletExplosions
 Player::CalcDamageToEnemy
 Player::DeletedCallback

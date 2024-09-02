@@ -477,6 +477,7 @@ enum EclRawInstrOpcode
 struct EclManager
 {
     ZunResult Load(char *ecl);
+    void Unload();
     ZunResult RunEcl(Enemy *enemy);
     ZunResult CallEclSub(EnemyEclContext *enemyEcl, i16 subId);
 

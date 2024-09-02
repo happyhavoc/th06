@@ -169,6 +169,7 @@ struct Player
     Player();
 
     static ZunResult RegisterChain(u8 unk);
+    static void CutChain();
     static ChainCallbackResult OnUpdate(Player *p);
     static ChainCallbackResult OnDrawHighPrio(Player *p);
     static ChainCallbackResult OnDrawLowPrio(Player *p);

@@ -21,6 +21,7 @@ struct EnemyManager
 {
     void Initialize();
     static ZunResult RegisterChain(char *stgEnm1, char *stgEnm2);
+    static void CutChain();
     static ChainCallbackResult OnUpdate(EnemyManager *enemyManager);
     static ChainCallbackResult OnDraw(EnemyManager *enemyManager);
     static ZunResult AddedCallback(EnemyManager *enemyManager);
