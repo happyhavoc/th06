@@ -16,7 +16,7 @@ def updateMapping(args, mapping_path):
         process=args.program,
         username=args.username,
         ssh_key=args.ssh_key,
-        pre_scripts=[["GenerateMapping.java", mapping_path]],
+        pre_scripts=[["GenerateMapping.java", str(mapping_path)]],
     )
 
 
