@@ -5,6 +5,7 @@
 
 #include "AnmIdx.hpp"
 #include "AnmVm.hpp"
+#include "GameManager.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "diffbuild.hpp"
@@ -147,6 +148,15 @@ struct AnmManager
     void ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx);
 
     void SetRenderStateForVm(AnmVm *vm);
+
+    void TakeScreenshot()
+    {
+        this->screenshotTextureId = 3;
+        this->screenshotLeft = GAME_REGION_LEFT;
+        this->screenshotTop = GAME_REGION_TOP;
+        this->screenshotWidth = GAME_REGION_WIDTH;
+        this->screenshotHeight = GAME_REGION_HEIGHT;
+    }
 
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;
