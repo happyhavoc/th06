@@ -66,6 +66,13 @@ ZunResult Stage::RegisterChain(u32 stage)
     return ZUN_SUCCESS;
 }
 
+void Stage::CutChain()
+{
+    g_Chain.Cut(&g_StageCalcChain);
+    g_Chain.Cut(&g_StageOnDrawHighPrioChain);
+    g_Chain.Cut(&g_StageOnDrawLowPrioChain);
+}
+
 #pragma var_order(interpFinal, interpInitial, scriptTimer, facingDirTimer)
 ZunResult Stage::AddedCallback(Stage *stage)
 {

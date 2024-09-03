@@ -157,6 +157,7 @@ MidiOutput::~MidiOutput
 MidiTimer::MidiTimer
 MidiTimer::~MidiTimer
 Stage::RegisterChain
+Stage::CutChain
 Stage::AddedCallback
 Stage::LoadStageData
 Stage::OnUpdate
