@@ -113,6 +113,7 @@ SetupCamera
 Gui::RegisterChain
 Gui::CutChain
 Gui::AddedCallback
+Gui::DeletedCallback
 Gui::ActualAddedCallback
 Gui::LoadMsg
 Gui::OnUpdate

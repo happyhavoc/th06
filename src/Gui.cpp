@@ -276,6 +276,27 @@ ZunResult Gui::ActualAddedCallback()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+ZunResult Gui::DeletedCallback(Gui *gui)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_A);
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_B);
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_C);
+    gui->FreeMsgFile();
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
+    {
+        g_AnmManager->ReleaseAnm(ANM_FILE_FRONT);
+        g_AnmManager->ReleaseAnm(ANM_FILE_LOADING);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_A);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_B);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_C);
+        delete gui->impl;
+        gui->impl = NULL;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Gui::LoadMsg(char *path)
 {
     i32 idx;
