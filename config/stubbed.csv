@@ -10,8 +10,6 @@ EffectManager::EffectUpdateCallback3
 EffectManager::EffectUpdateCallback4
 EffectManager::EffectUpdateCallback5
 EffectManager::EffectUpdateCallback6
-Stage::CutChain
-Stage::DeletedCallback
 StageMenu::OnUpdateRetryMenu
 StageMenu::OnDrawRetryMenu
 AsciiManager::DrawPopupsWithHwVertexProcessing
