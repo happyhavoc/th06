@@ -85,6 +85,7 @@ EnemyManager::RunEclTimeline
 EnemyManager::SpawnEnemy
 Enemy::GetVar
 Enemy::GetVarFloat
+Enemy::SetVar
 Enemy::Move
 Enemy::ClampPos
 Enemy::HandleLifeCallback
