@@ -73,6 +73,24 @@ void Stage::CutChain()
     g_Chain.Cut(&g_StageOnDrawLowPrioChain);
 }
 
+ZunResult Stage::DeletedCallback(Stage *s)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_STAGEBG);
+    if (s->quadVms != NULL)
+    {
+        void *quadVms = s->quadVms;
+        free(quadVms);
+        s->quadVms = NULL;
+    }
+    if (s->stdData != NULL)
+    {
+        void *stdData = s->stdData;
+        free(stdData);
+        s->stdData = NULL;
+    }
+    return ZUN_SUCCESS;
+}
+
 #pragma var_order(interpFinal, interpInitial, scriptTimer, facingDirTimer)
 ZunResult Stage::AddedCallback(Stage *stage)
 {

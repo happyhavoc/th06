@@ -159,6 +159,7 @@ MidiTimer::~MidiTimer
 Stage::RegisterChain
 Stage::CutChain
 Stage::AddedCallback
+Stage::DeletedCallback
 Stage::LoadStageData
 Stage::OnUpdate
 Stage::OnDrawLowPrio
