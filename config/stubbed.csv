@@ -25,7 +25,6 @@ MidiOutput::Play
 MidiOutput::LoadFile
 SoundPlayer::PlaySoundByIdx
 SoundPlayer::Release
-SoundPlayer::PlaySounds
 SoundPlayer::LoadPos
 ResultScreen::OpenScore
 ResultScreen::ParseClrd

@@ -193,6 +193,7 @@ SoundPlayer::GetWavFormatData
 SoundPlayer::LoadSound
 SoundPlayer::PlayBGM
 SoundPlayer::StopBGM
+SoundPlayer::PlaySounds
 SoundPlayer::BackgroundMusicPlayerThread
 SoundPlayer::InitSoundBuffers
 Player::AddedCallback

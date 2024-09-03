@@ -365,6 +365,39 @@ ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(idx, sndBufIdx)
+void SoundPlayer::PlaySounds()
+{
+    i32 idx;
+    i32 sndBufIdx;
+
+    if (this->manager == NULL)
+    {
+        return;
+    }
+    if (!g_Supervisor.cfg.playSounds)
+    {
+        return;
+    }
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->soundBuffersToPlay); idx++)
+    {
+        if (this->soundBuffersToPlay[idx] < 0)
+        {
+            break;
+        }
+        sndBufIdx = this->soundBuffersToPlay[idx];
+        this->soundBuffersToPlay[idx] = -1;
+        if (this->duplicateSoundBuffers[sndBufIdx] == NULL)
+        {
+            continue;
+        }
+        this->duplicateSoundBuffers[sndBufIdx]->Stop();
+        this->duplicateSoundBuffers[sndBufIdx]->SetCurrentPosition(0);
+        this->duplicateSoundBuffers[sndBufIdx]->Play(0, 0, 0);
+    }
+    return;
+}
+
 #pragma var_order(msg, looped, lpThreadParameterCopy, waitObj, res, stopped)
 DWORD __stdcall SoundPlayer::BackgroundMusicPlayerThread(LPVOID lpThreadParameter)
 {

@@ -84,7 +84,7 @@ struct SoundPlayer
     DWORD backgroundMusicThreadId;
     HANDLE backgroundMusicThreadHandle;
     i32 unk61c;
-    u32 soundBuffersToPlay[3];
+    i32 soundBuffersToPlay[3];
     CStreamingSound *backgroundMusic;
     HANDLE backgroundMusicUpdateEvent;
     BOOL isLooping;
