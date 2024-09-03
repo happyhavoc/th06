@@ -337,6 +337,30 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+ZunResult GameManager::DeletedCallback(GameManager *mgr)
+{
+    i32 padding1, padding2, padding3;
+
+    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+    if (!g_GameManager.demoMode)
+    {
+        g_Supervisor.StopAudio();
+    }
+    Stage::CutChain();
+    BulletManager::CutChain();
+    Player::CutChain();
+    EnemyManager::CutChain();
+    g_EclManager.Unload();
+    EffectManager::CutChain();
+    Gui::CutChain();
+    ReplayManager::StopRecording();
+    mgr->isInMenu = 0;
+    g_AsciiManager.InitializeVms();
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
 {
     return (this->clrd[shottype + character * 2].difficultyClearedWithRetries[1] == MAX_CLEARS ||
