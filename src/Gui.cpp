@@ -46,6 +46,13 @@ ZunResult Gui::RegisterChain()
 }
 #pragma optimize("", on)
 
+void Gui::CutChain()
+{
+    g_Chain.Cut(&g_GuiCalcChain);
+    g_Chain.Cut(&g_GuiDrawChain);
+    return;
+}
+
 ZunResult Gui::AddedCallback(Gui *gui)
 {
     return gui->ActualAddedCallback();
@@ -264,6 +271,27 @@ ZunResult Gui::ActualAddedCallback()
     this->flags.flag2 = 2;
     this->flags.flag4 = 2;
     this->flags.flag3 = 2;
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Gui::DeletedCallback(Gui *gui)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_A);
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_B);
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_C);
+    gui->FreeMsgFile();
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
+    {
+        g_AnmManager->ReleaseAnm(ANM_FILE_FRONT);
+        g_AnmManager->ReleaseAnm(ANM_FILE_LOADING);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_A);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_B);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_C);
+        delete gui->impl;
+        gui->impl = NULL;
+    }
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
