@@ -1016,6 +1016,7 @@ FUN_0045be60,0x45be60,0xa,unknown,,u8
 FUN_0045be6a,0x45be6a,0x1,unknown,,u8
 FUN_0045be74,0x45be74,0x1e,unknown,,u8
 _atol,0x45be92,0x88,__cdecl,,long,char*
+operator_delete,0x45bf1f,0x5,unknown,,u8
 operator_new,0x45bf24,0xe,__cdecl,,void*,u32
 _JumpToContinuation,0x45bf32,0x2b,__stdcall,,void,void*,EHRegistrationNode*
 FID_conflict:_CallMemberFunction1,0x45bf62,0x7,unknown,,u8,u8,u32
