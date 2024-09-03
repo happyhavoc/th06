@@ -293,7 +293,7 @@ err:
 
 void AnmManager::LoadSprite(u32 spriteIdx, AnmLoadedSprite *sprite)
 {
-    memcpy(this->sprites + spriteIdx, sprite, sizeof(AnmLoadedSprite));
+    this->sprites[spriteIdx] = *sprite;
     this->sprites[spriteIdx].spriteId = this->maybeLoadedSpriteCount++;
 
     // For some reasons, all of thoses use a DIVR, how can we match here?
