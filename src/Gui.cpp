@@ -46,6 +46,13 @@ ZunResult Gui::RegisterChain()
 }
 #pragma optimize("", on)
 
+void Gui::CutChain()
+{
+    g_Chain.Cut(&g_GuiCalcChain);
+    g_Chain.Cut(&g_GuiDrawChain);
+    return;
+}
+
 ZunResult Gui::AddedCallback(Gui *gui)
 {
     return gui->ActualAddedCallback();

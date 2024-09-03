@@ -111,6 +111,7 @@ GameManager::OnDraw
 SetupCameraStageBackground
 SetupCamera
 Gui::RegisterChain
+Gui::CutChain
 Gui::AddedCallback
 Gui::ActualAddedCallback
 Gui::LoadMsg

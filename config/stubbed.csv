@@ -46,7 +46,6 @@ ResultScreen::RegisterChain
 ResultScreen::ReleaseScoreDat
 ScreenEffect::RegisterChain
 MainMenu::SelectRelated
-Gui::CutChain
 Gui::DeletedCallback
 Gui::CalculateStageScore
 Gui::HasCurrentMsgIdx
