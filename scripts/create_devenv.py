@@ -123,7 +123,7 @@ def check_file(path: Path, message: str) -> Path:
     return path.absolute()
 
 
-ONLY_CHOICES = ["vs", "dx8", "py", "pragma", "ninja", "satsuki", "ghidra"]
+ONLY_CHOICES = ["vs", "dx8", "py", "pragma", "ninja", "satsuki", "ghidra", "objdiff"]
 
 
 def parse_arguments() -> Namespace:
@@ -346,6 +346,39 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-linux-satsuki",
             "filename": "satsuki",
             "sha256": "e7a5f586b0f8febe5a1a6a3a0178486ec124c5dabc8ffb17bf0b892194dd8116",
+        },
+        # TODO: objdiff windows x86
+        {
+            "name": "objdiff-cli",
+            "only": "objdiff",
+            "condition": is_win() and is_x86_64(),
+            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-windows-x86_64.exe",
+            "filename": "objdiff-cli.exe",
+            "sha256": "7e757fe74dc7949f62b684eed740eb18ee361e9cb414fa550283175713e88961",
+        },
+        {
+            "name": "objdiff-cli",
+            "only": "objdiff",
+            "condition": sys.platform == "darwin" and is_x86_64(),
+            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-macos-x86_64",
+            "filename": "objdiff-cli",
+            "sha256": "00dba386808ef9ba3ec5ae57b8f2799aa4117982d95eed0b14f5586dac42803a",
+        },
+        {
+            "name": "objdiff-cli",
+            "only": "objdiff",
+            "condition": sys.platform == "darwin" and platform.machine() == "arm64",
+            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-macos-arm64",
+            "filename": "objdiff-cli",
+            "sha256": "d0b885f0a20323befe620b84c8205b0866020ddc5e9af8bd3666f231ae33fcbe",
+        },
+        {
+            "name": "objdiff-cli",
+            "only": "objdiff",
+            "condition": sys.platform == "linux" and is_x86_64(),
+            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-linux-x86_64",
+            "filename": "objdiff-cli",
+            "sha256": "f76a7976e694db496686eb14495e54dd83ee9cdef286a98537bfbce0c2328ba1",
         },
         {
             "name": "ghidra",
@@ -580,6 +613,22 @@ def install_ghidra(dl_cache_path, tmp_dir, output_path):
     )
 
 
+def install_objdiff(dl_cache_path, output_path):
+    print("Installing objdiff")
+    if sys.platform in ["win32", "cygwin"]:
+        objdiff_cli_name = "objdiff-cli.exe"
+    else:
+        objdiff_cli_name = "objdiff-cli"
+
+    install_path = output_path / "objdiff"
+    os.makedirs(str(install_path), exist_ok=True)
+    shutil.copyfile(
+        str(dl_cache_path / objdiff_cli_name), str(install_path / objdiff_cli_name)
+    )
+    mode = os.stat(str(install_path / objdiff_cli_name)).st_mode | stat.S_IXUSR
+    os.chmod(str(install_path / objdiff_cli_name), mode)
+
+
 def main(args: Namespace) -> int:
     dl_cache_path = Path(args.dl_cache_path).absolute()
     output_path = Path(args.output_path).absolute()
@@ -619,6 +668,8 @@ def main(args: Namespace) -> int:
             install_satsuki(dl_cache_path, output_path)
         if "ghidra" in steps:
             install_ghidra(dl_cache_path, tmp_dir, output_path)
+        if "objdiff" in steps:
+            install_objdiff(dl_cache_path, output_path)
 
     return 0
 
