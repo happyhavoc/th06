@@ -442,3 +442,38 @@ i32 StageMenu::OnUpdateRetryMenu()
     this->numFrames++;
     return 0;
 }
+
+void StageMenu::OnDrawRetryMenu()
+{
+    int idx;
+
+    if (g_GameManager.isInRetryMenu)
+    {
+        g_Supervisor.viewport.X = g_GameManager.arcadeRegionTopLeftPos.x;
+        g_Supervisor.viewport.Y = g_GameManager.arcadeRegionTopLeftPos.y;
+        g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
+        g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
+        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+        if (g_Supervisor.lockableBackbuffer && (this->curState != RETRY_MENU_OPENING || this->numFrames > 2))
+        {
+            g_AnmManager->DrawNoRotation(&this->menuBackground);
+        }
+        if (this->curState == RETRY_MENU_CURSOR_YES || this->curState == RETRY_MENU_CURSOR_NO)
+        {
+            this->menuSprites[RETRY_MENU_SPRITE_RETRIES_NUMBER] = this->menuSprites[RETRY_MENU_SPRITE_RETRIES_LABEL];
+            this->menuSprites[RETRY_MENU_SPRITE_RETRIES_NUMBER].pos.x +=
+                8.0f * this->menuSprites[RETRY_MENU_SPRITE_RETRIES_NUMBER].scaleX;
+            this->menuSprites[RETRY_MENU_SPRITE_RETRIES_NUMBER].sprite =
+                &g_AnmManager->sprites[30 - g_GameManager.numRetries];
+            g_AnmManager->DrawNoRotation(&this->menuSprites[RETRY_MENU_SPRITE_RETRIES_NUMBER]);
+        }
+        for (idx = RETRY_MENU_SPRITES_START; idx < RETRY_MENU_SPRITES_END; idx++)
+        {
+            if (this->menuSprites[idx].flags.isVisible)
+            {
+                g_AnmManager->DrawNoRotation(&this->menuSprites[idx]);
+            }
+        }
+    }
+    return;
+}
