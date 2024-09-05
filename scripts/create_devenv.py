@@ -123,13 +123,18 @@ def check_file(path: Path, message: str) -> Path:
     return path.absolute()
 
 
+ONLY_CHOICES = ["vs", "dx8", "py", "pragma", "ninja", "satsuki", "ghidra"]
+
+
 def parse_arguments() -> Namespace:
     parser = ArgumentParser(description="Prepare devenv")
     parser.add_argument(
         "--only",
         action="append",
-        choices=["vs", "dx8", "py", "pragma", "ninja", "satsuki", "ghidra"],
-        help="Only run certain steps. Possible values are vs, dx8, py, pragma, ninja, satsuki and ghidra.",
+        choices=ONLY_CHOICES,
+        help="Only run certain steps. Possible values are "
+        + ", ".join(ONLY_CHOICES)
+        + ".",
     )
     parser.add_argument("dl_cache_path", help="Path to download the requirements in")
     parser.add_argument("output_path", help="The output directory")
@@ -583,7 +588,7 @@ def main(args: Namespace) -> int:
     tmp2_dir = output_path / "tmp2"
 
     if args.only is None or len(args.only) == 0:
-        steps = set(["vs", "dx8", "py", "pragma", "ninja", "satsuki"])
+        steps = set(ONLY_CHOICES)
     else:
         steps = set(args.only)
 
