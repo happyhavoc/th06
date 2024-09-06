@@ -98,7 +98,7 @@ jobs:
           core.setOutput("head_sha", workflowRunInfo.data.head_sha)
           console.log(workflowRunInfo.data.head_repository.full_name, workflowRunInfo.data.head_sha)
     - name: Use implemented.csv from target repo
-      run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/implemented.csv -o config/implemented.csv
+      run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/implemented.csv -o config/implemented.csv --fail
     - name: Generate objs using ghidra-delinker
       run: python scripts/export_ghidra_objs.py --import-xml
     - name: Create diff summary
