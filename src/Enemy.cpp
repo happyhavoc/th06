@@ -164,6 +164,26 @@ f32 *Enemy::GetVarFloat(Enemy *enemy, f32 *eclVarId, EclValueType *valueType)
     }
 }
 
+#pragma var_order(lhsPtr, rhsPtr, lhsType)
+void Enemy::SetVar(Enemy *enemy, EclVarId lhs, void *rhs)
+{
+    i32 *lhsPtr;
+    EclValueType lhsType;
+    i32 *rhsPtr;
+
+    rhsPtr = Enemy::GetVar(enemy, (EclVarId *)rhs, NULL);
+    lhsPtr = GetVar(enemy, &lhs, &lhsType);
+    if (lhsType == ECL_VALUE_TYPE_INT)
+    {
+        *lhsPtr = *rhsPtr;
+    }
+    else if (lhsType == ECL_VALUE_TYPE_FLOAT)
+    {
+        *(f32 *)lhsPtr = *(f32 *)rhsPtr;
+    }
+    return;
+}
+
 void Enemy::Move()
 {
     if (!this->flags.unk4)

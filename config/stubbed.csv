@@ -52,7 +52,6 @@ GuiImpl::RunMsg
 GuiImpl::DrawDialogue
 EnemyManager::CutChain
 EnemyManager::DeletedCallback
-Enemy::SetVar
 Enemy::MathAdd
 Enemy::MathSub
 Enemy::MathMul
