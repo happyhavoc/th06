@@ -83,8 +83,22 @@ jobs:
       run: |
         mkdir -p build/objdiff/reimpl
         unzip th06e.zip -d build/objdiff/reimpl
+    - name: Get information on workflow ID
+      uses: actions/github-script@v6
+      id: workflow_run_info
+      with:
+        script: |
+          // get info from workflow_id
+          let workflowRunInfo = await github.rest.actions.getWorkflowRun({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.payload.workflow_run ? context.payload.workflow_run.id : context.payload.inputs.workflow_id,
+          })
+          core.setOutput("head_repository_full_name", workflowRunInfo.data.head_repository.full_name)
+          core.setOutput("head_sha", workflowRunInfo.data.head_sha)
+          console.log(workflowRunInfo.data.head_repository.full_name, workflowRunInfo.data.head_sha)
     - name: Use implemented.csv from target repo
-      run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/implemented.csv -o config/implemented.csv
+      run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/implemented.csv -o config/implemented.csv
     - name: Generate objs using ghidra-delinker
       run: python scripts/export_ghidra_objs.py --import-xml
     - name: Create diff summary
