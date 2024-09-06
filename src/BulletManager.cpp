@@ -481,6 +481,16 @@ ZunResult BulletManager::AddedCallback(BulletManager *mgr)
     return ZUN_SUCCESS;
 }
 
+ZunResult BulletManager::DeletedCallback(BulletManager *arg)
+{
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
+    {
+        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET3);
+        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET4);
+    }
+    return ZUN_SUCCESS;
+}
+
 f32 __inline invertf(f32 x)
 {
     return 1.f / x;

@@ -62,7 +62,6 @@ th06::Enemy::MoveDirTime
 th06::Enemy::MoveTime
 th06::BulletManager::CutChain
 th06::BulletManager::DespawnBullets
-th06::BulletManager::DeletedCallback
 th06::BulletManager::InitializeToZero
 th06::BulletManager::RemoveAllBullets
 th06::BulletManager::SpawnLaserPattern
