@@ -97,6 +97,7 @@ struct AnmManager
     ZunResult LoadTextureAlphaChannel(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
     void ReleaseTexture(i32 textureIdx);
     void TakeScreenshotIfRequested();
+    void TakeScreenshot(i32 textureId, i32 left, i32 top, i32 width, i32 height);
 
     void SetAndExecuteScript(AnmVm *vm, AnmRawInstr *beginingOfScript);
     void SetAndExecuteScriptIdx(AnmVm *vm, i32 anmFileIdx)

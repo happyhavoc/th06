@@ -41,6 +41,7 @@ AnmManager::SetActiveSprite
 AnmManager::SetAndExecuteScript
 AnmManager::SetupVertexBuffer
 AnmManager::SetRenderStateForVm
+AnmManager::TakeScreenshotIfRequested
 AnmManager::TranslateRotation
 AnmManager::ExecuteAnmIdx
 BulletManager::RegisterChain

@@ -1527,4 +1527,15 @@ void AnmManager::TranslateRotation(VertexTex1Xyzrwh *param_1, f32 x, f32 y, f32 
     return;
 }
 
+void AnmManager::TakeScreenshotIfRequested()
+{
+    if (this->screenshotTextureId >= 0)
+    {
+        this->TakeScreenshot(this->screenshotTextureId, this->screenshotLeft, this->screenshotTop,
+                             this->screenshotWidth, this->screenshotHeight);
+        this->screenshotTextureId = -1;
+    }
+    return;
+}
+
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)

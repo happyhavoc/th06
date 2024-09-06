@@ -1,4 +1,4 @@
-AnmManager::TakeScreenshotIfRequested
+AnmManager::TakeScreenshot
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
 EclManager::Unload
