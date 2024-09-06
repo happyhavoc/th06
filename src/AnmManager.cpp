@@ -1538,4 +1538,40 @@ void AnmManager::TakeScreenshotIfRequested()
     return;
 }
 
+#pragma var_order(rect, destSurface, sourceSurface)
+void AnmManager::TakeScreenshot(i32 textureId, i32 left, i32 top, i32 width, i32 height)
+{
+    LPDIRECT3DSURFACE8 sourceSurface;
+    LPDIRECT3DSURFACE8 destSurface;
+    RECT rect;
+
+    if (this->textures[textureId] == NULL)
+    {
+        return;
+    }
+    if (g_Supervisor.d3dDevice->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &sourceSurface) != D3D_OK)
+    {
+        return;
+    }
+    if (this->textures[textureId]->GetSurfaceLevel(0, &destSurface) != D3D_OK)
+    {
+        sourceSurface->Release();
+        return;
+    }
+
+    rect.left = left;
+    rect.top = top;
+    rect.right = left + width;
+    rect.bottom = top + height;
+    if (D3DXLoadSurfaceFromSurface(destSurface, NULL, NULL, sourceSurface, NULL, &rect, D3DX_DEFAULT, 0) != D3D_OK)
+    {
+        destSurface->Release();
+        sourceSurface->Release();
+        return;
+    }
+    destSurface->Release();
+    sourceSurface->Release();
+    return;
+}
+
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)
