@@ -1,15 +1,32 @@
 #!/usr/bin/env python
 
+import argparse
 import csv
-import difflib
 from pathlib import Path
 import subprocess
 import sys
+import traceback
 
-from generate_function_diff import generate_function_diff
+from generate_function_diff import (
+    generate_function_diff_objdiff,
+    generate_function_diff_satsuki,
+)
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        prog="diff_all_functions",
+        description="Generate a diff report of all implemented functions.",
+    )
+    parser.add_argument(
+        "--diff-method",
+        action="store",
+        choices=["satsuki", "objdiff"],
+        default="satsuki",
+        help="Which program to use to generate the diff.",
+    )
+    args = parser.parse_args()
+
     base_dir = Path(__file__).parent.parent
     config_dir = base_dir / "config"
 
@@ -21,17 +38,10 @@ def main():
         vals = []
         for row in csv.reader(f):
             try:
-                orig, reimpl = generate_function_diff(row[0])
-                ratio = difflib.SequenceMatcher(None, orig, reimpl).ratio()
-                diff = "\n".join(
-                    difflib.unified_diff(
-                        orig.split("\n"),
-                        reimpl.split("\n"),
-                        "Original",
-                        "Reimplementation",
-                        lineterm="",
-                    )
-                )
+                if args.diff_method == "satsuki":
+                    left, right, diff, ratio = generate_function_diff_satsuki(row[0])
+                else:
+                    left, right, diff, ratio = generate_function_diff_objdiff(row[0])
                 vals.append(
                     {
                         "name": row[0],
@@ -41,7 +51,21 @@ def main():
                 )
             except subprocess.CalledProcessError as e:
                 success = False
-                vals.append({"name": row[0], "error": str(e.stderr, "utf8").strip()})
+                if e.stderr is not None:
+                    vals.append(
+                        {"name": row[0], "error": str(e.stderr, "utf8").strip()}
+                    )
+                else:
+                    vals.append({"name": row[0], "error": "failed"})
+            except Exception as e:
+                vals.append(
+                    {
+                        "name": row[0],
+                        "error": "".join(
+                            traceback.format_exception(None, e, e.__traceback__)
+                        ),
+                    }
+                )
 
         print("# Report")
         print("")
