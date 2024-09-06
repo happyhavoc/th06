@@ -7,6 +7,51 @@ import sys
 SCRIPTS_DIR = Path(__file__).parent
 
 
+def demangle_msvc(sym):
+    offset = 0
+    if len(sym) == offset or sym[offset : offset + 1] != b"?":
+        # Unmangled symbol?
+        return sym
+    offset += 1
+
+    # Read name. Start with special symbols
+    special = None
+    name = None
+    if sym[offset : offset + 1] == b"?" and sym[offset + 1 : offset + 2].isdigit():
+        # Special symbol.
+        special = sym[offset + 1] - ord("0")
+        offset += 2
+    else:
+        # Read a normal name.
+        start_of_name = offset
+        end_of_name = sym.find(b"@", offset)
+        if end_of_name == -1:
+            end_of_name = len(sym)
+            offset = len(sym)
+        else:
+            offset = end_of_name + 1
+        name = sym[start_of_name:end_of_name]
+
+    # Read scope
+    start_of_scope = offset
+    end_of_scope = sym.find(b"@", offset)
+    if end_of_scope == -1:
+        end_of_scope = len(sym)
+        offset = len(sym)
+    else:
+        offset = end_of_scope + 1
+    scope = sym[start_of_scope:end_of_scope]
+
+    if name is not None:
+        return scope + b"::" + name
+    elif special == 0:
+        return scope + b"::" + scope
+    elif special == 1:
+        return scope + b"::~" + scope
+    else:
+        return sym
+
+
 def rename_symbols(filename):
     reimpl_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "reimpl"
     orig_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "orig"
@@ -24,19 +69,12 @@ def rename_symbols(filename):
             continue
         seen[sym] = True
 
-        parts = sym.split(b"@")
-        if len(parts) > 1:
-            func_name = parts[0].replace(b"?", b"", 2)
-            namespace = parts[1]
-            if class_name.encode("utf8") not in sym:
-                continue
-            if class_name == func_name[1:]:
-                func_name = (b"~" if func_name[0] == b"1" else b"") + func_name[1:]
-            elif namespace != class_name.encode("utf8"):
-                continue
+        demangled_sym = demangle_msvc(sym)
+        if class_name.encode("utf8") not in demangled_sym.split(b"::")[0]:
+            continue
 
-            offset = obj.string_table.append(namespace + b"::" + func_name)
-            sym_obj.name = b"\0\0\0\0" + struct.pack("I", offset)
+        offset = obj.string_table.append(demangled_sym)
+        sym_obj.name = b"\0\0\0\0" + struct.pack("I", offset)
 
     if not reimpl_folder.exists():
         reimpl_folder.mkdir(parents=True, exist_ok=True)
