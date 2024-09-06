@@ -46,6 +46,7 @@ Forked by roblabla
 Licensed MIT.
 """
 
+from collections import OrderedDict
 import time
 import enum
 import struct
@@ -167,7 +168,7 @@ class ObjectModule:
         self.file_header = FileHeader()
         self.optheader = b""
         self.sections = []
-        self.symbols = []
+        self.symbols = SymbolTable()
         self.string_table = StringTable()
 
     def unpack(self, buffer, offset=0):
@@ -180,18 +181,8 @@ class ObjectModule:
             offset = sect.unpack(buffer, offset)
             self.sections.append(sect)
 
-        self.symbols = []
         offset = self.file_header.pointer_to_symtab
-        i = 0
-        while i < self.file_header.number_of_symbols:
-            sym = SymbolRecord("tmp")
-            offset = sym.unpack(buffer, offset)
-            self.symbols.append(sym)
-            # COFF format is _slightly_ insane. The `number_of_symbols` field
-            # counts both the symbols themselves, but also their aux_records.
-            # Meaning, a symbol containing 2 aux records counts as _three_
-            # items in the number_of_symbols.
-            i += 1 + len(sym.aux_records)
+        offset = self.symbols.unpack(buffer, offset, self.file_header.number_of_symbols)
 
         # The rest is the string table.
         self.string_table.unpack(buffer, offset)
@@ -200,9 +191,7 @@ class ObjectModule:
         sections_buffer = self.dump_sections()
         self.file_header.time_date_stamp = int(time.time())
         self.file_header.number_of_sections = len(self.sections)
-        self.file_header.number_of_symbols = len(self.symbols) + sum(
-            (len(s.aux_records) for s in self.symbols)
-        )
+        self.file_header.number_of_symbols = self.symbols.cur_insertion_idx
 
         self.file_header.pointer_to_symtab = FileHeader.struct.size + len(
             sections_buffer
@@ -210,8 +199,7 @@ class ObjectModule:
         body_buffer = bytearray()
         body_buffer += self.file_header.pack()
         body_buffer += sections_buffer
-        for sym in self.symbols:
-            body_buffer += sym.pack()
+        body_buffer += self.symbols.pack()
         body_buffer += self.string_table.pack()
         return bytes(body_buffer)
 
@@ -234,6 +222,43 @@ class ObjectModule:
             hdrs_buf += sec.get_header()
 
         return bytes(hdrs_buf + data_buf)
+
+
+class SymbolTable:
+    def __init__(self):
+        self.symbols = OrderedDict()
+        self.cur_insertion_idx = 0
+
+    def append(self, sym):
+        self.symbols[self.cur_insertion_idx] = sym
+        self.symbols.move_to_end(self.cur_insertion_idx)
+        self.cur_insertion_idx += 1 + len(sym.aux_records)
+
+    def __getitem__(self, key):
+        return self.symbols[key]
+
+    def __iter__(self):
+        return self.symbols.values().__iter__()
+
+    def unpack(self, buffer, offset, number_of_symbols):
+        i = 0
+        while i < number_of_symbols:
+            sym = SymbolRecord("tmp")
+            offset = sym.unpack(buffer, offset)
+            self.symbols[i] = sym
+            self.symbols.move_to_end(i)
+            # COFF format is _slightly_ insane. The `number_of_symbols` field
+            # counts both the symbols themselves, but also their aux_records.
+            # Meaning, a symbol containing 2 aux records counts as _three_
+            # items in the number_of_symbols.
+            i += 1 + len(sym.aux_records)
+
+        self.cur_insertion_idx = i
+
+        return offset
+
+    def pack(self):
+        return b"".join(sym.pack() for sym in self.symbols.values())
 
 
 class LineNumber:
@@ -625,7 +650,7 @@ class SymbolRecord:
         self.aux_records = []
 
     def pack(self):
-        packed_aux_records = b"".join(self.aux_records)
+        packed_aux_records = b"".join(record.pack() for record in self.aux_records)
         if len(packed_aux_records) % 18 != 0:
             raise ValueError("auxiliary records length must be a multiple of 18")
         return (
@@ -650,10 +675,28 @@ class SymbolRecord:
             aux_records_len,
         ) = self.record_struct.unpack_from(buffer, offset)
         offset += self.record_struct.size
-        self.aux_records = [
+        aux_records_raw = [
             buffer[offset + i * 18 : offset + (i + 1) * 18]
             for i in range(aux_records_len)
         ]
+        for item in aux_records_raw:
+            if (
+                self.storage_class == 2
+                and self.type == 0x20
+                and self.section_number > 0
+            ):
+                tmp = AuxRecordFunctionDef()
+                tmp.unpack(item, 0)
+                self.aux_records.append(tmp)
+            elif self.storage_class == 101:
+                tmp = AuxRecordBfEf()
+                tmp.unpack(item, 0)
+                self.aux_records.append(tmp)
+            else:
+                tmp = AuxRecordRaw()
+                tmp.unpack(item, 0)
+                self.aux_records.append(tmp)
+
         return offset + aux_records_len * 18
 
     def get_name(self, string_table):
@@ -662,3 +705,118 @@ class SymbolRecord:
             return string_table.get_string_at_offset(offset)
         else:
             return self.name.split(b"\0")[0]
+
+
+class AuxRecordFunctionDef:
+    """
+    Layout:
+    +-----------------+
+    |    Tag Index    |
+    +-----------------+
+    |   Total Size    |
+    +-----------------+
+    |   Pointer To    |
+    |   Line Number   |
+    +-----------------+
+    |   Pointer To    |
+    |  Next Function  |
+    +-----------------+
+    |     Unused      |
+    +-----------------+
+    """
+
+    record_struct = struct.Struct("<LLLLH")
+
+    def __init__(
+        self,
+        tag_index=0,
+        total_size=0,
+        pointer_to_line_number=0,
+        pointer_to_next_fun=0,
+    ):
+        self.tag_index = tag_index
+        self.total_size = total_size
+        self.pointer_to_line_number = pointer_to_line_number
+        self.pointer_to_next_fun = pointer_to_next_fun
+
+    def pack(self):
+        return self.record_struct.pack(
+            self.tag_index,
+            self.total_size,
+            self.pointer_to_line_number,
+            self.pointer_to_next_fun,
+            0,
+        )
+
+    def unpack(self, buffer, offset):
+        (
+            self.tag_index,
+            self.total_size,
+            self.pointer_to_line_number,
+            self.pointer_to_next_fun,
+            unused,
+        ) = self.record_struct.unpack_from(buffer, offset)
+        offset += self.record_struct.size
+        return offset
+
+
+class AuxRecordBfEf:
+    """
+    Layout:
+    +-----------------+
+    |     Unused      |
+    +-----------------+
+    |   Line Number   |
+    +-----------------+
+    |     Unused      |
+    +-----------------+
+    |   Pointer To    |
+    |  Next Function  |
+    +-----------------+
+    |     Unused      |
+    +-----------------+
+    """
+
+    record_struct = struct.Struct("<LHLHLH")
+
+    def __init__(
+        self,
+        line_number=0,
+        pointer_to_next_fun=0,
+    ):
+        self.line_number = line_number
+        self.pointer_to_next_fun = pointer_to_next_fun
+
+    def pack(self):
+        return self.record_struct.pack(
+            0,
+            self.line_number,
+            0,
+            0,
+            self.pointer_to_next_fun,
+            0,
+        )
+
+    def unpack(self, buffer, offset):
+        (
+            unused1,
+            self.line_number,
+            unused2,
+            unused3,
+            self.pointer_to_next_fun,
+            unused4,
+        ) = self.record_struct.unpack_from(buffer, offset)
+        offset += self.record_struct.size
+        return offset
+
+
+class AuxRecordRaw:
+    def __init__(self, data=None):
+        self.data = data
+
+    def pack(self):
+        return self.data
+
+    def unpack(self, buffer, offset):
+        self.data = buffer[offset : offset + 18]
+        return 18
