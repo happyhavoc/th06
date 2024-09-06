@@ -1,4 +1,3 @@
-AnmManager::TakeScreenshotIfRequested
 AnmManager::DrawStringFormat
 AnmManager::DrawStringFormat2
 EclManager::Unload
