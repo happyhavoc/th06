@@ -63,13 +63,12 @@ jobs:
       id: install_prefix
       run: python scripts/create_devenv.py scripts/dls scripts/prefix
     - name: Build binary
-      run: python scripts/build.py -j0 --build-type diffbuild
+      run: python scripts/build.py -j0 --build-type objdiffbuild
     - uses: actions/upload-artifact@v3
       with:
         name: th06e-diff
         path: |
-          build/th06e.exe
-          build/th06e.pdb
+          build/objdiff/reimpl
     - if: always() && steps.cache-toolchain.outputs.cache-hit != 'true' && steps.install_prefix.outcome == 'success'
       name: Save toolchain to cache
       uses: actions/cache/save@v3

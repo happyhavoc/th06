@@ -34,15 +34,12 @@ jobs:
             context: 'comparison-checks',
           })
     - uses: actions/checkout@v3
-    - name: Install satsuki
-      uses: robinraju/release-downloader@v1.8
+    - uses: actions/setup-java@v4
       with:
-        repository: happyhavoc/satsuki
-        latest: false
-        tag: v0.1.2
-        fileName: x86_64-windows-satsuki.exe
-    - name: Add satsuki to prefix
-      run: python scripts/create_devenv.py --only satsuki scripts/dls scripts/prefix
+        distribution: 'zulu'
+        java-version: '21'
+    - name: Install prefix
+      run: python scripts/create_devenv.py --only objdiff --only ghidra scripts/dls scripts/prefix
     - name: Fetch game binary from cache.
       uses: actions/cache@v4
       id: cache
@@ -84,14 +81,14 @@ jobs:
           fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/th06e.zip`, Buffer.from(download.data));
     - name: Download reimplemented game binary for comparison (2/2)
       run: |
-        mkdir -p build
-        unzip th06e.zip -d build
+        mkdir -p build/objdiff/reimpl
+        unzip th06e.zip -d build/objdiff/reimpl
     - name: Use implemented.csv from target repo
       run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/implemented.csv -o config/implemented.csv
-    - name: Use mapping.csv from target repo
-      run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/mapping.csv -o config/mapping.csv
+    - name: Generate objs using ghidra-delinker
+      run: python scripts/export_ghidra_objs.py --import-xml
     - name: Create diff summary
-      run: python scripts/diff_all_functions.py > $env:GITHUB_STEP_SUMMARY
+      run: python scripts/diff_all_functions.py --diff-method=objdiff > $env:GITHUB_STEP_SUMMARY
     - name: Report tests check
       if: ${{ github.event_name == 'workflow_run' && success() }}
       uses: actions/github-script@v6
