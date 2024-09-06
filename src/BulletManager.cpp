@@ -397,6 +397,13 @@ ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
     return ZUN_SUCCESS;
 }
 
+void BulletManager::CutChain()
+{
+    g_Chain.Cut(&g_BulletManagerCalcChain);
+    g_Chain.Cut(&g_BulletManagerDrawChain);
+    return;
+}
+
 ZunResult BulletManager::AddedCallback(BulletManager *mgr)
 {
     u32 idx;
