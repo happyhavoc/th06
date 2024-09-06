@@ -77,7 +77,7 @@ i32 StageMenu::OnUpdateGameMenu()
         this->numFrames = 0;
         if (g_Supervisor.lockableBackbuffer)
         {
-            g_AnmManager->TakeScreenshot();
+            g_AnmManager->RequestScreenshot();
             g_AnmManager->SetAndExecuteScriptIdx(&this->menuBackground, ANM_SCRIPT_CAPTURE_PAUSE_BG);
             this->menuBackground.pos.x = GAME_REGION_LEFT;
             this->menuBackground.pos.y = GAME_REGION_TOP;
@@ -323,7 +323,7 @@ i32 StageMenu::OnUpdateRetryMenu()
             }
             if (g_Supervisor.lockableBackbuffer)
             {
-                g_AnmManager->TakeScreenshot();
+                g_AnmManager->RequestScreenshot();
                 g_AnmManager->SetAndExecuteScriptIdx(&this->menuBackground, ANM_SCRIPT_CAPTURE_PAUSE_BG);
                 this->menuBackground.pos.x = GAME_REGION_LEFT;
                 this->menuBackground.pos.y = GAME_REGION_TOP;

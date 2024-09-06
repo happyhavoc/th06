@@ -149,7 +149,7 @@ struct AnmManager
 
     void SetRenderStateForVm(AnmVm *vm);
 
-    void TakeScreenshot()
+    void RequestScreenshot()
     {
         this->screenshotTextureId = 3;
         this->screenshotLeft = GAME_REGION_LEFT;
