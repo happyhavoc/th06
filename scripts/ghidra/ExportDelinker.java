@@ -7,6 +7,8 @@
 //@keybinding
 //@menupath Skeleton
 //@toolbar Skeleton
+import static java.util.Map.entry;
+
 import ghidra.app.analyzers.RelocationTableSynthesizerAnalyzer;
 import ghidra.app.script.GhidraScript;
 import ghidra.app.services.Analyzer;
@@ -16,22 +18,20 @@ import ghidra.app.util.exporter.CoffRelocatableObjectExporter;
 import ghidra.app.util.importer.MessageLog;
 import ghidra.framework.model.DomainFile;
 import ghidra.framework.model.DomainObject;
+import ghidra.program.model.address.AddressSet;
 import ghidra.program.model.listing.GhidraClass;
 import ghidra.program.model.mem.Memory;
 import ghidra.program.model.symbol.Namespace;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class ExportDelinker extends GhidraScript
 {
-
-    static final String[] classesNames = {
-        "AnmManager",    "AnmVm",       "AsciiManager", "BulletManager",   "Chain",       "EclManager",
-        "EffectManager", "Enemy",       "EnemyManager", "FileAbstraction", "FileSystem",  "GameErrorContext",
-        "GameManager",   "GameWindow",  "Gui",          "IPbg3Parser",     "ItemManager", "MainMenu",
-        "MidiOutput",    "Pbg3Archive", "Pbg3Parser",   "Player",          "Rng",         "ScreenEffect",
-        "SoundPlayer",   "Stage",       "StageMenu",    "Supervisor",      "TextHelper",  "ZunTimer"};
-
     @Override protected void run() throws Exception
     {
         // First run the Relocation Table Synthesizer, to pickup any potentially
@@ -56,20 +56,42 @@ public class ExportDelinker extends GhidraScript
         exporterOptions.set(1, newOptions);
         exporter.setOptions(exporterOptions);
 
+        File inFile = askFile("Config File", "Select");
         File outDir = askDirectory("Output Folder", "Select");
 
-        for (String objClass : classesNames)
-        {
-            Namespace ghidraClass = currentProgram.getSymbolTable().getNamespace(objClass, null);
+        String configFile = Files.readString(inFile.toPath(), StandardCharsets.UTF_8);
 
-            if (ghidraClass == null)
+        Namespace th06Ns = currentProgram.getSymbolTable().getNamespace("th06", null);
+
+        for (String objDataStr : configFile.split("\n"))
+        {
+            List<String> objData = new ArrayList<>(Arrays.asList(objDataStr.split(",")));
+
+            String objClass = objData.remove(0);
+
+            File outFile = new File(outDir, objClass + ".obj");
+
+            AddressSet set = new AddressSet();
+            for (String ghidraClassName : objData)
             {
-                printf("Cannot find class %s, skipping.\n", objClass);
+                printf("Handling %s.obj - class %s\n", objClass, ghidraClassName);
+                Namespace ghidraClass = currentProgram.getSymbolTable().getNamespace(ghidraClassName, th06Ns);
+
+                if (ghidraClass == null)
+                {
+                    printf("Cannot find class %s, skipping.\n", objClass);
+                    continue;
+                }
+
+                set = set.union(ghidraClass.getBody());
+            }
+
+            if (set.isEmpty())
+            {
+                printf("No namespaces found for %s.obj, skipping.\n", objClass);
                 continue;
             }
-            File outFile = new File(outDir, ghidraClass.getName() + ".obj");
-
-            exporter.export(outFile, currentProgram, ghidraClass.getBody(), monitor);
+            exporter.export(outFile, currentProgram, set, monitor);
         }
     }
 }

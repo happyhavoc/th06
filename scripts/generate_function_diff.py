@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import csv
 import difflib
 import json
 from pathlib import Path
@@ -15,7 +16,18 @@ RESOURCE_DIR = BASE_DIR / "resources"
 
 
 def generate_function_diff_objdiff(fn_name):
-    file = fn_name.split("::")[0]
+    cls = fn_name.split("::")[0]
+
+    fn_name = "th06::" + fn_name
+
+    with open(CONFIG_DIR / "ghidra_ns_to_obj.csv") as f:
+        ghidra_ns_to_obj = csv.reader(f)
+        for vals in ghidra_ns_to_obj:
+            obj = vals[0]
+            if cls in vals[1:]:
+                break
+        else:
+            raise Exception("No object file contains class " + cls)
 
     with tempfile.NamedTemporaryFile() as f:
         subprocess.run(
@@ -24,7 +36,7 @@ def generate_function_diff_objdiff(fn_name):
                 "diff",
                 "--relax-reloc-diffs",
                 "-u",
-                file,
+                obj,
                 fn_name,
                 "-o",
                 f.name,
@@ -89,6 +101,7 @@ def generate_function_diff_objdiff(fn_name):
 
 
 def generate_function_diff_satsuki(fn_name):
+    fn_name = "th06::" + fn_name
     try:
         orig = subprocess.run(
             [

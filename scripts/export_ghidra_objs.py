@@ -38,6 +38,7 @@ def main():
                     ["ImportFromXml.java", filename],
                     [
                         "ExportDelinker.java",
+                        str(SCRIPT_PATH.parent / "config" / "ghidra_ns_to_obj.csv"),
                         str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
                     ],
                 ],
@@ -54,6 +55,7 @@ def main():
             pre_scripts=[
                 [
                     "ExportDelinker.java",
+                    str(SCRIPT_PATH.parent / "config" / "ghidra_ns_to_obj.csv"),
                     str(SCRIPT_PATH.parent / "build" / "objdiff" / "orig"),
                 ]
             ],

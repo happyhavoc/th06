@@ -1,6 +1,5 @@
 import coff
 from pathlib import Path
-import re
 import struct
 import sys
 
@@ -61,7 +60,6 @@ def rename_symbols(filename):
     reimpl_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "reimpl"
     orig_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "orig"
 
-    class_name = re.sub("\\.obj$", "", filename.name)
     obj = coff.ObjectModule()
     with open(str(filename), "rb") as f:
         obj.unpack(f.read(), 0)
@@ -75,7 +73,7 @@ def rename_symbols(filename):
         seen[sym] = True
 
         demangled_sym = demangle_msvc(sym)
-        if class_name.encode("utf8") not in demangled_sym.split(b"::")[0]:
+        if b"th06" != demangled_sym.split(b"::")[0]:
             continue
 
         offset = obj.string_table.append(demangled_sym)
