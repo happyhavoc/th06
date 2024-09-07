@@ -33,21 +33,26 @@ def demangle_msvc(sym):
         name = sym[start_of_name:end_of_name]
 
     # Read scope
-    start_of_scope = offset
-    end_of_scope = sym.find(b"@", offset)
-    if end_of_scope == -1:
-        end_of_scope = len(sym)
-        offset = len(sym)
-    else:
-        offset = end_of_scope + 1
-    scope = sym[start_of_scope:end_of_scope]
+    scope = []
+    while True:
+        start_of_scope = offset
+        end_of_scope = sym.find(b"@", offset)
+        if end_of_scope == -1:
+            end_of_scope = len(sym)
+            offset = len(sym)
+        else:
+            offset = end_of_scope + 1
+        cur_scope = sym[start_of_scope:end_of_scope]
+        if len(cur_scope) == 0:
+            break
+        scope.append(cur_scope)
 
     if name is not None:
-        return scope + b"::" + name
+        return b"::".join(scope[::-1]) + b"::" + name
     elif special == 0:
-        return scope + b"::" + scope
+        return b"::".join(scope[::-1]) + b"::" + scope[0]
     elif special == 1:
-        return scope + b"::~" + scope
+        return b"::".join(scope[::-1]) + b"::~" + scope[0]
     else:
         return sym
 
