@@ -3,6 +3,10 @@
 
 #include <new>
 
+namespace th06
+{
+DIFFABLE_STATIC(Chain, g_Chain)
+
 ChainElem::ChainElem()
 {
     prev = NULL;
@@ -387,5 +391,4 @@ int Chain::AddToDrawChain(ChainElem *elem, int priority)
         return 0;
     }
 }
-
-DIFFABLE_STATIC(Chain, g_Chain)
+}; // namespace th06

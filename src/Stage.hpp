@@ -9,6 +9,8 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+namespace th06
+{
 struct RawStageHeader
 {
     i16 nbObjects;
@@ -148,3 +150,4 @@ struct Stage
 C_ASSERT(sizeof(Stage) == 0x2f4);
 
 DIFFABLE_EXTERN(Stage, g_Stage)
+}; // namespace th06

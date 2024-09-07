@@ -5,6 +5,8 @@
 
 #include <Windows.h>
 
+namespace th06
+{
 enum ChainElemFlag
 {
     CHAIN_ELEM_FLAG_HEAP_ALLOCATED = (unsigned char)1,
@@ -78,3 +80,4 @@ class Chain
 C_ASSERT(sizeof(Chain) == 0x48);
 
 DIFFABLE_EXTERN(Chain, g_Chain)
+}; // namespace th06

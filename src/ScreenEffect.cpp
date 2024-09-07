@@ -2,6 +2,9 @@
 #include "GameWindow.hpp"
 #include "Supervisor.hpp"
 
+namespace th06
+{
+
 void Clear(D3DCOLOR color)
 {
     g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, color, 1.0, 0);
@@ -29,3 +32,4 @@ void SetViewport(D3DCOLOR color)
     g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
     Clear(color);
 }
+}; // namespace th06

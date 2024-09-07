@@ -10,6 +10,8 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 enum Difficulty
 {
     EASY,
@@ -121,3 +123,4 @@ DIFFABLE_EXTERN(GameManager, g_GameManager);
 
 void SetupCamera(f32);
 void SetupCameraStageBackground(f32);
+}; // namespace th06

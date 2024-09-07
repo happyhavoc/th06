@@ -16,6 +16,9 @@
 #include <mmsystem.h>
 #include <windows.h>
 
+namespace th06
+{
+
 //-----------------------------------------------------------------------------
 // Name: CSoundManager::CSoundManager()
 // Desc: Constructs the class
@@ -1073,3 +1076,4 @@ HRESULT CWaveFile::Close()
     }
     return S_OK;
 }
+}; // namespace th06

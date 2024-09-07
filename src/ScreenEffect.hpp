@@ -6,6 +6,8 @@
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 enum ScreenEffects
 {
     SCREEN_EFFECT_UNK_0,
@@ -29,3 +31,4 @@ struct ZunRect
 void DrawSquare(ZunRect *rect, D3DCOLOR rectColor);
 
 void SetViewport(D3DCOLOR color);
+}; // namespace th06

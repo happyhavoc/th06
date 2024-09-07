@@ -22,10 +22,17 @@
 #include <stdio.h>
 #include <string.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(Supervisor, g_Supervisor)
 DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
 DIFFABLE_STATIC(JOYCAPSA, g_JoystickCaps)
 DIFFABLE_STATIC(IDirect3DSurface8 *, g_TextBufferSurface)
+DIFFABLE_STATIC(u16, g_LastFrameInput);
+DIFFABLE_STATIC(u16, g_CurFrameInput);
+DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
+DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
+DIFFABLE_STATIC(u16, g_FocusButtonConflictState)
 
 // TODO: Not a perfect match.
 ZunResult Supervisor::LoadConfig(char *path)
@@ -182,11 +189,6 @@ ZunResult Supervisor::RegisterChain()
 
     return ZUN_SUCCESS;
 }
-
-DIFFABLE_STATIC(u16, g_LastFrameInput);
-DIFFABLE_STATIC(u16, g_CurFrameInput);
-DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
-DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
 
 #pragma optimize("s", on)
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
@@ -726,8 +728,6 @@ u32 SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest
     return inputButtons[controllerButtonToTest] & 0x80 ? touhouButton & 0xFFFF : 0;
 }
 
-DIFFABLE_STATIC(u16, g_FocusButtonConflictState)
-
 u16 Controller::GetControllerInput(u16 buttons)
 {
     // NOTE: Those names are like this to get perfect stack frame matching
@@ -1075,3 +1075,4 @@ ZunResult Supervisor::PlayAudio(char *path)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+}; // namespace th06

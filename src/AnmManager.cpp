@@ -7,9 +7,12 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyzrwh, g_PrimitivesToDrawNoVertexBuf[4]);
 DIFFABLE_STATIC(VertexTex1DiffuseXyz, g_PrimitivesToDrawUnknown[4]);
+DIFFABLE_STATIC(AnmManager *, g_AnmManager)
 
 #ifndef DIFFBUILD
 D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
@@ -1573,5 +1576,4 @@ void AnmManager::TakeScreenshot(i32 textureId, i32 left, i32 top, i32 width, i32
     sourceSurface->Release();
     return;
 }
-
-DIFFABLE_STATIC(AnmManager *, g_AnmManager)
+}; // namespace th06

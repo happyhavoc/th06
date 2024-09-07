@@ -19,6 +19,8 @@
 #include <d3d8types.h>
 #include <d3dx8math.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(GameManager, g_GameManager);
 
 DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
@@ -638,3 +640,4 @@ void SetupCamera(f32 extraRenderDistance)
     return;
 }
 #pragma optimize("", on)
+}; // namespace th06

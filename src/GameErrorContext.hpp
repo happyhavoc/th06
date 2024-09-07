@@ -6,6 +6,8 @@
 #include "i18n.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 class GameErrorContext;
 
 const char *GameErrorContextFatal(GameErrorContext *ctx, const char *fmt, ...);
@@ -41,3 +43,4 @@ class GameErrorContext
 };
 
 DIFFABLE_EXTERN(GameErrorContext, g_GameErrorContext)
+}; // namespace th06

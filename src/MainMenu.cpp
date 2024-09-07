@@ -20,11 +20,12 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 5, g_DifficultyList) = {"Easy   ", "Normal ", "Hard   ", "Lunatic", "Extra  "};
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 7, g_StageList) = {"Stage1", "Stage2", "Stage3", "Stage4",
                                                         "Stage5", "Stage6", "Extra "};
-
 #pragma optimize("s", on)
 #pragma var_order(time, i, vector3Ptr)
 ZunResult MainMenu::BeginStartup()
@@ -2359,3 +2360,4 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 #pragma optimize("", on)
 
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
+}; // namespace th06

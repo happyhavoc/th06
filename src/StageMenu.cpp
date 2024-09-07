@@ -4,6 +4,9 @@
 #include "Gui.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
+
 StageMenu::StageMenu()
 {
 }
@@ -477,3 +480,4 @@ void StageMenu::OnDrawRetryMenu()
     }
     return;
 }
+}; // namespace th06

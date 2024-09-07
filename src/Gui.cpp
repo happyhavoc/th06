@@ -14,6 +14,8 @@
 #include "ZunColor.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(Gui, g_Gui);
 DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
@@ -828,3 +830,4 @@ void Gui::DrawStageElements()
     }
 }
 #pragma optimize("", on)
+}; // namespace th06

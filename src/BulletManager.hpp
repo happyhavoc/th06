@@ -6,6 +6,8 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct EnemyBulletShooter;
 struct EnemyLaserShooter;
 
@@ -120,3 +122,4 @@ C_ASSERT(sizeof(BulletManager) == 0xf5c18);
 
 DIFFABLE_EXTERN(u32 *, g_EffectsColor);
 DIFFABLE_EXTERN(BulletManager, g_BulletManager);
+}; // namespace th06

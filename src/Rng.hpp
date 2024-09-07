@@ -3,6 +3,8 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct Rng
 {
     u16 seed;
@@ -34,3 +36,4 @@ struct Rng
 };
 
 DIFFABLE_EXTERN(Rng, g_Rng);
+}; // namespace th06

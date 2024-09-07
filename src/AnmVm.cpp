@@ -1,5 +1,7 @@
 #include "AnmVm.hpp"
 
+namespace th06
+{
 AnmVm::AnmVm()
 {
     this->activeSpriteIndex = -1;
@@ -29,3 +31,4 @@ void AnmVm::Initialize()
     this->posInterpEndTime = 0;
     this->currentTimeInScript.Initialize();
 }
+}; // namespace th06

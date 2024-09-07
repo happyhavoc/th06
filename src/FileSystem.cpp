@@ -5,6 +5,8 @@
 #include "pbg3/Pbg3Archive.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(u32, g_LastFileSize)
 
 #pragma var_order(pbg3Idx, entryname, entryIdx, fsize, data, file)
@@ -109,3 +111,4 @@ int FileSystem::WriteDataToFile(char *path, void *data, size_t size)
         }
     }
 }
+}; // namespace th06

@@ -4,6 +4,8 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+namespace th06
+{
 struct ZunTimer
 {
     i32 previous;
@@ -60,3 +62,4 @@ struct ZunTimer
     }
 };
 C_ASSERT(sizeof(ZunTimer) == 0xc);
+}; // namespace th06

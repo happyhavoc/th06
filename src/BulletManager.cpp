@@ -11,6 +11,8 @@
 #include "ZunMath.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(BulletManager, g_BulletManager);
 DIFFABLE_STATIC(ChainElem, g_BulletManagerCalcChain);
 DIFFABLE_STATIC(ChainElem, g_BulletManagerDrawChain);
@@ -1113,3 +1115,4 @@ void BulletManager::DrawBulletNoHwVertex(Bullet *bullet)
     g_AnmManager->Draw(anmVm);
     return;
 }
+}; // namespace th06

@@ -8,6 +8,8 @@
 #include "Chain.hpp"
 #include "GuiImpl.hpp"
 
+namespace th06
+{
 struct GuiFlags
 {
     u32 flag0 : 2;
@@ -80,3 +82,4 @@ struct Gui
 C_ASSERT(sizeof(Gui) == 0x2c);
 
 DIFFABLE_EXTERN(Gui, g_Gui);
+}; // namespace th06

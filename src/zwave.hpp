@@ -14,6 +14,8 @@
 #include <mmsystem.h>
 #include <windows.h>
 
+namespace th06
+{
 //-----------------------------------------------------------------------------
 // Classes used by this header
 //-----------------------------------------------------------------------------
@@ -171,5 +173,6 @@ class CWaveFile
         return m_pwfx;
     };
 };
+}; // namespace th06
 
 #endif // DSUTIL_H

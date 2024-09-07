@@ -5,6 +5,9 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
+
 #define BACKGROUND_MUSIC_BUFFER_SIZE 0x8000
 #define BACKGROUND_MUSIC_WAV_NUM_CHANNELS 2
 #define BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE 16
@@ -20,6 +23,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 26, g_SFXList) = {
     "data/wav/kira01.wav", "data/wav/kira02.wav",   "data/wav/extend.wav",   "data/wav/timeout.wav",
     "data/wav/graze.wav",  "data/wav/powerup.wav",
 };
+DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
 
 SoundPlayer::SoundPlayer()
 {
@@ -440,4 +444,4 @@ DWORD __stdcall SoundPlayer::BackgroundMusicPlayerThread(LPVOID lpThreadParamete
     }
     return 0;
 }
-DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
+}; // namespace th06

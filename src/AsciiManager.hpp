@@ -9,6 +9,8 @@
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct AsciiManagerString
 {
     char text[64];
@@ -92,3 +94,4 @@ struct AsciiManager
 };
 C_ASSERT(sizeof(AsciiManager) == 0xc1ac);
 DIFFABLE_EXTERN(AsciiManager, g_AsciiManager);
+}; // namespace th06

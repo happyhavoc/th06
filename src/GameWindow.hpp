@@ -7,6 +7,8 @@
 #define GAME_WINDOW_WIDTH 640
 #define GAME_WINDOW_HEIGHT 480
 
+namespace th06
+{
 enum RenderResult
 {
     RENDER_RESULT_KEEP_RUNNING,
@@ -37,3 +39,4 @@ void InitD3dDevice();
 DIFFABLE_EXTERN(GameWindow, g_GameWindow)
 DIFFABLE_EXTERN(i32, g_TickCountToEffectiveFramerate)
 DIFFABLE_EXTERN(double, g_LastFrameTime)
+}; // namespace th06

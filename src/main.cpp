@@ -17,6 +17,8 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 void ResetKeyboard(void)
 {
     u8 key_states[256];
@@ -42,6 +44,9 @@ void SetupConsole(void)
         ShowWindow(hWnd, SW_SHOW);
     }
 }
+}; // namespace th06
+
+using namespace th06;
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {

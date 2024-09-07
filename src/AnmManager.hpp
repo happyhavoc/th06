@@ -11,6 +11,8 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 // structure of a vertex with SetVertexShade FVF set to D3DFVF_DIFFUSE | D3DFVF_XYZRHW
 struct VertexDiffuseXyzrwh
 {
@@ -190,3 +192,4 @@ C_ASSERT(sizeof(AnmManager) == 0x2112c);
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
 DIFFABLE_EXTERN(D3DFORMAT, g_TextureFormatD3D8Mapping[6]);
+}; // namespace th06

@@ -3,6 +3,8 @@
 #include "GameErrorContext.hpp"
 #include <stdio.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(GameErrorContext, g_GameErrorContext)
 
 const char *GameErrorContextFatal(GameErrorContext *ctx, const char *fmt, ...)
@@ -74,3 +76,4 @@ void GameErrorContext::Flush()
         fclose(logFile);
     }
 }
+}; // namespace th06

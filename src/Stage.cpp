@@ -12,6 +12,8 @@
 #include "utils.hpp"
 #include <d3d8.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(ChainElem, g_StageCalcChain)
 DIFFABLE_STATIC(ChainElem, g_StageOnDrawHighPrioChain)
 DIFFABLE_STATIC(ChainElem, g_StageOnDrawLowPrioChain)
@@ -26,6 +28,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(StageFile, 8, g_StageFiles) = {
     {"data/stg6bg.anm", "data/stage6.std"},
     {"data/stg7bg.anm", "data/stage7.std"},
 };
+DIFFABLE_STATIC(Stage, g_Stage)
 
 #pragma var_order(stg, timer)
 ZunResult Stage::RegisterChain(u32 stage)
@@ -679,5 +682,4 @@ ZunResult Stage::RenderObjects(i32 zLevel)
     }
     return ZUN_SUCCESS;
 }
-
-DIFFABLE_STATIC(Stage, g_Stage)
+}; // namespace th06

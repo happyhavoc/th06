@@ -4,6 +4,8 @@
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct Effect;
 
 typedef i32 (*EffectUpdateCallback)(Effect *);
@@ -38,3 +40,4 @@ struct EffectInfo
     EffectUpdateCallback updateCallback;
 };
 C_ASSERT(sizeof(EffectInfo) == 0x8);
+}; // namespace th06

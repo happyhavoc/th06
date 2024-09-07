@@ -2,6 +2,9 @@
 #include "GameWindow.hpp"
 #include "Supervisor.hpp"
 
+namespace th06
+{
+
 #define TEXT_BUFFER_HEIGHT 64
 #pragma optimize("s", on)
 void TextHelper::CreateTextBuffer()
@@ -10,3 +13,4 @@ void TextHelper::CreateTextBuffer()
                                                &g_TextBufferSurface);
 }
 #pragma optimize("", on)
+}; // namespace th06

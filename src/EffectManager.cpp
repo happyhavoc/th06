@@ -7,6 +7,8 @@
 #include "ZunResult.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(EffectManager, g_EffectManager);
 
 DIFFABLE_STATIC(ChainElem, g_EffectManagerCalcChain);
@@ -213,3 +215,4 @@ Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count
     }
     return idx >= ARRAY_SIZE_SIGNED(this->effects) ? &this->dummyEffect : effect;
 }
+}; // namespace th06

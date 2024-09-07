@@ -12,6 +12,8 @@
 #include "Stage.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 64, g_SpellcardScore) = {
     200000, 200000, 200000, 200000, 200000, 200000, 200000, 250000, 250000, 250000, 250000, 250000, 250000,
     250000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000,
@@ -1011,3 +1013,4 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         }
     }
 }
+}; // namespace th06

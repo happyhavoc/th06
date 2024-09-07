@@ -10,6 +10,8 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct AnmLoadedSprite
 {
     i32 sourceFileIndex;
@@ -178,3 +180,4 @@ struct AnmVm
     // Two final padding bytes
 };
 C_ASSERT(sizeof(AnmVm) == 0x110);
+}; // namespace th06

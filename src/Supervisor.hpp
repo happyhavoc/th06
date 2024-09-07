@@ -12,6 +12,8 @@
 #include "inttypes.hpp"
 #include "pbg3/Pbg3Archive.hpp"
 
+namespace th06
+{
 enum GameConfigOptsShifts
 {
     GCOS_USE_D3D_HW_TEXTURE_BLENDING = 0x0,
@@ -225,3 +227,4 @@ DIFFABLE_EXTERN(u16, g_LastFrameInput)
 DIFFABLE_EXTERN(u16, g_CurFrameInput)
 DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
 DIFFABLE_EXTERN(IDirect3DSurface8 *, g_TextBufferSurface)
+}; // namespace th06

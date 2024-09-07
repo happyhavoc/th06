@@ -16,6 +16,8 @@
 #include "ZunBool.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(Player, g_Player);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(CharacterData, 4, g_CharData) = {
@@ -947,3 +949,4 @@ void Player::Die()
     }
     return;
 }
+}; // namespace th06

@@ -9,6 +9,8 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(HANDLE, g_ExclusiveMutex)
 
 ZunResult CheckForRunningGameInstance(void)
@@ -76,3 +78,4 @@ void DebugPrint2(const char *fmt, ...)
     printf("DEBUG2: %s\n", tmpBuffer);
 #endif
 }
+}; // namespace th06

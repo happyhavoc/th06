@@ -10,6 +10,8 @@
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct Player;
 
 enum PlayerDirection
@@ -256,3 +258,4 @@ struct Player
 C_ASSERT(sizeof(Player) == 0x98f0);
 
 DIFFABLE_EXTERN(Player, g_Player);
+}; // namespace th06

@@ -4,6 +4,8 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+namespace th06
+{
 struct MidiTimer
 {
     MidiTimer();
@@ -91,3 +93,4 @@ struct MidiOutput : MidiTimer
     u32 unk2fc;
 };
 C_ASSERT(sizeof(MidiOutput) == 0x300);
+}; // namespace th06

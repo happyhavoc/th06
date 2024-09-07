@@ -6,6 +6,8 @@
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct EffectManager
 {
     i32 nextIndex;
@@ -33,3 +35,4 @@ struct EffectManager
 C_ASSERT(sizeof(EffectManager) == 0x2f984);
 
 DIFFABLE_EXTERN(EffectManager, g_EffectManager);
+}; // namespace th06

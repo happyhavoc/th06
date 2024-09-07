@@ -1,5 +1,7 @@
 #include "pbg3/FileAbstraction.hpp"
 
+namespace th06
+{
 FileAbstraction::FileAbstraction()
 {
     handle = INVALID_HANDLE_VALUE;
@@ -175,3 +177,4 @@ FileAbstraction::~FileAbstraction()
 {
     this->Close();
 }
+}; // namespace th06

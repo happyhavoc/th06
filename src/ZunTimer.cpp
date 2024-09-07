@@ -1,6 +1,9 @@
 #include "ZunTimer.hpp"
 #include "Supervisor.hpp"
 
+namespace th06
+{
+
 #pragma optimize("s", on)
 void ZunTimer::Initialize()
 {
@@ -61,3 +64,4 @@ void ZunTimer::Decrement(i32 value)
     }
 }
 #pragma optimize("s", off)
+}; // namespace th06

@@ -3,6 +3,8 @@
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct Th6k
 {
     u32 magic;
@@ -87,3 +89,4 @@ struct ResultScreen
     static u32 GetHighScore(ScoreDat *score_dat, ScoreListNode *node, u32 character, u32 difficulty);
     static void ReleaseScoreDat(ScoreDat *s);
 };
+}; // namespace th06

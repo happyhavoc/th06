@@ -2,6 +2,8 @@
 
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct ReplayDataInput
 {
     u32 frameNum;
@@ -45,3 +47,4 @@ struct ReplayData
 C_ASSERT(sizeof(ReplayData) == 0x50);
 
 ZunResult ValidateReplayData(ReplayData *data, i32 fileSize);
+}; // namespace th06

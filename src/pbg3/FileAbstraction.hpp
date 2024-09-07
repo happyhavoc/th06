@@ -4,6 +4,8 @@
 
 #include "inttypes.hpp"
 
+namespace th06
+{
 class IFileAbstraction
 {
   public:
@@ -54,3 +56,4 @@ class FileAbstraction : public IFileAbstraction
     DWORD access;
 };
 C_ASSERT(sizeof(FileAbstraction) == 0xc);
+}; // namespace th06
