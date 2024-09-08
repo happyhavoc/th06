@@ -22,6 +22,7 @@ import ghidra.program.model.address.AddressSet;
 import ghidra.program.model.listing.GhidraClass;
 import ghidra.program.model.mem.Memory;
 import ghidra.program.model.symbol.Namespace;
+import ghidra.program.model.symbol.Symbol;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -61,8 +62,6 @@ public class ExportDelinker extends GhidraScript
 
         String configFile = Files.readString(inFile.toPath(), StandardCharsets.UTF_8);
 
-        Namespace th06Ns = currentProgram.getSymbolTable().getNamespace("th06", null);
-
         for (String objDataStr : configFile.split("\n"))
         {
             List<String> objData = new ArrayList<>(Arrays.asList(objDataStr.split(",")));
@@ -75,15 +74,30 @@ public class ExportDelinker extends GhidraScript
             for (String ghidraClassName : objData)
             {
                 printf("Handling %s.obj - class %s\n", objClass, ghidraClassName);
-                Namespace ghidraClass = currentProgram.getSymbolTable().getNamespace(ghidraClassName, th06Ns);
 
-                if (ghidraClass == null)
+                List<String> ghidraClassNameParts = new ArrayList<>(Arrays.asList(ghidraClassName.split("::")));
+                String finalPart = ghidraClassNameParts.removeLast();
+
+                Namespace curNs = null;
+                for (String nsPart : ghidraClassNameParts)
                 {
-                    printf("Cannot find class %s, skipping.\n", objClass);
+                    curNs = this.getNamespace(curNs, nsPart);
+                }
+
+                Symbol sym;
+                if ((sym = this.getSymbol(finalPart, curNs)) == null)
+                {
+                    printf("Cannot find namespace or function %s, skipping.\n", ghidraClassName);
+                    continue;
+                }
+                if (!(sym.getObject() instanceof Namespace))
+                {
+                    printf("Namespace %s is not a namespace or a function, skipping.\n", ghidraClassName);
                     continue;
                 }
 
-                set = set.union(ghidraClass.getBody());
+                Namespace ns = (Namespace)sym.getObject();
+                set = set.union(ns.getBody());
             }
 
             if (set.isEmpty())
