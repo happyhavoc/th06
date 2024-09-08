@@ -102,7 +102,7 @@ jobs:
     - name: Use ghidra_ns_to_obj.csv from target repo
       run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/ghidra_ns_to_obj.csv -o config/ghidra_ns_to_obj.csv --fail
     - name: Generate objs using ghidra-delinker
-      run: python scripts/export_ghidra_objs.py --import-xml
+      run: python scripts/export_ghidra_objs.py --import-csv
     - name: Create diff summary
       run: python scripts/diff_all_functions.py --diff-method=objdiff > $env:GITHUB_STEP_SUMMARY
     - name: Report tests check
