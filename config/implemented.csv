@@ -114,8 +114,8 @@ GameManager::DecreaseSubrank
 GameManager::IsInBounds
 GameManager::OnUpdate
 GameManager::OnDraw
-SetupCameraStageBackground
-SetupCamera
+GameManager::SetupCameraStageBackground
+GameManager::SetupCamera
 Gui::RegisterChain
 Gui::CutChain
 Gui::AddedCallback

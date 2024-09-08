@@ -428,7 +428,7 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
     }
     g_Supervisor.viewport.MinZ = 0.0;
     g_Supervisor.viewport.MaxZ = 0.5;
-    SetupCameraStageBackground(0);
+    GameManager::SetupCameraStageBackground(0);
     g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
     val = 1000.0f;
     g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&val);

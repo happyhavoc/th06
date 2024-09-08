@@ -51,6 +51,8 @@ struct GameManager
     static ChainCallbackResult OnDraw(GameManager *gameManager);
     static ZunResult AddedCallback(GameManager *gameManager);
     static ZunResult DeletedCallback(GameManager *gameManager);
+    static void SetupCamera(f32);
+    static void SetupCameraStageBackground(f32);
 
     i32 HasReachedMaxClears(i32 character, i32 shottype);
     void IncreaseSubrank(i32 amount);
@@ -120,7 +122,4 @@ struct GameManager
 C_ASSERT(sizeof(GameManager) == 0x1a80);
 
 DIFFABLE_EXTERN(GameManager, g_GameManager);
-
-void SetupCamera(f32);
-void SetupCameraStageBackground(f32);
 }; // namespace th06

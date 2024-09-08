@@ -561,7 +561,7 @@ ChainCallbackResult GameManager::OnDraw(GameManager *gameManager)
 
 #pragma optimize("s", on)
 #pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec)
-void SetupCameraStageBackground(f32 extraRenderDistance)
+void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
 {
     D3DXVECTOR3 eyeVec;
     D3DXVECTOR3 atVec;
@@ -599,7 +599,7 @@ void SetupCameraStageBackground(f32 extraRenderDistance)
 #pragma optimize("s", on)
 #pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec,   \
                   atVecY, atVecX, eyeVecZ)
-void SetupCamera(f32 extraRenderDistance)
+void GameManager::SetupCamera(f32 extraRenderDistance)
 {
     D3DXVECTOR3 eyeVec;
     D3DXVECTOR3 atVec;
