@@ -86,7 +86,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     ZunResult loadedTitle04s;
 
     g_Supervisor.LoadPbg3(3, TH_TL_DAT_FILE);
-    for (i = ANM_FILE_SELECT01; i <= ANM_FILE_SELECT05; i++)
+    for (i = ANM_FILE_SELECT01; i <= ANM_FILE_REPLAY; i++)
     {
         g_AnmManager->ReleaseAnm(i);
     }
