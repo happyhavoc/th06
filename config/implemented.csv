@@ -188,8 +188,8 @@ Supervisor::SetupDInput
 Supervisor::PlayAudio
 GameWindow::InitD3dDevice
 GameWindow::InitD3dRendering
-Clear
-SetViewport
+ScreenEffect::Clear
+ScreenEffect::SetViewport
 utils::AddNormalizeAngle
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound

@@ -497,7 +497,7 @@ i32 GameWindow::InitD3dRendering(void)
         }
     }
     InitD3dDevice();
-    SetViewport(0);
+    ScreenEffect::SetViewport(0);
     g_GameWindow.isAppClosing = 0;
     g_Supervisor.lastFrameTime = 0;
     g_Supervisor.framerateMultiplier = 0.0;

@@ -8,6 +8,14 @@
 
 namespace th06
 {
+struct ZunRect
+{
+    f32 left;
+    f32 top;
+    f32 right;
+    f32 bottom;
+};
+
 enum ScreenEffects
 {
     SCREEN_EFFECT_UNK_0,
@@ -18,17 +26,8 @@ enum ScreenEffects
 struct ScreenEffect
 {
     static ScreenEffect *RegisterChain(u32 screenEffect, u32 param1, u32 param2, u32 param3, u32 param4);
+    static void DrawSquare(ZunRect *rect, D3DCOLOR rectColor);
+    static void SetViewport(D3DCOLOR color);
+    static void Clear(D3DCOLOR color);
 };
-
-struct ZunRect
-{
-    f32 left;
-    f32 top;
-    f32 right;
-    f32 bottom;
-};
-
-void DrawSquare(ZunRect *rect, D3DCOLOR rectColor);
-
-void SetViewport(D3DCOLOR color);
 }; // namespace th06

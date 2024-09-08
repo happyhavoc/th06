@@ -414,7 +414,7 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
                 gameRegion.right = GAME_REGION_LEFT + GAME_REGION_WIDTH;
                 gameRegion.bottom = GAME_REGION_TOP + GAME_REGION_HEIGHT;
                 stageToSpellcardBackgroundAlpha = (stage->ticksSinceSpellcardStarted * 255) / 60;
-                DrawSquare(&gameRegion, stageToSpellcardBackgroundAlpha << 24);
+                ScreenEffect::DrawSquare(&gameRegion, stageToSpellcardBackgroundAlpha << 24);
             }
         }
     }

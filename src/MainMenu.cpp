@@ -1626,17 +1626,19 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
             menu->numFramesSinceActive += 1;
         }
         targetOpacity = COLOR_ALPHA(menu->menuTextColor) - COLOR_ALPHA(menu->minimumOpacity);
-        DrawSquare(&window, COLOR_SET_ALPHA(menu->menuTextColor,
-                                            targetOpacity * menu->numFramesSinceActive / menu->framesActive +
-                                                COLOR_ALPHA(menu->minimumOpacity)));
+        ScreenEffect::DrawSquare(
+            &window,
+            COLOR_SET_ALPHA(menu->menuTextColor, targetOpacity * menu->numFramesSinceActive / menu->framesActive +
+                                                     COLOR_ALPHA(menu->minimumOpacity)));
     }
     else if (menu->numFramesSinceActive != 0)
     {
         menu->numFramesSinceActive -= 1;
         targetOpacity = COLOR_ALPHA(menu->menuTextColor) - COLOR_ALPHA(menu->minimumOpacity);
-        DrawSquare(&window, COLOR_SET_ALPHA(menu->menuTextColor,
-                                            targetOpacity * menu->numFramesSinceActive / menu->framesInactive +
-                                                COLOR_ALPHA(menu->minimumOpacity)));
+        ScreenEffect::DrawSquare(
+            &window,
+            COLOR_SET_ALPHA(menu->menuTextColor, targetOpacity * menu->numFramesSinceActive / menu->framesInactive +
+                                                     COLOR_ALPHA(menu->minimumOpacity)));
     }
     for (vmIdx = 0; vmIdx < 98; vmIdx++, curVm++)
     {
