@@ -7,11 +7,25 @@ SCRIPTS_DIR = Path(__file__).parent
 
 
 def demangle_msvc(sym):
-    offset = 0
-    if len(sym) == offset or sym[offset : offset + 1] != b"?":
+    if len(sym) == 0:
+        return sym
+
+    if sym[0:1] == b"_":
+        # Handle stdcall symbols first, those are simple. First remove the leading
+        # underscore, then split on the last @ and remove everything that comes afterwards
+        end_of_sym = sym.rfind(b"@")
+        if end_of_sym == -1:
+            # Not an stdcall, let's just not demangle it.
+            return sym
+        else:
+            return sym[1:end_of_sym]
+
+    if sym[0:1] != b"?":
         # Unmangled symbol?
         return sym
-    offset += 1
+
+    # Handle CPP mangling.
+    offset = 1
 
     # Read name. Start with special symbols
     special = None
