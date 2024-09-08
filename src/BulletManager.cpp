@@ -150,7 +150,7 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
     bullet->state = 1;
     bullet->unk_5c2 = 1;
     bullet->speed = bulletSpeed;
-    bullet->angle = AddNormalizeAngle(bulletAngle, 0.0f);
+    bullet->angle = utils::AddNormalizeAngle(bulletAngle, 0.0f);
     bullet->pos = bulletProps->position;
     bullet->pos.z = 0.1f;
     sincosmul(&bullet->velocity, bullet->angle, bulletSpeed);
@@ -574,7 +574,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                     }
                     else
                     {
-                        curBullet->angle = AddNormalizeAngle(
+                        curBullet->angle = utils::AddNormalizeAngle(
                             curBullet->angle, g_Supervisor.effectiveFramerateMultiplier * curBullet->ex5Float1);
                         curBullet->speed += g_Supervisor.effectiveFramerateMultiplier * curBullet->ex5Float0;
                         // Has to be done in asm. Just, great.
@@ -659,7 +659,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                         if (curBullet->pos.x < 0.0f || curBullet->pos.x >= 384.0f)
                         {
                             curBullet->angle = -curBullet->angle - ZUN_PI;
-                            curBullet->angle = AddNormalizeAngle(curBullet->angle, 0.0);
+                            curBullet->angle = utils::AddNormalizeAngle(curBullet->angle, 0.0);
                         }
                         if (curBullet->pos.y < 0.0f || curBullet->pos.y >= 448.0f)
                         {
@@ -684,7 +684,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                         if (curBullet->pos.x < 0.0f || curBullet->pos.x >= 384.0f)
                         {
                             curBullet->angle = -curBullet->angle - ZUN_PI;
-                            curBullet->angle = AddNormalizeAngle(curBullet->angle, 0.0f);
+                            curBullet->angle = utils::AddNormalizeAngle(curBullet->angle, 0.0f);
                         }
                         if (curBullet->pos.y < 0.0f)
                         {

@@ -127,9 +127,9 @@ ResetKeyboard
 WindowProc
 CreateGameWindow
 WinMain
-CheckForRunningGameInstance
-DebugPrint
-DebugPrint2
+utils::CheckForRunningGameInstance
+utils::DebugPrint
+utils::DebugPrint2
 ControllerCallback
 EnumGameControllersCb
 FileSystem::OpenPath
@@ -190,7 +190,7 @@ InitD3dDevice
 InitD3dRendering
 Clear
 SetViewport
-AddNormalizeAngle
+utils::AddNormalizeAngle
 SoundPlayer::SoundPlayer
 SoundPlayer::InitializeDSound
 SoundPlayer::LoadWav

@@ -690,7 +690,7 @@ void Player::DrawBullets(Player *p)
         }
         if (bullets->sprite.autoRotate)
         {
-            bullets->sprite.rotation.z = ZUN_PI / 2 - AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
+            bullets->sprite.rotation.z = ZUN_PI / 2 - utils::AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
         }
         g_AnmManager->Draw2(&bullets->sprite);
     }

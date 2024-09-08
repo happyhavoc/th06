@@ -12,7 +12,8 @@
 namespace th06
 {
 DIFFABLE_STATIC(HANDLE, g_ExclusiveMutex)
-
+namespace utils
+{
 ZunResult CheckForRunningGameInstance(void)
 {
     g_ExclusiveMutex = CreateMutex(NULL, TRUE, TEXT("Touhou Koumakyou App"));
@@ -78,4 +79,5 @@ void DebugPrint2(const char *fmt, ...)
     printf("DEBUG2: %s\n", tmpBuffer);
 #endif
 }
+}; // namespace utils
 }; // namespace th06

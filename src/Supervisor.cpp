@@ -55,7 +55,7 @@ ZunResult Supervisor::LoadConfig(char *path)
         if (wavFile == NULL)
         {
             g_Supervisor.cfg.musicMode = MIDI;
-            DebugPrint(TH_ERR_NO_WAVE_FILE);
+            utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
         }
         else
         {
@@ -88,7 +88,7 @@ ZunResult Supervisor::LoadConfig(char *path)
             if (wavFile == NULL)
             {
                 g_Supervisor.cfg.musicMode = MIDI;
-                DebugPrint(TH_ERR_NO_WAVE_FILE);
+                utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
             }
             else
             {
@@ -541,7 +541,7 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
     {
         this->ReleasePbg3(pbg3FileIdx);
         this->pbg3Archives[pbg3FileIdx] = new Pbg3Archive();
-        DebugPrint("%s open ...\n", filename);
+        utils::DebugPrint("%s open ...\n", filename);
         if (this->pbg3Archives[pbg3FileIdx]->Load(filename) != 0)
         {
             strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
@@ -823,13 +823,13 @@ u16 Controller::GetControllerInput(u16 buttons)
         {
             i32 retryCount = 0;
 
-            DebugPrint2("error : DIERR_INPUTLOST\n");
+            utils::DebugPrint2("error : DIERR_INPUTLOST\n");
             aaa = g_Supervisor.controller->Acquire();
 
             while (aaa == DIERR_INPUTLOST)
             {
                 aaa = g_Supervisor.controller->Acquire();
-                DebugPrint2("error : DIERR_INPUTLOST %d\n", retryCount);
+                utils::DebugPrint2("error : DIERR_INPUTLOST %d\n", retryCount);
 
                 retryCount++;
 

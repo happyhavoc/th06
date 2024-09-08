@@ -390,7 +390,7 @@ void Enemy::UpdateEffects(Enemy *enemy)
             effect->unk_15c += 0.3f;
         }
 
-        effect->angleRelated = AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
+        effect->angleRelated = utils::AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
     }
 }
 }; // namespace th06

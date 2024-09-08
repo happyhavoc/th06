@@ -894,15 +894,18 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
 stop:
     if (vm->angleVel.x != 0.0f)
     {
-        vm->rotation.x = AddNormalizeAngle(vm->rotation.x, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.x);
+        vm->rotation.x =
+            utils::AddNormalizeAngle(vm->rotation.x, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.x);
     }
     if (vm->angleVel.y != 0.0f)
     {
-        vm->rotation.y = AddNormalizeAngle(vm->rotation.y, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.y);
+        vm->rotation.y =
+            utils::AddNormalizeAngle(vm->rotation.y, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.y);
     }
     if (vm->angleVel.z != 0.0f)
     {
-        vm->rotation.z = AddNormalizeAngle(vm->rotation.z, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.z);
+        vm->rotation.z =
+            utils::AddNormalizeAngle(vm->rotation.z, g_Supervisor.effectiveFramerateMultiplier * vm->angleVel.z);
     }
     if (vm->scaleInterpEndTime > 0)
     {

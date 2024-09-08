@@ -56,7 +56,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MSG msg;
     AnmManager *anm;
 
-    if (CheckForRunningGameInstance())
+    if (utils::CheckForRunningGameInstance())
     {
         g_GameErrorContext.Flush();
 

@@ -99,9 +99,9 @@ void SoundPlayer::StopBGM()
         if (this->backgroundMusicThreadHandle != NULL)
         {
             PostThreadMessageA(this->backgroundMusicThreadId, WM_QUIT, 0, 0);
-            DebugPrint2("stop m_dwNotifyThreadID\n");
+            utils::DebugPrint2("stop m_dwNotifyThreadID\n");
             WaitForSingleObject(this->backgroundMusicThreadHandle, INFINITE);
-            DebugPrint2("comp\n");
+            utils::DebugPrint2("comp\n");
             CloseHandle(this->backgroundMusicThreadHandle);
             CloseHandle(this->backgroundMusicUpdateEvent);
             this->backgroundMusicThreadHandle = NULL;
@@ -111,7 +111,7 @@ void SoundPlayer::StopBGM()
             delete this->backgroundMusic;
             this->backgroundMusic = NULL;
         }
-        DebugPrint2("stop BGM\n");
+        utils::DebugPrint2("stop BGM\n");
     }
     return;
 }
@@ -145,11 +145,11 @@ ZunResult SoundPlayer::LoadWav(char *path)
         return ZUN_ERROR;
     }
     this->StopBGM();
-    DebugPrint2("load BGM\n");
+    utils::DebugPrint2("load BGM\n");
     res = waveFile.Open(path, NULL, WAVEFILE_READ);
     if (FAILED(res))
     {
-        DebugPrint2("error : wav file load error %s\n", path);
+        utils::DebugPrint2("error : wav file load error %s\n", path);
         waveFile.Close();
         return ZUN_ERROR;
     }
@@ -179,10 +179,10 @@ ZunResult SoundPlayer::LoadWav(char *path)
                                          notifySize, this->backgroundMusicUpdateEvent);
     if (FAILED(res))
     {
-        DebugPrint2(TH_ERR_SOUNDPLAYER_FAILED_TO_CREATE_BGM_SOUND_BUFFER);
+        utils::DebugPrint2(TH_ERR_SOUNDPLAYER_FAILED_TO_CREATE_BGM_SOUND_BUFFER);
         return ZUN_ERROR;
     }
-    DebugPrint2("comp\n");
+    utils::DebugPrint2("comp\n");
     startTime2 = timeGetTime();
     curTime2 = startTime2;
     waitTime2 = 100;
@@ -343,7 +343,7 @@ ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
     LPDIRECTSOUNDBUFFER buffer;
     HRESULT res;
 
-    DebugPrint2("play BGM\n");
+    utils::DebugPrint2("play BGM\n");
     if (this->backgroundMusic == NULL)
     {
         return ZUN_ERROR;
@@ -365,7 +365,7 @@ ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
     {
         return ZUN_ERROR;
     }
-    DebugPrint2("comp\n");
+    utils::DebugPrint2("comp\n");
     this->isLooping = isLooping;
     return ZUN_SUCCESS;
 }
