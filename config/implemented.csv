@@ -63,7 +63,7 @@ Chain::RunDrawChain
 Chain::RunCalcChain
 Chain::AddToCalcChain
 Chain::AddToDrawChain
-InitD3dInterface
+GameWindow::InitD3dInterface
 Controller::GetJoystickCaps
 Controller::SetButtonFromControllerInputs
 Controller::SetButtonFromDirectInputJoystate
@@ -126,8 +126,8 @@ Gui::OnUpdate
 Gui::OnDraw
 Gui::DrawGameScene
 Gui::DrawStageElements
-WindowProc
-CreateGameWindow
+GameWindow::WindowProc
+GameWindow::CreateGameWindow
 WinMain
 utils::CheckForRunningGameInstance
 utils::DebugPrint
@@ -186,8 +186,8 @@ Supervisor::OnDraw
 Supervisor::TickTimer
 Supervisor::SetupDInput
 Supervisor::PlayAudio
-InitD3dDevice
-InitD3dRendering
+GameWindow::InitD3dDevice
+GameWindow::InitD3dRendering
 Clear
 SetViewport
 utils::AddNormalizeAngle

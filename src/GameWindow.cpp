@@ -193,21 +193,19 @@ void GameWindow::Present(void)
     return;
 }
 
-i32 InitD3dInterface(void)
+i32 GameWindow::InitD3dInterface(void)
 {
     g_Supervisor.d3dIface = Direct3DCreate8(D3D_SDK_VERSION);
 
     if (g_Supervisor.d3dIface == NULL)
     {
-        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ);
+        GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ);
         return 1;
     }
     return 0;
 }
 
-LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-void CreateGameWindow(HINSTANCE hInstance)
+void GameWindow::CreateGameWindow(HINSTANCE hInstance)
 {
     WNDCLASS base_class;
     i32 width;
@@ -240,7 +238,7 @@ void CreateGameWindow(HINSTANCE hInstance)
     g_Supervisor.hwndGameWindow = g_GameWindow.window;
 }
 
-LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT __stdcall GameWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {
@@ -291,7 +289,7 @@ LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 #pragma var_order(using_d3d_hal, display_mode, present_params, camera_distance, half_height, half_width, aspect_ratio, \
                   field_of_view_y, up, at, eye, should_run_at_60_fps)
-i32 InitD3dRendering(void)
+i32 GameWindow::InitD3dRendering(void)
 {
     u8 using_d3d_hal;
     D3DPRESENT_PARAMETERS present_params;
@@ -507,7 +505,7 @@ i32 InitD3dRendering(void)
 }
 
 #pragma var_order(fogVal, fogDensity, anm1, anm2, anm3, anm4)
-void InitD3dDevice(void)
+void GameWindow::InitD3dDevice(void)
 {
     f32 fogVal;
     f32 fogDensity;

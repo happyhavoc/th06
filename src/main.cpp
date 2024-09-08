@@ -42,7 +42,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         return -1;
     }
 
-    if (InitD3dInterface())
+    if (GameWindow::InitD3dInterface())
     {
         g_GameErrorContext.Flush();
         return 1;
@@ -57,9 +57,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     for (;;)
     {
-        CreateGameWindow(hInstance);
+        GameWindow::CreateGameWindow(hInstance);
 
-        if (InitD3dRendering())
+        if (GameWindow::InitD3dRendering())
         {
             g_GameErrorContext.Flush();
             return 1;
@@ -109,7 +109,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
                     {
                         break;
                     }
-                    InitD3dDevice();
+                    GameWindow::InitD3dDevice();
                     g_Supervisor.unk198 = 3;
                 }
             }
