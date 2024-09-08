@@ -1,4 +1,5 @@
 import coff
+import csv
 from pathlib import Path
 import struct
 import sys
@@ -70,9 +71,21 @@ def demangle_msvc(sym):
         return sym
 
 
+def sym_prefix(full_sym, prefix):
+    return full_sym == prefix or full_sym.startswith(prefix + b"::")
+
+
 def rename_symbols(filename):
     reimpl_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "reimpl"
     orig_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "orig"
+    config_folder = SCRIPTS_DIR.parent / "config"
+
+    ns_to_obj = {}
+
+    with open(str(config_folder / "ghidra_ns_to_obj.csv")) as f:
+        ghidra_ns_to_obj = csv.reader(f)
+        for vals in ghidra_ns_to_obj:
+            ns_to_obj[vals[0]] = vals[1:]
 
     obj = coff.ObjectModule()
     with open(str(filename), "rb") as f:
@@ -87,7 +100,10 @@ def rename_symbols(filename):
         seen[sym] = True
 
         demangled_sym = demangle_msvc(sym)
-        if b"th06" != demangled_sym.split(b"::")[0]:
+        if not any(
+            sym_prefix(demangled_sym, val.encode("utf8"))
+            for val in ns_to_obj[filename.stem]
+        ):
             continue
 
         offset = obj.string_table.append(demangled_sym)
