@@ -17,35 +17,6 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-namespace th06
-{
-void ResetKeyboard(void)
-{
-    u8 key_states[256];
-
-    GetKeyboardState(key_states);
-    for (i32 idx = 0; idx < 256; idx++)
-    {
-        *(key_states + idx) &= 0x7f;
-    }
-    SetKeyboardState(key_states);
-}
-
-void SetupConsole(void)
-{
-    HWND hWnd = GetConsoleWindow();
-
-    if (hWnd == NULL)
-    {
-        AllocConsole();
-    }
-    else
-    {
-        ShowWindow(hWnd, SW_SHOW);
-    }
-}
-}; // namespace th06
-
 using namespace th06;
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -95,8 +66,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         }
 
         g_SoundPlayer.InitializeDSound(g_GameWindow.window);
-        GetJoystickCaps();
-        ResetKeyboard();
+        Controller::GetJoystickCaps();
+        Controller::ResetKeyboard();
 
         anm = new AnmManager();
         g_AnmManager = anm;

@@ -199,7 +199,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
         g_SoundPlayer.backgroundMusic->UpdateFadeOut();
     }
     g_LastFrameInput = g_CurFrameInput;
-    g_CurFrameInput = GetInput();
+    g_CurFrameInput = Controller::GetInput();
     g_IsEigthFrameOfHeldInput = 0;
     if (g_LastFrameInput == g_CurFrameInput)
     {
@@ -640,7 +640,8 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
     supervisor->keyboard->Acquire();
     GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
 
-    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumGameControllersCb, NULL, DIEDFL_ATTACHEDONLY);
+    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Controller::EnumGameControllersCb, NULL,
+                                         DIEDFL_ATTACHEDONLY);
     if (supervisor->controller)
     {
         supervisor->controller->SetDataFormat(&c_dfDIJoystick);
@@ -649,7 +650,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
         g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
 
         supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
-        supervisor->controller->EnumObjects(ControllerCallback, NULL, DIDFT_ALL);
+        supervisor->controller->EnumObjects(Controller::ControllerCallback, NULL, DIDFT_ALL);
 
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_PAD_FOUND);
     }
@@ -676,7 +677,7 @@ void Supervisor::TickTimer(i32 *frames, f32 *subframes)
 }
 #pragma optimize("", on)
 
-u16 GetJoystickCaps(void)
+u16 Controller::GetJoystickCaps(void)
 {
     JOYINFOEX pji;
 
@@ -693,8 +694,8 @@ u16 GetJoystickCaps(void)
     return 0;
 }
 
-u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
-                                  u32 inputButtons)
+u32 Controller::SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest,
+                                              enum TouhouButton touhouButton, u32 inputButtons)
 {
     DWORD mask;
 
@@ -715,8 +716,8 @@ u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, e
 #define JOYSTICK_BUTTON_PRESSED_INVERT(button, x, y) (x < y ? button : 0)
 #define KEYBOARD_KEY_PRESSED(button, x) keyboardState[x] & 0x80 ? button : 0
 
-u32 SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
-                                     u8 *inputButtons)
+u32 Controller::SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest,
+                                                 enum TouhouButton touhouButton, u8 *inputButtons)
 {
     if (controllerButtonToTest < 0)
     {
@@ -912,7 +913,7 @@ u16 Controller::GetControllerInput(u16 buttons)
     return buttons;
 }
 
-u16 GetInput(void)
+u16 Controller::GetInput(void)
 {
     u8 keyboardState[256];
     u16 buttons;
@@ -988,7 +989,7 @@ u16 GetInput(void)
 
 #pragma optimize("s", on)
 #pragma var_order(diprange, pvRefBackup)
-BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
+BOOL CALLBACK Controller::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
 {
     LPVOID pvRefBackup;
     DIPROPRANGE diprange;
@@ -1013,7 +1014,7 @@ BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
+BOOL CALLBACK Controller::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
 {
     HRESULT result;
 
@@ -1028,6 +1029,18 @@ BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pC
     return FALSE;
 }
 #pragma optimize("", on)
+
+void Controller::ResetKeyboard(void)
+{
+    u8 key_states[256];
+
+    GetKeyboardState(key_states);
+    for (i32 idx = 0; idx < 256; idx++)
+    {
+        *(key_states + idx) &= 0x7f;
+    }
+    SetKeyboardState(key_states);
+}
 
 #pragma optimize("s", on)
 ZunResult Supervisor::PlayAudio(char *path)
