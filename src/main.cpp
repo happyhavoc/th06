@@ -17,31 +17,7 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-void ResetKeyboard(void)
-{
-    u8 key_states[256];
-
-    GetKeyboardState(key_states);
-    for (i32 idx = 0; idx < 256; idx++)
-    {
-        *(key_states + idx) &= 0x7f;
-    }
-    SetKeyboardState(key_states);
-}
-
-void SetupConsole(void)
-{
-    HWND hWnd = GetConsoleWindow();
-
-    if (hWnd == NULL)
-    {
-        AllocConsole();
-    }
-    else
-    {
-        ShowWindow(hWnd, SW_SHOW);
-    }
-}
+using namespace th06;
 
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -51,7 +27,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     MSG msg;
     AnmManager *anm;
 
-    if (CheckForRunningGameInstance())
+    if (utils::CheckForRunningGameInstance())
     {
         g_GameErrorContext.Flush();
 
@@ -66,7 +42,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
         return -1;
     }
 
-    if (InitD3dInterface())
+    if (GameWindow::InitD3dInterface())
     {
         g_GameErrorContext.Flush();
         return 1;
@@ -81,17 +57,17 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
     for (;;)
     {
-        CreateGameWindow(hInstance);
+        GameWindow::CreateGameWindow(hInstance);
 
-        if (InitD3dRendering())
+        if (GameWindow::InitD3dRendering())
         {
             g_GameErrorContext.Flush();
             return 1;
         }
 
         g_SoundPlayer.InitializeDSound(g_GameWindow.window);
-        GetJoystickCaps();
-        ResetKeyboard();
+        Controller::GetJoystickCaps();
+        Controller::ResetKeyboard();
 
         anm = new AnmManager();
         g_AnmManager = anm;
@@ -133,7 +109,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
                     {
                         break;
                     }
-                    InitD3dDevice();
+                    GameWindow::InitD3dDevice();
                     g_Supervisor.unk198 = 3;
                 }
             }
@@ -159,7 +135,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     if (renderResult == 2)
     {
         g_GameErrorContext.RstContext();
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_OPTION_CHANGED_RESTART);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_OPTION_CHANGED_RESTART);
 
         if (!g_Supervisor.cfg.windowed)
         {

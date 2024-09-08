@@ -34,15 +34,12 @@ jobs:
             context: 'comparison-checks',
           })
     - uses: actions/checkout@v3
-    - name: Install satsuki
-      uses: robinraju/release-downloader@v1.8
+    - uses: actions/setup-java@v4
       with:
-        repository: happyhavoc/satsuki
-        latest: false
-        tag: v0.1.2
-        fileName: x86_64-windows-satsuki.exe
-    - name: Add satsuki to prefix
-      run: python scripts/create_devenv.py --only satsuki scripts/dls scripts/prefix
+        distribution: 'zulu'
+        java-version: '21'
+    - name: Install prefix
+      run: python scripts/create_devenv.py --only objdiff --only ghidra scripts/dls scripts/prefix
     - name: Fetch game binary from cache.
       uses: actions/cache@v4
       id: cache
@@ -84,14 +81,32 @@ jobs:
           fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/th06e.zip`, Buffer.from(download.data));
     - name: Download reimplemented game binary for comparison (2/2)
       run: |
-        mkdir -p build
-        unzip th06e.zip -d build
+        mkdir -p build/objdiff/reimpl
+        unzip th06e.zip -d build/objdiff/reimpl
+    - name: Get information on workflow ID
+      uses: actions/github-script@v6
+      id: workflow_run_info
+      with:
+        script: |
+          // get info from workflow_id
+          let workflowRunInfo = await github.rest.actions.getWorkflowRun({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            run_id: context.payload.workflow_run ? context.payload.workflow_run.id : context.payload.inputs.workflow_id,
+          })
+          core.setOutput("head_repository_full_name", workflowRunInfo.data.head_repository.full_name)
+          core.setOutput("head_sha", workflowRunInfo.data.head_sha)
+          console.log(workflowRunInfo.data.head_repository.full_name, workflowRunInfo.data.head_sha)
     - name: Use implemented.csv from target repo
-      run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/implemented.csv -o config/implemented.csv
+      run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/implemented.csv -o config/implemented.csv --fail
+    - name: Use ghidra_ns_to_obj.csv from target repo
+      run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/ghidra_ns_to_obj.csv -o config/ghidra_ns_to_obj.csv --fail
     - name: Use mapping.csv from target repo
-      run: curl -L https://raw.githubusercontent.com/${{github.event.workflow_run.head_repository.full_name}}/${{github.event.workflow_run.head_sha}}/config/mapping.csv -o config/mapping.csv
+      run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/mapping.csv -o config/mapping.csv --fail
+    - name: Generate objs using ghidra-delinker
+      run: python scripts/export_ghidra_objs.py --import-csv
     - name: Create diff summary
-      run: python scripts/diff_all_functions.py > $env:GITHUB_STEP_SUMMARY
+      run: python scripts/diff_all_functions.py --diff-method=objdiff > $env:GITHUB_STEP_SUMMARY
     - name: Report tests check
       if: ${{ github.event_name == 'workflow_run' && success() }}
       uses: actions/github-script@v6

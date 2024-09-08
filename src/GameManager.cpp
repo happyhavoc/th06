@@ -19,6 +19,8 @@
 #include <d3d8types.h>
 #include <d3dx8math.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(GameManager, g_GameManager);
 
 DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
@@ -270,39 +272,39 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     mgr->randomSeed = g_Rng.seed;
     if (Stage::RegisterChain(mgr->currentStage) != ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_STAGE);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_STAGE);
         return ZUN_ERROR;
     }
 
     if (Player::RegisterChain(0) != ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_PLAYER);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_PLAYER);
         return ZUN_ERROR;
     }
     if (BulletManager::RegisterChain("data/etama.anm") != ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_BULLETMANAGER);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_BULLETMANAGER);
         return ZUN_ERROR;
     }
     if (EnemyManager::RegisterChain(g_AnmStageFiles[mgr->currentStage].file1,
                                     g_AnmStageFiles[mgr->currentStage].file2) != ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ENEMYMANAGER);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ENEMYMANAGER);
         return ZUN_ERROR;
     }
     if (g_EclManager.Load(g_EclFiles[mgr->currentStage]) != ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ECLMANAGER);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ECLMANAGER);
         return ZUN_ERROR;
     }
     if (EffectManager::RegisterChain() != ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_EFFECTMANAGER);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_EFFECTMANAGER);
         return ZUN_ERROR;
     }
     if (Gui::RegisterChain() != ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_GUI);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_GUI);
         return ZUN_ERROR;
     }
     if (g_GameManager.isInReplay == 0)
@@ -559,7 +561,7 @@ ChainCallbackResult GameManager::OnDraw(GameManager *gameManager)
 
 #pragma optimize("s", on)
 #pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec)
-void SetupCameraStageBackground(f32 extraRenderDistance)
+void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
 {
     D3DXVECTOR3 eyeVec;
     D3DXVECTOR3 atVec;
@@ -597,7 +599,7 @@ void SetupCameraStageBackground(f32 extraRenderDistance)
 #pragma optimize("s", on)
 #pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec,   \
                   atVecY, atVecX, eyeVecZ)
-void SetupCamera(f32 extraRenderDistance)
+void GameManager::SetupCamera(f32 extraRenderDistance)
 {
     D3DXVECTOR3 eyeVec;
     D3DXVECTOR3 atVec;
@@ -638,3 +640,4 @@ void SetupCamera(f32 extraRenderDistance)
     return;
 }
 #pragma optimize("", on)
+}; // namespace th06

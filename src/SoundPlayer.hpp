@@ -7,6 +7,8 @@
 #include "inttypes.hpp"
 #include "zwave.hpp"
 
+namespace th06
+{
 enum SoundIdx
 {
     NO_SOUND = -1,
@@ -94,3 +96,4 @@ C_ASSERT(sizeof(SoundPlayer) == 0x638);
 DIFFABLE_EXTERN(SoundBufferIdxVolume, g_SoundBufferIdxVol[32]);
 DIFFABLE_EXTERN(char, *g_SFXList[26]);
 DIFFABLE_EXTERN(SoundPlayer, g_SoundPlayer)
+}; // namespace th06

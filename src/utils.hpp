@@ -16,8 +16,14 @@
 #define WAS_PRESSED_WEIRD(key)                                                                                         \
     (WAS_PRESSED(key) || (((g_CurFrameInput & (key)) != 0) && (g_IsEigthFrameOfHeldInput != 0)))
 
+namespace th06
+{
+namespace utils
+{
 ZunResult CheckForRunningGameInstance(void);
 void DebugPrint(const char *fmt, ...);
 void DebugPrint2(const char *fmt, ...);
 
 f32 AddNormalizeAngle(f32 a, f32 b);
+}; // namespace utils
+}; // namespace th06

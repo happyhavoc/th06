@@ -3,6 +3,10 @@
 
 #include <new>
 
+namespace th06
+{
+DIFFABLE_STATIC(Chain, g_Chain)
+
 ChainElem::ChainElem()
 {
     prev = NULL;
@@ -146,11 +150,11 @@ void Chain::Cut(ChainElem *to_remove)
 destroy_elem:
     if (!isDrawChain)
     {
-        DebugPrint2("calc cut Chain (Pri = %d)\n", to_remove->priority);
+        utils::DebugPrint2("calc cut Chain (Pri = %d)\n", to_remove->priority);
     }
     else
     {
-        DebugPrint2("draw cut Chain (Pri = %d)\n", to_remove->priority);
+        utils::DebugPrint2("draw cut Chain (Pri = %d)\n", to_remove->priority);
     }
 
     if (to_remove->prev != NULL)
@@ -296,7 +300,7 @@ int Chain::AddToCalcChain(ChainElem *elem, int priority)
     ChainElem *cur;
 
     cur = &this->calcChain;
-    DebugPrint2("add calc chain (pri = %d)\n", priority);
+    utils::DebugPrint2("add calc chain (pri = %d)\n", priority);
     elem->priority = priority;
 
     while (cur->next != NULL)
@@ -346,7 +350,7 @@ int Chain::AddToDrawChain(ChainElem *elem, int priority)
     ChainElem *cur;
 
     cur = &this->drawChain;
-    DebugPrint2("add draw chain (pri = %d)\n", priority);
+    utils::DebugPrint2("add draw chain (pri = %d)\n", priority);
     elem->priority = priority;
 
     while (cur->next != NULL)
@@ -387,5 +391,4 @@ int Chain::AddToDrawChain(ChainElem *elem, int priority)
         return 0;
     }
 }
-
-DIFFABLE_STATIC(Chain, g_Chain)
+}; // namespace th06

@@ -5,6 +5,9 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
+
 #define BACKGROUND_MUSIC_BUFFER_SIZE 0x8000
 #define BACKGROUND_MUSIC_WAV_NUM_CHANNELS 2
 #define BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE 16
@@ -20,6 +23,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 26, g_SFXList) = {
     "data/wav/kira01.wav", "data/wav/kira02.wav",   "data/wav/extend.wav",   "data/wav/timeout.wav",
     "data/wav/graze.wav",  "data/wav/powerup.wav",
 };
+DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
 
 SoundPlayer::SoundPlayer()
 {
@@ -43,7 +47,7 @@ ZunResult SoundPlayer::InitializeDSound(HWND gameWindow)
     this->manager = new CSoundManager();
     if (this->manager->Initialize(gameWindow, 2, 2, 44100, 16) < ZUN_SUCCESS)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_INITIALIZE_OBJECT);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_INITIALIZE_OBJECT);
         if (this->manager != NULL)
         {
             delete this->manager;
@@ -83,7 +87,7 @@ ZunResult SoundPlayer::InitializeDSound(HWND gameWindow)
     /* 4 times per second */
     SetTimer(gameWindow, 0, 250, NULL);
     this->gameWindow = gameWindow;
-    GameErrorContextLog(&g_GameErrorContext, TH_DBG_SOUNDPLAYER_INIT_SUCCESS);
+    GameErrorContext::Log(&g_GameErrorContext, TH_DBG_SOUNDPLAYER_INIT_SUCCESS);
     return ZUN_SUCCESS;
 }
 
@@ -95,9 +99,9 @@ void SoundPlayer::StopBGM()
         if (this->backgroundMusicThreadHandle != NULL)
         {
             PostThreadMessageA(this->backgroundMusicThreadId, WM_QUIT, 0, 0);
-            DebugPrint2("stop m_dwNotifyThreadID\n");
+            utils::DebugPrint2("stop m_dwNotifyThreadID\n");
             WaitForSingleObject(this->backgroundMusicThreadHandle, INFINITE);
-            DebugPrint2("comp\n");
+            utils::DebugPrint2("comp\n");
             CloseHandle(this->backgroundMusicThreadHandle);
             CloseHandle(this->backgroundMusicUpdateEvent);
             this->backgroundMusicThreadHandle = NULL;
@@ -107,7 +111,7 @@ void SoundPlayer::StopBGM()
             delete this->backgroundMusic;
             this->backgroundMusic = NULL;
         }
-        DebugPrint2("stop BGM\n");
+        utils::DebugPrint2("stop BGM\n");
     }
     return;
 }
@@ -141,11 +145,11 @@ ZunResult SoundPlayer::LoadWav(char *path)
         return ZUN_ERROR;
     }
     this->StopBGM();
-    DebugPrint2("load BGM\n");
+    utils::DebugPrint2("load BGM\n");
     res = waveFile.Open(path, NULL, WAVEFILE_READ);
     if (FAILED(res))
     {
-        DebugPrint2("error : wav file load error %s\n", path);
+        utils::DebugPrint2("error : wav file load error %s\n", path);
         waveFile.Close();
         return ZUN_ERROR;
     }
@@ -175,10 +179,10 @@ ZunResult SoundPlayer::LoadWav(char *path)
                                          notifySize, this->backgroundMusicUpdateEvent);
     if (FAILED(res))
     {
-        DebugPrint2(TH_ERR_SOUNDPLAYER_FAILED_TO_CREATE_BGM_SOUND_BUFFER);
+        utils::DebugPrint2(TH_ERR_SOUNDPLAYER_FAILED_TO_CREATE_BGM_SOUND_BUFFER);
         return ZUN_ERROR;
     }
-    DebugPrint2("comp\n");
+    utils::DebugPrint2("comp\n");
     startTime2 = timeGetTime();
     curTime2 = startTime2;
     waitTime2 = 100;
@@ -210,7 +214,8 @@ ZunResult SoundPlayer::InitSoundBuffers()
         {
             if (this->LoadSound(idx, g_SFXList[idx]) != ZUN_SUCCESS)
             {
-                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_LOAD_SOUND_FILE, g_SFXList[idx]);
+                GameErrorContext::Log(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_LOAD_SOUND_FILE,
+                                      g_SFXList[idx]);
                 return ZUN_ERROR;
             }
         }
@@ -274,7 +279,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
     }
     if (strncmp((char *)sFDCursor, "RIFF", 4))
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
         free(soundFileData);
         return ZUN_ERROR;
     }
@@ -285,7 +290,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
 
     if (strncmp((char *)sFDCursor, "WAVE", 4))
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
         free(soundFileData);
         return ZUN_ERROR;
     }
@@ -293,7 +298,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
     wavDataPtr = GetWavFormatData(sFDCursor, "fmt ", &formatSize, fileSize - 12);
     if (wavDataPtr == NULL)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
         free(soundFileData);
         return ZUN_ERROR;
     }
@@ -302,7 +307,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
     wavDataPtr = GetWavFormatData(sFDCursor, "data", &formatSize, fileSize - 12);
     if (wavDataPtr == NULL)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NOT_A_WAV_FILE, path);
         free(soundFileData);
         return ZUN_ERROR;
     }
@@ -338,7 +343,7 @@ ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
     LPDIRECTSOUNDBUFFER buffer;
     HRESULT res;
 
-    DebugPrint2("play BGM\n");
+    utils::DebugPrint2("play BGM\n");
     if (this->backgroundMusic == NULL)
     {
         return ZUN_ERROR;
@@ -360,7 +365,7 @@ ZunResult SoundPlayer::PlayBGM(BOOL isLooping)
     {
         return ZUN_ERROR;
     }
-    DebugPrint2("comp\n");
+    utils::DebugPrint2("comp\n");
     this->isLooping = isLooping;
     return ZUN_SUCCESS;
 }
@@ -440,4 +445,4 @@ DWORD __stdcall SoundPlayer::BackgroundMusicPlayerThread(LPVOID lpThreadParamete
     }
     return 0;
 }
-DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
+}; // namespace th06

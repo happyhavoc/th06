@@ -14,6 +14,8 @@
 #include <d3d8.h>
 #include <d3dx8math.h>
 
+namespace th06
+{
 struct Enemy;
 
 struct EnemyBulletShooter
@@ -260,3 +262,4 @@ struct Enemy
     ZunTimer unk_ebc;
 };
 C_ASSERT(sizeof(Enemy) == 0xec8);
+}; // namespace th06

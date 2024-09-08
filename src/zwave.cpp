@@ -16,6 +16,9 @@
 #include <mmsystem.h>
 #include <windows.h>
 
+namespace th06
+{
+
 //-----------------------------------------------------------------------------
 // Name: CSoundManager::CSoundManager()
 // Desc: Constructs the class
@@ -426,15 +429,15 @@ HRESULT CSound::Stop()
 
     HRESULT hr = 0;
 
-    DebugPrint2("CSound::Stop ");
+    utils::DebugPrint2("CSound::Stop ");
 
     for (DWORD i = 0; i < m_dwNumBuffers; i++)
     {
-        DebugPrint2("%d ", i);
+        utils::DebugPrint2("%d ", i);
         hr |= m_apDSBuffer[i]->Stop();
     }
 
-    DebugPrint2("\n");
+    utils::DebugPrint2("\n");
 
     this->m_dwIsFadingOut = 0;
 
@@ -530,7 +533,7 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
     BOOL bRestored;
     if (FAILED(hr = RestoreBuffer(m_apDSBuffer[0], &bRestored)))
     {
-        DebugPrint2("error : RetoreBuffer in HandleWaveStreamNotification\n");
+        utils::DebugPrint2("error : RetoreBuffer in HandleWaveStreamNotification\n");
         return DXTRACE_ERR(TEXT("RestoreBuffer"), hr);
     }
 
@@ -539,7 +542,7 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
         // The buffer was restored, so we need to fill it with new data
         if (FAILED(hr = FillBufferWithSound(m_apDSBuffer[0], FALSE)))
         {
-            DebugPrint2("error : FillBufferWithSound in HandleWaveStreamNotification\n");
+            utils::DebugPrint2("error : FillBufferWithSound in HandleWaveStreamNotification\n");
             return DXTRACE_ERR(TEXT("FillBufferWithSound"), hr);
         }
         return S_OK;
@@ -551,7 +554,7 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
     if (FAILED(hr = m_apDSBuffer[0]->Lock(m_dwNextWriteOffset, m_dwNotifySize, &pDSLockedBuffer, &dwDSLockedBufferSize,
                                           &pDSLockedBuffer2, &dwDSLockedBufferSize2, 0L)))
     {
-        DebugPrint2("error : Buffer->Lock in HandleWaveStreamNotification\n");
+        utils::DebugPrint2("error : Buffer->Lock in HandleWaveStreamNotification\n");
         return DXTRACE_ERR(TEXT("Lock"), hr);
     }
 
@@ -565,7 +568,7 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
         // Fill the DirectSound buffer with wav data
         if (FAILED(hr = m_pWaveFile->Read((BYTE *)pDSLockedBuffer, dwDSLockedBufferSize, &dwBytesWrittenToBuffer)))
         {
-            DebugPrint2("error : m_pWaveFile->Read in HandleWaveStreamNotification\n");
+            utils::DebugPrint2("error : m_pWaveFile->Read in HandleWaveStreamNotification\n");
             return DXTRACE_ERR(TEXT("Read"), hr);
         }
     }
@@ -598,14 +601,14 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
                 // This will keep reading in until the buffer is full (for very short files).
                 if (FAILED(hr = m_pWaveFile->ResetFile(true)))
                 {
-                    DebugPrint2("error : m_pWaveFile->ResetFile in HandleWaveStreamNotification\n");
+                    utils::DebugPrint2("error : m_pWaveFile->ResetFile in HandleWaveStreamNotification\n");
                     return DXTRACE_ERR(TEXT("ResetFile"), hr);
                 }
 
                 if (FAILED(hr = m_pWaveFile->Read((BYTE *)pDSLockedBuffer + dwReadSoFar,
                                                   dwDSLockedBufferSize - dwReadSoFar, &dwBytesWrittenToBuffer)))
                 {
-                    DebugPrint2("error : m_pWaveFile->Read(+) in HandleWaveStreamNotification\n");
+                    utils::DebugPrint2("error : m_pWaveFile->Read(+) in HandleWaveStreamNotification\n");
                     return DXTRACE_ERR(TEXT("Read"), hr);
                 }
 
@@ -623,7 +626,7 @@ HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
     // depending if the user wants to loop the sound
     if (FAILED(hr = m_apDSBuffer[0]->GetCurrentPosition(&dwCurrentPlayPos, NULL)))
     {
-        DebugPrint2("error : m_apDSBuffer[0]->GetCurrentPosition in HandleWaveStreamNotification\n");
+        utils::DebugPrint2("error : m_apDSBuffer[0]->GetCurrentPosition in HandleWaveStreamNotification\n");
         return DXTRACE_ERR(TEXT("GetCurrentPosition"), hr);
     }
 
@@ -741,23 +744,23 @@ HRESULT CWaveFile::Open(LPTSTR strFileName, WAVEFORMATEX *pwfx, DWORD dwFlags)
             switch (mmioInfo.wErrorRet)
             {
             case MMIOERR_PATHNOTFOUND:
-                DebugPrint2("The directory specification is incorrect. \n");
+                utils::DebugPrint2("The directory specification is incorrect. \n");
                 break;
             case MMIOERR_ACCESSDENIED:
-                DebugPrint2("The file is protected and cannot be opened. \n");
+                utils::DebugPrint2("The file is protected and cannot be opened. \n");
                 break;
             case MMIOERR_SHARINGVIOLATION:
-                DebugPrint2("The file is being used by another application and is unavailable. \n");
+                utils::DebugPrint2("The file is being used by another application and is unavailable. \n");
                 break;
             case MMIOERR_TOOMANYOPENFILES:
-                DebugPrint2("too Meny Open Files \n");
+                utils::DebugPrint2("too Meny Open Files \n");
                 break;
             case MMIOERR_INVALIDFILE:
-                DebugPrint2(
+                utils::DebugPrint2(
                     "Another failure condition occurred. This is the default error for an open-file failure. \n");
                 break;
             }
-            DebugPrint2("error : mmioOpen in CWaveFile::Open()\n");
+            utils::DebugPrint2("error : mmioOpen in CWaveFile::Open()\n");
             return E_FAIL;
         }
 
@@ -765,13 +768,13 @@ HRESULT CWaveFile::Open(LPTSTR strFileName, WAVEFORMATEX *pwfx, DWORD dwFlags)
         {
             // ReadMMIO will fail if its an not a wave file
             mmioClose(m_hmmio, 0);
-            DebugPrint2("error : ReadOpen in CWaveFile::Open()\n");
+            utils::DebugPrint2("error : ReadOpen in CWaveFile::Open()\n");
             return E_FAIL;
         }
 
         if (FAILED(hr = ResetFile(false)))
         {
-            DebugPrint2("error : ResetFile in CWaveFile::Open()\n");
+            utils::DebugPrint2("error : ResetFile in CWaveFile::Open()\n");
             return E_FAIL;
         }
 
@@ -902,7 +905,7 @@ HRESULT CWaveFile::ResetFile(bool loop)
     {
         if (m_hmmio == NULL)
         {
-            DebugPrint2("error : m_hmmio\t== NULL in CWaveFile::ResetFile\n");
+            utils::DebugPrint2("error : m_hmmio\t== NULL in CWaveFile::ResetFile\n");
             return CO_E_NOTINITIALIZED;
         }
 
@@ -911,7 +914,7 @@ HRESULT CWaveFile::ResetFile(bool loop)
             // Seek to the data
             if (-1 == mmioSeek(m_hmmio, m_ckRiff.dwDataOffset + sizeof(FOURCC), SEEK_SET))
             {
-                DebugPrint2("error : mmioSeek in CWaveFile::ResetFile\n");
+                utils::DebugPrint2("error : mmioSeek in CWaveFile::ResetFile\n");
                 return DXTRACE_ERR(TEXT("mmioSeek"), E_FAIL);
             }
 
@@ -920,7 +923,7 @@ HRESULT CWaveFile::ResetFile(bool loop)
             MMRESULT res = mmioDescend(m_hmmio, &m_ck, &m_ckRiff, MMIO_FINDCHUNK);
             if (0 != res)
             {
-                DebugPrint2("error : mmioDescend in CWaveFile::ResetFile\n");
+                utils::DebugPrint2("error : mmioDescend in CWaveFile::ResetFile\n");
                 return DXTRACE_ERR(TEXT("mmioDescend"), E_FAIL);
             }
 
@@ -933,7 +936,7 @@ HRESULT CWaveFile::ResetFile(bool loop)
                 MMIOINFO mmioinfoIn;
                 if (0 != mmioGetInfo(this->m_hmmio, &mmioinfoIn, 0))
                 {
-                    DebugPrint2("error : mmioGetInfo in CWaveFile::ResetFile\n");
+                    utils::DebugPrint2("error : mmioGetInfo in CWaveFile::ResetFile\n");
                     return E_FAIL;
                 }
                 for (int i = 0; i < this->m_loopStartPoint; i++)
@@ -942,12 +945,12 @@ HRESULT CWaveFile::ResetFile(bool loop)
                     {
                         if (0 != mmioAdvance(this->m_hmmio, &mmioinfoIn, 0))
                         {
-                            DebugPrint2("error : mmioAdvance in CWaveFile::ResetFile\n");
+                            utils::DebugPrint2("error : mmioAdvance in CWaveFile::ResetFile\n");
                             return E_FAIL;
                         }
                         if (mmioinfoIn.pchNext == mmioinfoIn.pchEndRead)
                         {
-                            DebugPrint2(
+                            utils::DebugPrint2(
                                 "error : mmioinfoIn.pchNext == mmioinfoIn.pchEndRead in CWaveFile::ResetFile\n");
                             return E_FAIL;
                         }
@@ -957,7 +960,7 @@ HRESULT CWaveFile::ResetFile(bool loop)
                 this->m_ck.cksize = this->m_ck.cksize - this->m_loopStartPoint;
                 if (mmioSetInfo(this->m_hmmio, &mmioinfoIn, 0) != 0)
                 {
-                    DebugPrint2("error : mmioSetInfo in CWaveFile::ResetFile\n");
+                    utils::DebugPrint2("error : mmioSetInfo in CWaveFile::ResetFile\n");
                     return 0x80004005;
                 }
             }
@@ -1010,7 +1013,7 @@ HRESULT CWaveFile::Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead)
 
         if (0 != mmioGetInfo(m_hmmio, &mmioinfoIn, 0))
         {
-            DebugPrint2("error :\t%s(%s)\n", __FILE__, 1060);
+            utils::DebugPrint2("error :\t%s(%s)\n", __FILE__, 1060);
             return DXTRACE_ERR(TEXT("mmioGetInfo"), E_FAIL);
         }
 
@@ -1029,7 +1032,7 @@ HRESULT CWaveFile::Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead)
                 {
                     // Note: 1075 here is _probably_ the line number. I'm not
                     // using __LINE__ to avoid mismatches due to reformatting.
-                    DebugPrint2("error :\t%s(%s)\n", __FILE__, 1075);
+                    utils::DebugPrint2("error :\t%s(%s)\n", __FILE__, 1075);
                     return DXTRACE_ERR(TEXT("mmioAdvance"), E_FAIL);
                 }
 
@@ -1037,7 +1040,7 @@ HRESULT CWaveFile::Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead)
                 {
                     // Note: 1075 here is _probably_ the line number. I'm not
                     // using __LINE__ to avoid mismatches due to reformatting.
-                    DebugPrint2("error :\t%s(%s)\n", __FILE__, 1079);
+                    utils::DebugPrint2("error :\t%s(%s)\n", __FILE__, 1079);
                     return DXTRACE_ERR(TEXT("mmioinfoIn.pchNext"), E_FAIL);
                 }
             }
@@ -1049,7 +1052,7 @@ HRESULT CWaveFile::Read(BYTE *pBuffer, DWORD dwSizeToRead, DWORD *pdwSizeRead)
 
         if (0 != mmioSetInfo(m_hmmio, &mmioinfoIn, 0))
         {
-            DebugPrint2("error :\t%s(%s)\n", __FILE__, 1088);
+            utils::DebugPrint2("error :\t%s(%s)\n", __FILE__, 1088);
             return DXTRACE_ERR(TEXT("mmioSetInfo"), E_FAIL);
         }
 
@@ -1073,3 +1076,4 @@ HRESULT CWaveFile::Close()
     }
     return S_OK;
 }
+}; // namespace th06

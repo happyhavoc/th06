@@ -14,6 +14,8 @@
 #include "ZunColor.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(Gui, g_Gui);
 DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
@@ -305,7 +307,7 @@ ZunResult Gui::LoadMsg(char *path)
     this->impl->msg.msgFile = (MsgRawHeader *)FileSystem::OpenPath(path, 0);
     if (this->impl->msg.msgFile == NULL)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GUI_MSG_FILE_CORRUPTED, path);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GUI_MSG_FILE_CORRUPTED, path);
         return ZUN_ERROR;
     }
     this->impl->msg.currentMsgIdx = 0xffffffff;
@@ -828,3 +830,4 @@ void Gui::DrawStageElements()
     }
 }
 #pragma optimize("", on)
+}; // namespace th06

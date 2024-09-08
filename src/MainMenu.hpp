@@ -9,6 +9,8 @@
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 enum GameState
 {
     STATE_STARTUP,
@@ -118,3 +120,4 @@ struct MainMenu
 C_ASSERT(sizeof(MainMenu) == 0x10f34);
 
 DIFFABLE_EXTERN(MainMenu, g_MainMenu);
+}; // namespace th06

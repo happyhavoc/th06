@@ -16,6 +16,8 @@
 #include "ZunBool.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(Player, g_Player);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(CharacterData, 4, g_CharData) = {
@@ -688,7 +690,7 @@ void Player::DrawBullets(Player *p)
         }
         if (bullets->sprite.autoRotate)
         {
-            bullets->sprite.rotation.z = ZUN_PI / 2 - AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
+            bullets->sprite.rotation.z = ZUN_PI / 2 - utils::AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
         }
         g_AnmManager->Draw2(&bullets->sprite);
     }
@@ -947,3 +949,4 @@ void Player::Die()
     }
     return;
 }
+}; // namespace th06

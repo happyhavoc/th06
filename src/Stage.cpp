@@ -12,6 +12,8 @@
 #include "utils.hpp"
 #include <d3d8.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(ChainElem, g_StageCalcChain)
 DIFFABLE_STATIC(ChainElem, g_StageOnDrawHighPrioChain)
 DIFFABLE_STATIC(ChainElem, g_StageOnDrawLowPrioChain)
@@ -26,6 +28,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(StageFile, 8, g_StageFiles) = {
     {"data/stg6bg.anm", "data/stage6.std"},
     {"data/stg7bg.anm", "data/stage7.std"},
 };
+DIFFABLE_STATIC(Stage, g_Stage)
 
 #pragma var_order(stg, timer)
 ZunResult Stage::RegisterChain(u32 stage)
@@ -156,7 +159,7 @@ ZunResult Stage::LoadStageData(char *anmpath, char *stdpath)
     this->stdData = (RawStageHeader *)FileSystem::OpenPath(stdpath, false);
     if (this->stdData == NULL)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_STAGE_DATA_CORRUPTED);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_STAGE_DATA_CORRUPTED);
         return ZUN_ERROR;
     }
     this->objectsCount = this->stdData->nbObjects;
@@ -411,7 +414,7 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
                 gameRegion.right = GAME_REGION_LEFT + GAME_REGION_WIDTH;
                 gameRegion.bottom = GAME_REGION_TOP + GAME_REGION_HEIGHT;
                 stageToSpellcardBackgroundAlpha = (stage->ticksSinceSpellcardStarted * 255) / 60;
-                DrawSquare(&gameRegion, stageToSpellcardBackgroundAlpha << 24);
+                ScreenEffect::DrawSquare(&gameRegion, stageToSpellcardBackgroundAlpha << 24);
             }
         }
     }
@@ -425,7 +428,7 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
     }
     g_Supervisor.viewport.MinZ = 0.0;
     g_Supervisor.viewport.MaxZ = 0.5;
-    SetupCameraStageBackground(0);
+    GameManager::SetupCameraStageBackground(0);
     g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
     val = 1000.0f;
     g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&val);
@@ -679,5 +682,4 @@ ZunResult Stage::RenderObjects(i32 zLevel)
     }
     return ZUN_SUCCESS;
 }
-
-DIFFABLE_STATIC(Stage, g_Stage)
+}; // namespace th06

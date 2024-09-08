@@ -7,6 +7,8 @@
 #include "utils.hpp"
 #include <stdio.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(AsciiManager, g_AsciiManager)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerCalcChain)
 DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawMenusChain)
@@ -354,3 +356,4 @@ void AsciiManager::CreatePopup2(D3DXVECTOR3 *position, i32 value, D3DCOLOR color
 
     this->nextPopupIndex2++;
 }
+}; // namespace th06

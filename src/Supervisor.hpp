@@ -12,6 +12,8 @@
 #include "inttypes.hpp"
 #include "pbg3/Pbg3Archive.hpp"
 
+namespace th06
+{
 enum GameConfigOptsShifts
 {
     GCOS_USE_D3D_HW_TEXTURE_BLENDING = 0x0,
@@ -202,6 +204,8 @@ enum TouhouButton
     TH_BUTTON_ANY = 0xFFFF,
 };
 
+namespace Controller
+{
 u16 GetJoystickCaps(void);
 u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
                                   u32 inputButtons);
@@ -209,15 +213,13 @@ u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, e
 unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest,
                                               enum TouhouButton touhouButton, u8 *inputButtons);
 
-namespace Controller
-{
 u16 GetControllerInput(u16 buttons);
 u8 *GetControllerState();
-}; // namespace Controller
-
 u16 GetInput(void);
 BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef);
 BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext);
+void ResetKeyboard(void);
+}; // namespace Controller
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
 DIFFABLE_EXTERN(Supervisor, g_Supervisor)
@@ -225,3 +227,4 @@ DIFFABLE_EXTERN(u16, g_LastFrameInput)
 DIFFABLE_EXTERN(u16, g_CurFrameInput)
 DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
 DIFFABLE_EXTERN(IDirect3DSurface8 *, g_TextBufferSurface)
+}; // namespace th06

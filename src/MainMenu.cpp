@@ -20,11 +20,12 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 5, g_DifficultyList) = {"Easy   ", "Normal ", "Hard   ", "Lunatic", "Extra  "};
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 7, g_StageList) = {"Stage1", "Stage2", "Stage3", "Stage4",
                                                         "Stage5", "Stage6", "Extra "};
-
 #pragma optimize("s", on)
 #pragma var_order(time, i, vector3Ptr)
 ZunResult MainMenu::BeginStartup()
@@ -354,7 +355,7 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
 
     memset(menu, 0, sizeof(MainMenu));
     g_GameManager.isInGameMenu = 0;
-    DebugPrint(TH_DBG_MAINMENU_VRAM, g_Supervisor.d3dDevice->GetAvailableTextureMem());
+    utils::DebugPrint(TH_DBG_MAINMENU_VRAM, g_Supervisor.d3dDevice->GetAvailableTextureMem());
     menu->gameState = isDemo ? STATE_REPLAY_LOAD : STATE_STARTUP;
     g_Supervisor.framerateMultiplier = 0.0;
     menu->chainCalc = g_Chain.CreateElem((ChainCallback)MainMenu::OnUpdate);
@@ -399,7 +400,7 @@ i32 MainMenu::ReplayHandling()
         {
             if (LoadReplayMenu(this))
             {
-                GameErrorContextLog(&g_GameErrorContext, "japanese");
+                GameErrorContext::Log(&g_GameErrorContext, "japanese");
                 g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
                 return ZUN_SUCCESS;
             }
@@ -981,7 +982,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         {
             if (LoadDiffCharSelect(menu) != ZUN_SUCCESS)
             {
-                GameErrorContextLog(&g_GameErrorContext, TH_ERR_MAINMENU_LOAD_SELECT_SCREEN_FAILED);
+                GameErrorContext::Log(&g_GameErrorContext, TH_ERR_MAINMENU_LOAD_SELECT_SCREEN_FAILED);
                 g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
                 return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
             }
@@ -1440,7 +1441,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     refreshRate = 60.0f / 70.0f;
                 else
                     refreshRate = 1.0;
-                DebugPrint("Reflesh Rate = %f\n", 60.0f / refreshRate);
+                utils::DebugPrint("Reflesh Rate = %f\n", 60.0f / refreshRate);
                 g_Supervisor.framerateMultiplier = refreshRate;
                 g_Supervisor.StopAudio();
                 return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
@@ -1625,17 +1626,19 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
             menu->numFramesSinceActive += 1;
         }
         targetOpacity = COLOR_ALPHA(menu->menuTextColor) - COLOR_ALPHA(menu->minimumOpacity);
-        DrawSquare(&window, COLOR_SET_ALPHA(menu->menuTextColor,
-                                            targetOpacity * menu->numFramesSinceActive / menu->framesActive +
-                                                COLOR_ALPHA(menu->minimumOpacity)));
+        ScreenEffect::DrawSquare(
+            &window,
+            COLOR_SET_ALPHA(menu->menuTextColor, targetOpacity * menu->numFramesSinceActive / menu->framesActive +
+                                                     COLOR_ALPHA(menu->minimumOpacity)));
     }
     else if (menu->numFramesSinceActive != 0)
     {
         menu->numFramesSinceActive -= 1;
         targetOpacity = COLOR_ALPHA(menu->menuTextColor) - COLOR_ALPHA(menu->minimumOpacity);
-        DrawSquare(&window, COLOR_SET_ALPHA(menu->menuTextColor,
-                                            targetOpacity * menu->numFramesSinceActive / menu->framesInactive +
-                                                COLOR_ALPHA(menu->minimumOpacity)));
+        ScreenEffect::DrawSquare(
+            &window,
+            COLOR_SET_ALPHA(menu->menuTextColor, targetOpacity * menu->numFramesSinceActive / menu->framesInactive +
+                                                     COLOR_ALPHA(menu->minimumOpacity)));
     }
     for (vmIdx = 0; vmIdx < 98; vmIdx++, curVm++)
     {
@@ -2359,3 +2362,4 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 #pragma optimize("", on)
 
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
+}; // namespace th06

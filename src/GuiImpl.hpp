@@ -5,6 +5,8 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+namespace th06
+{
 struct MsgRawEntry
 {
 };
@@ -67,3 +69,4 @@ struct GuiImpl
     GuiFormattedText spellCardBonus;
 };
 C_ASSERT(sizeof(GuiImpl) == 0x2c44);
+}; // namespace th06

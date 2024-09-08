@@ -5,6 +5,8 @@
 #include "pbg3/Pbg3Archive.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(u32, g_LastFileSize)
 
 #pragma var_order(pbg3Idx, entryname, entryIdx, fsize, data, file)
@@ -59,17 +61,17 @@ u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
     }
     if (entryIdx >= 0)
     {
-        DebugPrint2("%s Decode ... \n", entryname);
+        utils::DebugPrint2("%s Decode ... \n", entryname);
         data = g_Pbg3Archives[pbg3Idx]->ReadDecompressEntry(entryIdx, entryname);
         g_LastFileSize = g_Pbg3Archives[pbg3Idx]->GetEntrySize(entryIdx);
     }
     else
     {
-        DebugPrint2("%s Load ... \n", filepath);
+        utils::DebugPrint2("%s Load ... \n", filepath);
         file = fopen(filepath, "rb");
         if (file == NULL)
         {
-            DebugPrint2("error : %s is not found.\n", filepath);
+            utils::DebugPrint2("error : %s is not found.\n", filepath);
             return NULL;
         }
         else
@@ -109,3 +111,4 @@ int FileSystem::WriteDataToFile(char *path, void *data, size_t size)
         }
     }
 }
+}; // namespace th06

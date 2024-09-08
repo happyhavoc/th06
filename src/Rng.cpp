@@ -1,5 +1,7 @@
 #include "Rng.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(Rng, g_Rng);
 
 u16 Rng::GetRandomU16(void)
@@ -20,3 +22,4 @@ f32 Rng::GetRandomF32ZeroToOne(void)
 {
     return (f32)GetRandomU32() / (f32)0xFFFFFFFF;
 }
+}; // namespace th06

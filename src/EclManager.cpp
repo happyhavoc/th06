@@ -12,6 +12,8 @@
 #include "Stage.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 64, g_SpellcardScore) = {
     200000, 200000, 200000, 200000, 200000, 200000, 200000, 250000, 250000, 250000, 250000, 250000, 250000,
     250000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000, 300000,
@@ -30,7 +32,7 @@ ZunResult EclManager::Load(char *eclPath)
     this->eclFile = (EclRawHeader *)FileSystem::OpenPath(eclPath, false);
     if (this->eclFile == NULL)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_ECLMANAGER_ENEMY_DATA_CORRUPT);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ECLMANAGER_ENEMY_DATA_CORRUPT);
         return ZUN_ERROR;
     }
     this->eclFile->timelineOffsets[0] =
@@ -113,7 +115,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 break;
             case ECL_OPCODE_MATHNORMANGLE:
                 local_18 = *(f32 *)Enemy::GetVar(enemy, &instruction->args.alu.res, NULL);
-                local_18 = AddNormalizeAngle(local_18, 0.0f);
+                local_18 = utils::AddNormalizeAngle(local_18, 0.0f);
                 Enemy::SetVar(enemy, instruction->args.alu.res, &local_18);
                 break;
             case ECL_OPCODE_SETINTRAND:
@@ -235,7 +237,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             case ECL_OPCODE_RET:
                 if (enemy->flags.unk14)
                 {
-                    DebugPrint2("error : no Stack Ret\n");
+                    utils::DebugPrint2("error : no Stack Ret\n");
                 }
                 enemy->stackDepth--;
                 memcpy(&enemy->currentContext, &enemy->savedContextStack[enemy->stackDepth], sizeof(EnemyEclContext));
@@ -277,7 +279,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             case ECL_OPCODE_ANMSETSLOT:
                 if (ARRAY_SIZE_SIGNED(enemy->vms) <= instruction->args.anmSetSlot.vmIdx)
                 {
-                    DebugPrint2("error : sub anim overflow\n");
+                    utils::DebugPrint2("error : sub anim overflow\n");
                 }
                 g_AnmManager->SetAndExecuteScriptIdx(&enemy->vms[instruction->args.anmSetSlot.vmIdx],
                                                      args->anmSetSlot.scriptIdx + ANM_SCRIPT_ENEMY_START);
@@ -351,7 +353,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 }
                 local_58->position = enemy->position + enemy->shootOffset;
                 local_58->angle1 = *Enemy::GetVarFloat(enemy, &local_54->angle1, NULL);
-                local_58->angle1 = AddNormalizeAngle(local_58->angle1, 0.0f);
+                local_58->angle1 = utils::AddNormalizeAngle(local_58->angle1, 0.0f);
                 local_58->speed1 = *Enemy::GetVarFloat(enemy, &local_54->speed1, NULL);
                 if (local_58->speed1 != 0.0f)
                 {
@@ -902,8 +904,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             switch (enemy->flags.unk1)
             {
             case 1:
-                enemy->angle =
-                    AddNormalizeAngle(enemy->angle, g_Supervisor.effectiveFramerateMultiplier * enemy->angularVelocity);
+                enemy->angle = utils::AddNormalizeAngle(enemy->angle, g_Supervisor.effectiveFramerateMultiplier *
+                                                                          enemy->angularVelocity);
                 enemy->speed = g_Supervisor.effectiveFramerateMultiplier * enemy->acceleration + enemy->speed;
                 sincosmul(&enemy->axisSpeed, enemy->angle, enemy->speed);
                 enemy->axisSpeed.z = 0.0;
@@ -1011,3 +1013,4 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
         }
     }
 }
+}; // namespace th06

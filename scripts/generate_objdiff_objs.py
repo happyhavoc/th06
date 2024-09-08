@@ -1,6 +1,6 @@
 import coff
+import csv
 from pathlib import Path
-import re
 import struct
 import sys
 
@@ -8,11 +8,25 @@ SCRIPTS_DIR = Path(__file__).parent
 
 
 def demangle_msvc(sym):
-    offset = 0
-    if len(sym) == offset or sym[offset : offset + 1] != b"?":
+    if len(sym) == 0:
+        return sym
+
+    if sym[0:1] == b"_":
+        # Handle stdcall symbols first, those are simple. First remove the leading
+        # underscore, then split on the last @ and remove everything that comes afterwards
+        end_of_sym = sym.rfind(b"@")
+        if end_of_sym == -1:
+            # Not an stdcall, let's just not demangle it.
+            return sym
+        else:
+            return sym[1:end_of_sym]
+
+    if sym[0:1] != b"?":
         # Unmangled symbol?
         return sym
-    offset += 1
+
+    # Handle CPP mangling.
+    offset = 1
 
     # Read name. Start with special symbols
     special = None
@@ -33,30 +47,46 @@ def demangle_msvc(sym):
         name = sym[start_of_name:end_of_name]
 
     # Read scope
-    start_of_scope = offset
-    end_of_scope = sym.find(b"@", offset)
-    if end_of_scope == -1:
-        end_of_scope = len(sym)
-        offset = len(sym)
-    else:
-        offset = end_of_scope + 1
-    scope = sym[start_of_scope:end_of_scope]
+    scope = []
+    while True:
+        start_of_scope = offset
+        end_of_scope = sym.find(b"@", offset)
+        if end_of_scope == -1:
+            end_of_scope = len(sym)
+            offset = len(sym)
+        else:
+            offset = end_of_scope + 1
+        cur_scope = sym[start_of_scope:end_of_scope]
+        if len(cur_scope) == 0:
+            break
+        scope.append(cur_scope)
 
     if name is not None:
-        return scope + b"::" + name
+        return b"::".join(scope[::-1]) + b"::" + name
     elif special == 0:
-        return scope + b"::" + scope
+        return b"::".join(scope[::-1]) + b"::" + scope[0]
     elif special == 1:
-        return scope + b"::~" + scope
+        return b"::".join(scope[::-1]) + b"::~" + scope[0]
     else:
         return sym
+
+
+def sym_prefix(full_sym, prefix):
+    return full_sym == prefix or full_sym.startswith(prefix + b"::")
 
 
 def rename_symbols(filename):
     reimpl_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "reimpl"
     orig_folder = SCRIPTS_DIR.parent / "build" / "objdiff" / "orig"
+    config_folder = SCRIPTS_DIR.parent / "config"
 
-    class_name = re.sub("\\.obj$", "", filename.name)
+    ns_to_obj = {}
+
+    with open(str(config_folder / "ghidra_ns_to_obj.csv")) as f:
+        ghidra_ns_to_obj = csv.reader(f)
+        for vals in ghidra_ns_to_obj:
+            ns_to_obj[vals[0]] = vals[1:]
+
     obj = coff.ObjectModule()
     with open(str(filename), "rb") as f:
         obj.unpack(f.read(), 0)
@@ -70,7 +100,10 @@ def rename_symbols(filename):
         seen[sym] = True
 
         demangled_sym = demangle_msvc(sym)
-        if class_name.encode("utf8") not in demangled_sym.split(b"::")[0]:
+        if not any(
+            sym_prefix(demangled_sym, val.encode("utf8"))
+            for val in ns_to_obj[filename.stem]
+        ):
             continue
 
         offset = obj.string_table.append(demangled_sym)

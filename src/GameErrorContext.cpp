@@ -3,9 +3,11 @@
 #include "GameErrorContext.hpp"
 #include <stdio.h>
 
+namespace th06
+{
 DIFFABLE_STATIC(GameErrorContext, g_GameErrorContext)
 
-const char *GameErrorContextFatal(GameErrorContext *ctx, const char *fmt, ...)
+const char *GameErrorContext::Fatal(GameErrorContext *ctx, const char *fmt, ...)
 {
     char tmpBuffer[512];
     size_t tmpBufferSize;
@@ -31,7 +33,7 @@ const char *GameErrorContextFatal(GameErrorContext *ctx, const char *fmt, ...)
     return fmt;
 }
 
-const char *GameErrorContextLog(GameErrorContext *ctx, const char *fmt, ...)
+const char *GameErrorContext::Log(GameErrorContext *ctx, const char *fmt, ...)
 {
     char tmpBuffer[512];
     size_t tmpBufferSize;
@@ -61,7 +63,7 @@ void GameErrorContext::Flush()
 
     if (m_BufferEnd != m_Buffer)
     {
-        GameErrorContextLog(this, TH_ERR_LOGGER_END);
+        GameErrorContext::Log(this, TH_ERR_LOGGER_END);
 
         if (m_ShowMessageBox)
         {
@@ -74,3 +76,4 @@ void GameErrorContext::Flush()
         fclose(logFile);
     }
 }
+}; // namespace th06

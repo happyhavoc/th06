@@ -3,6 +3,8 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+namespace th06
+{
 class IPbg3Parser
 {
   public:
@@ -32,3 +34,4 @@ class IPbg3Parser
     u8 bitIdxInCurByte;
     u32 crc;
 };
+}; // namespace th06

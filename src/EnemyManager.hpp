@@ -7,6 +7,8 @@
 #include "inttypes.hpp"
 #include <Windows.h>
 
+namespace th06
+{
 struct RunningSpellcardInfo
 {
     ZunBool isCapturing;
@@ -48,3 +50,4 @@ struct EnemyManager
 C_ASSERT(sizeof(EnemyManager) == 0xee5ec);
 
 DIFFABLE_EXTERN(EnemyManager, g_EnemyManager)
+}; // namespace th06

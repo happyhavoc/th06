@@ -2,6 +2,8 @@
 
 #include "pbg3/Pbg3Archive.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(Pbg3Archive **, g_Pbg3Archives)
 
 Pbg3Archive::Pbg3Archive()
@@ -291,3 +293,4 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
     free(rawData);
     return out;
 }
+}; // namespace th06

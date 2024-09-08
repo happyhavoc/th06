@@ -9,8 +9,11 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+namespace th06
+{
 DIFFABLE_STATIC(HANDLE, g_ExclusiveMutex)
-
+namespace utils
+{
 ZunResult CheckForRunningGameInstance(void)
 {
     g_ExclusiveMutex = CreateMutex(NULL, TRUE, TEXT("Touhou Koumakyou App"));
@@ -21,7 +24,7 @@ ZunResult CheckForRunningGameInstance(void)
     }
     else if (GetLastError() == ERROR_ALREADY_EXISTS)
     {
-        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ALREADY_RUNNING);
+        GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_ALREADY_RUNNING);
         return ZUN_ERROR;
     }
 
@@ -76,3 +79,5 @@ void DebugPrint2(const char *fmt, ...)
     printf("DEBUG2: %s\n", tmpBuffer);
 #endif
 }
+}; // namespace utils
+}; // namespace th06

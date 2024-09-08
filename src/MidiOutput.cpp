@@ -1,5 +1,7 @@
 #include "MidiOutput.hpp"
 
+namespace th06
+{
 MidiTimer::MidiTimer()
 {
     timeGetDevCaps(&this->timeCaps, sizeof(TIMECAPS));
@@ -59,3 +61,4 @@ MidiOutput::~MidiOutput()
         this->ReleaseFileData(i);
     }
 }
+}; // namespace th06
