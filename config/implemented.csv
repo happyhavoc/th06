@@ -95,8 +95,8 @@ Enemy::HandleTimerCallback
 Enemy::Despawn
 Enemy::ResetEffectArray
 Enemy::UpdateEffects
-GameErrorContextFatal
-GameErrorContextLog
+GameErrorContext::Fatal
+GameErrorContext::Log
 GameErrorContext::Flush
 GameWindow::Present
 GameWindow::Render

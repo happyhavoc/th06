@@ -321,13 +321,13 @@ i32 InitD3dRendering(void)
             {
                 present_params.BackBufferFormat = D3DFMT_X8R8G8B8;
                 g_Supervisor.cfg.colorMode16bit = 0;
-                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SCREEN_INIT_32BITS);
+                GameErrorContext::Log(&g_GameErrorContext, TH_ERR_SCREEN_INIT_32BITS);
             }
             else
             {
                 present_params.BackBufferFormat = D3DFMT_R5G6B5;
                 g_Supervisor.cfg.colorMode16bit = 1;
-                GameErrorContextLog(&g_GameErrorContext, TH_ERR_SCREEN_INIT_16BITS);
+                GameErrorContext::Log(&g_GameErrorContext, TH_ERR_SCREEN_INIT_16BITS);
             }
         }
         else if (g_Supervisor.cfg.colorMode16bit == 0)
@@ -346,7 +346,7 @@ i32 InitD3dRendering(void)
         {
             present_params.FullScreen_RefreshRateInHz = 60;
             present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_ONE;
-            GameErrorContextLog(&g_GameErrorContext, TH_ERR_SET_REFRESH_RATE_60HZ);
+            GameErrorContext::Log(&g_GameErrorContext, TH_ERR_SET_REFRESH_RATE_60HZ);
         }
         if (g_Supervisor.cfg.frameskipConfig == 0)
         {
@@ -382,12 +382,12 @@ i32 InitD3dRendering(void)
                                                     D3DCREATE_HARDWARE_VERTEXPROCESSING, &present_params,
                                                     &g_Supervisor.d3dDevice) < 0)
             {
-                GameErrorContextLog(&g_GameErrorContext, TH_ERR_TL_HAL_UNAVAILABLE);
+                GameErrorContext::Log(&g_GameErrorContext, TH_ERR_TL_HAL_UNAVAILABLE);
                 if (g_Supervisor.d3dIface->CreateDevice(0, D3DDEVTYPE_HAL, g_GameWindow.window,
                                                         D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
                                                         &g_Supervisor.d3dDevice) < 0)
                 {
-                    GameErrorContextLog(&g_GameErrorContext, TH_ERR_HAL_UNAVAILABLE);
+                    GameErrorContext::Log(&g_GameErrorContext, TH_ERR_HAL_UNAVAILABLE);
                 REFERENCE_RASTERIZER_MODE:
                     if (g_Supervisor.d3dIface->CreateDevice(0, D3DDEVTYPE_REF, g_GameWindow.window,
                                                             D3DCREATE_SOFTWARE_VERTEXPROCESSING, &present_params,
@@ -395,7 +395,7 @@ i32 InitD3dRendering(void)
                     {
                         if (((g_Supervisor.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0 && !g_Supervisor.vsyncEnabled)
                         {
-                            GameErrorContextLog(&g_GameErrorContext, TH_ERR_CANT_CHANGE_REFRESH_RATE_FORCE_VSYNC);
+                            GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CANT_CHANGE_REFRESH_RATE_FORCE_VSYNC);
                             present_params.FullScreen_RefreshRateInHz = 0;
                             g_Supervisor.vsyncEnabled = 1;
                             present_params.FullScreen_PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
@@ -405,14 +405,14 @@ i32 InitD3dRendering(void)
                         {
                             if (present_params.Flags == D3DPRESENTFLAG_LOCKABLE_BACKBUFFER)
                             {
-                                GameErrorContextLog(&g_GameErrorContext, TH_ERR_BACKBUFFER_NONLOCKED);
+                                GameErrorContext::Log(&g_GameErrorContext, TH_ERR_BACKBUFFER_NONLOCKED);
                                 present_params.Flags = 0;
                                 g_Supervisor.lockableBackbuffer = 0;
                                 continue;
                             }
                             else
                             {
-                                GameErrorContextFatal(&g_GameErrorContext, TH_ERR_D3D_INIT_FAILED);
+                                GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_D3D_INIT_FAILED);
                                 if (g_Supervisor.d3dIface != NULL)
                                 {
                                     g_Supervisor.d3dIface->Release();
@@ -424,20 +424,20 @@ i32 InitD3dRendering(void)
                     }
                     else
                     {
-                        GameErrorContextLog(&g_GameErrorContext, TH_USING_REF_MODE);
+                        GameErrorContext::Log(&g_GameErrorContext, TH_USING_REF_MODE);
                         g_Supervisor.hasD3dHardwareVertexProcessing = 0;
                         using_d3d_hal = 0;
                     }
                 }
                 else
                 {
-                    GameErrorContextLog(&g_GameErrorContext, TH_USING_HAL_MODE);
+                    GameErrorContext::Log(&g_GameErrorContext, TH_USING_HAL_MODE);
                     g_Supervisor.hasD3dHardwareVertexProcessing = 0;
                 }
             }
             else
             {
-                GameErrorContextLog(&g_GameErrorContext, TH_USING_TL_HAL_MODE);
+                GameErrorContext::Log(&g_GameErrorContext, TH_USING_TL_HAL_MODE);
                 g_Supervisor.hasD3dHardwareVertexProcessing = 1;
             }
             break;
@@ -467,7 +467,7 @@ i32 InitD3dRendering(void)
     if (((((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0) &&
          ((g_Supervisor.d3dCaps.TextureOpCaps & D3DTEXOPCAPS_ADD) == 0)))
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_NO_SUPPORT_FOR_D3DTEXOPCAPS_ADD);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_SUPPORT_FOR_D3DTEXOPCAPS_ADD);
         g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
     }
     u32 should_run_at_60_fps;
@@ -481,7 +481,7 @@ i32 InitD3dRendering(void)
     }
     if (should_run_at_60_fps && ((g_Supervisor.d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) == 0))
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_CANT_FORCE_60FPS_NO_ASYNC_FLIP);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CANT_FORCE_60FPS_NO_ASYNC_FLIP);
         g_Supervisor.cfg.opts = g_Supervisor.cfg.opts & ~(1 << GCOS_FORCE_60FPS);
     }
     if ((((g_Supervisor.cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) == 0) && (using_d3d_hal != 0))
@@ -495,7 +495,7 @@ i32 InitD3dRendering(void)
         {
             g_Supervisor.colorMode16Bits = 0;
             g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_FORCE_16BIT_COLOR_MODE);
-            GameErrorContextLog(&g_GameErrorContext, TH_ERR_D3DFMT_A8R8G8B8_UNSUPPORTED);
+            GameErrorContext::Log(&g_GameErrorContext, TH_ERR_D3DFMT_A8R8G8B8_UNSUPPORTED);
         }
     }
     InitD3dDevice();

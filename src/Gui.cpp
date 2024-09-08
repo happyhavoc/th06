@@ -307,7 +307,7 @@ ZunResult Gui::LoadMsg(char *path)
     this->impl->msg.msgFile = (MsgRawHeader *)FileSystem::OpenPath(path, 0);
     if (this->impl->msg.msgFile == NULL)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_GUI_MSG_FILE_CORRUPTED, path);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GUI_MSG_FILE_CORRUPTED, path);
         return ZUN_ERROR;
     }
     this->impl->msg.currentMsgIdx = 0xffffffff;

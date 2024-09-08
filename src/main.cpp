@@ -164,7 +164,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     if (renderResult == 2)
     {
         g_GameErrorContext.RstContext();
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_OPTION_CHANGED_RESTART);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_OPTION_CHANGED_RESTART);
 
         if (!g_Supervisor.cfg.windowed)
         {

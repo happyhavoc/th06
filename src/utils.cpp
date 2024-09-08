@@ -23,7 +23,7 @@ ZunResult CheckForRunningGameInstance(void)
     }
     else if (GetLastError() == ERROR_ALREADY_EXISTS)
     {
-        GameErrorContextFatal(&g_GameErrorContext, TH_ERR_ALREADY_RUNNING);
+        GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_ALREADY_RUNNING);
         return ZUN_ERROR;
     }
 

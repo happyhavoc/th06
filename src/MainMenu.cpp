@@ -400,7 +400,7 @@ i32 MainMenu::ReplayHandling()
         {
             if (LoadReplayMenu(this))
             {
-                GameErrorContextLog(&g_GameErrorContext, "japanese");
+                GameErrorContext::Log(&g_GameErrorContext, "japanese");
                 g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
                 return ZUN_SUCCESS;
             }
@@ -982,7 +982,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         {
             if (LoadDiffCharSelect(menu) != ZUN_SUCCESS)
             {
-                GameErrorContextLog(&g_GameErrorContext, TH_ERR_MAINMENU_LOAD_SELECT_SCREEN_FAILED);
+                GameErrorContext::Log(&g_GameErrorContext, TH_ERR_MAINMENU_LOAD_SELECT_SCREEN_FAILED);
                 g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
                 return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
             }

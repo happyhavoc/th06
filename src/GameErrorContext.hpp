@@ -10,9 +10,6 @@ namespace th06
 {
 class GameErrorContext;
 
-const char *GameErrorContextFatal(GameErrorContext *ctx, const char *fmt, ...);
-const char *GameErrorContextLog(GameErrorContext *ctx, const char *fmt, ...);
-
 class GameErrorContext
 {
   public:
@@ -26,7 +23,7 @@ class GameErrorContext
         m_Buffer[0] = '\0';
         // Required to get some mov eax, [m_Buffer_ptr]
         m_ShowMessageBox = false;
-        GameErrorContextLog(this, TH_ERR_LOGGER_START);
+        Log(this, TH_ERR_LOGGER_START);
     }
 
     ~GameErrorContext()
@@ -40,6 +37,9 @@ class GameErrorContext
     }
 
     void Flush();
+
+    static const char *Fatal(GameErrorContext *ctx, const char *fmt, ...);
+    static const char *Log(GameErrorContext *ctx, const char *fmt, ...);
 };
 
 DIFFABLE_EXTERN(GameErrorContext, g_GameErrorContext)

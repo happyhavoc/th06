@@ -159,7 +159,7 @@ ZunResult Stage::LoadStageData(char *anmpath, char *stdpath)
     this->stdData = (RawStageHeader *)FileSystem::OpenPath(stdpath, false);
     if (this->stdData == NULL)
     {
-        GameErrorContextLog(&g_GameErrorContext, TH_ERR_STAGE_DATA_CORRUPTED);
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_STAGE_DATA_CORRUPTED);
         return ZUN_ERROR;
     }
     this->objectsCount = this->stdData->nbObjects;
