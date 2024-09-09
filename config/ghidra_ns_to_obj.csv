@@ -13,6 +13,7 @@ GameErrorContext,th06::GameErrorContext
 GameManager,th06::GameManager
 GameWindow,th06::GameWindow
 Gui,th06::Gui
+GuiImpl,th06::GuiImpl
 IPbg3Parser,th06::IPbg3Parser
 ItemManager,th06::ItemManager
 MainMenu,th06::MainMenu

@@ -117,6 +117,7 @@ def configure(build_type):
             "AnmManager",
             "GameManager",
             "Gui",
+            "GuiImpl",
             "Rng",
             "utils",
             "ZunTimer",
