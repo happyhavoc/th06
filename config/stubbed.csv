@@ -45,7 +45,6 @@ th06::Gui::ShowSpellcard
 th06::Gui::ShowSpellcardBonus
 th06::Gui::EndEnemySpellcard
 th06::GuiImpl::RunMsg
-th06::GuiImpl::MsgRead
 th06::GuiImpl::DrawDialogue
 th06::Enemy::MathSub
 th06::Enemy::MathMul

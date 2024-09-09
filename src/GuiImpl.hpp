@@ -26,7 +26,7 @@ struct GuiMsgVm
     ZunTimer timer;
     i32 framesElapsedDuringPause;
     AnmVm portraits[2];
-    AnmVm dialogue_lines[2];
+    AnmVm dialogueLines[2];
     AnmVm introLines[2];
     D3DCOLOR textColorsA[4];
     D3DCOLOR textColorsB[4];
