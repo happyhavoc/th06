@@ -118,6 +118,12 @@ ZunResult EffectManager::AddedCallback(EffectManager *mgr)
     return ZUN_SUCCESS;
 }
 
+ZunResult EffectManager::DeletedCallback(EffectManager *p)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_EFFECTS);
+    return ZUN_SUCCESS;
+}
+
 void EffectManager::Reset()
 {
     memset(this, 0, sizeof(*this));
