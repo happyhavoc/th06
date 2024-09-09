@@ -397,6 +397,13 @@ ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
     return ZUN_SUCCESS;
 }
 
+void BulletManager::CutChain()
+{
+    g_Chain.Cut(&g_BulletManagerCalcChain);
+    g_Chain.Cut(&g_BulletManagerDrawChain);
+    return;
+}
+
 ZunResult BulletManager::AddedCallback(BulletManager *mgr)
 {
     u32 idx;
@@ -478,6 +485,16 @@ ZunResult BulletManager::AddedCallback(BulletManager *mgr)
         }
     }
     memset(&g_ItemManager, 0, sizeof(ItemManager));
+    return ZUN_SUCCESS;
+}
+
+ZunResult BulletManager::DeletedCallback(BulletManager *arg)
+{
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
+    {
+        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET3);
+        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET4);
+    }
     return ZUN_SUCCESS;
 }
 
