@@ -110,6 +110,13 @@ ZunResult EnemyManager::RegisterChain(char *stgEnm1, char *stgEnm2)
     return ZUN_SUCCESS;
 }
 
+void EnemyManager::CutChain()
+{
+    g_Chain.Cut(&g_EnemyManagerCalcChain);
+    g_Chain.Cut(&g_EnemyManagerDrawChain);
+    return;
+}
+
 ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
 {
     Enemy *enemies = enemyManager->enemies;
