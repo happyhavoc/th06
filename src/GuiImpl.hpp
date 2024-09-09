@@ -49,6 +49,7 @@ struct GuiImpl
 {
     ZunResult RunMsg();
     ZunResult DrawDialogue();
+    void MsgRead(i32 msgIdx);
 
     AnmVm vms[26];
     u8 bossHealthBarState;

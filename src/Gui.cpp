@@ -322,6 +322,15 @@ ZunResult Gui::LoadMsg(char *path)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+void Gui::MsgRead(i32 msgIdx)
+{
+    this->impl->MsgRead(msgIdx);
+    g_Supervisor.unk198 = 3;
+    return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ChainCallbackResult Gui::OnUpdate(Gui *gui)
 {
     if (g_GameManager.isTimeStopped)

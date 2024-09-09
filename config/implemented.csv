@@ -130,6 +130,7 @@ th06::Gui::AddedCallback
 th06::Gui::DeletedCallback
 th06::Gui::ActualAddedCallback
 th06::Gui::LoadMsg
+th06::Gui::MsgRead
 th06::Gui::OnUpdate
 th06::Gui::OnDraw
 th06::Gui::DrawGameScene

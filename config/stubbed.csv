@@ -40,12 +40,12 @@ th06::Gui::CalculateStageScore
 th06::Gui::HasCurrentMsgIdx
 th06::Gui::FreeMsgFile
 th06::Gui::IsStageFinished
-th06::Gui::MsgRead
 th06::Gui::MsgWait
 th06::Gui::ShowSpellcard
 th06::Gui::ShowSpellcardBonus
 th06::Gui::EndEnemySpellcard
 th06::GuiImpl::RunMsg
+th06::GuiImpl::MsgRead
 th06::GuiImpl::DrawDialogue
 th06::Enemy::MathSub
 th06::Enemy::MathMul
