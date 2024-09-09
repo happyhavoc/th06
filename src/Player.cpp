@@ -62,6 +62,17 @@ ZunResult Player::RegisterChain(u8 unk)
     return ZUN_SUCCESS;
 }
 
+void Player::CutChain()
+{
+    g_Chain.Cut(g_Player.chainCalc);
+    g_Player.chainCalc = NULL;
+    g_Chain.Cut(g_Player.chainDraw1);
+    g_Player.chainDraw1 = NULL;
+    g_Chain.Cut(g_Player.chainDraw2);
+    g_Player.chainDraw2 = NULL;
+    return;
+}
+
 ZunResult Player::AddedCallback(Player *p)
 {
     PlayerBullet *curBullet;
