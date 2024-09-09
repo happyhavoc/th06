@@ -62,6 +62,17 @@ ZunResult Player::RegisterChain(u8 unk)
     return ZUN_SUCCESS;
 }
 
+void Player::CutChain()
+{
+    g_Chain.Cut(g_Player.chainCalc);
+    g_Player.chainCalc = NULL;
+    g_Chain.Cut(g_Player.chainDraw1);
+    g_Player.chainDraw1 = NULL;
+    g_Chain.Cut(g_Player.chainDraw2);
+    g_Player.chainDraw2 = NULL;
+    return;
+}
+
 ZunResult Player::AddedCallback(Player *p)
 {
     PlayerBullet *curBullet;
@@ -128,6 +139,15 @@ ZunResult Player::AddedCallback(Player *p)
     p->verticalMovementSpeedMultiplierDuringBomb = 1.0;
     p->horizontalMovementSpeedMultiplierDuringBomb = 1.0;
     p->respawnTimer = 8;
+    return ZUN_SUCCESS;
+}
+
+ZunResult Player::DeletedCallback(Player *p)
+{
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
+    {
+        g_AnmManager->ReleaseAnm(ANM_FILE_PLAYER);
+    }
     return ZUN_SUCCESS;
 }
 

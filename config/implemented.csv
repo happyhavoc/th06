@@ -208,7 +208,9 @@ th06::SoundPlayer::PlaySounds
 th06::SoundPlayer::BackgroundMusicPlayerThread
 th06::SoundPlayer::InitSoundBuffers
 th06::Player::AddedCallback
+th06::Player::DeletedCallback
 th06::Player::RegisterChain
+th06::Player::CutChain
 th06::Player::CalcKillBoxCollision
 th06::Player::Die
 th06::Player::HandlePlayerInputs
