@@ -47,8 +47,6 @@ th06::Gui::ShowSpellcardBonus
 th06::Gui::Vm6SetInterruptTo1
 th06::GuiImpl::RunMsg
 th06::GuiImpl::DrawDialogue
-th06::EnemyManager::CutChain
-th06::EnemyManager::DeletedCallback
 th06::Enemy::MathAdd
 th06::Enemy::MathSub
 th06::Enemy::MathMul

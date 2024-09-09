@@ -87,7 +87,9 @@ th06::EffectManager::OnDraw
 th06::EffectManager::SpawnParticles
 th06::EnemyManager::Initialize
 th06::EnemyManager::RegisterChain
+th06::EnemyManager::CutChain
 th06::EnemyManager::AddedCallback
+th06::EnemyManager::DeletedCallback
 th06::EnemyManager::OnUpdate
 th06::EnemyManager::OnDraw
 th06::EnemyManager::RunEclTimeline

@@ -110,6 +110,13 @@ ZunResult EnemyManager::RegisterChain(char *stgEnm1, char *stgEnm2)
     return ZUN_SUCCESS;
 }
 
+void EnemyManager::CutChain()
+{
+    g_Chain.Cut(&g_EnemyManagerCalcChain);
+    g_Chain.Cut(&g_EnemyManagerDrawChain);
+    return;
+}
+
 ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
 {
     Enemy *enemies = enemyManager->enemies;
@@ -131,6 +138,13 @@ ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
     enemyManager->spellcardInfo.isActive = 0;
     enemyManager->timelineInstr = NULL;
 
+    return ZUN_SUCCESS;
+}
+
+ZunResult EnemyManager::DeletedCallback(EnemyManager *mgr)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_ENEMY2);
+    g_AnmManager->ReleaseAnm(ANM_FILE_ENEMY);
     return ZUN_SUCCESS;
 }
 
