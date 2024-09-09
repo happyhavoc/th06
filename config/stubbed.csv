@@ -79,7 +79,6 @@ th06::Controller::GetControllerState
 th06::Player::CutChain
 th06::Player::DrawBulletExplosions
 th06::Player::CalcDamageToEnemy
-th06::Player::DeletedCallback
 th06::Player::BombReimuACalc
 th06::Player::BombReimuBCalc
 th06::Player::BombMarisaACalc

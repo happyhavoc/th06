@@ -131,6 +131,15 @@ ZunResult Player::AddedCallback(Player *p)
     return ZUN_SUCCESS;
 }
 
+ZunResult Player::DeletedCallback(Player *p)
+{
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
+    {
+        g_AnmManager->ReleaseAnm(ANM_FILE_PLAYER);
+    }
+    return ZUN_SUCCESS;
+}
+
 #pragma var_order(idx, scaleFactor1, scaleFactor2, lastEnemyHit)
 ChainCallbackResult Player::OnUpdate(Player *p)
 {
