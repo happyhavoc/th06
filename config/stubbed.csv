@@ -83,5 +83,4 @@ th06::Player::BombMarisaBDraw
 th06::Player::UpdatePlayerBullets
 th06::Player::CalcLaserHitbox
 th06::Player::CheckGraze
-th06::Player::AngleToPlayer
 th06::Pbg3Archive::Pbg3Archive

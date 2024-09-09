@@ -214,6 +214,7 @@ th06::Player::CutChain
 th06::Player::CalcKillBoxCollision
 th06::Player::Die
 th06::Player::HandlePlayerInputs
+th06::Player::AngleToPlayer
 th06::Player::DrawBullets
 th06::Player::SpawnBullets
 th06::Player::StartFireBulletTimer
