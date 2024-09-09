@@ -59,6 +59,13 @@ ZunResult EffectManager::RegisterChain()
     return ZUN_SUCCESS;
 }
 
+void EffectManager::CutChain()
+{
+    g_Chain.Cut(&g_EffectManagerCalcChain);
+    g_Chain.Cut(&g_EffectManagerDrawChain);
+    return;
+}
+
 ZunResult EffectManager::AddedCallback(EffectManager *mgr)
 {
     mgr->Reset();
