@@ -79,7 +79,9 @@ th06::EclManager::Load
 th06::EclManager::RunEcl
 th06::EffectManager::Reset
 th06::EffectManager::AddedCallback
+th06::EffectManager::DeletedCallback
 th06::EffectManager::RegisterChain
+th06::EffectManager::CutChain
 th06::EffectManager::OnUpdate
 th06::EffectManager::OnDraw
 th06::EffectManager::SpawnParticles

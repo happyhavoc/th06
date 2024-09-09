@@ -59,6 +59,13 @@ ZunResult EffectManager::RegisterChain()
     return ZUN_SUCCESS;
 }
 
+void EffectManager::CutChain()
+{
+    g_Chain.Cut(&g_EffectManagerCalcChain);
+    g_Chain.Cut(&g_EffectManagerDrawChain);
+    return;
+}
+
 ZunResult EffectManager::AddedCallback(EffectManager *mgr)
 {
     mgr->Reset();
@@ -108,6 +115,12 @@ ZunResult EffectManager::AddedCallback(EffectManager *mgr)
         }
         break;
     }
+    return ZUN_SUCCESS;
+}
+
+ZunResult EffectManager::DeletedCallback(EffectManager *p)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_EFFECTS);
     return ZUN_SUCCESS;
 }
 
