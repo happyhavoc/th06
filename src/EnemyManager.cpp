@@ -134,6 +134,13 @@ ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
     return ZUN_SUCCESS;
 }
 
+ZunResult EnemyManager::DeletedCallback(EnemyManager *mgr)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_ENEMY2);
+    g_AnmManager->ReleaseAnm(ANM_FILE_ENEMY);
+    return ZUN_SUCCESS;
+}
+
 #pragma var_order(local_8, damage, enemyIdx, enemyHitbox, enemyVmIdx, enemyLifeBeforeDmg, curEnemy)
 ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
 {
