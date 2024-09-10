@@ -342,6 +342,125 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
+#pragma var_order(vector, idx, vecLength, bullet)
+void Player::UpdatePlayerBullets(Player *player)
+{
+    ZunVec2 vector;
+    PlayerBullet *bullet;
+    f32 vecLength;
+    i32 idx;
+
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(player->laserTimer); idx++)
+    {
+        if (player->laserTimer[idx].AsFrames() != 0)
+        {
+            player->laserTimer[idx].Decrement(1);
+        }
+    }
+    bullet = &player->bullets[0];
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(player->bullets); idx++, bullet++)
+    {
+        if (bullet->bulletState == BULLET_STATE_UNUSED)
+        {
+            continue;
+        }
+
+        switch (bullet->bulletType)
+        {
+        case BULLET_TYPE_1:
+            if (bullet->bulletState == BULLET_STATE_FIRED)
+            {
+                if (player->positionOfLastEnemyHit.x > -100.0f && bullet->unk_140.AsFrames() < 40 &&
+                    bullet->unk_140.HasTicked())
+                {
+                    vector.x = player->positionOfLastEnemyHit.x - bullet->position.x;
+                    vector.y = player->positionOfLastEnemyHit.y - bullet->position.y;
+
+                    vecLength = vector.VectorLength() / (bullet->unk_134.y / 4.0f);
+                    if (vecLength < 1.0f)
+                    {
+                        vecLength = 1.0f;
+                    }
+
+                    vector.x = vector.x / vecLength + bullet->velocity.x;
+                    vector.y = vector.y / vecLength + bullet->velocity.y;
+
+                    vecLength = vector.VectorLength();
+
+                    bullet->unk_134.y = ZUN_MIN(vecLength, 10.0f);
+
+                    if (bullet->unk_134.y < 1.0f)
+                    {
+                        bullet->unk_134.y = 1.0f;
+                    }
+
+                    bullet->velocity.x = (vector.x * bullet->unk_134.y) / vecLength;
+                    bullet->velocity.y = (vector.y * bullet->unk_134.y) / vecLength;
+                }
+                else
+                {
+                    if (bullet->unk_134.y < 10.0f)
+                    {
+                        bullet->unk_134.y += 0.33333333f;
+                        vector.x = bullet->velocity.x;
+                        vector.y = bullet->velocity.y;
+                        vecLength = vector.VectorLength();
+                        bullet->velocity.x = vector.x * bullet->unk_134.y / vecLength;
+                        bullet->velocity.y = vector.y * bullet->unk_134.y / vecLength;
+                    }
+                }
+            }
+
+            break;
+
+        case BULLET_TYPE_2:
+            if (bullet->bulletState == BULLET_STATE_FIRED)
+            {
+                bullet->velocity.y -= 0.3f;
+            }
+            break;
+        case BULLET_TYPE_LASER:
+
+            if (player->laserTimer[bullet->unk_152] == 70)
+            {
+                bullet->sprite.pendingInterrupt = 1;
+            }
+            else if (player->laserTimer[bullet->unk_152] == 1)
+            {
+                bullet->sprite.pendingInterrupt = 1;
+            }
+
+            bullet->position = player->orbsPosition[bullet->spawnPositionIdx - 1];
+
+            bullet->position.x += bullet->sidewaysMotion;
+            bullet->position.y /= 2.0f;
+            bullet->position.z = 0.44f;
+
+            bullet->sprite.scaleY = (bullet->position.y * 2) / 14.0f;
+
+            bullet->size.y = bullet->position.y * 2;
+        }
+
+        bullet->MoveHorizontal(&bullet->position.x);
+
+        bullet->MoveVertical(&bullet->position.y);
+
+        bullet->sprite.pos.z = bullet->position.z;
+        if (bullet->bulletType != BULLET_TYPE_LASER &&
+            !g_GameManager.IsInBounds(bullet->position.x, bullet->position.y, bullet->sprite.sprite->widthPx,
+                                      bullet->sprite.sprite->heightPx))
+        {
+            bullet->bulletState = BULLET_STATE_UNUSED;
+        }
+
+        if (g_AnmManager->ExecuteScript(&bullet->sprite))
+        {
+            bullet->bulletState = BULLET_STATE_UNUSED;
+        }
+        bullet->unk_140.Tick();
+    }
+}
+
 #pragma var_order(x1, y1, x2, y2)
 ChainCallbackResult Player::OnDrawHighPrio(Player *p)
 {
@@ -860,7 +979,7 @@ FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, 
         bullet->unk_140.InitializeForPopup();
 
         bullet->bulletType = bulletData->bulletType;
-        bullet->unk_14c = bulletData->unk_1c;
+        bullet->damage = bulletData->unk_1c;
         if (bulletData->bulletSoundIdx >= 0)
         {
             g_SoundPlayer.PlaySoundByIdx((SoundIdx)bulletData->bulletSoundIdx, 0);

@@ -223,6 +223,7 @@ th06::Player::FireBulletReimuB
 th06::Player::FireBulletMarisaA
 th06::Player::FireBulletMarisaB
 th06::Player::UpdateFireBulletsTimer
+th06::Player::UpdatePlayerBullets
 th06::Player::OnUpdate
 th06::Player::Player
 th06::CSoundManager::CSoundManager

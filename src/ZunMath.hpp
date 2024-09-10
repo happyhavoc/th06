@@ -7,6 +7,16 @@ struct ZunVec2
 {
     f32 x;
     f32 y;
+
+    f32 VectorLength()
+    {
+        return sqrt(this->x * this->x + this->y * this->y);
+    }
+
+    D3DXVECTOR2 *AsD3dXVec()
+    {
+        return (D3DXVECTOR2 *)this;
+    }
 };
 C_ASSERT(sizeof(ZunVec2) == 0x8);
 
