@@ -235,9 +235,9 @@ struct Player
     D3DXVECTOR3 hitboxSize;
     D3DXVECTOR3 grabItemSize;
     D3DXVECTOR3 orbsPosition[2];
-    D3DXVECTOR3 unk_4b8[32];
-    D3DXVECTOR3 unk_638[32];
-    i32 unk_7b8[32];
+    D3DXVECTOR3 bombRegionPositions[32];
+    D3DXVECTOR3 bombRegionSizes[32];
+    i32 bombRegionDamages[32];
     i32 unk_838[32];
     PlayerRect bombProjectiles[16];
     ZunTimer laserTimer[2];

@@ -212,6 +212,7 @@ th06::Player::DeletedCallback
 th06::Player::RegisterChain
 th06::Player::CutChain
 th06::Player::CalcKillBoxCollision
+th06::Player::CalcDamageToEnemy
 th06::Player::Die
 th06::Player::HandlePlayerInputs
 th06::Player::DrawBullets
