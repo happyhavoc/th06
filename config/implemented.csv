@@ -49,6 +49,7 @@ th06::BulletManager::RegisterChain
 th06::BulletManager::CutChain
 th06::BulletManager::AddedCallback
 th06::BulletManager::DeletedCallback
+th06::BulletManager::InitializeToZero
 th06::BulletManager::SpawnBulletPattern
 th06::BulletManager::SpawnSingleBullet
 th06::BulletManager::OnUpdate

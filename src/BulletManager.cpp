@@ -66,6 +66,11 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BulletTypeInfo, 10, g_BulletTypeInfos) = {
      ASB4(SPAWN_BUBBLE_NORMAL)},
 };
 
+void BulletManager::InitializeToZero()
+{
+    memset(this, 0, sizeof(BulletManager));
+}
+
 #pragma var_order(bulletSpeed, local_c, bullet, bulletAngle)
 u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bulletIdx1, i32 bulletIdx2, f32 angle)
 {
