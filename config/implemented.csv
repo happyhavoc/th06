@@ -97,6 +97,7 @@ th06::EnemyManager::SpawnEnemy
 th06::Enemy::GetVar
 th06::Enemy::GetVarFloat
 th06::Enemy::SetVar
+th06::Enemy::MathAdd
 th06::Enemy::Move
 th06::Enemy::ClampPos
 th06::Enemy::HandleLifeCallback
