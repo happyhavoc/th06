@@ -13,6 +13,11 @@ struct ZunVec2
         return sqrt(this->x * this->x + this->y * this->y);
     }
 
+    f64 VectorLengthF64()
+    {
+        return (f64)this->VectorLength();
+    }
+
     D3DXVECTOR2 *AsD3dXVec()
     {
         return (D3DXVECTOR2 *)this;

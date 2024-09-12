@@ -514,7 +514,7 @@ void Player::UpdatePlayerBullets(Player *player)
                     vector.x = vector.x / vecLength + bullet->velocity.x;
                     vector.y = vector.y / vecLength + bullet->velocity.y;
 
-                    vecLength = vector.VectorLength();
+                    vecLength = vector.VectorLengthF64();
 
                     bullet->unk_134.y = ZUN_MIN(vecLength, 10.0f);
 
@@ -533,7 +533,7 @@ void Player::UpdatePlayerBullets(Player *player)
                         bullet->unk_134.y += 0.33333333f;
                         vector.x = bullet->velocity.x;
                         vector.y = bullet->velocity.y;
-                        vecLength = vector.VectorLength();
+                        vecLength = vector.VectorLengthF64();
                         bullet->velocity.x = vector.x * bullet->unk_134.y / vecLength;
                         bullet->velocity.y = vector.y * bullet->unk_134.y / vecLength;
                     }
@@ -568,6 +568,7 @@ void Player::UpdatePlayerBullets(Player *player)
             bullet->sprite.scaleY = (bullet->position.y * 2) / 14.0f;
 
             bullet->size.y = bullet->position.y * 2;
+            break;
         }
 
         bullet->MoveHorizontal(&bullet->position.x);
