@@ -996,6 +996,23 @@ ZunResult Player::UpdateFireBulletsTimer(Player *p)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(relY, relX)
+f32 Player::AngleToPlayer(D3DXVECTOR3 *pos)
+{
+    f32 relX;
+    f32 relY;
+
+    relX = this->positionCenter.x - pos->x;
+    relY = this->positionCenter.y - pos->y;
+    if (relY == 0.0f && relX == 0.0f)
+    {
+        // Shoot down. An angle of 0 means to the right, and the angle goes
+        // clockwise.
+        return RADIANS(90.0f);
+    }
+    return atan2f(relY, relX);
+}
+
 #pragma var_order(idx, curBulletIdx, curBullet, bulletResult)
 void Player::SpawnBullets(Player *p, u32 timer)
 {
