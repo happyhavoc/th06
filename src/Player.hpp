@@ -93,11 +93,23 @@ struct PlayerBullet
     f32 sidewaysMotion;
     D3DXVECTOR3 unk_134;
     ZunTimer unk_140;
-    u16 unk_14c;
+    i16 damage;
     i16 bulletState;
-    u16 bulletType;
-    u16 unk_152;
-    u16 spawnPositionIdx;
+    i16 bulletType;
+    i16 unk_152;
+    i16 spawnPositionIdx;
+
+    void MoveHorizontal(f32 *position)
+    {
+        *position += this->velocity.x * g_Supervisor.effectiveFramerateMultiplier;
+        this->sprite.pos.x = *position;
+    }
+
+    void MoveVertical(f32 *position)
+    {
+        *position += this->velocity.y * g_Supervisor.effectiveFramerateMultiplier;
+        this->sprite.pos.y = *position;
+    }
 };
 C_ASSERT(sizeof(PlayerBullet) == 0x158);
 
@@ -223,9 +235,9 @@ struct Player
     D3DXVECTOR3 hitboxSize;
     D3DXVECTOR3 grabItemSize;
     D3DXVECTOR3 orbsPosition[2];
-    D3DXVECTOR3 unk_4b8[32];
-    D3DXVECTOR3 unk_638[32];
-    i32 unk_7b8[32];
+    D3DXVECTOR3 bombRegionPositions[32];
+    D3DXVECTOR3 bombRegionSizes[32];
+    i32 bombRegionDamages[32];
     i32 unk_838[32];
     PlayerRect bombProjectiles[16];
     ZunTimer laserTimer[2];
