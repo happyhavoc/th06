@@ -101,6 +101,8 @@ jobs:
       run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/implemented.csv -o config/implemented.csv --fail
     - name: Use ghidra_ns_to_obj.csv from target repo
       run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/ghidra_ns_to_obj.csv -o config/ghidra_ns_to_obj.csv --fail
+    - name: Use objdiff.json from target repo
+      run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/objdiff.json -o objdiff.json --fail
     - name: Use mapping.csv from target repo
       run: curl -L https://raw.githubusercontent.com/${{steps.workflow_run_info.outputs.head_repository_full_name}}/${{steps.workflow_run_info.outputs.head_sha}}/config/mapping.csv -o config/mapping.csv --fail
     - name: Generate objs using ghidra-delinker
