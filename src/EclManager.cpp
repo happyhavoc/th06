@@ -720,7 +720,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             case ECL_OPCODE_SPELLCARDEND:
                 if (g_EnemyManager.spellcardInfo.isActive)
                 {
-                    g_Gui.Vm6SetInterruptTo1();
+                    g_Gui.EndEnemySpellcard();
                     if (g_EnemyManager.spellcardInfo.isActive == 1)
                     {
                         scoreIncrease = g_BulletManager.DespawnBullets(12800, 1);
