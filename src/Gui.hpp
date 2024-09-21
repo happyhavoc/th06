@@ -45,7 +45,7 @@ struct Gui
 
     void ShowSpellcard(i32 spellcardSprite, char *spellcardName);
     void ShowSpellcardBonus(u32 spellcardScore);
-    void Vm6SetInterruptTo1();
+    void EndEnemySpellcard();
 
     void SetBossHealthBar(f32 val)
     {
