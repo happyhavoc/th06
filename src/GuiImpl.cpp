@@ -1,10 +1,185 @@
 #include "GuiImpl.hpp"
 
 #include "AnmManager.hpp"
+#include "Stage.hpp"
 #include "ZunColor.hpp"
+#include "utils.hpp"
 
 namespace th06
 {
+
+#pragma optimize("s", on)
+ZunResult GuiImpl::RunMsg()
+{
+    MsgRawInstrArgs *args;
+
+    if (this->msg.currentMsgIdx < 0)
+    {
+        return ZUN_ERROR;
+    }
+    if (this->msg.ignoreWaitCounter > 0)
+    {
+        this->msg.ignoreWaitCounter--;
+    }
+    if (this->msg.dialogueSkippable && IS_PRESSED(TH_BUTTON_SKIP))
+    {
+        this->msg.timer.SetCurrent(this->msg.currentInstr->time);
+    }
+    while ((i32)(this->msg.timer.current >= this->msg.currentInstr->time))
+    {
+        switch (this->msg.currentInstr->opcode)
+        {
+        case MSG_OPCODE_MSGDELETE:
+            this->msg.currentMsgIdx = 0xffffffff;
+            return ZUN_ERROR;
+        case MSG_OPCODE_PORTRAITANMSCRIPT:
+            args = &this->msg.currentInstr->args;
+            g_AnmManager->SetAndExecuteScriptIdx(&this->msg.portraits[args->portraitAnmScript.portraitIdx],
+                                                 ANM_SCRIPT_FACE_START + args->portraitAnmScript.anmScriptIdx +
+                                                     (args->portraitAnmScript.portraitIdx == 0 ? 0 : 2));
+            break;
+        case MSG_OPCODE_PORTRAITANMSPRITE:
+            args = &this->msg.currentInstr->args;
+            g_AnmManager->SetActiveSprite(&this->msg.portraits[args->portraitAnmScript.portraitIdx],
+                                          ANM_SCRIPT_FACE_START + args->portraitAnmScript.anmScriptIdx +
+                                              (args->portraitAnmScript.portraitIdx == 0 ? 0 : 8));
+            break;
+        case MSG_OPCODE_TEXTDIALOGUE:
+            args = &this->msg.currentInstr->args;
+            if (args->text.textLine == 0 && 0 <= this->msg.dialogueLines[1].anmFileIndex)
+            {
+                AnmManager::DrawVmTextFmt(g_AnmManager, &this->msg.dialogueLines[1],
+                                          this->msg.textColorsA[args->text.textColor],
+                                          this->msg.textColorsB[args->text.textColor], " ");
+            }
+            g_AnmManager->SetAndExecuteScriptIdx(&this->msg.dialogueLines[args->text.textLine],
+                                                 0x702 + args->text.textLine);
+            this->msg.dialogueLines[args->text.textLine].fontWidth =
+                this->msg.dialogueLines[args->text.textLine].fontHeight = this->msg.fontSize;
+            AnmManager::DrawVmTextFmt(g_AnmManager, &this->msg.dialogueLines[args->text.textLine],
+                                      this->msg.textColorsA[args->text.textColor],
+                                      this->msg.textColorsB[args->text.textColor], args->text.text);
+            this->msg.framesElapsedDuringPause = 0;
+            break;
+        case MSG_OPCODE_WAIT:
+            if (!this->msg.dialogueSkippable || !IS_PRESSED(TH_BUTTON_SKIP))
+            {
+                if (!WAS_PRESSED(TH_BUTTON_SHOOT) || this->msg.framesElapsedDuringPause < 8)
+                {
+                    if (this->msg.framesElapsedDuringPause >= this->msg.currentInstr->args.wait)
+                    {
+                        break;
+                    }
+                    this->msg.framesElapsedDuringPause += 1;
+                    goto SKIP_TIME_INCREMENT;
+                }
+            }
+            break;
+        case MSG_OPCODE_ANMINTERRUPT:
+            args = &this->msg.currentInstr->args;
+            if (args->anmInterrupt.unk1 < 2)
+            {
+                this->msg.portraits[args->anmInterrupt.unk1].pendingInterrupt = args->anmInterrupt.unk2;
+            }
+            else
+            {
+                this->msg.dialogueLines[args->anmInterrupt.unk1 - 2].pendingInterrupt = args->anmInterrupt.unk2;
+            }
+            break;
+        case MSG_OPCODE_ECLRESUME:
+            this->msg.ignoreWaitCounter += 1;
+            break;
+        case MSG_OPCODE_MUSIC:
+            g_AnmManager->SetAndExecuteScriptIdx(&this->songNameSprite, 0x701);
+            this->songNameSprite.fontWidth = 16;
+            this->songNameSprite.fontHeight = 16;
+            AnmManager::DrawStringFormat(g_AnmManager, &this->songNameSprite, COLOR_RGB(COLOR_LIGHTCYAN),
+                                         COLOR_RGB(COLOR_BLACK), "♪%s",
+                                         g_Stage.stdData->songNames[this->msg.currentInstr->args.music]);
+            if (g_Supervisor.PlayMidiFile(this->msg.currentInstr->args.music) != 0)
+            {
+                g_Supervisor.PlayAudio(g_Stage.stdData->songPaths[this->msg.currentInstr->args.music]);
+            }
+            break;
+        case MSG_OPCODE_TEXTINTRO:
+            args = &this->msg.currentInstr->args;
+            g_AnmManager->SetAndExecuteScriptIdx(&this->msg.introLines[args->text.textLine],
+                                                 args->text.textLine + 0x704);
+            AnmManager::DrawStringFormat(g_AnmManager, &this->msg.introLines[args->text.textLine],
+                                         this->msg.textColorsA[args->text.textColor],
+                                         this->msg.textColorsB[args->text.textColor], args->text.text);
+            this->msg.framesElapsedDuringPause = 0;
+            break;
+        case MSG_OPCODE_STAGERESULTS:
+            this->finishedStage = 1;
+            if (g_GameManager.currentStage < 6)
+            {
+                g_AnmManager->SetAndExecuteScriptIdx(&this->loadingScreenSprite,
+                                                     ANM_SCRIPT_LOADING_SHOW_LOADING_SCREEN);
+            }
+            else
+            {
+                g_GameManager.extraLives = 0xff;
+            }
+            break;
+        case MSG_OPCODE_MSGHALT:
+            goto SKIP_TIME_INCREMENT;
+        case MSG_OPCODE_MUSICFADEOUT:
+            g_Supervisor.FadeOutMusic(4.0);
+            break;
+        case MSG_OPCODE_STAGEEND:
+            g_GameManager.guiScore = g_GameManager.score;
+            if (g_GameManager.isInPracticeMode)
+            {
+                g_GameManager.guiScore = g_GameManager.score;
+                g_Supervisor.curState = SUPERVISOR_STATE_RESULTSCREEN_FROMGAME;
+                goto SKIP_TIME_INCREMENT;
+            }
+            if (g_GameManager.currentStage < 5 || (g_GameManager.difficulty != EASY && g_GameManager.currentStage == 5))
+            {
+                g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER_REINIT;
+            }
+            else if (!g_GameManager.isInReplay)
+            {
+                if (g_GameManager.difficulty == EXTRA)
+                {
+                    g_GameManager.isGameCompleted = 1;
+                    g_GameManager.guiScore = g_GameManager.score;
+                    g_Supervisor.curState = SUPERVISOR_STATE_RESULTSCREEN_FROMGAME;
+                    goto SKIP_TIME_INCREMENT;
+                }
+                else
+                {
+                    g_Supervisor.curState = SUPERVISOR_STATE_ENDING;
+                }
+            }
+            else
+            {
+                g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU_REPLAY;
+            }
+            goto SKIP_TIME_INCREMENT;
+        case MSG_OPCODE_WAITSKIPPABLE:
+            this->msg.dialogueSkippable = this->msg.currentInstr->args.dialogueSkippable;
+            break;
+        }
+        this->msg.currentInstr =
+            (MsgRawInstr *)(((i32) & this->msg.currentInstr->args) + this->msg.currentInstr->argSize);
+    }
+    this->msg.timer.NextTick();
+SKIP_TIME_INCREMENT:
+    g_AnmManager->ExecuteScript(&this->msg.portraits[0]);
+    g_AnmManager->ExecuteScript(&this->msg.portraits[1]);
+    g_AnmManager->ExecuteScript(&this->msg.dialogueLines[0]);
+    g_AnmManager->ExecuteScript(&this->msg.dialogueLines[1]);
+    g_AnmManager->ExecuteScript(&this->msg.introLines[0]);
+    g_AnmManager->ExecuteScript(&this->msg.introLines[1]);
+    if ((i32)(this->msg.timer.current < 60) && this->msg.dialogueSkippable && IS_PRESSED(TH_BUTTON_SKIP))
+    {
+        this->msg.timer.SetCurrent(60);
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
 
 #pragma var_order(dialogueBoxHeight, vertices)
 #pragma optimize("s", on)

@@ -25,6 +25,7 @@ struct ZunTimer
     void Initialize();
     void Increment(i32 value);
     void Decrement(i32 value);
+    i32 NextTick();
 
     void IncrementInline(i32 value)
     {

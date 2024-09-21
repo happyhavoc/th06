@@ -1,3 +1,4 @@
+th06::AnmManager::DrawVmTextFmt
 th06::AnmManager::DrawStringFormat
 th06::AnmManager::DrawStringFormat2
 th06::EclManager::Unload
@@ -30,6 +31,8 @@ th06::Supervisor::DeletedCallback
 th06::Supervisor::StopAudio
 th06::Supervisor::SetupMidiPlayback
 th06::Supervisor::ReadMidiFile
+th06::Supervisor::PlayMidiFile
+th06::Supervisor::FadeOutMusic
 th06::Ending::RegisterChain
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::RegisterChain
@@ -44,7 +47,6 @@ th06::Gui::MsgWait
 th06::Gui::ShowSpellcard
 th06::Gui::ShowSpellcardBonus
 th06::Gui::EndEnemySpellcard
-th06::GuiImpl::RunMsg
 th06::Enemy::MathSub
 th06::Enemy::MathMul
 th06::Enemy::MathDiv
@@ -77,4 +79,5 @@ th06::Player::BombMarisaADraw
 th06::Player::BombMarisaBDraw
 th06::Player::CalcLaserHitbox
 th06::Player::CheckGraze
+th06::ZunTimer::NextTick
 th06::Pbg3Archive::Pbg3Archive

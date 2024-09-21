@@ -7,6 +7,25 @@
 
 namespace th06
 {
+
+enum MsgOps
+{
+    MSG_OPCODE_MSGDELETE,
+    MSG_OPCODE_PORTRAITANMSCRIPT,
+    MSG_OPCODE_PORTRAITANMSPRITE,
+    MSG_OPCODE_TEXTDIALOGUE,
+    MSG_OPCODE_WAIT,
+    MSG_OPCODE_ANMINTERRUPT,
+    MSG_OPCODE_ECLRESUME,
+    MSG_OPCODE_MUSIC,
+    MSG_OPCODE_TEXTINTRO,
+    MSG_OPCODE_STAGERESULTS,
+    MSG_OPCODE_MSGHALT,
+    MSG_OPCODE_STAGEEND,
+    MSG_OPCODE_MUSICFADEOUT,
+    MSG_OPCODE_WAITSKIPPABLE,
+};
+
 struct MsgRawInstrArgPortraitAnmScript
 {
     i16 portraitIdx;
@@ -60,7 +79,7 @@ struct GuiMsgVm
     D3DCOLOR textColorsB[4];
     u32 fontSize;
     u32 ignoreWaitCounter;
-    bool dialogueSkippable;
+    u8 dialogueSkippable;
 };
 C_ASSERT(sizeof(GuiMsgVm) == 0x6a8);
 
