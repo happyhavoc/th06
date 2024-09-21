@@ -410,7 +410,7 @@ th06::AnmManager::Draw3,0x433150,0x43e,__thiscall,,ZunResult,AnmManager*,AnmVm*
 th06::AnmManager::Draw2,0x433590,0x3cf,__thiscall,,ZunResult,AnmManager*,AnmVm*
 th06::AnmManager::ExecuteScript,0x433960,0x1103,__thiscall,,i32,AnmManager*,AnmVm*
 th06::AnmManager::DrawText,0x434af0,0x61,__thiscall,,void,AnmManager*,u32,long,long,long,long,i32,i32,unsigned long,u32,char*
-th06::AnmManager::DrawVmTextFmt,0x434b60,0xdb,default,varargs,void,AnmManager*,AnmVm*,unsigned long,unsigned long,char*
+th06::AnmManager::DrawVmTextFmt,0x434b60,0xdb,default,varargs,void,AnmManager*,AnmVm*,ZunColor,ZunColor,char*
 th06::AnmManager::DrawStringFormat,0x434c40,0x1dc,default,varargs,void,AnmManager*,AnmVm*,ZunColor,ZunColor,char*
 th06::AnmManager::DrawStringFormat2,0x434e20,0x1e2,default,varargs,void,AnmManager*,AnmVm*,ZunColor,ZunColor,char*
 th06::AnmManager::LoadSurface,0x435010,0x25b,__thiscall,,ZunResult,AnmManager*,u32,char*
