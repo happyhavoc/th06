@@ -99,7 +99,7 @@ void GuiImpl::MsgRead(i32 msgIdx)
 {
     MsgRawHeader *msgFile;
 
-    if (this->msg.msgFile->numEntries <= msgIdx)
+    if (this->msg.msgFile->numInstrs <= msgIdx)
     {
         return;
     }
@@ -107,7 +107,7 @@ void GuiImpl::MsgRead(i32 msgIdx)
     memset(&this->msg, 0, sizeof(GuiMsgVm));
     this->msg.currentMsgIdx = msgIdx;
     this->msg.msgFile = msgFile;
-    this->msg.currentInstr = this->msg.msgFile->entries[msgIdx];
+    this->msg.currentInstr = this->msg.msgFile->instrs[msgIdx];
     this->msg.dialogueLines[0].anmFileIndex = -1;
     this->msg.dialogueLines[1].anmFileIndex = -1;
     this->msg.fontSize = 15;

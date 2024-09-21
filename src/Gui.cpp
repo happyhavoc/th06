@@ -312,10 +312,10 @@ ZunResult Gui::LoadMsg(char *path)
     }
     this->impl->msg.currentMsgIdx = 0xffffffff;
     this->impl->msg.currentInstr = NULL;
-    for (idx = 0; idx < this->impl->msg.msgFile->numEntries; idx++)
+    for (idx = 0; idx < this->impl->msg.msgFile->numInstrs; idx++)
     {
-        this->impl->msg.msgFile->entries[idx] =
-            (MsgRawEntry *)((i32)this->impl->msg.msgFile->entries[idx] + (i32)this->impl->msg.msgFile);
+        this->impl->msg.msgFile->instrs[idx] =
+            (MsgRawInstr *)((i32)this->impl->msg.msgFile->instrs[idx] + (i32)this->impl->msg.msgFile);
     }
     return ZUN_SUCCESS;
 }
