@@ -262,7 +262,7 @@ ZunResult Gui::ActualAddedCallback()
     this->impl->songNameSprite.fontWidth = 16;
     this->impl->songNameSprite.fontHeight = 16;
     AnmManager::DrawStringFormat(g_AnmManager, &this->impl->songNameSprite, COLOR_RGB(COLOR_LIGHTCYAN),
-                                 COLOR_RGB(COLOR_BLACK), TH_SONG_NAME, g_Stage.stdData->song1Name);
+                                 COLOR_RGB(COLOR_BLACK), TH_SONG_NAME, g_Stage.stdData->songNames[0]);
     this->impl->msg.currentMsgIdx = 0xffffffff;
     this->impl->finishedStage = 0;
     this->impl->bonusScore.isShown = 0;
