@@ -1,4 +1,4 @@
-th06::AnmManager::DrawVmTextFmt
+th06::AnmManager::DrawTextToSprite
 th06::AnmManager::DrawStringFormat
 th06::AnmManager::DrawStringFormat2
 th06::EclManager::Unload

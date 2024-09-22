@@ -21,6 +21,7 @@ th06::AnmManager::AnmManager
 th06::AnmManager::CopySurfaceToBackBuffer
 th06::AnmManager::CreateEmptyTexture
 th06::AnmManager::ExecuteScript
+th06::AnmManager::DrawVmTextFmt
 th06::AnmManager::DrawInner
 th06::AnmManager::DrawNoRotation
 th06::AnmManager::Draw

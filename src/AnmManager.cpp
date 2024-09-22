@@ -7,6 +7,8 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+#include <stdio.h>
+
 namespace th06
 {
 DIFFABLE_STATIC(VertexTex1Xyzrwh, g_PrimitivesToDrawVertexBuf[4]);
@@ -1015,6 +1017,24 @@ stop:
     }
     vm->currentTimeInScript.Tick();
     return 0;
+}
+
+#pragma var_order(argptr, buffer, fontWidth)
+void AnmManager::DrawVmTextFmt(AnmManager *anmMgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...)
+{
+    u32 fontWidth;
+    char buffer[64];
+    va_list argptr;
+
+    fontWidth = vm->fontWidth;
+    va_start(argptr, fmt);
+    vsprintf(buffer, fmt, argptr);
+    va_end(argptr);
+    anmMgr->DrawTextToSprite(vm->sprite->sourceFileIndex, vm->sprite->startPixelInclusive.x,
+                             vm->sprite->startPixelInclusive.y, vm->sprite->textureWidth, vm->sprite->textureHeight,
+                             fontWidth, vm->fontHeight, textColor, shadowColor, buffer);
+    vm->flags.isVisible = true;
+    return;
 }
 
 void AnmManager::SetRenderStateForVm(AnmVm *vm)
