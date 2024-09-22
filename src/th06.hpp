@@ -30,6 +30,7 @@
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "Supervisor.hpp"
+#include "TextHelper.hpp"
 #include "ZunBool.hpp"
 #include "ZunColor.hpp"
 #include "ZunMath.hpp"

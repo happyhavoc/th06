@@ -3,6 +3,7 @@
 #include "GameErrorContext.hpp"
 #include "Rng.hpp"
 #include "Supervisor.hpp"
+#include "TextHelper.hpp"
 #include "ZunMath.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
@@ -1017,6 +1018,23 @@ stop:
     }
     vm->currentTimeInScript.Tick();
     return 0;
+}
+
+void AnmManager::DrawTextToSprite(u32 textureDstIdx, i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight,
+                                  i32 fontWidth, i32 fontHeight, ZunColor textColor, ZunColor shadowColor,
+                                  char *strToPrint)
+{
+    if (fontWidth <= 0)
+    {
+        fontWidth = 15;
+    }
+    if (fontHeight <= 0)
+    {
+        fontHeight = 15;
+    }
+    TextHelper::RenderTextToTexture(xPos, yPos, spriteWidth, spriteHeight, fontWidth, fontHeight, textColor,
+                                    shadowColor, strToPrint, this->textures[textureDstIdx]);
+    return;
 }
 
 #pragma var_order(argptr, buffer, fontWidth)
