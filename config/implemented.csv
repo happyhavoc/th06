@@ -190,6 +190,7 @@ th06::StageMenu::OnUpdateRetryMenu
 th06::StageMenu::OnDrawRetryMenu
 th06::TextHelper::TextHelper
 th06::TextHelper::~TextHelper
+th06::TextHelper::ReleaseBuffer
 th06::TextHelper::CreateTextBuffer
 th06::TextHelper::RenderTextToTexture
 th06::Supervisor::AddedCallback

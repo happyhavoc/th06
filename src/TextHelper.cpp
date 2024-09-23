@@ -26,6 +26,30 @@ TextHelper::~TextHelper()
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+bool TextHelper::ReleaseBuffer()
+{
+    if (this->hdc)
+    {
+        SelectObject(this->hdc, this->gdiObj);
+        DeleteDC(this->hdc);
+        DeleteObject(this->gdiObj2);
+        this->format = (D3DFORMAT)-1;
+        this->width = 0;
+        this->height = 0;
+        this->hdc = 0;
+        this->gdiObj2 = 0;
+        this->gdiObj = 0;
+        this->buffer = NULL;
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+#pragma optimize("", on)
+
 #define TEXT_BUFFER_HEIGHT 64
 #pragma optimize("s", on)
 void TextHelper::CreateTextBuffer()
