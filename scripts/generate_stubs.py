@@ -69,7 +69,16 @@ for stub in stubbed_csv:
 
     calling_convention = fun["calling_convention"]
     ret_type = fun["ret_type"]
-    if ret_type.endswith("*"):
+    fun_name_parts = fun_name.split("::")
+    if len(fun_name_parts) >= 2 and fun_name_parts[-1] == fun_name_parts[-2]:
+        # Constructor
+        ret_type = ""
+        ret_val = ""
+    elif len(fun_name_parts) >= 2 and fun_name_parts[-1] == "~" + fun_name_parts[-2]:
+        # Destructor
+        ret_type = ""
+        ret_val = ""
+    elif ret_type.endswith("*"):
         ret_val = "NULL"
     else:
         ret_val = ret_vals[ret_type]
