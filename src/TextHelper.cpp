@@ -19,6 +19,13 @@ TextHelper::TextHelper()
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+TextHelper::~TextHelper()
+{
+    this->ReleaseBuffer();
+}
+#pragma optimize("", on)
+
 #define TEXT_BUFFER_HEIGHT 64
 #pragma optimize("s", on)
 void TextHelper::CreateTextBuffer()
