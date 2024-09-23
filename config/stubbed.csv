@@ -58,7 +58,11 @@ th06::BulletManager::DespawnBullets
 th06::BulletManager::RemoveAllBullets
 th06::BulletManager::SpawnLaserPattern
 th06::BulletManager::TurnAllBulletsIntoPoints
-th06::TextHelper::RenderTextToTexture
+th06::TextHelper::TextHelper
+th06::TextHelper::~TextHelper
+th06::TextHelper::InvertAlpha
+th06::TextHelper::AllocateBufferWithFallback
+th06::TextHelper::CopyTextToSurface
 th06::ItemManager::SpawnItem
 th06::ItemManager::OnUpdate
 th06::ItemManager::OnDraw

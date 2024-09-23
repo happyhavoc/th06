@@ -234,3 +234,4 @@
 #define TH_TL_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _TL_DAT_FILE)
 
 #define TH_SONG_NAME "♪%s"
+#define TH_FONT_NAME "ＭＳ ゴシック"
