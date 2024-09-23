@@ -193,6 +193,7 @@ th06::TextHelper::~TextHelper
 th06::TextHelper::ReleaseBuffer
 th06::TextHelper::CreateTextBuffer
 th06::TextHelper::RenderTextToTexture
+th06::TextHelper::AllocateBufferWithFallback
 th06::Supervisor::AddedCallback
 th06::Supervisor::ReleasePbg3
 th06::Supervisor::LoadPbg3

@@ -60,6 +60,26 @@ void TextHelper::CreateTextBuffer()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+bool TextHelper::AllocateBufferWithFallback(i32 width, i32 height, D3DFORMAT format)
+{
+    if (this->TryAllocateBuffer(width, height, format))
+    {
+        return true;
+    }
+
+    if (format == D3DFMT_A1R5G5B5 || format == D3DFMT_A4R4G4B4)
+    {
+        return this->TryAllocateBuffer(width, height, D3DFMT_A8R8G8B8);
+    }
+    if (format == D3DFMT_R5G6B5)
+    {
+        return this->TryAllocateBuffer(width, height, D3DFMT_X8R8G8B8);
+    }
+    return false;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma function(strlen)
 #pragma var_order(hdc, font, textSurfaceDesc, h, textHelper, hdc, srcRect, destRect, destSurface)
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
