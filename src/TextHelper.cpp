@@ -6,6 +6,19 @@
 namespace th06
 {
 
+#pragma optimize("s", on)
+TextHelper::TextHelper()
+{
+    this->format = (D3DFORMAT)-1;
+    this->width = 0;
+    this->height = 0;
+    this->hdc = 0;
+    this->gdiObj2 = 0;
+    this->gdiObj = 0;
+    this->buffer = NULL;
+}
+#pragma optimize("", on)
+
 #define TEXT_BUFFER_HEIGHT 64
 #pragma optimize("s", on)
 void TextHelper::CreateTextBuffer()
