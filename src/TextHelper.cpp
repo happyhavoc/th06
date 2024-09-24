@@ -169,6 +169,66 @@ FormatInfo *TextHelper::GetFormatInfo(D3DFORMAT format)
 }
 #pragma optimize("", on)
 
+struct A1R5G5B5
+{
+    u16 blue : 5;
+    u16 green : 5;
+    u16 red : 5;
+    u16 alpha : 1;
+};
+
+#pragma optimize("s", on)
+#pragma var_order(bufferRegion, idx, doubleArea, bufferCursor, bufferStart)
+bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
+{
+    i32 doubleArea;
+    u8 *bufferRegion;
+    i32 idx;
+    u8 *bufferStart;
+    A1R5G5B5 *bufferCursor;
+
+    doubleArea = spriteWidth * fontHeight * 2;
+    bufferStart = &this->buffer[0];
+    bufferRegion = &bufferStart[y * spriteWidth * 2];
+    switch (this->format)
+    {
+    case D3DFMT_A8R8G8B8:
+        for (idx = 3; idx < doubleArea; idx += 4)
+        {
+            bufferRegion[idx] = bufferRegion[idx] ^ 0xff;
+        }
+        break;
+    case D3DFMT_A1R5G5B5:
+        for (bufferCursor = (A1R5G5B5 *)bufferRegion, idx = 0; idx < doubleArea; idx += 2, bufferCursor += 1)
+        {
+            bufferCursor->alpha ^= 1;
+            if (bufferCursor->alpha)
+            {
+                bufferCursor->red = bufferCursor->red - bufferCursor->red * idx / doubleArea / 2;
+                bufferCursor->green = bufferCursor->green - bufferCursor->green * idx / doubleArea / 2;
+                bufferCursor->blue = bufferCursor->blue - bufferCursor->blue * idx / doubleArea / 4;
+            }
+            else
+            {
+                bufferCursor->red = 31 - idx * 31 / doubleArea / 2;
+                bufferCursor->green = 31 - idx * 31 / doubleArea / 2;
+                bufferCursor->blue = 31 - idx * 31 / doubleArea / 4;
+            }
+        }
+        break;
+    case D3DFMT_A4R4G4B4:
+        for (idx = 1; idx < doubleArea; idx = idx + 2)
+        {
+            bufferRegion[idx] = bufferRegion[idx] ^ 0xf0;
+        }
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
+#pragma optimize("", on)
+
 #pragma optimize("s", on)
 #pragma function(strlen)
 #pragma var_order(hdc, font, textSurfaceDesc, h, textHelper, hdc, srcRect, destRect, destSurface)
