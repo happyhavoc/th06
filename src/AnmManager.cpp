@@ -1055,6 +1055,30 @@ void AnmManager::DrawVmTextFmt(AnmManager *anmMgr, AnmVm *vm, ZunColor textColor
     return;
 }
 
+#pragma var_order(args, secondPartStartX, buf, fontWidth)
+void AnmManager::DrawStringFormat(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...)
+{
+    char buf[64];
+    va_list args;
+    i32 fontWidth;
+    i32 secondPartStartX;
+
+    fontWidth = vm->fontWidth <= 0 ? 15 : vm->fontWidth;
+    va_start(args, fmt);
+    vsprintf(buf, fmt, args);
+    va_end(args);
+    mgr->DrawTextToSprite(vm->sprite->sourceFileIndex, vm->sprite->startPixelInclusive.x,
+                          vm->sprite->startPixelInclusive.y, vm->sprite->textureWidth, vm->sprite->textureHeight,
+                          fontWidth, vm->fontHeight, textColor, shadowColor, " ");
+    secondPartStartX =
+        vm->sprite->startPixelInclusive.x + vm->sprite->textureWidth - ((f32)strlen(buf) * (f32)(fontWidth + 1) / 2.0f);
+    mgr->DrawTextToSprite(vm->sprite->sourceFileIndex, secondPartStartX, vm->sprite->startPixelInclusive.y,
+                          vm->sprite->textureWidth, vm->sprite->textureHeight, fontWidth, vm->fontHeight, textColor,
+                          shadowColor, buf);
+    vm->flags.isVisible = true;
+    return;
+}
+
 void AnmManager::SetRenderStateForVm(AnmVm *vm)
 {
     if (this->currentBlendMode != vm->flags.blendMode)
