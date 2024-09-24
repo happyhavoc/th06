@@ -230,6 +230,56 @@ bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma function(memcpy)
+#pragma var_order(dstBuf, dstWidthBytes, rectToLock, curHeight, srcWidthBytes, outSurfaceDesc, srcBuf, lockedRect,     \
+                  width, height, thisFormat, thisHeight)
+bool TextHelper::CopyTextToSurface(IDirect3DSurface8 *outSurface)
+{
+    D3DLOCKED_RECT lockedRect;
+    u8 *srcBuf;
+    D3DSURFACE_DESC outSurfaceDesc;
+    size_t srcWidthBytes;
+    int curHeight;
+    RECT rectToLock;
+    int dstWidthBytes;
+    u8 *dstBuf;
+    i32 width;
+    i32 height;
+    D3DFORMAT thisFormat;
+    i32 thisHeight;
+
+    if (!(bool)(u32)(this->gdiObj2 != NULL))
+    {
+        return false;
+    }
+    outSurface->GetDesc(&outSurfaceDesc);
+    rectToLock.left = 0;
+    rectToLock.top = 0;
+    rectToLock.right = width = this->width;
+    rectToLock.bottom = height = this->height;
+    if (outSurface->LockRect(&lockedRect, &rectToLock, 0))
+    {
+        return false;
+    }
+    dstWidthBytes = lockedRect.Pitch;
+    srcWidthBytes = this->imageWidthInBytes;
+    srcBuf = this->buffer;
+    dstBuf = (u8 *)lockedRect.pBits;
+    thisFormat = this->format;
+    if (outSurfaceDesc.Format == thisFormat)
+    {
+        for (curHeight = 0; thisHeight = this->height, curHeight < thisHeight; curHeight++)
+        {
+            memcpy(dstBuf, srcBuf, srcWidthBytes);
+            srcBuf += srcWidthBytes;
+            dstBuf += dstWidthBytes;
+        }
+    }
+    outSurface->UnlockRect();
+    return true;
+}
+
+#pragma optimize("s", on)
 #pragma function(strlen)
 #pragma var_order(hdc, font, textSurfaceDesc, h, textHelper, hdc, srcRect, destRect, destSurface)
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,

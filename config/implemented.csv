@@ -197,6 +197,7 @@ th06::TextHelper::AllocateBufferWithFallback
 th06::TextHelper::TryAllocateBuffer
 th06::TextHelper::GetFormatInfo
 th06::TextHelper::InvertAlpha
+th06::TextHelper::CopyTextToSurface
 th06::Supervisor::AddedCallback
 th06::Supervisor::ReleasePbg3
 th06::Supervisor::LoadPbg3
