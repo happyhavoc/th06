@@ -40,6 +40,7 @@ if args.output:
 
 ret_vals = {
     "void": "",
+    "bool": "false",
     "u8": "0",
     "i8": "0",
     "u16": "0",
