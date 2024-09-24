@@ -6,6 +6,16 @@
 namespace th06
 {
 
+DIFFABLE_STATIC_ARRAY_ASSIGN(FormatInfo, 7, g_FormatInfoArray) = {
+    {D3DFMT_X8R8G8B8, 32, 0x00000000, 0x00FF0000, 0x0000FF00, 0x000000FF},
+    {D3DFMT_A8R8G8B8, 32, 0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF},
+    {D3DFMT_X1R5G5B5, 16, 0x00000000, 0x00007C00, 0x000003E0, 0x0000001F},
+    {D3DFMT_R5G6B5, 16, 0x00000000, 0x0000F800, 0x000007E0, 0x0000001F},
+    {D3DFMT_A1R5G5B5, 16, 0x0000F000, 0x00007C00, 0x000003E0, 0x0000001F},
+    {D3DFMT_A4R4G4B4, 16, 0x0000F000, 0x00000F00, 0x000000F0, 0x0000000F},
+    {(D3DFORMAT)-1, 0, 0, 0, 0, 0},
+};
+
 #pragma optimize("s", on)
 TextHelper::TextHelper()
 {
@@ -141,7 +151,22 @@ bool TextHelper::TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format)
     this->imageWidthInBytes = imageWidthInBytes;
     return true;
 }
+#pragma optimize("", on)
 
+#pragma optimize("s", on)
+FormatInfo *TextHelper::GetFormatInfo(D3DFORMAT format)
+{
+    i32 local_8;
+
+    for (local_8 = 0; g_FormatInfoArray[local_8].format != -1 && g_FormatInfoArray[local_8].format != format; local_8++)
+    {
+    }
+    if (format == -1)
+    {
+        return NULL;
+    }
+    return &g_FormatInfoArray[local_8];
+}
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
