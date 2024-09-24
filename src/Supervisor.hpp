@@ -113,10 +113,11 @@ struct Supervisor
     static void DrawFpsCounter();
 
     ZunBool ReadMidiFile(u32 midiFileIdx, char *path);
+    i32 PlayMidiFile(i32 midiFileIdx);
     ZunResult PlayAudio(char *path);
     ZunResult StopAudio();
-
     ZunResult SetupMidiPlayback(char *path);
+    ZunResult FadeOutMusic(f32 fadeOutSeconds);
 
     static ZunResult SetupDInput(Supervisor *s);
 

@@ -262,7 +262,7 @@ ZunResult Gui::ActualAddedCallback()
     this->impl->songNameSprite.fontWidth = 16;
     this->impl->songNameSprite.fontHeight = 16;
     AnmManager::DrawStringFormat(g_AnmManager, &this->impl->songNameSprite, COLOR_RGB(COLOR_LIGHTCYAN),
-                                 COLOR_RGB(COLOR_BLACK), TH_SONG_NAME, g_Stage.stdData->song1Name);
+                                 COLOR_RGB(COLOR_BLACK), TH_SONG_NAME, g_Stage.stdData->songNames[0]);
     this->impl->msg.currentMsgIdx = 0xffffffff;
     this->impl->finishedStage = 0;
     this->impl->bonusScore.isShown = 0;
@@ -312,12 +312,21 @@ ZunResult Gui::LoadMsg(char *path)
     }
     this->impl->msg.currentMsgIdx = 0xffffffff;
     this->impl->msg.currentInstr = NULL;
-    for (idx = 0; idx < this->impl->msg.msgFile->numEntries; idx++)
+    for (idx = 0; idx < this->impl->msg.msgFile->numInstrs; idx++)
     {
-        this->impl->msg.msgFile->entries[idx] =
-            (MsgRawEntry *)((i32)this->impl->msg.msgFile->entries[idx] + (i32)this->impl->msg.msgFile);
+        this->impl->msg.msgFile->instrs[idx] =
+            (MsgRawInstr *)((i32)this->impl->msg.msgFile->instrs[idx] + (i32)this->impl->msg.msgFile);
     }
     return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void Gui::MsgRead(i32 msgIdx)
+{
+    this->impl->MsgRead(msgIdx);
+    g_Supervisor.unk198 = 3;
+    return;
 }
 #pragma optimize("", on)
 

@@ -19,14 +19,8 @@ struct RawStageHeader
     i32 scriptOffset;
     i32 unk_c;
     char stageName[128];
-    char song1Name[128];
-    char song2Name[128];
-    char song3Name[128];
-    char song4Name[128];
-    char song1Path[128];
-    char song2Path[128];
-    char song3Path[128];
-    char song4Path[128];
+    char songNames[4][128];
+    char songPaths[4][128];
 };
 C_ASSERT(sizeof(RawStageHeader) == 0x490);
 
