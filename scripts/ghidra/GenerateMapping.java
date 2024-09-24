@@ -18,6 +18,7 @@ public class GenerateMapping extends GhidraScript
     {
         switch (ty.toString())
         {
+        case "bool":
         case "u8":
         case "i8":
         case "u16":
@@ -31,7 +32,6 @@ public class GenerateMapping extends GhidraScript
         case "undefined":
         case "undefined1":
         case "byte":
-        case "bool":
             return "u8";
         case "undefined2":
         case "ushort":
