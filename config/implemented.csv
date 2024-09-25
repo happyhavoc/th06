@@ -24,6 +24,7 @@ th06::AnmManager::ExecuteScript
 th06::AnmManager::DrawTextToSprite
 th06::AnmManager::DrawVmTextFmt
 th06::AnmManager::DrawStringFormat
+th06::AnmManager::DrawStringFormat2
 th06::AnmManager::DrawInner
 th06::AnmManager::DrawNoRotation
 th06::AnmManager::Draw
