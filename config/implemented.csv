@@ -15,6 +15,7 @@ th06::AsciiManager::DrawStrings
 th06::ZunTimer::Initialize
 th06::ZunTimer::Increment
 th06::ZunTimer::Decrement
+th06::ZunTimer::NextTick
 th06::AnmVm::AnmVm
 th06::AnmVm::Initialize
 th06::AnmManager::AnmManager
