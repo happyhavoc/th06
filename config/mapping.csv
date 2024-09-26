@@ -213,12 +213,12 @@ th06::Rotate,0x41e8d0,0x6f,__stdcall,,void,D3DXVECTOR3*,D3DXVECTOR3*,f32
 th06::utils::DebugPrint2,0x41e940,0x5,__stdcall,varargs,void,char*
 th06::TextHelper::TextHelper,0x41e945,0x3c,__thiscall,,TextHelper*,TextHelper*
 th06::TextHelper::~TextHelper,0x41e981,0x11,__thiscall,,void,TextHelper*
-th06::TextHelper::Release,0x41e992,0x72,__thiscall,,u32,TextHelper*
-th06::TextHelper::FUN_0041ea04,0x41ea04,0x5f,__thiscall,,u8,TextHelper*,u32,u32,_D3DFORMAT
-th06::TextHelper::FUN_0041ea63,0x41ea63,0x1bf,__thiscall,,u8,TextHelper*,u32,u32,_D3DFORMAT
+th06::TextHelper::ReleaseBuffer,0x41e992,0x72,__thiscall,,bool,TextHelper*
+th06::TextHelper::AllocateBufferWithFallback,0x41ea04,0x5f,__thiscall,,bool,TextHelper*,i32,i32,_D3DFORMAT
+th06::TextHelper::TryAllocateBuffer,0x41ea63,0x1bf,__thiscall,,bool,TextHelper*,i32,i32,_D3DFORMAT
 th06::TextHelper::GetFormatInfo,0x41ec22,0x50,__thiscall,,FormatInfo*,TextHelper*,_D3DFORMAT
-th06::TextHelper::FUN_0041ec72,0x41ec72,0x29f,__thiscall,,u32,TextHelper*,u32,i32,i32,i32
-th06::TextHelper::CopyTextToSurface,0x41ef11,0xf7,__thiscall,,u32,TextHelper*,IDirect3DSurface8*
+th06::TextHelper::InvertAlpha,0x41ec72,0x29f,__thiscall,,bool,TextHelper*,i32,i32,i32,i32
+th06::TextHelper::CopyTextToSurface,0x41ef11,0xf7,__thiscall,,bool,TextHelper*,IDirect3DSurface8*
 th06::TextHelper::CreateTextBuffer,0x41f008,0x23,default,,void
 th06::TextHelper::ReleaseTextBuffer,0x41f02b,0x25,default,,void
 th06::TextHelper::RenderTextToTexture,0x41f050,0x1e0,default,,void,i32,i32,i32,i32,i32,i32,ZunColor,ZunColor,char*,IDirect3DTexture8*
@@ -241,10 +241,10 @@ th06::AnmManager::ReleaseSurfaces,0x4219d0,0x68,__thiscall,,void,AnmManager*
 th06::AnmManager::TakeScreenshotIfRequested,0x421a40,0x5e,__thiscall,,void,AnmManager*
 th06::MidiDevice::MidiDevice,0x421aa0,0x21,__thiscall,,u32*,MidiDevice*
 th06::MidiDevice::~MidiDevice,0x421ad0,0x13,__thiscall,,void,MidiDevice*
-th06::MidiDevice::OpenDevice,0x421af0,0x59,__thiscall,,u8,MidiDevice*,u32
+th06::MidiDevice::OpenDevice,0x421af0,0x59,__thiscall,,bool,MidiDevice*,u32
 th06::MidiDevice::Close,0x421b50,0x3b,__thiscall,,ZunResult,MidiDevice*
 th06::MidiDevice::FUN_00421b90,0x421b90,0x4e,__thiscall,,i32,MidiDevice*,midihdr_tag*
-th06::MidiDevice::SendShortMsg,0x421be0,0x43,__thiscall,,u8,MidiDevice*,u8,u8,u8
+th06::MidiDevice::SendShortMsg,0x421be0,0x43,__thiscall,,bool,MidiDevice*,u8,u8,u8
 th06::MidiTimer::MidiTimer,0x421c30,0x30,__thiscall,,u32*,MidiTimer*
 th06::MidiTimer::~MidiTimer,0x421c60,0x29,__thiscall,,void,MidiTimer*
 th06::MidiTimer::FUN_00421c90,0x421c90,0x73,__thiscall,,u32,MidiTimer*,u32,TIMECALLBACK*,unsigned long
@@ -466,7 +466,7 @@ th06::CWaveFile::~CWaveFile,0x43ba10,0x46,__thiscall,,void,CWaveFile*
 th06::CWaveFile::Open,0x43ba60,0x180,__thiscall,,i32,CWaveFile*,char*,u32,unsigned long
 th06::CWaveFile::ReadMMIO,0x43bc00,0x241,__thiscall,,u32,CWaveFile*
 th06::CWaveFile::GetSize,0x43be50,0x11,__thiscall,,u32,CWaveFile*
-th06::CWaveFile::ResetFile,0x43be70,0x201,__thiscall,,u32,CWaveFile*,u8
+th06::CWaveFile::ResetFile,0x43be70,0x201,__thiscall,,u32,CWaveFile*,bool
 th06::CWaveFile::Read,0x43c080,0x239,__thiscall,,u32,CWaveFile*,u32*,u32,u32*
 th06::CWaveFile::Close,0x43c2c0,0x2f,__thiscall,,u32,CWaveFile*
 th06::IPbg3Parser::Reset,0x43c2f0,0x13,__thiscall,,void,IPbg3Parser*

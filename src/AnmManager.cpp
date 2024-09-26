@@ -3,9 +3,12 @@
 #include "GameErrorContext.hpp"
 #include "Rng.hpp"
 #include "Supervisor.hpp"
+#include "TextHelper.hpp"
 #include "ZunMath.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
+
+#include <stdio.h>
 
 namespace th06
 {
@@ -1015,6 +1018,89 @@ stop:
     }
     vm->currentTimeInScript.Tick();
     return 0;
+}
+
+void AnmManager::DrawTextToSprite(u32 textureDstIdx, i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight,
+                                  i32 fontWidth, i32 fontHeight, ZunColor textColor, ZunColor shadowColor,
+                                  char *strToPrint)
+{
+    if (fontWidth <= 0)
+    {
+        fontWidth = 15;
+    }
+    if (fontHeight <= 0)
+    {
+        fontHeight = 15;
+    }
+    TextHelper::RenderTextToTexture(xPos, yPos, spriteWidth, spriteHeight, fontWidth, fontHeight, textColor,
+                                    shadowColor, strToPrint, this->textures[textureDstIdx]);
+    return;
+}
+
+#pragma var_order(argptr, buffer, fontWidth)
+void AnmManager::DrawVmTextFmt(AnmManager *anmMgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...)
+{
+    u32 fontWidth;
+    char buffer[64];
+    va_list argptr;
+
+    fontWidth = vm->fontWidth;
+    va_start(argptr, fmt);
+    vsprintf(buffer, fmt, argptr);
+    va_end(argptr);
+    anmMgr->DrawTextToSprite(vm->sprite->sourceFileIndex, vm->sprite->startPixelInclusive.x,
+                             vm->sprite->startPixelInclusive.y, vm->sprite->textureWidth, vm->sprite->textureHeight,
+                             fontWidth, vm->fontHeight, textColor, shadowColor, buffer);
+    vm->flags.isVisible = true;
+    return;
+}
+
+#pragma var_order(args, secondPartStartX, buf, fontWidth)
+void AnmManager::DrawStringFormat(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...)
+{
+    char buf[64];
+    va_list args;
+    i32 fontWidth;
+    i32 secondPartStartX;
+
+    fontWidth = vm->fontWidth <= 0 ? 15 : vm->fontWidth;
+    va_start(args, fmt);
+    vsprintf(buf, fmt, args);
+    va_end(args);
+    mgr->DrawTextToSprite(vm->sprite->sourceFileIndex, vm->sprite->startPixelInclusive.x,
+                          vm->sprite->startPixelInclusive.y, vm->sprite->textureWidth, vm->sprite->textureHeight,
+                          fontWidth, vm->fontHeight, textColor, shadowColor, " ");
+    secondPartStartX =
+        vm->sprite->startPixelInclusive.x + vm->sprite->textureWidth - ((f32)strlen(buf) * (f32)(fontWidth + 1) / 2.0f);
+    mgr->DrawTextToSprite(vm->sprite->sourceFileIndex, secondPartStartX, vm->sprite->startPixelInclusive.y,
+                          vm->sprite->textureWidth, vm->sprite->textureHeight, fontWidth, vm->fontHeight, textColor,
+                          shadowColor, buf);
+    vm->flags.isVisible = true;
+    return;
+}
+
+#pragma var_order(args, secondPartStartX, buf, fontWidth)
+void AnmManager::DrawStringFormat2(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...)
+{
+    char buf[64];
+    va_list args;
+    i32 fontWidth;
+    i32 secondPartStartX;
+
+    fontWidth = vm->fontWidth <= 0 ? 15 : vm->fontWidth;
+    va_start(args, fmt);
+    vsprintf(buf, fmt, args);
+    va_end(args);
+    mgr->DrawTextToSprite(vm->sprite->sourceFileIndex, vm->sprite->startPixelInclusive.x,
+                          vm->sprite->startPixelInclusive.y, vm->sprite->textureWidth, vm->sprite->textureHeight,
+                          fontWidth, vm->fontHeight, textColor, shadowColor, " ");
+    secondPartStartX = vm->sprite->startPixelInclusive.x + vm->sprite->textureWidth / 2.0f -
+                       ((f32)strlen(buf) * (f32)(fontWidth + 1) / 2.0f);
+    mgr->DrawTextToSprite(vm->sprite->sourceFileIndex, secondPartStartX, vm->sprite->startPixelInclusive.y,
+                          vm->sprite->textureWidth, vm->sprite->textureHeight, fontWidth, vm->fontHeight, textColor,
+                          shadowColor, buf);
+    vm->flags.isVisible = true;
+    return;
 }
 
 void AnmManager::SetRenderStateForVm(AnmVm *vm)
