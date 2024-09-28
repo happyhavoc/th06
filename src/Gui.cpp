@@ -337,7 +337,7 @@ ChainCallbackResult Gui::OnUpdate(Gui *gui)
     {
         return CHAIN_CALLBACK_RESULT_CONTINUE;
     }
-    gui->CalculateStageScore();
+    gui->UpdateStageElements();
     gui->impl->RunMsg();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }

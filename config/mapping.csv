@@ -157,7 +157,7 @@ th06::GuiImpl::RunMsg,0x4188c9,0x7e0,__thiscall,,ZunResult,GuiImpl*
 th06::GuiImpl::DrawDialogue,0x4190ec,0x486,__thiscall,,ZunResult,GuiImpl*
 th06::Gui::MsgWait,0x419572,0x30,__thiscall,,i32,Gui*
 th06::Gui::HasCurrentMsgIdx,0x4195a2,0x1d,__thiscall,,i32,Gui*
-th06::Gui::CalculateStageScore,0x4195bf,0x6da,__thiscall,,void,Gui*
+th06::Gui::UpdateStageElements,0x4195bf,0x6da,__thiscall,,void,Gui*
 th06::Gui::DrawGameScene,0x419c99,0x115a,__thiscall,,void,Gui*
 th06::Gui::DrawStageElements,0x41adf3,0x3b1,__thiscall,,void,Gui*
 th06::Gui::AddedCallback,0x41b1a4,0xd,default,,ZunResult,Gui*
