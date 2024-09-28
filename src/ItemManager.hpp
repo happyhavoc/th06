@@ -29,7 +29,7 @@ struct Item
     D3DXVECTOR3 targetPosition;
     ZunTimer timer;
     u8 itemType;
-    u8 isInUse;
+    i8 isInUse;
     u8 unk_142;
     u8 state;
 };
@@ -44,7 +44,7 @@ struct ItemManager
 
     Item items[512];
     Item dummyItemForFailedSpawns;
-    u32 nextIndex;
+    i32 nextIndex;
     u32 itemCount;
 };
 C_ASSERT(sizeof(ItemManager) == 0x2894c);
