@@ -140,6 +140,7 @@ th06::Gui::OnUpdate
 th06::Gui::OnDraw
 th06::Gui::DrawGameScene
 th06::Gui::DrawStageElements
+th06::Gui::UpdateStageElements
 th06::GuiImpl::DrawDialogue
 th06::GuiImpl::MsgRead
 th06::GuiImpl::RunMsg

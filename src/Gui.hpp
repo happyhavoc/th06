@@ -67,6 +67,11 @@ struct Gui
         return this->spellcardSecondsRemaining;
     }
 
+    void TickTimer(ZunTimer *timer)
+    {
+        timer->NextTick();
+    }
+
     GuiFlags flags;
     GuiImpl *impl;
     f32 bombSpellcardBarLength;
