@@ -36,7 +36,6 @@ th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
 th06::MainMenu::SelectRelated
-th06::Gui::UpdateStageElements
 th06::Gui::HasCurrentMsgIdx
 th06::Gui::FreeMsgFile
 th06::Gui::IsStageFinished

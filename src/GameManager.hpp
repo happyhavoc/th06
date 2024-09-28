@@ -42,6 +42,9 @@ enum StageNumber
 #define GAME_REGION_WIDTH 384.0
 #define GAME_REGION_HEIGHT 448.0
 
+#define GAME_REGION_RIGHT (GAME_REGION_LEFT + GAME_REGION_WIDTH)
+#define GAME_REGION_BOTTOM (GAME_REGION_TOP + GAME_REGION_HEIGHT)
+
 struct GameManager
 {
     GameManager();
