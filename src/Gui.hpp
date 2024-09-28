@@ -34,7 +34,7 @@ struct Gui
 
     ZunBool IsStageFinished();
 
-    void CalculateStageScore();
+    void UpdateStageElements();
     ZunBool HasCurrentMsgIdx();
 
     void DrawStageElements();
