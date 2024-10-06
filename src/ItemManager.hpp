@@ -30,7 +30,7 @@ struct Item
     ZunTimer timer;
     i8 itemType;
     i8 isInUse;
-    u8 unk_142;
+    i8 unk_142;
     i8 state;
 };
 C_ASSERT(sizeof(Item) == 0x144);
