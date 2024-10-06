@@ -40,6 +40,7 @@ th06::Gui::MsgWait
 th06::Gui::ShowSpellcard
 th06::Gui::ShowSpellcardBonus
 th06::Gui::ShowBombNamePortrait
+th06::Gui::ShowFullPowerMode
 th06::Gui::EndEnemySpellcard
 th06::Gui::EndPlayerSpellcard
 th06::Enemy::MathSub
@@ -54,7 +55,6 @@ th06::BulletManager::DespawnBullets
 th06::BulletManager::RemoveAllBullets
 th06::BulletManager::SpawnLaserPattern
 th06::BulletManager::TurnAllBulletsIntoPoints
-th06::ItemManager::OnUpdate
 th06::ItemManager::OnDraw
 th06::ItemManager::RemoveAllItems
 th06::ReplayManager::RegisterChain
@@ -71,4 +71,5 @@ th06::Player::BombMarisaBDraw
 th06::Player::CalcLaserHitbox
 th06::Player::CheckGraze
 th06::Player::DarkenViewport
+th06::Player::CalcBoxCollision
 th06::Pbg3Archive::Pbg3Archive

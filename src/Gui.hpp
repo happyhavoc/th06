@@ -49,6 +49,8 @@ struct Gui
     void EndEnemySpellcard();
     void EndPlayerSpellcard();
 
+    void ShowFullPowerMode(i32 fmtArg);
+
     void SetBossHealthBar(f32 val)
     {
         this->bossHealthBar1 = val;

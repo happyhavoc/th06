@@ -28,10 +28,10 @@ struct Item
     D3DXVECTOR3 startPosition;
     D3DXVECTOR3 targetPosition;
     ZunTimer timer;
-    u8 itemType;
+    i8 itemType;
     i8 isInUse;
     u8 unk_142;
-    u8 state;
+    i8 state;
 };
 C_ASSERT(sizeof(Item) == 0x144);
 
