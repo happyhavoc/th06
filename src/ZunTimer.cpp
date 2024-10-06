@@ -63,5 +63,11 @@ void ZunTimer::Decrement(i32 value)
         this->subFrame = this->subFrame + 1.0f;
     }
 }
+
+i32 ZunTimer::NextTick()
+{
+    this->Tick();
+    return this->current;
+}
 #pragma optimize("s", off)
 }; // namespace th06

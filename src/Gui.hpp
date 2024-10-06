@@ -47,6 +47,8 @@ struct Gui
     void ShowSpellcardBonus(u32 spellcardScore);
     void EndEnemySpellcard();
 
+    void ShowFullPowerMode(i32 fmtArg);
+
     void SetBossHealthBar(f32 val)
     {
         this->bossHealthBar1 = val;
@@ -65,6 +67,11 @@ struct Gui
     i32 SpellcardSecondsRemaining()
     {
         return this->spellcardSecondsRemaining;
+    }
+
+    void TickTimer(ZunTimer *timer)
+    {
+        timer->NextTick();
     }
 
     GuiFlags flags;

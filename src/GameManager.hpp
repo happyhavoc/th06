@@ -42,6 +42,9 @@ enum StageNumber
 #define GAME_REGION_WIDTH 384.0
 #define GAME_REGION_HEIGHT 448.0
 
+#define GAME_REGION_RIGHT (GAME_REGION_LEFT + GAME_REGION_WIDTH)
+#define GAME_REGION_BOTTOM (GAME_REGION_TOP + GAME_REGION_HEIGHT)
+
 struct GameManager
 {
     GameManager();
@@ -59,7 +62,7 @@ struct GameManager
     void DecreaseSubrank(i32 amount);
     i32 IsInBounds(f32 x, f32 y, f32 width, f32 height);
 
-    void AddScore(u32 points)
+    void AddScore(i32 points)
     {
         this->score += points;
     }
@@ -82,8 +85,8 @@ struct GameManager
     u16 currentPower;
     i8 unk_1812;
     i8 unk_1813;
-    u16 pointItemsCollectedInStage;
-    u16 unk_1816;
+    i16 pointItemsCollectedInStage;
+    i16 unk_1816;
     u8 numRetries;
     i8 powerItemCountForScore;
     i8 livesRemaining;
