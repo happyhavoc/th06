@@ -332,4 +332,51 @@ void ItemManager::OnUpdate()
     return;
 }
 
+#pragma var_order(itemAlpha, idx, curItem)
+void ItemManager::OnDraw()
+{
+    Item *curItem;
+    i32 idx;
+    i32 itemAlpha;
+
+    curItem = &this->items[0];
+    idx = 0;
+    for (; idx < ARRAY_SIZE_SIGNED(this->items); idx++, curItem++)
+    {
+        if (curItem->isInUse == 0)
+        {
+            continue;
+        }
+        curItem->sprite.pos.x = g_GameManager.arcadeRegionTopLeftPos.x + curItem->currentPosition.x;
+        curItem->sprite.pos.y = g_GameManager.arcadeRegionTopLeftPos.y + curItem->currentPosition.y;
+        curItem->sprite.pos.z = 0.01f;
+        if (curItem->currentPosition.y < -8.0f)
+        {
+            curItem->sprite.pos.y = g_GameManager.arcadeRegionTopLeftPos.y + 8.0f;
+            if (curItem->unk_142 != 0)
+            {
+                g_AnmManager->SetActiveSprite(&curItem->sprite, curItem->itemType + 519);
+                curItem->unk_142 = 0;
+            }
+            itemAlpha = 255 - (i32)(((8.0f - curItem->currentPosition.y) * 255.0f) / 128.0f);
+            if (itemAlpha < 0x40)
+            {
+                itemAlpha = 0x40;
+            }
+            curItem->sprite.color = COLOR_SET_ALPHA3(curItem->sprite.color, itemAlpha);
+        }
+        else
+        {
+            if (curItem->unk_142 == 0)
+            {
+                g_AnmManager->SetActiveSprite(&curItem->sprite, curItem->itemType + 512);
+                curItem->unk_142 = 1;
+                curItem->sprite.color = COLOR_WHITE;
+            }
+        }
+        g_AnmManager->DrawNoRotation(&curItem->sprite);
+    }
+    return;
+}
+
 }; // namespace th06
