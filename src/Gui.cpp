@@ -482,6 +482,191 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+#pragma var_order(idx, stageScore)
+void Gui::UpdateStageElements()
+{
+    i32 stageScore;
+    i32 idx;
+
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->impl->vms); idx++)
+    {
+        if (idx == 19 && this->impl->msg.currentMsgIdx < 0)
+        {
+            if (this->bossPresent)
+            {
+                if (!this->impl->bossHealthBarState)
+                {
+                    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->vms[idx], ANM_SCRIPT_FRONT_ENEMY_TEXT);
+                    this->impl->bossHealthBarState = 1;
+                    this->bossUIOpacity = 0;
+                }
+                else
+                {
+                    if (g_AnmManager->ExecuteScript(&this->impl->vms[idx]))
+                    {
+                        this->impl->bossHealthBarState = 2;
+                    }
+                    if (this->bossUIOpacity < 256 - 4)
+                    {
+                        this->bossUIOpacity += 4;
+                    }
+                    else
+                    {
+                        this->bossUIOpacity = 0xff;
+                    }
+                }
+            }
+            else if (this->impl->bossHealthBarState != 0)
+            {
+                if (this->impl->bossHealthBarState <= 2)
+                {
+                    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->vms[idx], ANM_SCRIPT_FRONT_ENEMY_TEXT2);
+                    this->impl->bossHealthBarState = 3;
+                }
+                if (this->bossUIOpacity > 0)
+                {
+                    this->bossUIOpacity -= 4;
+                }
+                else
+                {
+                    this->bossUIOpacity = 0;
+                }
+                if (g_AnmManager->ExecuteScript(&this->impl->vms[idx]))
+                {
+                    this->impl->bossHealthBarState = 0;
+                    this->bossHealthBar2 = 0.0f;
+                    this->bossUIOpacity = 0;
+                }
+            }
+            if (2 <= this->impl->bossHealthBarState)
+            {
+                if (this->bossHealthBar1 > this->bossHealthBar2)
+                {
+                    this->bossHealthBar2 += 0.01f;
+                    if (this->bossHealthBar1 < this->bossHealthBar2)
+                    {
+                        this->bossHealthBar2 = this->bossHealthBar1;
+                    }
+                }
+                else if (this->bossHealthBar1 < this->bossHealthBar2)
+                {
+                    this->bossHealthBar2 -= 0.02f;
+                    if (this->bossHealthBar1 > this->bossHealthBar2)
+                    {
+                        this->bossHealthBar2 = this->bossHealthBar1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            g_AnmManager->ExecuteScript(&this->impl->vms[idx]);
+        }
+    }
+    g_AnmManager->ExecuteScript(&this->impl->stageNameSprite);
+    g_AnmManager->ExecuteScript(&this->impl->songNameSprite);
+    g_AnmManager->ExecuteScript(&this->impl->playerSpellcardPortrait);
+    g_AnmManager->ExecuteScript(&this->impl->bombSpellcardName);
+    g_AnmManager->ExecuteScript(&this->impl->enemySpellcardPortrait);
+    g_AnmManager->ExecuteScript(&this->impl->enemySpellcardName);
+    if (0 <= this->impl->loadingScreenSprite.activeSpriteIndex &&
+        g_AnmManager->ExecuteScript(&this->impl->loadingScreenSprite) != 0)
+    {
+        this->impl->loadingScreenSprite.activeSpriteIndex = -1;
+    }
+    if (this->impl->bonusScore.isShown)
+    {
+        if ((i32)(this->impl->bonusScore.timer.current < 30))
+        {
+            this->impl->bonusScore.pos.x =
+                (this->impl->bonusScore.timer.AsFramesFloat() * -312.0f / 30.0f) + GAME_REGION_RIGHT;
+        }
+        else
+        {
+            this->impl->bonusScore.pos.x = 104.0f;
+        }
+        if ((i32)(250 <= this->impl->bonusScore.timer.current))
+        {
+            this->impl->bonusScore.isShown = 0;
+        }
+        this->TickTimer(&this->impl->bonusScore.timer);
+    }
+    if (this->impl->fullPowerMode.isShown)
+    {
+        if ((i32)(this->impl->fullPowerMode.timer.current < 30))
+        {
+            this->impl->fullPowerMode.pos.x =
+                (this->impl->fullPowerMode.timer.AsFramesFloat() * -312.0f / 30.0f) + GAME_REGION_RIGHT;
+        }
+        else
+        {
+            this->impl->fullPowerMode.pos.x = 104.0f;
+        }
+        if ((i32)(180 <= this->impl->fullPowerMode.timer.current))
+        {
+            this->impl->fullPowerMode.isShown = 0;
+        }
+        this->TickTimer(&this->impl->fullPowerMode.timer);
+    }
+    if (this->impl->spellCardBonus.isShown)
+    {
+        if ((i32)(280 <= this->impl->spellCardBonus.timer.current))
+        {
+            this->impl->spellCardBonus.isShown = 0;
+        }
+        this->TickTimer(&this->impl->spellCardBonus.timer);
+    }
+    if (this->impl->finishedStage == 1)
+    {
+        stageScore = 0;
+        stageScore += g_GameManager.currentStage * 1000;
+        stageScore += g_GameManager.grazeInStage * 10;
+        stageScore += g_GameManager.currentPower * 100;
+        stageScore *= g_GameManager.pointItemsCollectedInStage;
+        if (6 <= g_GameManager.currentStage)
+        {
+            stageScore += g_GameManager.livesRemaining * 3000000;
+            stageScore += g_GameManager.bombsRemaining * 1000000;
+        }
+        switch (g_GameManager.difficulty)
+        {
+        case EASY:
+            stageScore /= 2;
+            stageScore -= stageScore % 10;
+            break;
+        case HARD:
+            stageScore = stageScore * 12 / 10;
+            stageScore -= stageScore % 10;
+            break;
+        case LUNATIC:
+            stageScore = stageScore * 15 / 10;
+            stageScore -= stageScore % 10;
+            break;
+        case EXTRA:
+            stageScore *= 2;
+            stageScore -= stageScore % 10;
+            break;
+        }
+        switch (g_Supervisor.defaultConfig.lifeCount)
+        {
+        case 3:
+            stageScore = stageScore * 5 / 10;
+            stageScore -= stageScore % 10;
+            break;
+        case 4:
+            stageScore = stageScore * 2 / 10;
+            stageScore -= stageScore % 10;
+            break;
+        }
+        this->impl->stageScore = stageScore;
+        g_GameManager.score += stageScore;
+        this->impl->finishedStage += 1;
+    }
+    return;
+}
+#pragma optimize("", on)
+
 static ZunColor COLOR1 = 0xa0d0ff;
 static ZunColor COLOR2 = 0xa080ff;
 static ZunColor COLOR3 = 0xe080c0;

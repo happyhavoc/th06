@@ -15,6 +15,7 @@ th06::AsciiManager::DrawStrings
 th06::ZunTimer::Initialize
 th06::ZunTimer::Increment
 th06::ZunTimer::Decrement
+th06::ZunTimer::NextTick
 th06::AnmVm::AnmVm
 th06::AnmVm::Initialize
 th06::AnmManager::AnmManager
@@ -139,6 +140,7 @@ th06::Gui::OnUpdate
 th06::Gui::OnDraw
 th06::Gui::DrawGameScene
 th06::Gui::DrawStageElements
+th06::Gui::UpdateStageElements
 th06::GuiImpl::DrawDialogue
 th06::GuiImpl::MsgRead
 th06::GuiImpl::RunMsg

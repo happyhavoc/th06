@@ -36,7 +36,6 @@ th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
 th06::MainMenu::SelectRelated
-th06::Gui::UpdateStageElements
 th06::Gui::HasCurrentMsgIdx
 th06::Gui::FreeMsgFile
 th06::Gui::IsStageFinished
@@ -76,5 +75,4 @@ th06::Player::BombMarisaADraw
 th06::Player::BombMarisaBDraw
 th06::Player::CalcLaserHitbox
 th06::Player::CheckGraze
-th06::ZunTimer::NextTick
 th06::Pbg3Archive::Pbg3Archive
