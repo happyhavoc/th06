@@ -141,8 +141,8 @@ th06::Gui::IsStageFinished,0x4172d3,0x41,__thiscall,,i32,Gui*
 th06::Gui::EndPlayerSpellcard,0x417314,0x18,__thiscall,,void,Gui*
 th06::Gui::EndEnemySpellcard,0x41732c,0x18,__thiscall,,void,Gui*
 th06::Gui::IsDialogueSkippable,0x417344,0x16,__thiscall,,u8,Gui*
-th06::Gui::FUN_0041735a,0x41735a,0x7f,__thiscall,,void,Gui*,u32
-th06::Gui::FUN_004173d9,0x4173d9,0x7f,__thiscall,,void,Gui*,i32
+th06::Gui::ShowBonusScore,0x41735a,0x7f,__thiscall,,void,Gui*,u32
+th06::Gui::ShowFullPowerMode,0x4173d9,0x7f,__thiscall,,void,Gui*,i32
 th06::Gui::ShowSpellcardBonus,0x417458,0x7f,__thiscall,,void,Gui*,u32
 th06::Gui::OnUpdate,0x4174d7,0x2b,default,,ChainCallbackResult,Gui*
 th06::Gui::OnDraw,0x417502,0x5cb,default,,ChainCallbackResult,Gui*
@@ -310,7 +310,7 @@ th06::Player::FireBulletMarisaB,0x426480,0x22,default,,FireBulletResult,Player*,
 th06::Player::CalcDamageToEnemy,0x4264b0,0x77d,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECTOR3*,i32*
 th06::Player::CalcKillBoxCollision,0x426c40,0x1b0,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECTOR3*
 th06::Player::CheckGraze,0x426df0,0x1dd,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECTOR3*
-th06::Player::CalcBoxCollision,0x426fd0,0x1ba,__thiscall,,u32,Player*,D3DXVECTOR3*,D3DXVECTOR3*
+th06::Player::CalcBoxCollision,0x426fd0,0x1ba,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECTOR3*
 th06::Player::CalcLaserHitbox,0x427190,0x49c,__thiscall,,i32,Player*,D3DXVECTOR3*,D3DXVECTOR3*,D3DXVECTOR3*,f32,i32
 th06::Player::ScoreGraze,0x427630,0x139,__thiscall,,void,Player*,D3DXVECTOR3*
 th06::Player::Die,0x427770,0xe6,__thiscall,,void,Player*
