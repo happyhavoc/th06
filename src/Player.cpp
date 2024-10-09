@@ -414,7 +414,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPos, D3DXVECTOR3 *enemyHitboxSiz
             }
             if (bullet->unk_140.AsFrames() % 6 == 0)
             {
-                g_EffectManager.SpawnParticles(5, &bullet->position, 1, COLOR_WHITE);
+                g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_5, &bullet->position, 1, COLOR_WHITE);
             }
         }
 
@@ -423,7 +423,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPos, D3DXVECTOR3 *enemyHitboxSiz
             if (bullet->bulletState == BULLET_STATE_FIRED)
             {
                 g_AnmManager->SetAndExecuteScriptIdx(&bullet->sprite, bullet->sprite.anmFileIndex + 0x20);
-                g_EffectManager.SpawnParticles(5, &bullet->position, 1, COLOR_WHITE);
+                g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_5, &bullet->position, 1, COLOR_WHITE);
                 bullet->position.z = 0.1;
             }
             bullet->bulletState = BULLET_STATE_COLLIDED;
@@ -438,7 +438,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPos, D3DXVECTOR3 *enemyHitboxSiz
                 *bulletTopLeft.AsD3dXVec() = *enemyPos;
                 bulletTopLeft.x = bullet->position.x;
 
-                g_EffectManager.SpawnParticles(5, bulletTopLeft.AsD3dXVec(), 1, COLOR_WHITE);
+                g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_5, bulletTopLeft.AsD3dXVec(), 1, COLOR_WHITE);
             }
         }
     }
@@ -461,7 +461,7 @@ i32 Player::CalcDamageToEnemy(D3DXVECTOR3 *enemyPos, D3DXVECTOR3 *enemyHitboxSiz
         this->unk_9e4++;
         if (this->unk_9e4 % 4 == 0)
         {
-            g_EffectManager.SpawnParticles(3, enemyPos, 1, COLOR_WHITE);
+            g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_3, enemyPos, 1, COLOR_WHITE);
         }
         if (this->bombInfo.isInUse && hitWithLazerDuringBomb)
         {
@@ -1223,8 +1223,8 @@ void Player::Die()
     int curLaserTimerIdx;
 
     g_EnemyManager.spellcardInfo.isCapturing = 0;
-    g_EffectManager.SpawnParticles(12, &this->positionCenter, 1, COLOR_NEONBLUE);
-    g_EffectManager.SpawnParticles(6, &this->positionCenter, 16, COLOR_WHITE);
+    g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &this->positionCenter, 1, COLOR_NEONBLUE);
+    g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_6, &this->positionCenter, 16, COLOR_WHITE);
     this->playerState = PLAYER_STATE_DEAD;
     this->invulnerabilityTimer.InitializeForPopup();
     g_SoundPlayer.PlaySoundByIdx(SOUND_PICHUN, 0);
