@@ -120,10 +120,10 @@ struct PlayerBombInfo
     ZunTimer timer;
     void (*calc)(Player *p);
     void (*draw)(Player *p);
-    u32 unk_1c[8];
-    f32 unk_3c[8];
-    D3DXVECTOR3 unk_5c[8];
-    D3DXVECTOR3 unk_bc[8];
+    i32 reimuABombProjectilesState[8];
+    f32 reimuABombProjectilesRelated[8];
+    D3DXVECTOR3 bombRegionPositions[8];
+    D3DXVECTOR3 bombRegionVelocities[8];
     AnmVm sprites[8][4];
 };
 C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
