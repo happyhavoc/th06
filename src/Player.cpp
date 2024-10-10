@@ -1119,9 +1119,9 @@ FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, 
         bullet->unk_134.z = bulletData->direction;
         bullet->unk_134.y = bulletData->velocity;
 
-        bullet->velocity.x = bulletData->HorizontalDirection(bulletData->direction) * bulletData->velocity;
+        bullet->velocity.x = cosf(bulletData->direction) * bulletData->velocity;
 
-        bullet->velocity.y = bulletData->VerticalDirection(bulletData->direction) * bulletData->velocity;
+        bullet->velocity.y = sinf(bulletData->direction) * bulletData->velocity;
 
         bullet->unk_140.InitializeForPopup();
 

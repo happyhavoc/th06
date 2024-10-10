@@ -157,16 +157,6 @@ struct CharacterPowerBulletData
     u8 bulletType;
     i16 anmFileIdx;
     i16 bulletSoundIdx;
-
-    f32 HorizontalDirection(f32 direction)
-    {
-        return cos(direction);
-    }
-
-    f32 VerticalDirection(f32 direction)
-    {
-        return sin(direction);
-    }
 };
 C_ASSERT(sizeof(CharacterPowerBulletData) == 0x24);
 
