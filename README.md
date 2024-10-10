@@ -5,7 +5,7 @@
   <img alt="Decomp Progress" src="resources/progress.svg">
 </picture>
 
-[![Discord][discord-badge]][discord]
+[![Discord][discord-badge]][discord] <- click here to join discord server.
 
 [discord]: https://discord.gg/VyGwAjrh9a
 [discord-badge]: https://img.shields.io/discord/1147558514840064030?color=%237289DA&logo=discord&logoColor=%23FFFFFF
@@ -19,7 +19,7 @@ This project aims to perfectly reconstruct the source code of [Touhou Koumakyou 
 
 ### Executable
 
-This project requires the original `東方紅魔郷.exe` version 1.02h (9f76483c46256804792399296619c1274363c31cd8f1775fafb55106fb852245)
+This project requires the original `東方紅魔郷.exe` version 1.02h (SHA256 hashsum 9f76483c46256804792399296619c1274363c31cd8f1775fafb55106fb852245, you can check hashsum on windows with command `certutil -hashfile <path-to-your-file> SHA256`.)
 
 Copy `東方紅魔郷.exe` to `resources/game.exe`.
 
@@ -36,7 +36,15 @@ The rest of the build system is constructed out of Visual Studio 2002 and Direct
 
 #### Configure devenv
 
-Run the following script:
+This will download and install compiler, libraries, and other tools.
+
+On windows, run this command:
+
+```
+python scripts/create_devenv.py scripts/dls scripts/prefix
+```
+
+On linux and mac, run the following script:
 ```bash
 # NOTE: On macOS if you use CrossOver.
 # export WINE=<CrossOverPath>/wine
@@ -73,10 +81,10 @@ The easiest way to work on the reimplementation is through the use of
 
 1. First, follow the instruction above to get a devenv setup.
 1. Copy the original `東方紅魔郷.exe` file (version 1.02h) to the
-   `resources/game.exe` folder. This will be used as the source to compare the
+   `resources/` folder, and rename it into `game.exe`. This will be used as the source to compare the
    reimplementations against.
 1. Download the latest version of objdiff.
-1. Run `python3 scripts/export_ghidra_objs.py --import-xml`. This will extract
+1. Run `python3 scripts/export_ghidra_objs.py --import-csv`. This will extract
    from `resources/game.exe` the object files that objdiff can compare against.
 1. Finally, run objdiff and open the th06 project.
 
