@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 public class ExportDelinker extends GhidraScript
 {
@@ -62,8 +63,15 @@ public class ExportDelinker extends GhidraScript
 
         String configFile = Files.readString(inFile.toPath(), StandardCharsets.UTF_8);
 
-        for (String objDataStr : configFile.split("\n"))
+        //git autoconverts line terminators to os local format by default
+        //for (String objDataStr : configFile.split("\n"))
+        //for (String objDataStr : configFile.split("\r\n"))
+        //configFile.lines().forEach(objDataStr ->
+        for (Iterator<String> iterator = configFile.lines().iterator();
+            iterator.hasNext();
+        )
         {
+            String objDataStr = iterator.next();
             List<String> objData = new ArrayList<>(Arrays.asList(objDataStr.split(",")));
 
             String objClass = objData.remove(0);
