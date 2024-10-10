@@ -63,11 +63,8 @@ public class ExportDelinker extends GhidraScript
 
         String configFile = Files.readString(inFile.toPath(), StandardCharsets.UTF_8);
 
-        // git autoconverts line terminators to os local format by default
-        // for (String objDataStr : configFile.split("\n"))
-        // for (String objDataStr : configFile.split("\r\n"))
-        // configFile.lines().forEach(objDataStr ->
-        for (Iterator<String> iterator = configFile.lines().iterator(); iterator.hasNext();)
+        Iterator<String> iterator = configFile.lines().iterator();
+        for (String objDataStr = iterator.next(); iterator.hasNext(); objDataStr = iterator.next())
         {
             String objDataStr = iterator.next();
             List<String> objData = new ArrayList<>(Arrays.asList(objDataStr.split(",")));
