@@ -66,7 +66,6 @@ public class ExportDelinker extends GhidraScript
         Iterator<String> iterator = configFile.lines().iterator();
         for (String objDataStr = iterator.next(); iterator.hasNext(); objDataStr = iterator.next())
         {
-            String objDataStr = iterator.next();
             List<String> objData = new ArrayList<>(Arrays.asList(objDataStr.split(",")));
 
             String objClass = objData.remove(0);
