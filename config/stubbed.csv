@@ -70,5 +70,4 @@ th06::Player::BombMarisaBDraw
 th06::Player::CalcLaserHitbox
 th06::Player::CheckGraze
 th06::Player::DarkenViewport
-th06::Player::CalcBoxCollision
 th06::Pbg3Archive::Pbg3Archive
