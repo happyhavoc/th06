@@ -270,9 +270,9 @@ ZunResult Gui::ActualAddedCallback()
     this->impl->spellCardBonus.isShown = 0;
     this->flags.flag0 = 2;
     this->flags.flag1 = 2;
-    this->flags.flag2 = 2;
-    this->flags.flag4 = 2;
     this->flags.flag3 = 2;
+    this->flags.flag4 = 2;
+    this->flags.flag2 = 2;
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
