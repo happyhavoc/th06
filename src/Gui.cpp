@@ -331,6 +331,17 @@ void Gui::MsgRead(i32 msgIdx)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+BOOL Gui::MsgWait()
+{
+    if (this->impl->msg.ignoreWaitCounter > 0)
+    {
+        return FALSE;
+    }
+    return 0 <= this->impl->msg.currentMsgIdx;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 BOOL Gui::HasCurrentMsgIdx()
 {
     return 0 <= this->impl->msg.currentMsgIdx;

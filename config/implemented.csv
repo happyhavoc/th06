@@ -135,6 +135,7 @@ th06::Gui::AddedCallback
 th06::Gui::DeletedCallback
 th06::Gui::ActualAddedCallback
 th06::Gui::LoadMsg
+th06::Gui::MsgWait
 th06::Gui::HasCurrentMsgIdx
 th06::Gui::MsgRead
 th06::Gui::OnUpdate
