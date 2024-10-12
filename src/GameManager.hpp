@@ -85,7 +85,7 @@ struct GameManager
     u16 currentPower;
     i8 unk_1812;
     i8 unk_1813;
-    i16 pointItemsCollectedInStage;
+    u16 pointItemsCollectedInStage;
     i16 unk_1816;
     u8 numRetries;
     i8 powerItemCountForScore;

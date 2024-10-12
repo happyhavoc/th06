@@ -598,7 +598,7 @@ void Gui::UpdateStageElements()
         if ((i32)(this->impl->bonusScore.timer.current < 30))
         {
             this->impl->bonusScore.pos.x =
-                (this->impl->bonusScore.timer.AsFramesFloat() * -312.0f / 30.0f) + GAME_REGION_RIGHT;
+                (this->impl->bonusScore.timer.AsFramesFloat() * -312.0f / 30.0f) + (f32)GAME_REGION_RIGHT;
         }
         else
         {
@@ -615,7 +615,7 @@ void Gui::UpdateStageElements()
         if ((i32)(this->impl->fullPowerMode.timer.current < 30))
         {
             this->impl->fullPowerMode.pos.x =
-                (this->impl->fullPowerMode.timer.AsFramesFloat() * -312.0f / 30.0f) + GAME_REGION_RIGHT;
+                (this->impl->fullPowerMode.timer.AsFramesFloat() * -312.0f / 30.0f) + (f32)GAME_REGION_RIGHT;
         }
         else
         {
