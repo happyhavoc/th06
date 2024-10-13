@@ -62,9 +62,8 @@ public class ExportDelinker extends GhidraScript
         File outDir = askDirectory("Output Folder", "Select");
 
         String configFile = Files.readString(inFile.toPath(), StandardCharsets.UTF_8);
-
-        Iterator<String> iterator = configFile.lines().iterator();
-        for (String objDataStr = iterator.next(); iterator.hasNext(); objDataStr = iterator.next())
+        Iterable<String> iterable = () -> configFile.lines().iterator();
+        for (String objDataStr : iterable)
         {
             List<String> objData = new ArrayList<>(Arrays.asList(objDataStr.split(",")));
 
