@@ -1404,5 +1404,43 @@ void th06::Player::BombReimuACalc(Player *player)
     }
     player->bombInfo.timer.Tick();
 }
+#pragma var_order(bombSprite, idx)
+void th06::Player::BombReimuADraw(Player *player)
+{
+    i32 idx;
+    AnmVm *bombSprite;
+
+    Player::DarkenViewport(player);
+    bombSprite = &player->bombInfo.sprites[0][0];
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(player->bombInfo.sprites); idx++)
+    {
+        if (player->bombInfo.reimuABombProjectilesState[idx] == 0)
+        {
+            bombSprite = &bombSprite[4];
+            continue;
+        }
+
+        bombSprite->pos = player->bombInfo.bombRegionPositions[idx] + bombSprite->posOffset;
+        player->SetToTopLeftPos(bombSprite);
+        g_AnmManager->DrawNoRotation(bombSprite);
+        bombSprite++;
+
+        bombSprite->pos = player->bombInfo.bombRegionPositions[idx] + bombSprite->posOffset;
+        player->SetToTopLeftPos(bombSprite);
+        g_AnmManager->DrawNoRotation(bombSprite);
+        bombSprite++;
+
+        bombSprite->pos = player->bombInfo.bombRegionPositions[idx] + bombSprite->posOffset;
+        player->SetToTopLeftPos(bombSprite);
+        g_AnmManager->DrawNoRotation(bombSprite);
+        bombSprite++;
+
+        bombSprite->pos = player->bombInfo.bombRegionPositions[idx] + bombSprite->posOffset;
+        player->SetToTopLeftPos(bombSprite);
+        g_AnmManager->DrawNoRotation(bombSprite);
+        bombSprite++;
+    }
+    return;
+}
 
 }; // namespace th06

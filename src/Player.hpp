@@ -3,9 +3,11 @@
 #include <cmath>
 #include <d3dx8math.h>
 
+#include "AnmManager.hpp"
 #include "AnmVm.hpp"
 #include "BulletManager.hpp"
 #include "Chain.hpp"
+#include "GameManager.hpp"
 #include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
@@ -206,6 +208,8 @@ struct Player
     static void DrawBullets(Player *);
     static void DrawBulletExplosions(Player *);
 
+    static void DarkenViewport(Player *);
+
     f32 AngleToPlayer(D3DXVECTOR3 *pos);
     i32 CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *hitbox);
     i32 CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize);
@@ -256,6 +260,16 @@ struct Player
     ChainElem *chainCalc;
     ChainElem *chainDraw1;
     ChainElem *chainDraw2;
+#pragma var_order(x, y)
+    void inline SetToTopLeftPos(AnmVm *sprite)
+    {
+
+        f32 *x = &sprite->pos.x;
+        *x += g_GameManager.arcadeRegionTopLeftPos.x;
+        f32 *y = &sprite->pos.y;
+        *y += g_GameManager.arcadeRegionTopLeftPos.y;
+        sprite->pos.z = 0.0;
+    };
 };
 C_ASSERT(sizeof(Player) == 0x98f0);
 
