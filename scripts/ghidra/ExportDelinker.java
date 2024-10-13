@@ -28,6 +28,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,8 @@ public class ExportDelinker extends GhidraScript
 
         String configFile = Files.readString(inFile.toPath(), StandardCharsets.UTF_8);
 
-        for (String objDataStr : configFile.split("\n"))
+        Iterator<String> iterator = configFile.lines().iterator();
+        for (String objDataStr = iterator.next(); iterator.hasNext(); objDataStr = iterator.next())
         {
             List<String> objData = new ArrayList<>(Arrays.asList(objDataStr.split(",")));
 
