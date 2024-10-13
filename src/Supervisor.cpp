@@ -644,7 +644,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
                                          DIEDFL_ATTACHEDONLY);
     if (supervisor->controller)
     {
-        supervisor->controller->SetDataFormat(&c_dfDIJoystick);
+        supervisor->controller->SetDataFormat(&c_dfDIJoystick2);
         supervisor->controller->SetCooperativeLevel(supervisor->hwndGameWindow, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
 
         g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
