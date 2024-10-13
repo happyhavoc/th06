@@ -245,6 +245,7 @@ th06::Player::FireBulletReimuA
 th06::Player::BombReimuACalc
 th06::Player::BombReimuADraw
 th06::Player::BombMarisaACalc
+th06::Player::BombMarisaADraw
 th06::Player::FireBulletReimuB
 th06::Player::FireBulletMarisaA
 th06::Player::FireBulletMarisaB

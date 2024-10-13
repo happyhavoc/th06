@@ -1512,4 +1512,48 @@ void th06::Player::BombReimuADraw(Player *player)
     return;
 }
 
+#pragma var_order(bombSprite, idx)
+void th06::Player::BombMarisaADraw(Player *player)
+{
+
+    AnmVm *bombSprite;
+    i32 idx;
+
+    Player::DarkenViewport(player);
+    bombSprite = &player->bombInfo.sprites[0][0];
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(player->bombInfo.sprites); idx++)
+    {
+
+        bombSprite->pos = player->bombInfo.bombRegionPositions[idx];
+        bombSprite->pos.x += g_GameManager.arcadeRegionTopLeftPos.x;
+        bombSprite->pos.y += g_GameManager.arcadeRegionTopLeftPos.y;
+        bombSprite->pos.z = 0.0f;
+        bombSprite->scaleX = 3.2f;
+        bombSprite->scaleY = 3.2f;
+        g_AnmManager->Draw(bombSprite);
+
+        bombSprite->pos -= player->bombInfo.bombRegionVelocities[idx] * 6.0f;
+        bombSprite->pos.x += -32.0f;
+        bombSprite->pos.y += -32.0f;
+        bombSprite->pos.z = 0.0f;
+        bombSprite->scaleX = 2.2f;
+        bombSprite->scaleY = 2.2f;
+        g_AnmManager->Draw(bombSprite);
+
+        bombSprite->pos -= player->bombInfo.bombRegionVelocities[idx] * 2.0f;
+        bombSprite->pos.x += 64.0f;
+        bombSprite->pos.y += 64.0f;
+        bombSprite->pos.z = 0.0f;
+
+        bombSprite->pos -= player->bombInfo.bombRegionVelocities[idx] * 2.0f;
+        bombSprite->pos.x += -32.0f;
+        bombSprite->pos.y += -32.0f;
+        bombSprite->pos.z = 0.0f;
+        bombSprite->scaleX = 1.0f;
+        bombSprite->scaleY = 1.0f;
+        g_AnmManager->Draw(bombSprite);
+        bombSprite++;
+    }
+}
+
 }; // namespace th06
