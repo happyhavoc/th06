@@ -40,6 +40,7 @@ struct ItemManager
     void SpawnItem(D3DXVECTOR3 *position, ItemType type, i32 state);
     void OnUpdate();
     void OnDraw();
+    void RemoveAllItems();
 
     Item items[512];
     Item dummyItemForFailedSpawns;

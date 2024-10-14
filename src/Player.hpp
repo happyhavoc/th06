@@ -3,9 +3,11 @@
 #include <cmath>
 #include <d3dx8math.h>
 
+#include "AnmManager.hpp"
 #include "AnmVm.hpp"
 #include "BulletManager.hpp"
 #include "Chain.hpp"
+#include "GameManager.hpp"
 #include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
@@ -120,10 +122,10 @@ struct PlayerBombInfo
     ZunTimer timer;
     void (*calc)(Player *p);
     void (*draw)(Player *p);
-    u32 unk_1c[8];
-    f32 unk_3c[8];
-    D3DXVECTOR3 unk_5c[8];
-    D3DXVECTOR3 unk_bc[8];
+    i32 reimuABombProjectilesState[8];
+    f32 reimuABombProjectilesRelated[8];
+    D3DXVECTOR3 bombRegionPositions[8];
+    D3DXVECTOR3 bombRegionVelocities[8];
     AnmVm sprites[8][4];
 };
 C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
@@ -157,16 +159,6 @@ struct CharacterPowerBulletData
     u8 bulletType;
     i16 anmFileIdx;
     i16 bulletSoundIdx;
-
-    f32 HorizontalDirection(f32 direction)
-    {
-        return cos(direction);
-    }
-
-    f32 VerticalDirection(f32 direction)
-    {
-        return sin(direction);
-    }
 };
 C_ASSERT(sizeof(CharacterPowerBulletData) == 0x24);
 
@@ -215,6 +207,8 @@ struct Player
     static void SpawnBullets(Player *, u32 timer);
     static void DrawBullets(Player *);
     static void DrawBulletExplosions(Player *);
+
+    static void DarkenViewport(Player *);
 
     f32 AngleToPlayer(D3DXVECTOR3 *pos);
     i32 CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *hitbox);
@@ -266,6 +260,16 @@ struct Player
     ChainElem *chainCalc;
     ChainElem *chainDraw1;
     ChainElem *chainDraw2;
+#pragma var_order(x, y)
+    void inline SetToTopLeftPos(AnmVm *sprite)
+    {
+
+        f32 *x = &sprite->pos.x;
+        *x += g_GameManager.arcadeRegionTopLeftPos.x;
+        f32 *y = &sprite->pos.y;
+        *y += g_GameManager.arcadeRegionTopLeftPos.y;
+        sprite->pos.z = 0.0;
+    };
 };
 C_ASSERT(sizeof(Player) == 0x98f0);
 
