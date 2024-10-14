@@ -61,6 +61,20 @@ ZunResult Gui::AddedCallback(Gui *gui)
 }
 
 #pragma optimize("s", on)
+void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
+{
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->enemySpellcardPortrait, ANM_SCRIPT_FACE_ENEMY_SPELLCARD_PORTRAIT);
+    g_AnmManager->SetActiveSprite(&this->impl->enemySpellcardPortrait, ANM_SPRITE_FACE_STAGE_START + spellcardSprite);
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->enemySpellcardName, ANM_SCRIPT_TEXT_ENEMY_SPELLCARD_NAME);
+    AnmManager::DrawStringFormat(g_AnmManager, &this->impl->enemySpellcardName, 0xfff0f0, COLOR_RGB(COLOR_BLACK),
+                                 spellcardName);
+    this->blueSpellcardBarLength = strlen(spellcardName) * 15 / 2.0f + 16.0f;
+    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
+    return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Gui::ActualAddedCallback()
 {
     i32 idx;
