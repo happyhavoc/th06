@@ -21,6 +21,14 @@ DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
 
 #pragma optimize("s", on)
+void Gui::EndEnemySpellcard()
+{
+    this->impl->enemySpellcardName.pendingInterrupt = 1;
+    return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Gui::RegisterChain()
 {
     Gui *gui = &g_Gui;
