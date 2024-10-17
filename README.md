@@ -38,10 +38,23 @@ The rest of the build system is constructed out of Visual Studio 2002 and Direct
 
 This will download and install compiler, libraries, and other tools.
 
-On windows, run this command:
+If you are on windows, and for some reason want to download dependencies manually, 
+run this command to get the list of files to download:
+
+```
+python scripts/create_devenv.py scripts/dls scripts/prefix --no-download
+```
+
+But if you want everything to be downloaded automatically, run it like this instead:
 
 ```
 python scripts/create_devenv.py scripts/dls scripts/prefix
+```
+
+And if you want to use torrent to download those dependencies, use this:
+
+```
+python scripts/create_devenv.py scripts/dls scripts/prefix --torrent
 ```
 
 On linux and mac, run the following script:
