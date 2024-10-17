@@ -30,7 +30,11 @@ def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
 
 def cmd_quote(s):
     if '"' in s:
-        raise ValueError("Couldn't quote '{s}' as it contains the double quote \" character.".format(s=s))
+        raise ValueError(
+            "Couldn't quote '{s}' as it contains the double quote \" character.".format(
+                s=s
+            )
+        )
     if " " not in s:
         return s
     return '"' + s.replace("\\", "\\\\").replace('"', '"') + '"'
@@ -221,7 +225,7 @@ def download_requirement(dl_cache_path, requirement, no_download):
         if filesize_equal(path, requirement):
             if get_sha256(path) == requirement["sha256"]:
                 file_found = True
-    
+
     if not file_found and "filename-alternative" in requirement:
         path = dl_cache_path / requirement["filename-alternative"]
         if path.exists():
@@ -229,17 +233,22 @@ def download_requirement(dl_cache_path, requirement, no_download):
                 if get_sha256(path) == requirement["sha256"]:
                     file_found = True
                     path_proper = dl_cache_path / requirement["filename"]
-                    print("Renaming {fa} into {f}.".format(fa = requirement["filename-alternative"], f = requirement["filename"]))
+                    print(
+                        "Renaming {fa} into {f}.".format(
+                            fa=requirement["filename-alternative"],
+                            f=requirement["filename"],
+                        )
+                    )
                     os.rename(path, path_proper)
                     path = path_proper
-        
+
     if no_download:
         if not file_found:
             print(requirement["url"])
             if "filesize" in requirement:
                 print("filesize: " + str(requirement["filesize"]))
         return
-    
+
     if not no_download and file_found:
         return
 
@@ -447,15 +456,21 @@ def download_requirements(dl_cache_path, steps, should_torrent, no_download):
             "sha256": "a9b063294412fb095d749d06905a05cdd42714b82818141d6844955f11680691",
         },
     ]
-    
+
     if no_download:
-        print("Please download the following urls manually and add them in the \"{dl}\" folder:".format(dl = dl_cache_path))
+        print(
+            'Please download the following urls manually and add them in the "{dl}" folder:'.format(
+                dl=dl_cache_path
+            )
+        )
         for requirement in requirements:
             if requirement["only"] in steps:
                 if "condition" not in requirement or requirement["condition"]:
                     download_requirement(dl_cache_path, requirement, no_download)
         print("Url list ended.")
-        print("After you downloaded everything, run this again but without --no-download argument.")
+        print(
+            "After you downloaded everything, run this again but without --no-download argument."
+        )
         return
 
     if should_torrent:
