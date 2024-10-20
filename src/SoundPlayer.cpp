@@ -14,14 +14,12 @@ namespace th06
 #define BACKGROUND_MUSIC_WAV_BLOCK_ALIGN BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE / 8 * BACKGROUND_MUSIC_WAV_NUM_CHANNELS
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(SoundBufferIdxVolume, 32, g_SoundBufferIdxVol) = {
-    {0, -1500, 0},   {0, -2000, 0},   {1, -1200, 5},   {1, -1400, 5}, 
-    {2, -1000, 100}, {3, -500, 100},  {4, -500, 100},  {5, -1700, 50}, 
-    {6, -1700, 50},  {7, -1700, 50},  {8, -1000, 100}, {9, -1000, 100}, 
-    {10, -1900, 10}, {11, -1200, 10}, {12, -900, 100}, {5, -1500, 50}, 
-    {13, -900, 50},  {14, -900, 50},  {15, -600, 100}, {16, -400, 100}, 
-    {17, -1100, 0},  {18, -900, 0},   {5, -1800, 20},  {6, -1800, 20}, 
-    {7, -1800, 20},  {19, -300, 50},  {20, -600, 50},  {21, -800, 50}, 
-    {22, -100, 140}, {23, -500, 100}, {24, -1000, 20}, {25, -1000, 90},
+    {0, -1500, 0},   {0, -2000, 0},   {1, -1200, 5},   {1, -1400, 5},  {2, -1000, 100}, {3, -500, 100},
+    {4, -500, 100},  {5, -1700, 50},  {6, -1700, 50},  {7, -1700, 50}, {8, -1000, 100}, {9, -1000, 100},
+    {10, -1900, 10}, {11, -1200, 10}, {12, -900, 100}, {5, -1500, 50}, {13, -900, 50},  {14, -900, 50},
+    {15, -600, 100}, {16, -400, 100}, {17, -1100, 0},  {18, -900, 0},  {5, -1800, 20},  {6, -1800, 20},
+    {7, -1800, 20},  {19, -300, 50},  {20, -600, 50},  {21, -800, 50}, {22, -100, 140}, {23, -500, 100},
+    {24, -1000, 20}, {25, -1000, 90},
 };
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 26, g_SFXList) = {
     "data/wav/plst00.wav", "data/wav/enep00.wav",   "data/wav/pldead00.wav", "data/wav/power0.wav",
@@ -100,21 +98,22 @@ ZunResult SoundPlayer::InitializeDSound(HWND gameWindow)
     return ZUN_SUCCESS;
 }
 
-ZunResult SoundPlayer::Release(void) {
+ZunResult SoundPlayer::Release(void)
+{
     i32 i;
-    
-    if(this->manager == NULL)
+
+    if (this->manager == NULL)
     {
         return ZUN_SUCCESS;
     }
-    for(i = 0; i < 0x80; i++)
+    for (i = 0; i < 0x80; i++)
     {
-        if(this->duplicateSoundBuffers[i] != NULL)
+        if (this->duplicateSoundBuffers[i] != NULL)
         {
             this->duplicateSoundBuffers[i]->Release();
             this->duplicateSoundBuffers[i] = NULL;
         }
-        if(this->soundBuffers[i] != NULL)
+        if (this->soundBuffers[i] != NULL)
         {
             this->soundBuffers[i]->Release();
             this->soundBuffers[i] = NULL;
@@ -124,17 +123,17 @@ ZunResult SoundPlayer::Release(void) {
     StopBGM();
     this->dsoundHdl = NULL;
     this->initSoundBuffer->Stop();
-    if(this->initSoundBuffer != NULL)
+    if (this->initSoundBuffer != NULL)
     {
         this->initSoundBuffer->Release();
         this->initSoundBuffer = NULL;
     }
-    if(this->backgroundMusic != NULL)
+    if (this->backgroundMusic != NULL)
     {
         delete this->backgroundMusic;
         this->backgroundMusic = NULL;
     }
-    if(this->manager != NULL)
+    if (this->manager != NULL)
     {
         delete this->manager;
         this->manager = NULL;
@@ -172,7 +171,7 @@ void SoundPlayer::FadeOut(f32 seconds)
 {
     CStreamingSound *bgm;
 
-    if(this->backgroundMusic != NULL)
+    if (this->backgroundMusic != NULL)
     {
         bgm = this->backgroundMusic;
         bgm->m_dwIsFadingOut = 1;
@@ -266,22 +265,22 @@ ZunResult SoundPlayer::LoadPos(char *path)
     CWaveFile *bgmFile;
     i32 loopEnd;
     i32 loopStart;
-    
-    if(this->manager == NULL)
+
+    if (this->manager == NULL)
     {
         return ZUN_ERROR;
     }
-    if(g_Supervisor.cfg.playSounds == NULL)
+    if (g_Supervisor.cfg.playSounds == NULL)
     {
         return ZUN_ERROR;
     }
-    if(this->backgroundMusic == NULL)
+    if (this->backgroundMusic == NULL)
     {
         return ZUN_ERROR;
     }
-    
+
     fileData = FileSystem::OpenPath(path, 0);
-    if(fileData == NULL)
+    if (fileData == NULL)
     {
         return ZUN_ERROR;
     }
@@ -513,16 +512,16 @@ void SoundPlayer::PlaySoundByIdx(SoundIdx idx, i32 unused)
     SFXToPlay = g_SoundBufferIdxVol[idx].unk;
     for (i = 0; i < 3; i++)
     {
-        if(this->soundBuffersToPlay[i] < 0)
+        if (this->soundBuffersToPlay[i] < 0)
         {
             break;
         }
-        if(this->soundBuffersToPlay[i] == idx)
+        if (this->soundBuffersToPlay[i] == idx)
         {
             return;
         }
     }
-    if(i >= 3)
+    if (i >= 3)
     {
         return;
     }
