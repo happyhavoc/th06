@@ -16,7 +16,6 @@ th06::MidiOutput::UnprepareHeader
 th06::MidiOutput::ReleaseFileData
 th06::MidiOutput::Play
 th06::MidiOutput::LoadFile
-th06::SoundPlayer::Release
 th06::ResultScreen::OpenScore
 th06::ResultScreen::ParseClrd
 th06::ResultScreen::ParsePscr

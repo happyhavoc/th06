@@ -100,6 +100,48 @@ ZunResult SoundPlayer::InitializeDSound(HWND gameWindow)
     return ZUN_SUCCESS;
 }
 
+ZunResult SoundPlayer::Release(void) {
+    i32 i;
+    
+    if(this->manager == NULL)
+    {
+        return ZUN_SUCCESS;
+    }
+    for(i = 0; i < 0x80; i++)
+    {
+        if(this->duplicateSoundBuffers[i] != NULL)
+        {
+            this->duplicateSoundBuffers[i]->Release();
+            this->duplicateSoundBuffers[i] = NULL;
+        }
+        if(this->soundBuffers[i] != NULL)
+        {
+            this->soundBuffers[i]->Release();
+            this->soundBuffers[i] = NULL;
+        }
+    }
+    KillTimer(this->gameWindow, 1);
+    StopBGM();
+    this->dsoundHdl = NULL;
+    this->initSoundBuffer->Stop();
+    if(this->initSoundBuffer != NULL)
+    {
+        this->initSoundBuffer->Release();
+        this->initSoundBuffer = NULL;
+    }
+    if(this->backgroundMusic != NULL)
+    {
+        delete this->backgroundMusic;
+        this->backgroundMusic = NULL;
+    }
+    if(this->manager != NULL)
+    {
+        delete this->manager;
+        this->manager = NULL;
+    }
+    return ZUN_SUCCESS;
+}
+
 void SoundPlayer::StopBGM()
 {
     if (this->backgroundMusic != NULL)
