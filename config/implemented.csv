@@ -220,12 +220,16 @@ th06::ScreenEffect::SetViewport
 th06::utils::AddNormalizeAngle
 th06::SoundPlayer::SoundPlayer
 th06::SoundPlayer::InitializeDSound
+th06::SoundPlayer::Release
 th06::SoundPlayer::LoadWav
+th06::SoundPlayer::LoadPos
 th06::SoundPlayer::GetWavFormatData
 th06::SoundPlayer::LoadSound
 th06::SoundPlayer::PlayBGM
 th06::SoundPlayer::StopBGM
+th06::SoundPlayer::FadeOut
 th06::SoundPlayer::PlaySounds
+th06::SoundPlayer::PlaySoundByIdx
 th06::SoundPlayer::BackgroundMusicPlayerThread
 th06::SoundPlayer::InitSoundBuffers
 th06::Player::AddedCallback
