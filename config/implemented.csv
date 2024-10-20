@@ -152,6 +152,9 @@ th06::utils::DebugPrint
 th06::utils::DebugPrint2
 th06::FileSystem::OpenPath
 th06::FileSystem::WriteDataToFile
+th06::ItemManager::SpawnItem
+th06::ItemManager::OnUpdate
+th06::ItemManager::OnDraw
 th06::MainMenu::AddedCallback
 th06::MainMenu::DeletedCallback
 th06::MainMenu::ReleaseTitleAnm
@@ -236,6 +239,7 @@ th06::Player::AddedCallback
 th06::Player::DeletedCallback
 th06::Player::RegisterChain
 th06::Player::CutChain
+th06::Player::CalcBoxCollision
 th06::Player::CalcKillBoxCollision
 th06::Player::CalcDamageToEnemy
 th06::Player::Die

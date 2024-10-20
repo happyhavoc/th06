@@ -25,6 +25,7 @@
 #define COLOR_ALPHA(color) (((color) & COLOR_ALPHA_MASK) >> 24)
 #define COLOR_SET_ALPHA(color, alpha) (((alpha) << 24) | COLOR_RGB(color))
 #define COLOR_SET_ALPHA2(color, alpha) (COLOR_RGB(color) | (((alpha) & 0xff) << 24))
+#define COLOR_SET_ALPHA3(color, alpha) (COLOR_RGB(color) | ((alpha) << 24))
 #define COLOR_COMBINE_ALPHA(color, alpha) (((alpha) & COLOR_ALPHA_MASK) | COLOR_RGB(color))
 
 #define COLOR_MENU_ACTIVE_BACKGROUND 0x40000000

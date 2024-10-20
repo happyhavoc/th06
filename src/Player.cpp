@@ -1220,6 +1220,29 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
     }
 }
 
+#pragma var_order(itemBottomRight, itemTopLeft)
+i32 Player::CalcBoxCollision(D3DXVECTOR3 *itemCenter, D3DXVECTOR3 *itemSize)
+{
+    if (this->playerState != PLAYER_STATE_ALIVE && this->playerState != PLAYER_STATE_INVULNERABLE)
+    {
+        return 0;
+    }
+    D3DXVECTOR3 itemTopLeft;
+    memcpy(&itemTopLeft, &(*itemCenter - *itemSize / 2.0f), sizeof(D3DXVECTOR3));
+    D3DXVECTOR3 itemBottomRight;
+    memcpy(&itemBottomRight, &(*itemCenter + *itemSize / 2.0f), sizeof(D3DXVECTOR3));
+
+    if (this->grabItemTopLeft.x > itemBottomRight.x || this->grabItemBottomRight.x < itemTopLeft.x ||
+        this->grabItemTopLeft.y > itemBottomRight.y || this->grabItemBottomRight.y < itemTopLeft.y)
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
 #pragma var_order(curLaserTimerIdx)
 void Player::Die()
 {

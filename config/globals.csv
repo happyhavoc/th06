@@ -17,6 +17,8 @@ _g_DifficultyInfoForReplay,             0x00476528
 _g_DifficultyInfo,                      0x00476564
 _g_ControllerMapping,                   0x004765a0
 _g_FormatInfoArray,                     0x004765b8
+_g_PowerItemScore,                      0x00476660
+_g_PowerUpThresholds,                   0x004766dc
 _g_BombData,                            0x00476708
 _g_CharData,                            0x00476728
 _g_CharacterPowerDataReimuA,            0x00476f78
