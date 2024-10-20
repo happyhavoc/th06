@@ -220,37 +220,25 @@ def progress_bar(blocks_transfered, block_size, total_bytes):
 
 def download_requirement(dl_cache_path, requirement, no_download):
     path = dl_cache_path / requirement["filename"]
-    file_found = False
     if path.exists():
-        if filesize_equal(path, requirement):
-            if get_sha256(path) == requirement["sha256"]:
-                file_found = True
+        if file_matches(path, requirement):
+            return True
 
-    if not file_found and "filename-alternative" in requirement:
-        path = dl_cache_path / requirement["filename-alternative"]
-        if path.exists():
-            if filesize_equal(path, requirement):
-                if get_sha256(path) == requirement["sha256"]:
-                    file_found = True
-                    path_proper = dl_cache_path / requirement["filename"]
-                    print(
-                        "Renaming {fa} into {f}.".format(
-                            fa=requirement["filename-alternative"],
-                            f=requirement["filename"],
-                        )
+    if "filename-alternative" in requirement:
+        alt_path = dl_cache_path / requirement["filename-alternative"]
+        if alt_path.exists():
+            if file_matches(alt_path, requirement):
+                print(
+                    "Renaming {fa} into {f}.".format(
+                        fa=requirement["filename-alternative"],
+                        f=requirement["filename"],
                     )
-                    os.rename(path, path_proper)
-                    path = path_proper
+                )
+                os.rename(alt_path, path)
+                return True
 
     if no_download:
-        if not file_found:
-            print(requirement["url"])
-            if "filesize" in requirement:
-                print("filesize: " + str(requirement["filesize"]))
-        return
-
-    if not no_download and file_found:
-        return
+        return False
 
     hash = None
     for url in requirement["url"]:
@@ -275,14 +263,39 @@ def download_requirement(dl_cache_path, requirement, no_download):
             + requirement["sha256"]
         )
     if hash != requirement["sha256"]:
-        raise Exception("Could not download " + requirement["name"])
+        print("Could not download " + requirement["name"])
+        return False
+    return True
 
 
-def filesize_equal(path, requirement):
-    if "filesize" not in requirement:
-        return True
-    filesize = requirement["filesize"]
-    return os.path.getsize(str(path)) == filesize
+def file_matches(path, requirement):
+    if "filesize" in requirement:
+        expected_filesize = requirement["filesize"]
+        found_filesize = os.path.getsize(str(path))
+        if found_filesize != expected_filesize:
+            print(
+                "File "
+                + str(path)
+                + " has size "
+                + found_filesize
+                + ", expected size "
+                + expected_filesize
+            )
+            return False
+
+    hash = get_sha256(path)
+    if hash != requirement["sha256"]:
+        print(
+            "File "
+            + str(path)
+            + " has mismatched hash "
+            + hash
+            + ", expected "
+            + requirement["sha256"]
+        )
+        return False
+
+    return True
 
 
 def is_win():
@@ -300,7 +313,7 @@ def is_x86():
 def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
     path = dl_cache_path / requirement["filename"]
     if path.exists() and get_sha256(path) == requirement["sha256"]:
-        return
+        return True
 
     print("Downloading " + requirement["name"] + " using torrent")
     # Run aria2c to download the torrent, make sure to save only the file we want.
@@ -320,7 +333,7 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
     print(clear_line_sequence, end="", flush=True, file=sys.stdout)
     hash = get_sha256(path)
     if hash != requirement["sha256"]:
-        raise Exception(
+        print(
             "Download failed: Got hash " + hash + ", expected " + requirement["sha256"]
         )
     try:
@@ -329,6 +342,7 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
     except Exception:
         print("Failed to remove torrent directory, should be removed manually.")
         pass
+    return True
 
 
 def download_requirements(dl_cache_path, steps, should_torrent, no_download):
@@ -504,22 +518,6 @@ def download_requirements(dl_cache_path, steps, should_torrent, no_download):
         },
     ]
 
-    if no_download:
-        print(
-            'Please download the following urls manually and add them in the "{dl}" folder:'.format(
-                dl=dl_cache_path
-            )
-        )
-        for requirement in requirements:
-            if requirement["only"] in steps:
-                if "condition" not in requirement or requirement["condition"]:
-                    download_requirement(dl_cache_path, requirement, no_download)
-        print("Url list ended.")
-        print(
-            "After you downloaded everything, run this again but without --no-download argument."
-        )
-        return
-
     if should_torrent:
         # Download aria2c
         if sys.platform == "win32":
@@ -556,10 +554,28 @@ def download_requirements(dl_cache_path, steps, should_torrent, no_download):
             if "torrent" in requirement:
                 download_requirement_torrent(dl_cache_path, requirement, aria2c_path)
 
+    failed_requirements = []
     for requirement in requirements:
         if requirement["only"] in steps:
             if "condition" not in requirement or requirement["condition"]:
-                download_requirement(dl_cache_path, requirement, no_download)
+                if not download_requirement(dl_cache_path, requirement, no_download):
+                    failed_requirements.append(requirement)
+
+    if len(failed_requirements) != 0:
+        print(
+            'Please download the following files manually and add them in the "{dl}" folder:'.format(
+                dl=dl_cache_path
+            )
+        )
+        for requirement in failed_requirements:
+            print("- " + requirement["name"] + ", hash: " + requirement["sha256"])
+            for url in requirement["url"]:
+                print("  " + url)
+
+        print("After you downloaded everything, run this script again.")
+        return False
+
+    return True
 
 
 def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
@@ -766,9 +782,11 @@ def main(args: Namespace) -> int:
         steps = set(args.only)
 
     os.makedirs(str(dl_cache_path), exist_ok=True)
-    download_requirements(dl_cache_path, steps, args.torrent, args.no_download)
+    all_files_present = download_requirements(
+        dl_cache_path, steps, args.torrent, args.no_download
+    )
 
-    if not args.download and not args.no_download:
+    if not args.download and all_files_present:
         program_files = output_path / "PROGRAM FILES"
         os.makedirs(str(program_files), exist_ok=True)
 
