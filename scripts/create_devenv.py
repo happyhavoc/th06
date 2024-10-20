@@ -268,6 +268,18 @@ def download_requirement(dl_cache_path, requirement, no_download):
     return True
 
 
+def humansize(size):
+    prefixes = [
+        ("GiB", 1024 * 1024 * 1024),
+        ("MiB", 1024 * 1024),
+        ("KiB", 1024),
+    ]
+    for prefix, divisor in prefixes:
+        if size / divisor > 1:
+            return "{:.1f} {}".format(size / divisor, prefix)
+    return size + " B"
+
+
 def file_matches(path, requirement):
     if "filesize" in requirement:
         expected_filesize = requirement["filesize"]
@@ -568,7 +580,11 @@ def download_requirements(dl_cache_path, steps, should_torrent, no_download):
             )
         )
         for requirement in failed_requirements:
-            print("- " + requirement["name"] + ", hash: " + requirement["sha256"])
+            s = "- " + requirement["name"]
+            if "filesize" in requirement:
+                s += ", size: " + humansize(requirement["filesize"])
+            s += ", sha256: " + requirement["sha256"]
+            print(s)
             for url in requirement["url"]:
                 print("  " + url)
 
