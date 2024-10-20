@@ -29,6 +29,12 @@ def run_msiextract(msi_file_path: Path, output_dir: Path) -> int:
 
 
 def cmd_quote(s):
+    if '"' in s:
+        raise ValueError(
+            "Couldn't quote '{s}' as it contains the double quote \" character.".format(
+                s=s
+            )
+        )
     if " " not in s:
         return s
     return '"' + s.replace("\\", "\\\\").replace('"', '"') + '"'
@@ -148,6 +154,11 @@ def parse_arguments() -> Namespace:
         action="store_true",
         help="Use torrent downloads where possible. Requires aria2 to already be installed on *nix systems.",
     )
+    parser.add_argument(
+        "--no-download",
+        action="store_true",
+        help="Don't download anything, use predownloaded files from dl_cache_path and install.",
+    )
 
     return parser.parse_args()
 
@@ -207,16 +218,34 @@ def progress_bar(blocks_transfered, block_size, total_bytes):
     last_refresh = datetime.now()
 
 
-def download_requirement(dl_cache_path, requirement):
+def download_requirement(dl_cache_path, requirement, no_download):
     path = dl_cache_path / requirement["filename"]
-    if path.exists() and get_sha256(path) == requirement["sha256"]:
-        return
+    if path.exists():
+        if file_matches(path, requirement):
+            return True
+
+    if "filename-alternative" in requirement:
+        alt_path = dl_cache_path / requirement["filename-alternative"]
+        if alt_path.exists():
+            if file_matches(alt_path, requirement):
+                print(
+                    "Renaming {fa} into {f}.".format(
+                        fa=requirement["filename-alternative"],
+                        f=requirement["filename"],
+                    )
+                )
+                os.rename(alt_path, path)
+                return True
+
+    if no_download:
+        return False
 
     hash = None
     for url in requirement["url"]:
         print("Downloading " + requirement["name"] + " from " + url)
         try:
             urllib.request.urlretrieve(url, str(path), progress_bar)
+            print(clear_line_sequence, end="", flush=True, file=sys.stdout)
         except Exception as err:
             print(clear_line_sequence, end="", flush=True, file=sys.stdout)
             print("Download from " + url + " failed: " + str(err))
@@ -234,7 +263,51 @@ def download_requirement(dl_cache_path, requirement):
             + requirement["sha256"]
         )
     if hash != requirement["sha256"]:
-        raise Exception("Could not download " + requirement["name"])
+        print("Could not download " + requirement["name"])
+        return False
+    return True
+
+
+def humansize(size):
+    prefixes = [
+        ("GiB", 1024 * 1024 * 1024),
+        ("MiB", 1024 * 1024),
+        ("KiB", 1024),
+    ]
+    for prefix, divisor in prefixes:
+        if size / divisor > 1:
+            return "{:.1f} {}".format(size / divisor, prefix)
+    return size + " B"
+
+
+def file_matches(path, requirement):
+    if "filesize" in requirement:
+        expected_filesize = requirement["filesize"]
+        found_filesize = os.path.getsize(str(path))
+        if found_filesize != expected_filesize:
+            print(
+                "File "
+                + str(path)
+                + " has size "
+                + found_filesize
+                + ", expected size "
+                + expected_filesize
+            )
+            return False
+
+    hash = get_sha256(path)
+    if hash != requirement["sha256"]:
+        print(
+            "File "
+            + str(path)
+            + " has mismatched hash "
+            + hash
+            + ", expected "
+            + requirement["sha256"]
+        )
+        return False
+
+    return True
 
 
 def is_win():
@@ -252,7 +325,7 @@ def is_x86():
 def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
     path = dl_cache_path / requirement["filename"]
     if path.exists() and get_sha256(path) == requirement["sha256"]:
-        return
+        return True
 
     print("Downloading " + requirement["name"] + " using torrent")
     # Run aria2c to download the torrent, make sure to save only the file we want.
@@ -272,7 +345,7 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
     print(clear_line_sequence, end="", flush=True, file=sys.stdout)
     hash = get_sha256(path)
     if hash != requirement["sha256"]:
-        raise Exception(
+        print(
             "Download failed: Got hash " + hash + ", expected " + requirement["sha256"]
         )
     try:
@@ -281,9 +354,10 @@ def download_requirement_torrent(dl_cache_path, requirement, aria2c_path):
     except Exception:
         print("Failed to remove torrent directory, should be removed manually.")
         pass
+    return True
 
 
-def download_requirements(dl_cache_path, steps, should_torrent):
+def download_requirements(dl_cache_path, steps, should_torrent, no_download):
     requirements = [
         {
             "name": "Direct X 8.0",
@@ -293,6 +367,7 @@ def download_requirements(dl_cache_path, steps, should_torrent):
                 "https://dl.roblab.la/dx8sdk.exe",
             ],
             "filename": "dx8sdk.exe",
+            "filesize": 144441256,
             "sha256": "719f8fe4f02af5f435aac4a90bf9ef958210e6bd1d1e9715f26d13b10a73cb6c",
         },
         {
@@ -305,6 +380,7 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "torrent": "https://archive.org/download/en_vs.net_pro_full/en_vs.net_pro_full_archive.torrent",
             "filename": "en_vs.net_pro_full.exe",
             "torrent_dirname": "en_vs.net_pro_full",
+            "filesize": 1706945024,
             "sha256": "440949f3d152ee0375050c2961fc3c94786780b5aae7f6a861a5837e03bf2dac",
         },
         {
@@ -312,6 +388,7 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "only": "py",
             "url": ["https://www.python.org/ftp/python/3.4.4/python-3.4.4.msi"],
             "filename": "python-3.4.4.msi",
+            "filesize": 24932352,
             "sha256": "46c8f9f63cf02987e8bf23934b2f471e1868b24748c5bb551efcf4863b43ca6c",
         },
         {
@@ -321,6 +398,7 @@ def download_requirements(dl_cache_path, steps, should_torrent):
                 "https://raw.githubusercontent.com/microsoft/Windows-classic-samples/44d192fd7ec6f2422b7d023891c5f805ada2c811/Samples/Win7Samples/sysmgmt/msi/scripts/WiRunSQL.vbs"
             ],
             "filename": "WiRunSQL.vbs",
+            "filesize": 3041,
             "sha256": "ef18c6d0b0163e371daaa1dd3fdf08030bc0b0999e4b2b90a1a736f7eb12784b",
         },
         {
@@ -330,6 +408,7 @@ def download_requirements(dl_cache_path, steps, should_torrent):
                 "https://github.com/ninja-build/ninja/releases/download/v1.6.0/ninja-win.zip"
             ],
             "filename": "ninja-win.zip",
+            "filesize": 159957,
             "sha256": "18f55bc5de27c20092e86ace8ef3dd3311662dc6193157e3b65c6bc94ce006d5",
         },
         {
@@ -340,6 +419,8 @@ def download_requirements(dl_cache_path, steps, should_torrent):
                 "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-windows-satsuki.exe"
             ],
             "filename": "satsuki.exe",
+            "filename-alternative": "x86_64-windows-satsuki.exe",
+            "filesize": 7513088,
             "sha256": "93baba162813f291f9975bce2440fb4c709bb40c5b120c2188852309a2025908",
         },
         {
@@ -391,6 +472,8 @@ def download_requirements(dl_cache_path, steps, should_torrent):
                 "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-windows-x86_64.exe"
             ],
             "filename": "objdiff-cli.exe",
+            "filename-alternative": "objdiff-cli-windows-x86_64.exe",
+            "filesize": 7110144,
             "sha256": "7e757fe74dc7949f62b684eed740eb18ee361e9cb414fa550283175713e88961",
         },
         {
@@ -430,6 +513,8 @@ def download_requirements(dl_cache_path, steps, should_torrent):
                 "https://github.com/happyhavoc/ghidra-ci/releases/download/2024-08-31/release.zip"
             ],
             "filename": "ghidra.zip",
+            "filename-alternative": "release.zip",
+            "filesize": 501858473,
             "sha256": "524f6bdfa134afbe722498953eb21efacd93a876842e31fd04f93592270976a3",
         },
         {
@@ -439,6 +524,8 @@ def download_requirements(dl_cache_path, steps, should_torrent):
                 "https://github.com/happyhavoc/ghidra-delinker-extension/releases/download/v0.5.0-th06.1/ghidra_11.1_PUBLIC_20240831_ghidra-delinker-extension.zip"
             ],
             "filename": "ghidra-delinker.zip",
+            "filename-alternative": "ghidra_11.1_PUBLIC_20240831_ghidra-delinker-extension.zip",
+            "filesize": 7850347,
             "sha256": "a9b063294412fb095d749d06905a05cdd42714b82818141d6844955f11680691",
         },
     ]
@@ -479,10 +566,32 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             if "torrent" in requirement:
                 download_requirement_torrent(dl_cache_path, requirement, aria2c_path)
 
+    failed_requirements = []
     for requirement in requirements:
         if requirement["only"] in steps:
             if "condition" not in requirement or requirement["condition"]:
-                download_requirement(dl_cache_path, requirement)
+                if not download_requirement(dl_cache_path, requirement, no_download):
+                    failed_requirements.append(requirement)
+
+    if len(failed_requirements) != 0:
+        print(
+            'Please download the following files manually and add them in the "{dl}" folder:'.format(
+                dl=dl_cache_path
+            )
+        )
+        for requirement in failed_requirements:
+            s = "- " + requirement["name"]
+            if "filesize" in requirement:
+                s += ", size: " + humansize(requirement["filesize"])
+            s += ", sha256: " + requirement["sha256"]
+            print(s)
+            for url in requirement["url"]:
+                print("  " + url)
+
+        print("After you downloaded everything, run this script again.")
+        return False
+
+    return True
 
 
 def install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path):
@@ -689,9 +798,11 @@ def main(args: Namespace) -> int:
         steps = set(args.only)
 
     os.makedirs(str(dl_cache_path), exist_ok=True)
-    download_requirements(dl_cache_path, steps, args.torrent)
+    all_files_present = download_requirements(
+        dl_cache_path, steps, args.torrent, args.no_download
+    )
 
-    if not args.download:
+    if not args.download and all_files_present:
         program_files = output_path / "PROGRAM FILES"
         os.makedirs(str(program_files), exist_ok=True)
 
