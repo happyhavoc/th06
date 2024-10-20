@@ -21,6 +21,14 @@ DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
 
 #pragma optimize("s", on)
+void Gui::EndEnemySpellcard()
+{
+    this->impl->enemySpellcardName.pendingInterrupt = 1;
+    return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Gui::RegisterChain()
 {
     Gui *gui = &g_Gui;
@@ -59,6 +67,20 @@ ZunResult Gui::AddedCallback(Gui *gui)
 {
     return gui->ActualAddedCallback();
 }
+
+#pragma optimize("s", on)
+void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
+{
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->enemySpellcardPortrait, ANM_SCRIPT_FACE_ENEMY_SPELLCARD_PORTRAIT);
+    g_AnmManager->SetActiveSprite(&this->impl->enemySpellcardPortrait, ANM_SPRITE_FACE_STAGE_START + spellcardSprite);
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->enemySpellcardName, ANM_SCRIPT_TEXT_ENEMY_SPELLCARD_NAME);
+    AnmManager::DrawStringFormat(g_AnmManager, &this->impl->enemySpellcardName, 0xfff0f0, COLOR_RGB(COLOR_BLACK),
+                                 spellcardName);
+    this->blueSpellcardBarLength = strlen(spellcardName) * 15 / 2.0f + 16.0f;
+    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
+    return;
+}
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 ZunResult Gui::ActualAddedCallback()
@@ -270,9 +292,9 @@ ZunResult Gui::ActualAddedCallback()
     this->impl->spellCardBonus.isShown = 0;
     this->flags.flag0 = 2;
     this->flags.flag1 = 2;
-    this->flags.flag2 = 2;
-    this->flags.flag4 = 2;
     this->flags.flag3 = 2;
+    this->flags.flag4 = 2;
+    this->flags.flag2 = 2;
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
@@ -327,6 +349,24 @@ void Gui::MsgRead(i32 msgIdx)
     this->impl->MsgRead(msgIdx);
     g_Supervisor.unk198 = 3;
     return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+BOOL Gui::MsgWait()
+{
+    if (this->impl->msg.ignoreWaitCounter > 0)
+    {
+        return FALSE;
+    }
+    return 0 <= this->impl->msg.currentMsgIdx;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+BOOL Gui::HasCurrentMsgIdx()
+{
+    return 0 <= this->impl->msg.currentMsgIdx;
 }
 #pragma optimize("", on)
 
@@ -580,7 +620,7 @@ void Gui::UpdateStageElements()
         if ((i32)(this->impl->bonusScore.timer.current < 30))
         {
             this->impl->bonusScore.pos.x =
-                (this->impl->bonusScore.timer.AsFramesFloat() * -312.0f / 30.0f) + GAME_REGION_RIGHT;
+                (this->impl->bonusScore.timer.AsFramesFloat() * -312.0f / 30.0f) + (f32)GAME_REGION_RIGHT;
         }
         else
         {
@@ -597,7 +637,7 @@ void Gui::UpdateStageElements()
         if ((i32)(this->impl->fullPowerMode.timer.current < 30))
         {
             this->impl->fullPowerMode.pos.x =
-                (this->impl->fullPowerMode.timer.AsFramesFloat() * -312.0f / 30.0f) + GAME_REGION_RIGHT;
+                (this->impl->fullPowerMode.timer.AsFramesFloat() * -312.0f / 30.0f) + (f32)GAME_REGION_RIGHT;
         }
         else
         {
