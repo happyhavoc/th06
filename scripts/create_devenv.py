@@ -212,14 +212,29 @@ def download_requirement(dl_cache_path, requirement):
     if path.exists() and get_sha256(path) == requirement["sha256"]:
         return
 
-    print("Downloading " + requirement["name"])
-    urllib.request.urlretrieve(requirement["url"], str(path), progress_bar)
-    print(clear_line_sequence, end="", flush=True, file=sys.stdout)
-    hash = get_sha256(path)
-    if hash != requirement["sha256"]:
-        raise Exception(
-            "Download failed: Got hash " + hash + ", expected " + requirement["sha256"]
+    hash = None
+    for url in requirement["url"]:
+        print("Downloading " + requirement["name"] + " from " + url)
+        try:
+            urllib.request.urlretrieve(url, str(path), progress_bar)
+        except Exception as err:
+            print(clear_line_sequence, end="", flush=True, file=sys.stdout)
+            print("Download from " + url + " failed: " + str(err))
+            continue
+
+        hash = get_sha256(path)
+        if hash == requirement["sha256"]:
+            break
+        print(
+            "Download from "
+            + url
+            + " produced a mismatched hash. Got "
+            + hash
+            + ", expected "
+            + requirement["sha256"]
         )
+    if hash != requirement["sha256"]:
+        raise Exception("Could not download " + requirement["name"])
 
 
 def is_win():
@@ -273,14 +288,20 @@ def download_requirements(dl_cache_path, steps, should_torrent):
         {
             "name": "Direct X 8.0",
             "only": "dx8",
-            "url": "https://archive.org/download/dx8sdk/dx8sdk.exe",
+            "url": [
+                "https://archive.org/download/dx8sdk/dx8sdk.exe",
+                "https://dl.roblab.la/dx8sdk.exe",
+            ],
             "filename": "dx8sdk.exe",
             "sha256": "719f8fe4f02af5f435aac4a90bf9ef958210e6bd1d1e9715f26d13b10a73cb6c",
         },
         {
             "name": "Visual Studio .NET 2002 Professional Edition",
             "only": "vs",
-            "url": "https://archive.org/download/en_vs.net_pro_full/en_vs.net_pro_full.exe",
+            "url": [
+                "https://archive.org/download/en_vs.net_pro_full/en_vs.net_pro_full.exe",
+                "https://dl.bobpony.com/software/visualstudio/dotnet2002/en_vs.net_pro_full.exe",
+            ],
             "torrent": "https://archive.org/download/en_vs.net_pro_full/en_vs.net_pro_full_archive.torrent",
             "filename": "en_vs.net_pro_full.exe",
             "torrent_dirname": "en_vs.net_pro_full",
@@ -289,21 +310,25 @@ def download_requirements(dl_cache_path, steps, should_torrent):
         {
             "name": "Python 3.4.4",
             "only": "py",
-            "url": "https://www.python.org/ftp/python/3.4.4/python-3.4.4.msi",
+            "url": ["https://www.python.org/ftp/python/3.4.4/python-3.4.4.msi"],
             "filename": "python-3.4.4.msi",
             "sha256": "46c8f9f63cf02987e8bf23934b2f471e1868b24748c5bb551efcf4863b43ca6c",
         },
         {
             "name": "WiRunSQL",
             "only": "py",
-            "url": "https://raw.githubusercontent.com/microsoft/Windows-classic-samples/44d192fd7ec6f2422b7d023891c5f805ada2c811/Samples/Win7Samples/sysmgmt/msi/scripts/WiRunSQL.vbs",
+            "url": [
+                "https://raw.githubusercontent.com/microsoft/Windows-classic-samples/44d192fd7ec6f2422b7d023891c5f805ada2c811/Samples/Win7Samples/sysmgmt/msi/scripts/WiRunSQL.vbs"
+            ],
             "filename": "WiRunSQL.vbs",
             "sha256": "ef18c6d0b0163e371daaa1dd3fdf08030bc0b0999e4b2b90a1a736f7eb12784b",
         },
         {
             "name": "Ninja",
             "only": "ninja",
-            "url": "https://github.com/ninja-build/ninja/releases/download/v1.6.0/ninja-win.zip",
+            "url": [
+                "https://github.com/ninja-build/ninja/releases/download/v1.6.0/ninja-win.zip"
+            ],
             "filename": "ninja-win.zip",
             "sha256": "18f55bc5de27c20092e86ace8ef3dd3311662dc6193157e3b65c6bc94ce006d5",
         },
@@ -311,7 +336,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "satsuki",
             "only": "satsuki",
             "condition": is_win() and is_x86_64(),
-            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-windows-satsuki.exe",
+            "url": [
+                "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-windows-satsuki.exe"
+            ],
             "filename": "satsuki.exe",
             "sha256": "93baba162813f291f9975bce2440fb4c709bb40c5b120c2188852309a2025908",
         },
@@ -319,7 +346,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "satsuki",
             "only": "satsuki",
             "condition": is_win() and is_x86(),
-            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/i686-windows-satsuki.exe",
+            "url": [
+                "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/i686-windows-satsuki.exe"
+            ],
             "filename": "satsuki.exe",
             "sha256": "fabda8be8b6c927d4f98f44aad80f5eaac9b8f6bc81eea7d834c1cea0b877a91",
         },
@@ -327,7 +356,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "satsuki",
             "only": "satsuki",
             "condition": sys.platform == "darwin" and is_x86_64(),
-            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-macos-satsuki",
+            "url": [
+                "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-macos-satsuki"
+            ],
             "filename": "satsuki",
             "sha256": "6ebe6df938767443e78103f2188dc3ea6fb2955a5c7cc91ff22c841cdcbc2a9f",
         },
@@ -335,7 +366,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "satsuki",
             "only": "satsuki",
             "condition": sys.platform == "darwin" and platform.machine() == "arm64",
-            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/aarch64-macos-satsuki",
+            "url": [
+                "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/aarch64-macos-satsuki"
+            ],
             "filename": "satsuki",
             "sha256": "410b520173cf2897b1414eee96bad089f4d9d24f18f697e3f6546786eb27702d",
         },
@@ -343,7 +376,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "satsuki",
             "only": "satsuki",
             "condition": sys.platform == "linux" and is_x86_64(),
-            "url": "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-linux-satsuki",
+            "url": [
+                "https://github.com/happyhavoc/satsuki/releases/download/v0.1.2/x86_64-linux-satsuki"
+            ],
             "filename": "satsuki",
             "sha256": "e7a5f586b0f8febe5a1a6a3a0178486ec124c5dabc8ffb17bf0b892194dd8116",
         },
@@ -352,7 +387,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "objdiff-cli",
             "only": "objdiff",
             "condition": is_win() and is_x86_64(),
-            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-windows-x86_64.exe",
+            "url": [
+                "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-windows-x86_64.exe"
+            ],
             "filename": "objdiff-cli.exe",
             "sha256": "7e757fe74dc7949f62b684eed740eb18ee361e9cb414fa550283175713e88961",
         },
@@ -360,7 +397,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "objdiff-cli",
             "only": "objdiff",
             "condition": sys.platform == "darwin" and is_x86_64(),
-            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-macos-x86_64",
+            "url": [
+                "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-macos-x86_64"
+            ],
             "filename": "objdiff-cli",
             "sha256": "00dba386808ef9ba3ec5ae57b8f2799aa4117982d95eed0b14f5586dac42803a",
         },
@@ -368,7 +407,9 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "objdiff-cli",
             "only": "objdiff",
             "condition": sys.platform == "darwin" and platform.machine() == "arm64",
-            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-macos-arm64",
+            "url": [
+                "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-macos-arm64"
+            ],
             "filename": "objdiff-cli",
             "sha256": "d0b885f0a20323befe620b84c8205b0866020ddc5e9af8bd3666f231ae33fcbe",
         },
@@ -376,21 +417,27 @@ def download_requirements(dl_cache_path, steps, should_torrent):
             "name": "objdiff-cli",
             "only": "objdiff",
             "condition": sys.platform == "linux" and is_x86_64(),
-            "url": "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-linux-x86_64",
+            "url": [
+                "https://github.com/encounter/objdiff/releases/download/v2.0.0-beta.6/objdiff-cli-linux-x86_64"
+            ],
             "filename": "objdiff-cli",
             "sha256": "f76a7976e694db496686eb14495e54dd83ee9cdef286a98537bfbce0c2328ba1",
         },
         {
             "name": "ghidra",
             "only": "ghidra",
-            "url": "https://github.com/happyhavoc/ghidra-ci/releases/download/2024-08-31/release.zip",
+            "url": [
+                "https://github.com/happyhavoc/ghidra-ci/releases/download/2024-08-31/release.zip"
+            ],
             "filename": "ghidra.zip",
             "sha256": "524f6bdfa134afbe722498953eb21efacd93a876842e31fd04f93592270976a3",
         },
         {
             "name": "ghidra-delinker",
             "only": "ghidra",
-            "url": "https://github.com/happyhavoc/ghidra-delinker-extension/releases/download/v0.5.0-th06.1/ghidra_11.1_PUBLIC_20240831_ghidra-delinker-extension.zip",
+            "url": [
+                "https://github.com/happyhavoc/ghidra-delinker-extension/releases/download/v0.5.0-th06.1/ghidra_11.1_PUBLIC_20240831_ghidra-delinker-extension.zip"
+            ],
             "filename": "ghidra-delinker.zip",
             "sha256": "a9b063294412fb095d749d06905a05cdd42714b82818141d6844955f11680691",
         },
