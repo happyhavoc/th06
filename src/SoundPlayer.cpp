@@ -13,7 +13,16 @@ namespace th06
 #define BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE 16
 #define BACKGROUND_MUSIC_WAV_BLOCK_ALIGN BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE / 8 * BACKGROUND_MUSIC_WAV_NUM_CHANNELS
 
-DIFFABLE_STATIC(SoundBufferIdxVolume, g_SoundBufferIdxVol[32]);
+DIFFABLE_STATIC_ARRAY_ASSIGN(SoundBufferIdxVolume, 32, g_SoundBufferIdxVol) = {
+    {0, -1500, 0},   {0, -2000, 0},   {1, -1200, 5},   {1, -1400, 5}, 
+    {2, -1000, 100}, {3, -500, 100},  {4, -500, 100},  {5, -1700, 50}, 
+    {6, -1700, 50},  {7, -1700, 50},  {8, -1000, 100}, {9, -1000, 100}, 
+    {10, -1900, 10}, {11, -1200, 10}, {12, -900, 100}, {5, -1500, 50}, 
+    {13, -900, 50},  {14, -900, 50},  {15, -600, 100}, {16, -400, 100}, 
+    {17, -1100, 0},  {18, -900, 0},   {5, -1800, 20},  {6, -1800, 20}, 
+    {7, -1800, 20},  {19, -300, 50},  {20, -600, 50},  {21, -800, 50}, 
+    {22, -100, 140}, {23, -500, 100}, {24, -1000, 20}, {25, -1000, 90},
+};
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 26, g_SFXList) = {
     "data/wav/plst00.wav", "data/wav/enep00.wav",   "data/wav/pldead00.wav", "data/wav/power0.wav",
     "data/wav/power1.wav", "data/wav/tan00.wav",    "data/wav/tan01.wav",    "data/wav/tan02.wav",
@@ -400,6 +409,33 @@ void SoundPlayer::PlaySounds()
         this->duplicateSoundBuffers[sndBufIdx]->SetCurrentPosition(0);
         this->duplicateSoundBuffers[sndBufIdx]->Play(0, 0, 0);
     }
+    return;
+}
+
+#pragma var_order(i, SFXToPlay)
+void SoundPlayer::PlaySoundByIdx(SoundIdx idx, i32 unused)
+{
+    i32 SFXToPlay;
+    i32 i;
+
+    SFXToPlay = g_SoundBufferIdxVol[idx].unk;
+    for (i = 0; i < 3; i++)
+    {
+        if(this->soundBuffersToPlay[i] < 0)
+        {
+            break;
+        }
+        if(this->soundBuffersToPlay[i] == idx)
+        {
+            return;
+        }
+    }
+    if(i >= 3)
+    {
+        return;
+    }
+    this->soundBuffersToPlay[i] = idx;
+    this->unk408[idx] = SFXToPlay;
     return;
 }
 
