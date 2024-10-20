@@ -80,7 +80,11 @@ class CSound
   protected:
     LPDIRECTSOUNDBUFFER *m_apDSBuffer;
     DWORD m_dwDSBufferSize;
+
+  public:
     CWaveFile *m_pWaveFile;
+
+  protected:
     DWORD m_dwNumBuffers;
 
     // th06 extensions for fadeout

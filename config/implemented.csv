@@ -221,6 +221,7 @@ th06::utils::AddNormalizeAngle
 th06::SoundPlayer::SoundPlayer
 th06::SoundPlayer::InitializeDSound
 th06::SoundPlayer::LoadWav
+th06::SoundPlayer::LoadPos
 th06::SoundPlayer::GetWavFormatData
 th06::SoundPlayer::LoadSound
 th06::SoundPlayer::PlayBGM

@@ -202,6 +202,41 @@ ZunResult SoundPlayer::LoadWav(char *path)
     return ZUN_SUCCESS;
 }
 
+#pragma var_order(fileData, bgmFile, loopEnd, loopStart)
+ZunResult SoundPlayer::LoadPos(char *path)
+{
+    u8 *fileData;
+    CWaveFile *bgmFile;
+    i32 loopEnd;
+    i32 loopStart;
+    
+    if(this->manager == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    if(g_Supervisor.cfg.playSounds == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    if(this->backgroundMusic == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    
+    fileData = FileSystem::OpenPath(path, 0);
+    if(fileData == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    bgmFile = this->backgroundMusic->m_pWaveFile;
+    loopEnd = *(i32 *)(fileData + 4) * 4;
+    loopStart = *(i32 *)(fileData) * 4;
+    bgmFile->m_loopStartPoint = loopStart;
+    bgmFile->m_loopEndPoint = loopEnd;
+    free(fileData);
+    return ZUN_SUCCESS;
+}
+
 ZunResult SoundPlayer::InitSoundBuffers()
 {
     i32 idx;
