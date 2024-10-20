@@ -87,11 +87,13 @@ class CSound
   protected:
     DWORD m_dwNumBuffers;
 
+  public:
     // th06 extensions for fadeout
     i32 m_dwCurFadeoutProgress;
     i32 m_dwTotalFadeout;
     DWORD m_dwIsFadingOut;
 
+  protected:
     HRESULT RestoreBuffer(LPDIRECTSOUNDBUFFER pDSB, BOOL *pbWasRestored);
 
   public:

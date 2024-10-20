@@ -125,6 +125,21 @@ void SoundPlayer::StopBGM()
     return;
 }
 
+#pragma optimize("s", on)
+void SoundPlayer::FadeOut(f32 seconds)
+{
+    CStreamingSound *bgm;
+
+    if(this->backgroundMusic != NULL)
+    {
+        bgm = this->backgroundMusic;
+        bgm->m_dwIsFadingOut = 1;
+        bgm->m_dwCurFadeoutProgress = seconds * 60;
+        bgm->m_dwTotalFadeout = bgm->m_dwCurFadeoutProgress;
+    }
+}
+#pragma optimize("", on)
+
 #pragma var_order(notifySize, waveFile, res, numSamplesPerSec, blockAlign, curTime, startTime, waitTime, curTime2,     \
                   startTime2, waitTime2)
 ZunResult SoundPlayer::LoadWav(char *path)
