@@ -39,7 +39,9 @@ th06::Gui::IsStageFinished
 th06::Gui::MsgWait
 th06::Gui::ShowSpellcard
 th06::Gui::ShowSpellcardBonus
+th06::Gui::ShowBombNamePortrait
 th06::Gui::EndEnemySpellcard
+th06::Gui::EndPlayerSpellcard
 th06::Enemy::MathSub
 th06::Enemy::MathMul
 th06::Enemy::MathDiv
@@ -55,6 +57,7 @@ th06::BulletManager::TurnAllBulletsIntoPoints
 th06::ItemManager::SpawnItem
 th06::ItemManager::OnUpdate
 th06::ItemManager::OnDraw
+th06::ItemManager::RemoveAllItems
 th06::ReplayManager::RegisterChain
 th06::ReplayManager::StopRecording
 th06::SaveReplay
@@ -62,14 +65,11 @@ th06::ValidateReplayData
 th06::ScreenEffect::DrawSquare
 th06::Controller::GetControllerState
 th06::Player::DrawBulletExplosions
-th06::Player::BombReimuACalc
 th06::Player::BombReimuBCalc
-th06::Player::BombMarisaACalc
 th06::Player::BombMarisaBCalc
-th06::Player::BombReimuADraw
 th06::Player::BombReimuBDraw
-th06::Player::BombMarisaADraw
 th06::Player::BombMarisaBDraw
 th06::Player::CalcLaserHitbox
 th06::Player::CheckGraze
+th06::Player::DarkenViewport
 th06::Pbg3Archive::Pbg3Archive

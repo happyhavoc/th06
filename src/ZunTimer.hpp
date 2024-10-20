@@ -22,6 +22,26 @@ struct ZunTimer
         return this->current == time;
     }
 
+    ZunBool operator>=(i32 time)
+    {
+        return this->current >= time;
+    }
+
+    ZunBool operator>(i32 time)
+    {
+        return this->current > time;
+    }
+
+    ZunBool operator<(i32 time)
+    {
+        return this->current < time;
+    }
+
+    ZunBool operator<=(i32 time)
+    {
+        return this->current <= time;
+    }
+
     void Initialize();
     void Increment(i32 value);
     void Decrement(i32 value);

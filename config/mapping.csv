@@ -36,7 +36,7 @@ th06::Stage::RenderObjects,0x404970,0x83d,__thiscall,,ZunResult,Stage*,i32
 th06::AnmManager::ExecuteAnmIdx,0x4051b0,0xa9,__thiscall,,void,AnmManager*,AnmVm*,i32
 th06::Player::BombReimuACalc,0x405260,0x9a4,default,,void,Player*
 th06::Player::BombReimuADraw,0x405c10,0x410,default,,void,Player*
-th06::Player::DarkenViewport,0x406020,0x137,__stdcall,,void,Player*
+th06::Player::DarkenViewport,0x406020,0x137,default,,void,Player*
 th06::Player::BombReimuBCalc,0x406160,0x47d,default,,void,Player*
 th06::Player::BombReimuBDraw,0x4065e0,0x110,default,,void,Player*
 th06::Player::BombMarisaACalc,0x4066f0,0x411,default,,void,Player*
