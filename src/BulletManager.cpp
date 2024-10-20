@@ -1137,4 +1137,62 @@ void BulletManager::DrawBulletNoHwVertex(Bullet *bullet)
     g_AnmManager->Draw(anmVm);
     return;
 }
+
+#pragma var_order(itemPos, i, sine, bullet, laser, cosine, offset)
+void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
+{
+    f32 cosine;
+    f32 sine;
+    f32 offset;
+    Laser *laser;
+    Bullet *bullet;
+    i32 i;
+    D3DXVECTOR3 itemPos;
+
+    for (bullet = &g_BulletManager.bullets[0], i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullet++)
+    {
+        if (bullet->state == 0 || bullet->state == 5)
+        {
+            continue;
+        }
+
+        if (turnIntoItem)
+        {
+            g_ItemManager.SpawnItem(&bullet->pos, ITEM_POINT_BULLET, 1);
+            memset(bullet, 0, sizeof(Bullet));
+        }
+        else
+        {
+            bullet->state = 5;
+        }
+    }
+
+    for (laser = this->lasers, i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
+    {
+        if (!laser->inUse)
+        {
+            continue;
+        }
+
+        if (laser->state < 2)
+        {
+            laser->state = 2;
+            laser->timer.InitializeForPopup();
+            if (turnIntoItem)
+            {
+                offset = laser->startOffset;
+                fsincos_wrapper(&sine, &cosine, laser->angle);
+                while (laser->endOffset > offset)
+                {
+                    itemPos.x = cosine * offset + laser->pos.x;
+                    itemPos.y = sine * offset + laser->pos.y;
+                    itemPos.z = 0.0f;
+                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
+                    offset += 32.0f;
+                }
+            }
+        }
+        laser->grazeInterval = 0;
+    }
+}
 }; // namespace th06

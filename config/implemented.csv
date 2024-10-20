@@ -61,6 +61,7 @@ th06::BulletManager::OnUpdate
 th06::BulletManager::OnDraw
 th06::BulletManager::DrawBullet
 th06::BulletManager::DrawBulletNoHwVertex
+th06::BulletManager::RemoveAllBullets
 th06::ChainElem::ChainElem
 th06::ChainElem::~ChainElem
 th06::Chain::CreateElem
