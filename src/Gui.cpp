@@ -395,7 +395,7 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
         stringPos.x = GAME_REGION_LEFT + 42.0f;
         stringPos.y = GAME_REGION_TOP + 112.0f;
         stringPos.z = 0.0;
-        g_AsciiManager.color = COLOR_YELLOW;
+        g_AsciiManager.color = COLOR_SUNSHINEYELLOW;
         if (g_GameManager.currentStage < EXTRA_STAGE)
         {
             g_AsciiManager.AddFormatText(&stringPos, "Stage Clear\n\n");
@@ -989,7 +989,7 @@ void Gui::DrawStageElements()
             g_AnmManager->Draw2(&this->impl->stageNameSprite);
 
             // this looks like an inline function, maybe ZunColor is a struct?
-            stageTextColor = COLOR_COMBINE_ALPHA(COLOR_YELLOW, this->impl->stageNameSprite.color);
+            stageTextColor = COLOR_COMBINE_ALPHA(COLOR_SUNSHINEYELLOW, this->impl->stageNameSprite.color);
             g_AsciiManager.color = stageTextColor;
 
             if (g_GameManager.currentStage < EXTRA_STAGE)
@@ -1010,7 +1010,7 @@ void Gui::DrawStageElements()
         }
         else
         {
-            demoTextColor = COLOR_COMBINE_ALPHA(COLOR_YELLOW, this->impl->stageNameSprite.color);
+            demoTextColor = COLOR_COMBINE_ALPHA(COLOR_SUNSHINEYELLOW, this->impl->stageNameSprite.color);
             g_AsciiManager.color = demoTextColor;
 
             stageTextPos.x = 136.0f;
