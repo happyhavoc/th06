@@ -1,10 +1,12 @@
 #include "Enemy.hpp"
 #include "BulletManager.hpp"
 #include "EclManager.hpp"
+#include "EffectManager.hpp"
 #include "EnemyManager.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"
 #include "Player.hpp"
+#include "Rng.hpp"
 #include "ZunBool.hpp"
 #include "utils.hpp"
 
@@ -416,6 +418,53 @@ void Enemy::UpdateEffects(Enemy *enemy)
         }
 
         effect->angleRelated = utils::AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
+    }
+}
+
+#pragma var_order(i, currentBullet, effectIndex, velocityVector, bulletTimer, accelerationMultiplier, accelerationAngle)
+void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
+{
+    f32 accelerationAngle;
+    f32 accelerationMultiplier;
+    ZunTimer *bulletTimer;
+    Bullet *currentBullet;
+    i32 effectIndex;
+    i32 i;
+    D3DXVECTOR3 velocityVector;
+
+    currentBullet = g_BulletManager.bullets;
+    effectIndex = instr->args.exInstr.i32Arg;
+
+    g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
+    for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
+    {
+        if(currentBullet->state == 0 || currentBullet->state == 5)
+        {
+            continue;
+        }
+        
+        currentBullet->spriteOffset = 0x000f;
+        g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, currentBullet->sprites.spriteBullet.baseSpriteIndex + currentBullet->spriteOffset);
+        switch(effectIndex) {
+            case 0:
+                currentBullet->speed = 0.0;
+                velocityVector.x = 0.0;
+                velocityVector.y = 0.0;
+                velocityVector.z = 0.0;
+                currentBullet->velocity = velocityVector;
+                break;
+            case 1:
+                currentBullet->exFlags |= 0x10;
+                currentBullet->ex5Int0 = 220;
+                bulletTimer = &currentBullet->timer;
+                bulletTimer->current = 0;
+                bulletTimer->subFrame = 0.0;
+                bulletTimer->previous = -999;
+                accelerationMultiplier = 0.01;
+                accelerationAngle = g_Rng.GetRandomF32ZeroToOne() * (2 * ZUN_PI) - ZUN_PI;
+                sincosmul(&currentBullet->ex4Acceleration, accelerationAngle, accelerationMultiplier);
+                break;
+        }
     }
 }
 }; // namespace th06
