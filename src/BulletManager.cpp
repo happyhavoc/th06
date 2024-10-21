@@ -1,9 +1,11 @@
 #include "BulletManager.hpp"
 #include "AnmManager.hpp"
+#include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "Enemy.hpp"
 #include "GameManager.hpp"
+#include "Gui.hpp"
 #include "ItemManager.hpp"
 #include "Player.hpp"
 #include "Rng.hpp"
@@ -345,6 +347,63 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
         bullet->dirChangeNumTimes = 0;
     }
     return 0;
+}
+
+#pragma var_order(idx, laser)
+Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
+{
+    Laser *laser;
+    i32 idx;
+
+    for (laser = this->lasers, idx = 0; idx < ARRAY_SIZE_SIGNED(this->lasers); idx++, laser++)
+    {
+
+        if (laser->inUse)
+        {
+            continue;
+        }
+
+        g_AnmManager->SetAndExecuteScriptIdx(&laser->vm0, bulletProps->sprite + ANM_SCRIPT_BULLET3_LASER);
+        g_AnmManager->SetActiveSprite(&laser->vm0, laser->vm0.activeSpriteIndex + bulletProps->color);
+
+        g_AnmManager->InitializeAndSetSprite(&laser->vm1, g_BulletSpriteOffset16Px[bulletProps->color] +
+                                                              ANM_SPRITE_BULLET3_SPAWN_BIG_BALL);
+
+        laser->vm1.flags.blendMode = AnmVmBlendMode_One;
+        laser->pos = bulletProps->position;
+        laser->color = bulletProps->color;
+        laser->inUse = true;
+        laser->angle = bulletProps->angle;
+
+        if (bulletProps->type == 0)
+        {
+            laser->angle += g_Player.AngleToPlayer(&bulletProps->position);
+        }
+
+        laser->flags = bulletProps->flags;
+        laser->timer.InitializeForPopup();
+        laser->startOffset = bulletProps->startOffset;
+        laser->endOffset = bulletProps->endOffset;
+        laser->startLength = bulletProps->startLength;
+        laser->width = bulletProps->width;
+        laser->speed = bulletProps->speed;
+        laser->startTime = bulletProps->startTime;
+        laser->duration = bulletProps->duration;
+        laser->endTime = bulletProps->stopTime;
+        laser->grazeDelay = bulletProps->grazeDelay;
+        laser->grazeInterval = bulletProps->grazeDistance;
+
+        if (laser->startTime == 0)
+        {
+            laser->state = 1;
+        }
+        else
+        {
+            laser->state = 0;
+        }
+        break;
+    }
+    return laser;
 }
 
 ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
@@ -1136,5 +1195,145 @@ void BulletManager::DrawBulletNoHwVertex(Bullet *bullet)
     }
     g_AnmManager->Draw(anmVm);
     return;
+}
+
+#pragma var_order(itemPos, i, sine, bullet, laser, cosine, offset)
+void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
+{
+    f32 cosine;
+    f32 sine;
+    f32 offset;
+    Laser *laser;
+    Bullet *bullet;
+    i32 i;
+    D3DXVECTOR3 itemPos;
+
+    for (bullet = &g_BulletManager.bullets[0], i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullet++)
+    {
+        if (bullet->state == 0 || bullet->state == 5)
+        {
+            continue;
+        }
+
+        if (turnIntoItem)
+        {
+            g_ItemManager.SpawnItem(&bullet->pos, ITEM_POINT_BULLET, 1);
+            memset(bullet, 0, sizeof(Bullet));
+        }
+        else
+        {
+            bullet->state = 5;
+        }
+    }
+
+    for (laser = this->lasers, i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
+    {
+        if (!laser->inUse)
+        {
+            continue;
+        }
+
+        if (laser->state < 2)
+        {
+            laser->state = 2;
+            laser->timer.InitializeForPopup();
+            if (turnIntoItem)
+            {
+                offset = laser->startOffset;
+                fsincos_wrapper(&sine, &cosine, laser->angle);
+                while (laser->endOffset > offset)
+                {
+                    itemPos.x = cosine * offset + laser->pos.x;
+                    itemPos.y = sine * offset + laser->pos.y;
+                    itemPos.z = 0.0f;
+                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
+                    offset += 32.0f;
+                }
+            }
+        }
+        laser->grazeInterval = 0;
+    }
+}
+
+#pragma var_order(bulletScore, totalBonusScore, awardedBullets, i, sine, bullets, itemPos, laser, cosine, offset)
+i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
+{
+    i32 bulletScore;
+    i32 totalBonusScore;
+    i32 awardedBullets;
+    i32 i;
+    f32 sine;
+    f32 cosine;
+    f32 offset;
+    Laser *laser;
+    Bullet *bullets;
+    D3DXVECTOR3 itemPos;
+
+    totalBonusScore = 0;
+    bulletScore = 2000;
+    awardedBullets = 0;
+    bullets = &g_BulletManager.bullets[0];
+    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullets++)
+    {
+        if (bullets->state == 0)
+        {
+            continue;
+        }
+        if (awardPoints)
+        {
+            g_ItemManager.SpawnItem(&bullets->pos, ITEM_POINT_BULLET, 1);
+        }
+        g_AsciiManager.CreatePopup1(&bullets->pos, bulletScore,
+                                    bulletScore >= maxBonusScore ? COLOR_YELLOW : COLOR_WHITE);
+
+        totalBonusScore += bulletScore;
+        awardedBullets++;
+        bulletScore += 10;
+
+        if (bulletScore > maxBonusScore)
+        {
+            bulletScore = maxBonusScore;
+        }
+        bullets->state = 5;
+    }
+    laser = &this->lasers[0];
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
+    {
+        if (!laser->inUse)
+        {
+            continue;
+        }
+        if (laser->state < 2)
+        {
+            laser->state = 2;
+            laser->timer.InitializeForPopup();
+            if (awardPoints != 0)
+            {
+                g_ItemManager.SpawnItem(&laser->pos, ITEM_POINT_BULLET, 1);
+                offset = laser->startOffset;
+                fsincos_wrapper(&sine, &cosine, laser->angle);
+                while (laser->endOffset > offset)
+                {
+                    itemPos.x = cosine * offset + laser->pos.x;
+                    itemPos.y = sine * offset + laser->pos.y;
+                    itemPos.z = 0.0f;
+                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
+                    offset += 32.0f;
+                }
+            }
+        }
+        laser->grazeInterval = 0;
+    }
+    g_GameManager.score += totalBonusScore;
+    if (totalBonusScore != 0)
+    {
+        g_Gui.ShowBonusScore(totalBonusScore);
+    }
+    return totalBonusScore;
+}
+
+void BulletManager::TurnAllBulletsIntoPoints()
+{
+    this->RemoveAllBullets(true);
 }
 }; // namespace th06
