@@ -28,18 +28,18 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(ExInsn, 17, g_EclExInsn) = {
     Enemy::ExInsShootStarPattern,
     Enemy::ExInsPatchouliShottypeSetVars,
     Enemy::ExInsStage56Func4,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage5Func5,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6XFunc6,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func7,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func8,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func9,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6XFunc10,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func11,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage4Func12,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc13,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc14,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc15,
-    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc16
+    Enemy::ExInsStage5Func5,
+    Enemy::ExInsStage6XFunc6,
+    Enemy::ExInsStage6Func7,
+    Enemy::ExInsStage6Func8,
+    Enemy::ExInsStage6Func9,
+    Enemy::ExInsStage6XFunc10,
+    Enemy::ExInsStage6Func11,
+    Enemy::ExInsStage4Func12,
+    Enemy::ExInsStageXFunc13,
+    Enemy::ExInsStageXFunc14,
+    Enemy::ExInsStageXFunc15,
+    Enemy::ExInsStageXFunc16
 };
 
 ZunResult EclManager::Load(char *eclPath)
