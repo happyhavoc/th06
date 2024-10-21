@@ -349,6 +349,63 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
     return 0;
 }
 
+#pragma var_order(idx, laser)
+Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
+{
+    Laser *laser;
+    i32 idx;
+
+    for (laser = this->lasers, idx = 0; idx < ARRAY_SIZE_SIGNED(this->lasers); idx++, laser++)
+    {
+
+        if (laser->inUse)
+        {
+            continue;
+        }
+
+        g_AnmManager->SetAndExecuteScriptIdx(&laser->vm0, bulletProps->sprite + ANM_SCRIPT_BULLET3_LASER);
+        g_AnmManager->SetActiveSprite(&laser->vm0, laser->vm0.activeSpriteIndex + bulletProps->color);
+
+        g_AnmManager->InitializeAndSetSprite(&laser->vm1, g_BulletSpriteOffset16Px[bulletProps->color] +
+                                                              ANM_SPRITE_BULLET3_SPAWN_BIG_BALL);
+
+        laser->vm1.flags.blendMode = AnmVmBlendMode_One;
+        laser->pos = bulletProps->position;
+        laser->color = bulletProps->color;
+        laser->inUse = true;
+        laser->angle = bulletProps->angle;
+
+        if (bulletProps->type == 0)
+        {
+            laser->angle += g_Player.AngleToPlayer(&bulletProps->position);
+        }
+
+        laser->flags = bulletProps->flags;
+        laser->timer.InitializeForPopup();
+        laser->startOffset = bulletProps->startOffset;
+        laser->endOffset = bulletProps->endOffset;
+        laser->startLength = bulletProps->startLength;
+        laser->width = bulletProps->width;
+        laser->speed = bulletProps->speed;
+        laser->startTime = bulletProps->startTime;
+        laser->duration = bulletProps->duration;
+        laser->endTime = bulletProps->stopTime;
+        laser->grazeDelay = bulletProps->grazeDelay;
+        laser->grazeInterval = bulletProps->grazeDistance;
+
+        if (laser->startTime == 0)
+        {
+            laser->state = 1;
+        }
+        else
+        {
+            laser->state = 0;
+        }
+        break;
+    }
+    return laser;
+}
+
 ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
 {
     i32 idx1, idx2;

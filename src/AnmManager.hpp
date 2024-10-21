@@ -108,6 +108,12 @@ struct AnmManager
         this->SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
     }
 
+    void InitializeAndSetSprite(AnmVm *vm, i32 spriteIdx)
+    {
+        vm->Initialize();
+        this->SetActiveSprite(vm, spriteIdx);
+    }
+
     void SetCurrentVertexShader(u8 vertexShader)
     {
         this->currentVertexShader = vertexShader;
