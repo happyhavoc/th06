@@ -147,6 +147,24 @@ struct Enemy
     static void MovePosTime(Enemy *enemy, EclRawInstr *instr);
     static void MoveTime(Enemy *enemy, EclRawInstr *instr);
 
+    static void ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsShootAtRandomArea(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage5Func5(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStage6XFunc6(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStage6Func7(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStage6Func8(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStage6Func9(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStage6Func11(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStage6XFunc10(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStage4Func12(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStageXFunc13(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStageXFunc14(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStageXFunc15(Enemy *enemy, AnmRawInstr *instr);
+    static void ExInsStageXFunc16(Enemy *enemy, AnmRawInstr *instr);
+
     f32 LifePercent()
     {
         return (f32)this->life / (f32)this->maxLife;

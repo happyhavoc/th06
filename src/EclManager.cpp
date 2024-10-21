@@ -22,8 +22,25 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 64, g_SpellcardScore) = {
     700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000};
 DIFFABLE_STATIC(EclManager, g_EclManager);
 typedef void (*ExInsn)(Enemy *, EclRawInstr *);
-// TODO: Fill this up.
-DIFFABLE_STATIC_ARRAY(ExInsn, 16, g_EclExInsn);
+DIFFABLE_STATIC_ARRAY_ASSIGN(ExInsn, 17, g_EclExInsn) = {
+    Enemy::ExInsCirnoRainbowBallJank,
+    Enemy::ExInsShootAtRandomArea,
+    Enemy::ExInsShootStarPattern,
+    Enemy::ExInsPatchouliShottypeSetVars,
+    Enemy::ExInsStage56Func4,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage5Func5,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6XFunc6,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func7,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func8,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func9,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6XFunc10,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage6Func11,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStage4Func12,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc13,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc14,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc15,
+    (void (*)(Enemy *, EclRawInstr *)) Enemy::ExInsStageXFunc16
+};
 
 ZunResult EclManager::Load(char *eclPath)
 {
