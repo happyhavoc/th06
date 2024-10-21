@@ -112,6 +112,7 @@ th06::Enemy::Despawn
 th06::Enemy::ResetEffectArray
 th06::Enemy::UpdateEffects
 th06::Enemy::ExInsCirnoRainbowBallJank
+th06::Enemy::ExInsShootAtRandomArea
 th06::Enemy::ExInsPatchouliShottypeSetVars
 th06::GameErrorContext::Fatal
 th06::GameErrorContext::Log

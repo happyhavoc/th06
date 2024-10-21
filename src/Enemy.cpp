@@ -446,12 +446,12 @@ void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
     D3DXVECTOR3 velocityVector;
 
     currentBullet = g_BulletManager.bullets;
-    effectIndex = instr->args.exInstr.i32Arg;
+    effectIndex = instr->args.exInstr.param;
 
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
     for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
     {
-        if(currentBullet->state == 0 || currentBullet->state == 5)
+        if (currentBullet->state == 0 || currentBullet->state == 5)
         {
             continue;
         }
@@ -459,7 +459,7 @@ void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
         currentBullet->spriteOffset = 0x000f;
         g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, 
                                       currentBullet->sprites.spriteBullet.baseSpriteIndex + currentBullet->spriteOffset);
-        switch(effectIndex)
+        switch (effectIndex)
         {
             case 0:
                 currentBullet->speed = 0.0;
@@ -481,6 +481,20 @@ void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
                 break;
         }
     }
+}
+
+void Enemy::ExInsShootAtRandomArea(Enemy *enemy, EclRawInstr *instr)
+{
+    f32 bulletSpeed;
+
+    bulletSpeed = instr->args.exInstr.param;
+    enemy->bulletProps.position = enemy->position + enemy->shootOffset;
+    enemy->bulletProps.position.x = (g_Rng.GetRandomF32ZeroToOne() * bulletSpeed + (enemy->position).x)
+                                    - bulletSpeed / 2.0f;
+    bulletSpeed *= 0.75f;
+    enemy->bulletProps.position.y = (g_Rng.GetRandomF32ZeroToOne() * bulletSpeed + (enemy->position).y)
+                                    - bulletSpeed / 2.0f;
+    g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
 }
 
 void Enemy::ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr)
