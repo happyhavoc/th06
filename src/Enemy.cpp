@@ -12,6 +12,19 @@
 
 namespace th06
 {
+struct PatchouliShottypeVars {
+    struct {
+        i32 var1;
+        i32 var2;
+        i32 var3;
+    } shotVars[2];
+};
+C_ASSERT(sizeof(PatchouliShottypeVars) == 0x18);
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(PatchouliShottypeVars, 2, g_PatchouliShottypeVars) = {
+    {{{0, 3, 1}, {2, 3, 4}}}, 
+    {{{1, 4, 0}, {4, 2, 4}}}
+};
 DIFFABLE_STATIC(i32, g_PlayerShot);
 DIFFABLE_STATIC(f32, g_PlayerDistance);
 DIFFABLE_STATIC(f32, g_PlayerAngle);
@@ -444,8 +457,10 @@ void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
         }
         
         currentBullet->spriteOffset = 0x000f;
-        g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, currentBullet->sprites.spriteBullet.baseSpriteIndex + currentBullet->spriteOffset);
-        switch(effectIndex) {
+        g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, 
+                                      currentBullet->sprites.spriteBullet.baseSpriteIndex + currentBullet->spriteOffset);
+        switch(effectIndex)
+        {
             case 0:
                 currentBullet->speed = 0.0;
                 velocityVector.x = 0.0;
@@ -466,5 +481,12 @@ void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
                 break;
         }
     }
+}
+
+void Enemy::ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr)
+{
+    enemy->currentContext.var1 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var1;
+    enemy->currentContext.var2 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var2;
+    enemy->currentContext.var3 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var3;
 }
 }; // namespace th06

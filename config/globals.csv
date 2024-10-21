@@ -3,6 +3,7 @@ _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_StageFiles,                          0x004760e0
 _g_SpellcardScore,                      0x00476120
 _g_EclExInsn,                           0x00476220
+_g_PatchouliShottypeVars                0x00476264
 _g_Effects,                             0x00476298
 _g_RandomItems,                         0x00476338
 _g_EffectsColorWithTextureBlending,     0x00476358

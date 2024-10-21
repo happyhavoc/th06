@@ -1,7 +1,6 @@
 th06::EclManager::Unload
 th06::Enemy::ExInsShootAtRandomArea
 th06::Enemy::ExInsShootStarPattern
-th06::Enemy::ExInsPatchouliShottypeSetVars
 th06::Enemy::ExInsStage56Func4
 th06::Enemy::ExInsStage5Func5
 th06::Enemy::ExInsStage6XFunc6
