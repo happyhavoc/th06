@@ -1,9 +1,11 @@
 #include "BulletManager.hpp"
 #include "AnmManager.hpp"
+#include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "Enemy.hpp"
 #include "GameManager.hpp"
+#include "Gui.hpp"
 #include "ItemManager.hpp"
 #include "Player.hpp"
 #include "Rng.hpp"
@@ -1194,5 +1196,87 @@ void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
         }
         laser->grazeInterval = 0;
     }
+}
+
+#pragma var_order(bulletScore, totalBonusScore, awardedBullets, i, sine, bullets, itemPos, laser, cosine, offset)
+i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
+{
+    i32 bulletScore;
+    i32 totalBonusScore;
+    i32 awardedBullets;
+    i32 i;
+    f32 sine;
+    f32 cosine;
+    f32 offset;
+    Laser *laser;
+    Bullet *bullets;
+    D3DXVECTOR3 itemPos;
+
+    totalBonusScore = 0;
+    bulletScore = 2000;
+    awardedBullets = 0;
+    bullets = &g_BulletManager.bullets[0];
+    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullets++)
+    {
+        if (bullets->state == 0)
+        {
+            continue;
+        }
+        if (awardPoints)
+        {
+            g_ItemManager.SpawnItem(&bullets->pos, ITEM_POINT_BULLET, 1);
+        }
+        g_AsciiManager.CreatePopup1(&bullets->pos, bulletScore,
+                                    bulletScore >= maxBonusScore ? COLOR_YELLOW : COLOR_WHITE);
+
+        totalBonusScore += bulletScore;
+        awardedBullets++;
+        bulletScore += 10;
+
+        if (bulletScore > maxBonusScore)
+        {
+            bulletScore = maxBonusScore;
+        }
+        bullets->state = 5;
+    }
+    laser = &this->lasers[0];
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
+    {
+        if (!laser->inUse)
+        {
+            continue;
+        }
+        if (laser->state < 2)
+        {
+            laser->state = 2;
+            laser->timer.InitializeForPopup();
+            if (awardPoints != 0)
+            {
+                g_ItemManager.SpawnItem(&laser->pos, ITEM_POINT_BULLET, 1);
+                offset = laser->startOffset;
+                fsincos_wrapper(&sine, &cosine, laser->angle);
+                while (laser->endOffset > offset)
+                {
+                    itemPos.x = cosine * offset + laser->pos.x;
+                    itemPos.y = sine * offset + laser->pos.y;
+                    itemPos.z = 0.0f;
+                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
+                    offset += 32.0f;
+                }
+            }
+        }
+        laser->grazeInterval = 0;
+    }
+    g_GameManager.score += totalBonusScore;
+    if (totalBonusScore != 0)
+    {
+        g_Gui.ShowBonusScore(totalBonusScore);
+    }
+    return totalBonusScore;
+}
+
+void BulletManager::TurnAllBulletsIntoPoints()
+{
+    this->RemoveAllBullets(true);
 }
 }; // namespace th06
