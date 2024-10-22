@@ -253,6 +253,7 @@ th06::Player::CalcKillBoxCollision
 th06::Player::CalcDamageToEnemy
 th06::Player::Die
 th06::Player::HandlePlayerInputs
+th06::Player::AngleFromPlayer
 th06::Player::AngleToPlayer
 th06::Player::DrawBullets
 th06::Player::SpawnBullets

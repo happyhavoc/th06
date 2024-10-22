@@ -1000,6 +1000,21 @@ ZunResult Player::UpdateFireBulletsTimer(Player *p)
 }
 
 #pragma var_order(relY, relX)
+f32 Player::AngleFromPlayer(D3DXVECTOR3 *pos)
+{
+    f32 relX;
+    f32 relY;
+
+    relX = pos->x - this->positionCenter.x;
+    relY = pos->y - this->positionCenter.y;
+    if (relY == 0.0f && relX == 0.0f)
+    {
+        return ZUN_PI / 2;
+    }
+    return atan2f(relY, relX);
+}
+
+#pragma var_order(relY, relX)
 f32 Player::AngleToPlayer(D3DXVECTOR3 *pos)
 {
     f32 relX;
