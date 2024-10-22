@@ -80,6 +80,9 @@ _g_PlayerShot,                          0x00487e44
 _g_PlayerDistance,                      0x00487e48
 _g_PlayerAngle,                         0x00487e4c
 _g_EclManager,                          0x00487e50
+_g_StarAngleTable,                      0x00487edc
+_g_EnemyPosVector,                      0x00487f5c
+_g_PlayerPosVector,                     0x00487f68
 _g_EffectManager,                       0x00487fe0
 _g_EffectManagerCalcChain,              0x004b7964
 _g_EffectManagerDrawChain,              0x004b7984

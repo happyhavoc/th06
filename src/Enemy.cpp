@@ -28,6 +28,9 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(PatchouliShottypeVars, 2, g_PatchouliShottypeVars) 
 DIFFABLE_STATIC(i32, g_PlayerShot);
 DIFFABLE_STATIC(f32, g_PlayerDistance);
 DIFFABLE_STATIC(f32, g_PlayerAngle);
+DIFFABLE_STATIC_ARRAY(f32, 6, g_StarAngleTable);
+DIFFABLE_STATIC(D3DXVECTOR3, g_EnemyPosVector);
+DIFFABLE_STATIC(D3DXVECTOR3, g_PlayerPosVector);
 
 i32 *Enemy::GetVar(Enemy *enemy, EclVarId *eclVarId, EclValueType *valueType)
 {
@@ -495,6 +498,71 @@ void Enemy::ExInsShootAtRandomArea(Enemy *enemy, EclRawInstr *instr)
     enemy->bulletProps.position.y = (g_Rng.GetRandomF32ZeroToOne() * bulletSpeed + (enemy->position).y)
                                     - bulletSpeed / 2.0f;
     g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
+}
+
+#pragma var_order(i, propsSpeedBackup, starPatterTarget1, targetDistance, \
+                  starPatternTarget0, patternPosition, baseTargetPosition)
+void Enemy::ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr)
+{
+    // Variable names are more quick guesses at functionality than anything else, they should not be trusted
+    D3DXVECTOR3 baseTargetPosition;
+    i32 i;
+    f32 propsSpeedBackup;
+    f32 patternPosition;
+    D3DXVECTOR3 starPatternTarget0;
+    D3DXVECTOR3 starPatterTarget1;
+    f32 targetDistance;
+
+    if (enemy->currentContext.var2 >= enemy->currentContext.var3)
+    {
+        enemy->currentContext.funcSetFunc = NULL;
+        return;
+    }
+    
+    if (enemy->currentContext.var2 == 0)
+    {
+        g_EnemyPosVector = enemy->position;
+        g_PlayerPosVector = g_Player.positionCenter;
+        g_StarAngleTable[0] = g_Rng.GetRandomF32ZeroToOne() * (ZUN_PI * 2) - ZUN_PI;
+        g_StarAngleTable[1] = utils::AddNormalizeAngle(g_StarAngleTable[0], 4 * ZUN_PI / 5);
+    }
+    if (enemy->currentContext.var2 % 30 == 0)
+    {
+        g_StarAngleTable[0] = g_StarAngleTable[1];
+        g_StarAngleTable[1] = utils::AddNormalizeAngle(g_StarAngleTable[1], 4 * ZUN_PI / 5);
+        g_StarAngleTable[2] = utils::AddNormalizeAngle(g_StarAngleTable[1], 4 * ZUN_PI / 5);
+        g_StarAngleTable[3] = utils::AddNormalizeAngle(g_StarAngleTable[2], 4 * ZUN_PI / 5);
+        g_StarAngleTable[4] = utils::AddNormalizeAngle(g_StarAngleTable[3], 4 * ZUN_PI / 5);
+        g_StarAngleTable[5] = utils::AddNormalizeAngle(g_StarAngleTable[4], 4 * ZUN_PI / 5);
+    }
+    if (enemy->currentContext.var2 % 6 == 0)
+    {
+        patternPosition = (f32) enemy->currentContext.var2 / (f32) enemy->currentContext.var3;
+        targetDistance = patternPosition * 0.1f;
+
+        baseTargetPosition = (g_PlayerPosVector - g_EnemyPosVector) * targetDistance + g_EnemyPosVector;
+        baseTargetPosition.z = 0.0f;
+
+        patternPosition += 0.5f;
+        enemy->bulletProps.angle1 = (ZUN_PI / 3) * patternPosition;
+        
+        for (i = 0; i < 5; i++)
+        {
+            targetDistance = (enemy->currentContext.var2 % 30) / 30.0f;
+            sincosmul(&starPatternTarget0, g_StarAngleTable[i], enemy->currentContext.float3);
+            sincosmul(&starPatterTarget1, g_StarAngleTable[i + 1], enemy->currentContext.float3);
+            starPatternTarget0 = (starPatterTarget1 - starPatternTarget0) * targetDistance + starPatternTarget0;
+            starPatternTarget0.z = 0;
+            enemy->bulletProps.position = baseTargetPosition + starPatternTarget0;
+            propsSpeedBackup = enemy->bulletProps.speed1;
+            enemy->bulletProps.speed1 = g_Rng.GetRandomF32InRange(enemy->bulletProps.speed2) + enemy->bulletProps.speed1;
+            g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
+            enemy->bulletProps.speed1 = propsSpeedBackup;
+            enemy->bulletProps.angle1 -= (ZUN_PI / 6) * patternPosition;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_16, 0);
+    }
+    enemy->currentContext.var2++;
 }
 
 void Enemy::ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr)
