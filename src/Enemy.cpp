@@ -449,7 +449,7 @@ void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
     D3DXVECTOR3 velocityVector;
 
     currentBullet = g_BulletManager.bullets;
-    effectIndex = instr->args.exInstr.param;
+    effectIndex = instr->args.exInstr.i32Param;
 
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
     for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
@@ -490,7 +490,7 @@ void Enemy::ExInsShootAtRandomArea(Enemy *enemy, EclRawInstr *instr)
 {
     f32 bulletSpeed;
 
-    bulletSpeed = instr->args.exInstr.param;
+    bulletSpeed = instr->args.exInstr.i32Param;
     enemy->bulletProps.position = enemy->position + enemy->shootOffset;
     enemy->bulletProps.position.x = (g_Rng.GetRandomF32ZeroToOne() * bulletSpeed + (enemy->position).x)
                                     - bulletSpeed / 2.0f;
@@ -570,5 +570,107 @@ void Enemy::ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var1 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var1;
     enemy->currentContext.var2 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var2;
     enemy->currentContext.var3 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var3;
+}
+
+#pragma var_order(playerBulletOffset, bulletsLeft, i, currentBullet)
+void Enemy::ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
+{
+    i32 bulletsLeft;
+    Bullet *currentBullet;
+    i32 i;
+    ZunVec2 playerBulletOffset;
+
+    if (instr->args.exInstr.i32Param < 2) 
+    {
+        g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
+        g_GameManager.isTimeStopped = instr->args.exInstr.u8Param;
+    }
+    else
+    {
+        bulletsLeft = 14;
+        currentBullet = g_BulletManager.bullets;
+        if (g_GameManager.difficulty <= NORMAL)
+        {
+            for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
+            {
+                if (currentBullet->state == 0 || currentBullet->state == 5)
+                {
+                    continue;
+                }
+
+                if (currentBullet->sprites.spriteBullet.sprite != NULL &&
+                    currentBullet->sprites.spriteBullet.sprite->heightPx >= 30.0f &&
+                    currentBullet->spriteOffset != 5 && (g_Rng.GetRandomU16() % 4 == 0))
+                {
+                    currentBullet->spriteOffset = 5;
+                    g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, 
+                                                  currentBullet->sprites.spriteBullet.baseSpriteIndex + 
+                                                  currentBullet->spriteOffset);
+
+                    playerBulletOffset.x = (currentBullet->pos.x) - g_Player.positionCenter.x;
+                    playerBulletOffset.y = (currentBullet->pos.y) - g_Player.positionCenter.y;
+
+                    if(playerBulletOffset.VectorLength() > 128.0f)
+                    {
+                        currentBullet->angle = g_Rng.GetRandomF32ZeroToOne() * ((ZUN_PI * 3) / 4) + (ZUN_PI / 4);
+                    }
+                    else
+                    {
+                        currentBullet->angle = g_Player.AngleFromPlayer(&currentBullet->pos) + (ZUN_PI / 2) + 
+                                               g_Rng.GetRandomF32InRange(ZUN_PI * 2);
+                    }
+
+                    sincosmul(&currentBullet->velocity, currentBullet->angle, currentBullet->speed);
+                    bulletsLeft--;
+                    if (bulletsLeft == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            bulletsLeft = 52;
+            for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
+            {
+                if (currentBullet->state == 0 || currentBullet->state == 5)
+                {
+                    continue;
+                }
+
+                if (currentBullet->sprites.spriteBullet.sprite != NULL &&
+                    currentBullet->sprites.spriteBullet.sprite->heightPx >= 30.0f &&
+                    currentBullet->spriteOffset != 5 && (g_Rng.GetRandomU16() % 4 == 0))
+                {
+                    currentBullet->spriteOffset = 5;
+                    g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, 
+                                                  currentBullet->sprites.spriteBullet.baseSpriteIndex + 
+                                                  currentBullet->spriteOffset);
+
+                    playerBulletOffset.x = (currentBullet->pos.x) - g_Player.positionCenter.x;
+                    playerBulletOffset.y = (currentBullet->pos.y) - g_Player.positionCenter.y;
+
+                    if(playerBulletOffset.VectorLength() > 128.0f)
+                    {
+                        currentBullet->angle = g_Rng.GetRandomF32ZeroToOne() * (ZUN_PI * 2);
+                    }
+                    else
+                    {
+                        currentBullet->angle = g_Player.AngleFromPlayer(&currentBullet->pos) + (ZUN_PI / 2) + 
+                                               g_Rng.GetRandomF32InRange(ZUN_PI * 2);
+                    }
+
+                    sincosmul(&currentBullet->velocity, currentBullet->angle, currentBullet->speed);
+                    bulletsLeft--;
+                    if (bulletsLeft == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    enemy->currentContext.var2 = 0;
 }
 }; // namespace th06

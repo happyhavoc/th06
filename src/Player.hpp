@@ -210,6 +210,7 @@ struct Player
 
     static void DarkenViewport(Player *);
 
+    f32 AngleFromPlayer(D3DXVECTOR3 *pos);
     f32 AngleToPlayer(D3DXVECTOR3 *pos);
     i32 CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *hitbox);
     i32 CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletSize);

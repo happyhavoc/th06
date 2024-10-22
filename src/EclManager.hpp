@@ -283,7 +283,12 @@ struct EclRawInstrBulletRankInfluenceArgs
 struct EclRawInstrExInstrArgs
 {
     u32 exInstrIndex;
-    i32 param;
+    union
+    {
+        i32 i32Param;
+        u8 u8Param;
+    };
+    
 };
 
 union EclRawInstrArgs {
