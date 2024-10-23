@@ -10,6 +10,7 @@
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
+#include <string.h>
 #include <Windows.h>
 #include <d3d8.h>
 #include <d3dx8math.h>

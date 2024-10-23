@@ -673,4 +673,88 @@ void Enemy::ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
     }
     enemy->currentContext.var2 = 0;
 }
+
+#pragma var_order(patternPosition, i, bulletProps, sinOut, bpPositionOffset, matrixOutSeed, matrixIn, \
+                  bulletAngle, cosOut, matrixInSeed, matrixOut)
+void Enemy::ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
+{
+    D3DXVECTOR3 bpPositionOffset;
+    f32 bulletAngle;
+    EnemyBulletShooter bulletProps;
+    f32 cosOut;
+    i32 i;
+    D3DXVECTOR3 matrixIn;
+    f32 matrixInSeed;
+    D3DXVECTOR3 matrixOut;
+    f32 matrixOutSeed;
+    i32 patternPosition;
+    f32 sinOut;
+
+    if (enemy->currentContext.var2 % 9 == 0)
+    {
+        memset(&bulletProps, 0, sizeof(bulletProps));
+
+        patternPosition = enemy->currentContext.var2 / 9;
+        bulletProps.sprite = 8;
+        bulletProps.aimMode = 0;
+        if (g_GameManager.difficulty <= NORMAL)
+        {
+            bulletProps.count1 = 1;
+        }
+        else
+        {
+            bulletProps.count1 = 3;
+        }
+        bulletProps.count2 = 1;
+        bulletProps.angle2 = ZUN_PI / 6;
+        bulletProps.unk_4a = 0;
+        bulletProps.flags = 0;
+
+        matrixOutSeed = 0.5f - patternPosition * 0.5f / 9.0f;
+        matrixOut = g_Player.positionCenter - enemy->position;
+        D3DXVec3Normalize(&matrixIn, &matrixOut);
+        if ((patternPosition & 1) != 0)
+        {
+            matrixInSeed = -256.0f;
+        }
+        else
+        {
+            matrixInSeed = 256.0f;
+        }
+        matrixIn *= matrixInSeed;
+        matrixOut *= matrixOutSeed;
+        bpPositionOffset = matrixOut + matrixIn;
+        matrixIn = -matrixIn;
+        
+        matrixOutSeed = ZUN_PI / 4;
+        cosOut = cosf(matrixOutSeed);
+        sinOut = sinf(matrixOutSeed);
+        matrixOut = matrixIn;
+        matrixIn.x = matrixOut.x * cosOut + matrixOut.y * sinOut;
+        matrixIn.y = -matrixOut.x * sinOut + matrixOut.y * cosOut;
+        matrixOutSeed = -ZUN_PI / 18;
+        cosOut = cosf(matrixOutSeed);
+        sinOut = sinf(matrixOutSeed);
+        bulletProps.angle1 = 0.0;
+        bulletAngle = -ZUN_PI / 4;
+
+        for (i = 0; i < 9; i++, bulletAngle += ZUN_PI / 18)
+        {
+            matrixOut = matrixIn;
+            matrixIn.x = matrixOut.x * cosOut + matrixOut.y * sinOut;
+            matrixIn.y = -matrixOut.x * sinOut + matrixOut.y * cosOut;
+
+            bulletProps.position = matrixIn + enemy->position + bpPositionOffset;
+            bulletProps.speed1 = 2.0;
+            if((patternPosition & 1) != 0 && g_GameManager.difficulty <= NORMAL)
+            {
+                bulletProps.angle1 = bulletAngle;
+            }
+            bulletProps.spriteOffset = 3;
+            g_BulletManager.SpawnBulletPattern(&bulletProps);
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_7, 0);
+    }
+    enemy->currentContext.var2++;
+}
 }; // namespace th06

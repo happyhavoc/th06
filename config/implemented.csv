@@ -116,6 +116,7 @@ th06::Enemy::ExInsShootAtRandomArea
 th06::Enemy::ExInsShootStarPattern
 th06::Enemy::ExInsPatchouliShottypeSetVars
 th06::Enemy::ExInsStage56Func4
+th06::Enemy::ExInsStage5Func5
 th06::GameErrorContext::Fatal
 th06::GameErrorContext::Log
 th06::GameErrorContext::Flush
