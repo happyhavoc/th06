@@ -66,6 +66,18 @@ f32 AddNormalizeAngle(f32 a, f32 b)
     return a;
 }
 
+#pragma var_order(sinOut, cosOut)
+void Rotate(D3DXVECTOR3 *outVector, D3DXVECTOR3 *point, f32 angle)
+{
+    f32 sinOut;
+    f32 cosOut;
+
+    sinOut = sinf(angle);
+    cosOut = cosf(angle);
+    outVector->x = cosOut * point->x + sinOut * point->y;
+    outVector->y = cosOut * point->y - sinOut * point->x;
+}
+
 void DebugPrint2(const char *fmt, ...)
 {
 #ifdef DEBUG

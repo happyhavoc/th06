@@ -686,7 +686,7 @@ void Enemy::ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
     D3DXVECTOR3 matrixIn;
     f32 matrixInSeed;
     D3DXVECTOR3 matrixOut;
-    f32 matrixOutSeed;
+    f32 matrixOutSeed; // Later reused to store angles for trig function calls
     i32 patternPosition;
     f32 sinOut;
 
@@ -756,5 +756,21 @@ void Enemy::ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
         g_SoundPlayer.PlaySoundByIdx(SOUND_7, 0);
     }
     enemy->currentContext.var2++;
+}
+
+void Enemy::ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
+{
+    i32 i;
+
+    for (i = 0; i < 8; i++)
+    {
+        if (enemy->lasers[i] != NULL && enemy->lasers[i]->inUse != 0)
+        {
+            enemy->bulletProps.position = D3DXVECTOR3(64.0, 0.0, 0.0);
+            utils::Rotate(&enemy->bulletProps.position, &enemy->bulletProps.position, enemy->lasers[i]->angle);
+            enemy->bulletProps.position += enemy->position;
+            g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
+        }
+    }
 }
 }; // namespace th06

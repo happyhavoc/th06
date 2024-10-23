@@ -117,6 +117,7 @@ th06::Enemy::ExInsShootStarPattern
 th06::Enemy::ExInsPatchouliShottypeSetVars
 th06::Enemy::ExInsStage56Func4
 th06::Enemy::ExInsStage5Func5
+th06::Enemy::ExInsStage4Func12
 th06::GameErrorContext::Fatal
 th06::GameErrorContext::Log
 th06::GameErrorContext::Flush
@@ -231,6 +232,7 @@ th06::GameWindow::InitD3dRendering
 th06::ScreenEffect::Clear
 th06::ScreenEffect::SetViewport
 th06::utils::AddNormalizeAngle
+th06::utils::Rotate
 th06::SoundPlayer::SoundPlayer
 th06::SoundPlayer::InitializeDSound
 th06::SoundPlayer::Release
