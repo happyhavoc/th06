@@ -452,14 +452,14 @@ void Enemy::ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
     effectIndex = instr->args.exInstr.i32Param;
 
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
-    for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
+    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
     {
         if (currentBullet->state == 0 || currentBullet->state == 5)
         {
             continue;
         }
         
-        currentBullet->spriteOffset = 0x000f;
+        currentBullet->spriteOffset = 15;
         g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, 
                                       currentBullet->sprites.spriteBullet.baseSpriteIndex + currentBullet->spriteOffset);
         switch (effectIndex)
@@ -591,7 +591,7 @@ void Enemy::ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
         currentBullet = g_BulletManager.bullets;
         if (g_GameManager.difficulty <= NORMAL)
         {
-            for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
+            for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
             {
                 if (currentBullet->state == 0 || currentBullet->state == 5)
                 {
@@ -632,7 +632,7 @@ void Enemy::ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
         else
         {
             bulletsLeft = 52;
-            for (i = 0; i < (i32) ARRAY_SIZE(g_BulletManager.bullets); i++, currentBullet++)
+            for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
             {
                 if (currentBullet->state == 0 || currentBullet->state == 5)
                 {
@@ -934,6 +934,44 @@ void Enemy::ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
             laserAngle += angleDiff - (ZUN_PI * 2);
         }
     }
+}
+
+#pragma var_order(bulletProps, changedBullets, i, currentBullet)
+void Enemy::ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr) {
+    EnemyBulletShooter bulletProps;
+    i32 changedBullets;
+    Bullet *currentBullet;
+    i32 i;
+
+    changedBullets = 0;
+    currentBullet = g_BulletManager.bullets;
+    memset(&bulletProps, 0, sizeof(bulletProps));
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
+    {
+        if (currentBullet->state == 0 || currentBullet->state == 5)
+        {
+            continue;
+        }
+
+        if (currentBullet->sprites.spriteBullet.sprite != NULL &&
+            currentBullet->sprites.spriteBullet.sprite->heightPx >= 30.0f)
+        {
+            bulletProps.position = currentBullet->pos;
+            bulletProps.sprite = 3;
+            bulletProps.spriteOffset = 1;
+            bulletProps.angle1 = g_Rng.GetRandomF32InRange(ZUN_PI * 2) - ZUN_PI;
+            bulletProps.speed1 = 0.0f;
+            bulletProps.count1 = 1;
+            bulletProps.count2 = 1;
+            bulletProps.flags = 8;
+            bulletProps.aimMode = 1;
+            g_BulletManager.SpawnBulletPattern(&bulletProps);
+            changedBullets++;
+        }
+    }
+
+    enemy->currentContext.var3 = changedBullets;
 }
 
 void Enemy::ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
