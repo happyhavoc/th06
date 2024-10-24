@@ -277,8 +277,8 @@ struct Enemy
     i32 lifeCallbackSub;
     i32 timerCallbackThreshold;
     i32 timerCallbackSub;
-    f32 unk_eb8;
-    ZunTimer unk_ebc;
+    f32 exInsFunc6Angle;
+    ZunTimer exInsFunc6Timer;
 };
 C_ASSERT(sizeof(Enemy) == 0xec8);
 }; // namespace th06

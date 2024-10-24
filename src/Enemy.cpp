@@ -610,7 +610,7 @@ void Enemy::ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
                     playerBulletOffset.x = (currentBullet->pos.x) - g_Player.positionCenter.x;
                     playerBulletOffset.y = (currentBullet->pos.y) - g_Player.positionCenter.y;
 
-                    if(playerBulletOffset.VectorLength() > 128.0f)
+                    if (playerBulletOffset.VectorLength() > 128.0f)
                     {
                         currentBullet->angle = g_Rng.GetRandomF32ZeroToOne() * ((ZUN_PI * 3) / 4) + (ZUN_PI / 4);
                     }
@@ -651,7 +651,7 @@ void Enemy::ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
                     playerBulletOffset.x = (currentBullet->pos.x) - g_Player.positionCenter.x;
                     playerBulletOffset.y = (currentBullet->pos.y) - g_Player.positionCenter.y;
 
-                    if(playerBulletOffset.VectorLength() > 128.0f)
+                    if (playerBulletOffset.VectorLength() > 128.0f)
                     {
                         currentBullet->angle = g_Rng.GetRandomF32ZeroToOne() * (ZUN_PI * 2);
                     }
@@ -746,7 +746,7 @@ void Enemy::ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
 
             bulletProps.position = matrixIn + enemy->position + bpPositionOffset;
             bulletProps.speed1 = 2.0;
-            if((patternPosition & 1) != 0 && g_GameManager.difficulty <= NORMAL)
+            if ((patternPosition & 1) != 0 && g_GameManager.difficulty <= NORMAL)
             {
                 bulletProps.angle1 = bulletAngle;
             }
@@ -756,6 +756,64 @@ void Enemy::ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
         g_SoundPlayer.PlaySoundByIdx(SOUND_7, 0);
     }
     enemy->currentContext.var2++;
+}
+
+#pragma var_order(effect, baseAngleModifier, distanceModifier, finalAngle, particlePos)
+void Enemy::ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr)
+{
+    i32 baseAngleModifier;
+    f32 distanceModifier;
+    Effect *effect;
+    f32 finalAngle;
+    D3DXVECTOR3 particlePos;
+
+    if (enemy->flags.unk15 != 0)
+    {
+        ResetEffectArray(enemy);
+        return;
+    }
+    enemy->exInsFunc6Angle += RADIANS(1.0f);
+    if (enemy->exInsFunc6Angle >= RADIANS(45.0f))
+    {
+        enemy->exInsFunc6Angle -= RADIANS(90.0f);
+    }
+
+    // Run every 8 frames for first 30 frames, then every 4 for next 30, then every 2 for next 60, then every frame
+    if (enemy->exInsFunc6Timer.HasTicked() &&
+       ( enemy->exInsFunc6Timer > 120 || 
+        (enemy->exInsFunc6Timer > 60 && enemy->exInsFunc6Timer.current % 2 == 0) ||
+        (enemy->exInsFunc6Timer > 30 && enemy->exInsFunc6Timer.current % 4 == 0) ||
+         enemy->exInsFunc6Timer.current % 8 == 0))
+    {
+        baseAngleModifier = enemy->exInsFunc6Timer.current % 16;
+        baseAngleModifier = g_Rng.GetRandomU16InRange(baseAngleModifier / 2) + baseAngleModifier / 2;
+        distanceModifier = (baseAngleModifier * 160.0f) / 16.0f + 32.0f;
+        finalAngle = enemy->exInsFunc6Angle - (baseAngleModifier * RADIANS(180.0f)) / 40.0f;
+        if (distanceModifier < RADIANS(-45.0f))
+        {
+            distanceModifier += RADIANS(90.0f);
+        }
+
+        particlePos = enemy->position;
+        particlePos.x += cosf(finalAngle) * distanceModifier;
+        particlePos.y += sinf(finalAngle) * distanceModifier;
+        effect = g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_19, &particlePos, 1, COLOR_DEEPBLUE);
+        effect->unk_11c.x = (g_Rng.GetRandomF32ZeroToOne() * 40.0f - 20.0f) / 60.0f;
+        effect->unk_11c.y = (8.0f * baseAngleModifier) / 60.0f - (4.0f / 15.0f);
+        effect->unk_11c.z = 0.0;
+        effect->unk_128 = -effect->unk_11c * invertf(120.0f);
+
+        particlePos = enemy->position;
+        particlePos.x -= cosf(finalAngle) * distanceModifier;
+        particlePos.y += sinf(finalAngle) * distanceModifier;
+        effect = g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_19, &particlePos, 1, COLOR_DEEPBLUE);
+        effect->unk_11c.x = (g_Rng.GetRandomF32ZeroToOne() * 40.0f - 20.0f) / 60.0f;
+        effect->unk_11c.y = (8.0f * baseAngleModifier) / 60.0f - (4.0f / 15.0f);
+        effect->unk_11c.z = 0.0;
+        effect->unk_128 = -effect->unk_11c * invertf(120.0f);
+    }
+ 
+    enemy->exInsFunc6Timer.Tick();
 }
 
 void Enemy::ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)

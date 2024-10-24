@@ -503,11 +503,6 @@ ZunResult BulletManager::DeletedCallback(BulletManager *arg)
     return ZUN_SUCCESS;
 }
 
-f32 __inline invertf(f32 x)
-{
-    return 1.f / x;
-}
-
 #pragma var_order(local_8, idx, local_10, local_14, local_20, curBullet, local_28, curLaser, local_38, res)
 ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 {
