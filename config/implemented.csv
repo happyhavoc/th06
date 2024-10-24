@@ -80,6 +80,7 @@ th06::Controller::GetInput
 th06::Controller::ResetKeyboard
 th06::Controller::ControllerCallback
 th06::Controller::EnumGameControllersCb
+th06::Controller::GetControllerState
 th06::EclManager::CallEclSub
 th06::EclManager::Load
 th06::EclManager::RunEcl

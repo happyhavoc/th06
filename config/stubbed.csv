@@ -57,7 +57,6 @@ th06::ReplayManager::StopRecording
 th06::SaveReplay
 th06::ValidateReplayData
 th06::ScreenEffect::DrawSquare
-th06::Controller::GetControllerState
 th06::Player::DrawBulletExplosions
 th06::Player::BombReimuBCalc
 th06::Player::BombMarisaBCalc
