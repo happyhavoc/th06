@@ -1061,6 +1061,42 @@ void Enemy::ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr)
     }
 }
 
+void Enemy::ExInsStage6XFunc10(Enemy *enemy, EclRawInstr *instr)
+{
+    if (enemy->life <= 0)
+    {
+        return;
+    }
+
+    ExInsStage6XFunc6(enemy, instr);
+    if (g_Player.bombInfo.isInUse != 0)
+    {
+        if (enemy->anmExLeft >= 0)
+        {
+            g_AnmManager->SetAndExecuteScriptIdx(&enemy->primaryVm, ANM_SCRIPT_ENEMY_END);
+            enemy->anmExLeft = -1;
+        }
+
+        enemy->flags.unk6 = 0;
+        enemy->exInsFunc10Timer.SetCurrent(60);
+    }
+    else
+    {
+        
+        if (enemy->exInsFunc10Timer > 0 &&
+           (enemy->exInsFunc10Timer.Decrement(1), enemy->exInsFunc10Timer == 0))
+        {
+            if (enemy->anmExLeft < 0)
+            {
+                g_AnmManager->SetAndExecuteScriptIdx(&enemy->primaryVm, ANM_OFFSET_ENEMY + 0xa0);
+                enemy->anmExLeft = 0xa1;
+            }
+            
+            enemy->flags.unk6 = 1;
+        }
+    }
+}
+
 void Enemy::ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
 {
     i32 i;

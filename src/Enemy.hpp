@@ -260,7 +260,7 @@ struct Enemy
     i8 itemDrop;
     u8 bossId;
     u8 unk_e41;
-    ZunTimer unk_e44;
+    ZunTimer exInsFunc10Timer;
     EnemyFlags flags;
     u8 anmExFlags;
     i16 anmExDefaults;
