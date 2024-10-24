@@ -285,6 +285,30 @@ void Enemy::MathDiv(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarI
     return;
 }
 
+#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+void Enemy::MathMod(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
+{
+    EclValueType outType;
+    i32 *outPtr;
+    i32 *lhsPtr;
+    i32 *rhsPtr;
+
+    outPtr = Enemy::GetVar(enemy, &outVarId, &outType);
+    if (outType == ECL_VALUE_TYPE_INT)
+    {
+        lhsPtr = Enemy::GetVar(enemy, lhsVarId, NULL);
+        rhsPtr = Enemy::GetVar(enemy, rhsVarId, NULL);
+        *outPtr = *lhsPtr % *rhsPtr;
+    }
+    else if (outType == ECL_VALUE_TYPE_FLOAT)
+    {
+        lhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)lhsVarId, NULL);
+        rhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)rhsVarId, NULL);
+        *(f32 *)outPtr = fmodf(*(f32 *)lhsPtr, *(f32 *)rhsPtr);
+    }
+    return;
+}
+
 void Enemy::Move()
 {
     if (!this->flags.unk4)

@@ -117,6 +117,7 @@ th06::Enemy::MathAdd
 th06::Enemy::MathSub
 th06::Enemy::MathMul
 th06::Enemy::MathDiv
+th06::Enemy::MathMod
 th06::Enemy::Move
 th06::Enemy::ClampPos
 th06::Enemy::HandleLifeCallback
