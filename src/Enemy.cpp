@@ -1010,7 +1010,8 @@ void Enemy::ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr)
                       (enemy->position.x - currentBullet->pos.x) +
                       (enemy->position.y - currentBullet->pos.y) *
                       (enemy->position.y - currentBullet->pos.y);
-            if (distance > 0.1f) {
+            if (distance > 0.1f)
+            {
                 distance = sqrtf(distance);
             }  
             else
@@ -1019,6 +1020,43 @@ void Enemy::ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr)
             }
 
             sincosmul(&currentBullet->ex4Acceleration, (distance * ZUN_PI) / 256.0f + randomAngleModifier, 0.01f);
+        }
+    }
+}
+
+#pragma var_order(unusedBulletProps, i, currentBullet, unusedRandomNumber)
+void Enemy::ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr)
+{
+    Bullet *currentBullet;
+    i32 i;
+    EnemyBulletShooter unusedBulletProps;
+    f32 unusedRandomNumber;
+
+    currentBullet = g_BulletManager.bullets;
+    memset(&unusedBulletProps, 0, sizeof(unusedBulletProps));
+    unusedRandomNumber = g_Rng.GetRandomF32InRange(ZUN_PI * 2) - ZUN_PI;
+    g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
+    {
+        if (currentBullet->state == 0 || currentBullet->state == 5)
+        {
+            continue;
+        }
+
+        if (currentBullet->sprites.spriteBullet.sprite != NULL &&
+            currentBullet->sprites.spriteBullet.sprite->heightPx < 30.0f &&
+            currentBullet->speed == 0.0f)
+        {
+            currentBullet->exFlags |= 0x10;
+            currentBullet->spriteOffset = 2;
+            g_AnmManager->SetActiveSprite(&currentBullet->sprites.spriteBullet, 
+                                          currentBullet->sprites.spriteBullet.baseSpriteIndex + currentBullet->spriteOffset);
+            currentBullet->speed = 0.01f;
+            currentBullet->timer.InitializeForPopup();
+            currentBullet->ex5Int0 = 120;
+
+            sincosmul(&currentBullet->ex4Acceleration, g_Rng.GetRandomF32InRange(ZUN_PI * 2) - ZUN_PI, 0.01f);
         }
     }
 }

@@ -121,6 +121,7 @@ th06::Enemy::ExInsStage6XFunc6
 th06::Enemy::ExInsStage6Func7
 th06::Enemy::ExInsStage6Func8
 th06::Enemy::ExInsStage6Func9
+th06::Enemy::ExInsStage6Func11
 th06::Enemy::ExInsStage4Func12
 th06::GameErrorContext::Fatal
 th06::GameErrorContext::Log
