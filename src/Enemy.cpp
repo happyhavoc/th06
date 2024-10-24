@@ -1112,4 +1112,29 @@ void Enemy::ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
         }
     }
 }
+
+#pragma var_order(i, bulletProps, basePatternAngle, numPatterns)
+void Enemy::ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr)
+{
+    f32 basePatternAngle;
+    EnemyBulletShooter bulletProps;
+    i32 i;
+    i32 numPatterns;
+
+    memcpy(&bulletProps, &enemy->bulletProps, sizeof(bulletProps));
+    numPatterns = instr->args.exInstr.i32Param;
+    basePatternAngle = enemy->currentContext.float2;
+    if (enemy->currentContext.var3 % 6 == 0)
+    {
+        for (i = 0; i < numPatterns; i++, basePatternAngle += (ZUN_PI * 2) / numPatterns)
+        {
+            sincosmul(&bulletProps.position, basePatternAngle, enemy->currentContext.float3);
+            bulletProps.position.x += 192.0f;
+            bulletProps.position.y += 224.0f;
+            bulletProps.angle1 = basePatternAngle + enemy->currentContext.float1;
+            g_BulletManager.SpawnBulletPattern(&bulletProps);
+        }
+    }
+    enemy->currentContext.var3++;
+}
 }; // namespace th06
