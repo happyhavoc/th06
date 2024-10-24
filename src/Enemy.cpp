@@ -816,6 +816,126 @@ void Enemy::ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr)
     enemy->exInsFunc6Timer.Tick();
 }
 
+#pragma var_order(laserProps, i, lengthMultiplier, attackType, innerLoopCount, angleDiff, outerLoopCount, \
+                  laserAngle, randomAngleModifier, positionVectors)
+void Enemy::ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
+{
+    f32 angleDiff;
+    i32 attackType;
+    i32 i;
+    i32 innerLoopCount;
+    f32 laserAngle;
+    EnemyLaserShooter laserProps;
+    f32 lengthMultiplier;
+    i32 outerLoopCount;
+    f32 randomAngleModifier;
+
+    memset(&laserProps, 0, sizeof(laserProps));
+
+    D3DXVECTOR3 positionVectors[8];
+
+    attackType = instr->args.exInstr.i32Param;
+    randomAngleModifier = g_Rng.GetRandomF32ZeroToOne() * (ZUN_PI * 2);
+    
+    for (outerLoopCount = 0; outerLoopCount < 2; outerLoopCount++)
+    {
+        if (outerLoopCount == 0)
+        {
+            laserAngle = -ZUN_PI + randomAngleModifier;
+            angleDiff = ZUN_PI / 4;
+        }
+        else
+        {
+            laserAngle = (7 * -ZUN_PI / 8) + randomAngleModifier;
+            angleDiff = -ZUN_PI / 4;
+        }
+
+        lengthMultiplier = 32.0f;
+        for (i = 0; i < 8; i++)
+        {
+            positionVectors[i] = enemy->position;
+            positionVectors[i].x += cosf(laserAngle) * lengthMultiplier;
+            positionVectors[i].y += sinf(laserAngle) * lengthMultiplier;
+            laserAngle += ZUN_PI / 4;
+        }
+
+        if (outerLoopCount == 0)
+        {
+            laserAngle = -ZUN_PI + randomAngleModifier;
+        }
+        else
+        {
+            laserAngle = (7 * -ZUN_PI / 8) + randomAngleModifier;
+        }
+
+        for (innerLoopCount = 0; innerLoopCount < 3; innerLoopCount++)
+        {
+            if (innerLoopCount < 2)
+            {
+                lengthMultiplier = 112.0f;
+            }
+            else
+            {
+                lengthMultiplier = 480.0f;
+            }
+            for (i = 0; i < 8; i++)
+            {
+                laserProps.position = positionVectors[i];
+                laserProps.sprite = 1;
+                if (attackType == 0)
+                {
+                    if (g_GameManager.difficulty <= NORMAL)
+                    {
+                        laserProps.spriteOffset = 2;
+                    }
+                    else
+                    {
+                        laserProps.spriteOffset = 8;
+                    }
+                    laserProps.angle = laserAngle;
+                    laserProps.speed = 0.0f;
+                    laserProps.startOffset = 0.0f;
+                    if (g_GameManager.difficulty <= NORMAL)
+                    {
+                        laserProps.endOffset = lengthMultiplier;
+                        laserProps.startLength = lengthMultiplier;
+                    }
+                    else
+                    {
+                        laserProps.endOffset = 440.0f;
+                        laserProps.startLength = 440.0f;
+                    }                    
+                    if (g_GameManager.difficulty <= NORMAL)
+                    {
+                        laserProps.width = 28.0f;
+                    }
+                    else
+                    {   laserProps.width = 20.0f;
+
+                    }
+                    laserProps.startTime = innerLoopCount * 16 + 60;
+                    laserProps.duration = 90 - innerLoopCount * 16;
+                    laserProps.stopTime = 16;
+                    laserProps.grazeDelay = 50;
+                    laserProps.grazeDistance = 16;
+                    laserProps.flags = 2;
+                    laserProps.type = 1;
+                    g_BulletManager.SpawnLaserPattern(&laserProps);
+                }
+                else
+                {
+                    enemy->bulletProps.position = laserProps.position;
+                    g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
+                }
+                positionVectors[i].x += cosf(laserAngle) * lengthMultiplier;
+                positionVectors[i].y += sinf(laserAngle) * lengthMultiplier;
+                laserAngle += ZUN_PI / 4;
+            }
+            laserAngle += angleDiff - (ZUN_PI * 2);
+        }
+    }
+}
+
 void Enemy::ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
 {
     i32 i;

@@ -447,7 +447,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 local_60 = &enemy->laserProps;
                 local_60->position = enemy->position + enemy->shootOffset;
                 local_60->sprite = local_64->sprite;
-                local_60->color = local_64->color;
+                local_60->spriteOffset = local_64->color;
                 local_60->angle = *Enemy::GetVarFloat(enemy, &local_64->angle, NULL);
                 local_60->speed = *Enemy::GetVarFloat(enemy, &local_64->speed, NULL);
                 local_60->startOffset = *Enemy::GetVarFloat(enemy, &local_64->startOffset, NULL);
