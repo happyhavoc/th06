@@ -328,6 +328,25 @@ void Enemy::MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2
     return;
 }
 
+void Enemy::MovePosTime(Enemy *enemy, EclRawInstr *instr)
+{
+    D3DXVECTOR3 newPos;
+    EclRawInstrAluArgs *alu = &instr->args.alu;
+
+    newPos.x = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
+    newPos.y = *Enemy::GetVarFloat(enemy, &alu->arg2.f32, NULL);
+    newPos.z = *Enemy::GetVarFloat(enemy, &alu->arg3.f32, NULL);
+
+    enemy->moveInterp = newPos - enemy->position;
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+}
+
 void Enemy::Move()
 {
     if (!this->flags.unk4)

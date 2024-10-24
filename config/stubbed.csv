@@ -32,7 +32,6 @@ th06::Gui::ShowBombNamePortrait
 th06::Gui::ShowFullPowerMode
 th06::Gui::ShowBonusScore
 th06::Gui::EndPlayerSpellcard
-th06::Enemy::MovePosTime
 th06::Enemy::MoveDirTime
 th06::Enemy::MoveTime
 th06::ItemManager::RemoveAllItems
