@@ -309,6 +309,25 @@ void Enemy::MathMod(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarI
     return;
 }
 
+#pragma var_order(y2Ptr, outPtr, x1Ptr, y1Ptr, outType, x2Ptr)
+void Enemy::MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2, f32 *x2)
+{
+    EclValueType outType;
+    f32 *outPtr;
+    f32 *y1Ptr, *x1Ptr, *x2Ptr, *y2Ptr;
+
+    outPtr = (f32 *)Enemy::GetVar(enemy, &outVarId, &outType);
+    if (outType == ECL_VALUE_TYPE_FLOAT)
+    {
+        y1Ptr = Enemy::GetVarFloat(enemy, x1, NULL);
+        x1Ptr = Enemy::GetVarFloat(enemy, y1, NULL);
+        y2Ptr = Enemy::GetVarFloat(enemy, y2, NULL);
+        x2Ptr = Enemy::GetVarFloat(enemy, x2, NULL);
+        *outPtr = atan2f(*x2Ptr - *x1Ptr, *y2Ptr - *y1Ptr);
+    }
+    return;
+}
+
 void Enemy::Move()
 {
     if (!this->flags.unk4)
