@@ -367,6 +367,26 @@ void Enemy::MovePosTime(Enemy *enemy, EclRawInstr *instr)
     enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
+void Enemy::MoveDirTime(Enemy *enemy, EclRawInstr *instr)
+{
+    EclRawInstrAluArgs *alu;
+    f32 angle;
+
+    alu = &instr->args.alu;
+    angle = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
+
+    enemy->moveInterp.x = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.y = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.z = 0.0f;
+
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+}
+
 void Enemy::Move()
 {
     if (!this->flags.unk4)

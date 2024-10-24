@@ -121,6 +121,7 @@ th06::Enemy::MathMod
 th06::Enemy::MathAtan2
 th06::Enemy::Move
 th06::Enemy::MoveTime
+th06::Enemy::MoveDirTime
 th06::Enemy::MovePosTime
 th06::Enemy::ClampPos
 th06::Enemy::HandleLifeCallback
