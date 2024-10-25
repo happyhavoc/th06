@@ -905,17 +905,6 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-void __inline fsincos_wrapper(f32 *out_sine, f32 *out_cosine, f32 angle)
-{
-    __asm {
-        fld [angle]
-        fsincos
-        mov eax, [out_cosine]
-        fstp [eax]
-        mov eax, [out_sine]
-        fstp [eax]
-    }
-}
 
 #pragma var_order(idx, sine, curLaser, laserOffset, cosine, curBullet1, curBullet2)
 ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)

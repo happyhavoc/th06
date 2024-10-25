@@ -1082,7 +1082,6 @@ void Enemy::ExInsStage6XFunc10(Enemy *enemy, EclRawInstr *instr)
     }
     else
     {
-        
         if (enemy->exInsFunc10Timer > 0 &&
            (enemy->exInsFunc10Timer.Decrement(1), enemy->exInsFunc10Timer == 0))
         {
@@ -1136,5 +1135,39 @@ void Enemy::ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr)
         }
     }
     enemy->currentContext.var3++;
+}
+
+#pragma var_order(bulletPosition, i, angleSin, currentLaser, angleCos, positionMultiplier)
+void Enemy::ExInsStageXFunc14(Enemy *enemy, EclRawInstr *instr)
+{
+    f32 angleCos;
+    f32 angleSin;
+    D3DXVECTOR3 bulletPosition;
+    Laser *currentLaser;
+    i32 i;
+    f32 positionMultiplier;
+
+    enemy->currentContext.var3 = 0;
+    for (i = 0; i < 8; i++)
+    {
+        if (enemy->lasers[i] != NULL && enemy->lasers[i]->inUse != 0)
+        {
+            currentLaser = enemy->lasers[i];
+            positionMultiplier = currentLaser->startOffset;
+            fsincos_wrapper(&angleSin, &angleCos, currentLaser->angle);
+
+            while (currentLaser->endOffset > positionMultiplier)
+            {
+                bulletPosition.x = angleCos * positionMultiplier + currentLaser->pos.x;
+                bulletPosition.y = angleSin * positionMultiplier + currentLaser->pos.y;
+                bulletPosition.z = 0.0f;
+                enemy->bulletProps.position = bulletPosition;
+                g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
+                positionMultiplier += 48.0f;
+            }
+
+            enemy->currentContext.var3++;
+        }
+    }
 }
 }; // namespace th06

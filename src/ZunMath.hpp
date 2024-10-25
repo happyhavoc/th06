@@ -61,6 +61,18 @@ C_ASSERT(sizeof(ZunVec3) == 0xC);
         __asm fstp out_sine }                                            \
     }
 
+void __inline fsincos_wrapper(f32 *out_sine, f32 *out_cosine, f32 angle)
+{
+    __asm {
+        fld [angle]
+        fsincos
+        mov eax, [out_cosine]
+        fstp [eax]
+        mov eax, [out_sine]
+        fstp [eax]
+    }
+}
+
 void __inline sincosmul(D3DXVECTOR3 *out_vel, f32 input, f32 multiplier)
 {
     __asm {
