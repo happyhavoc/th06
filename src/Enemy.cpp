@@ -12,6 +12,9 @@
 
 namespace th06
 {
+
+#define MAX_BOSS_TIME 7200
+
 struct PatchouliShottypeVars {
     struct {
         i32 var1;
@@ -1232,5 +1235,31 @@ void Enemy::ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr) {
 
     ExInsStage6XFunc10(enemy, instr);
     enemy->currentContext.var3 = totalIterations;
+}
+
+#pragma var_order(remainingLife, rangeModifier)
+void Enemy::ExInsStageXFunc16(Enemy *enemy, EclRawInstr *instr)
+{
+    f32 rangeModifier;
+    i32 remainingLife;
+
+    remainingLife = enemy->life;
+    if (enemy->bossTimer >= MAX_BOSS_TIME)
+    {
+        remainingLife = 0;
+    }
+
+    if (instr->args.exInstr.i32Param == 0)
+    {
+        enemy->currentContext.float3 = 2.0f - (remainingLife * 1.0f) / 6000.0f;
+        enemy->currentContext.var5 = (remainingLife * 240) / 6000 + 40;
+    }
+    else
+    {
+        rangeModifier = 320.0f - (remainingLife * 160.0f) / 6000.0f;
+        enemy->currentContext.float2 = g_Rng.GetRandomF32InRange(rangeModifier) + (192.0f - rangeModifier / 2.0f);
+        rangeModifier = 128.0f - (remainingLife * 64.0f) / 6000.0f;
+        enemy->currentContext.float3 = g_Rng.GetRandomF32InRange(rangeModifier) + (96.0f - rangeModifier / 2.0f);
+    }
 }
 }; // namespace th06
