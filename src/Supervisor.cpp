@@ -1043,6 +1043,28 @@ void Controller::ResetKeyboard(void)
 }
 
 #pragma optimize("s", on)
+i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
+{
+    MidiOutput *globalMidiController;
+
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            globalMidiController = g_Supervisor.midiOutput;
+
+            globalMidiController->StopPlayback();
+            globalMidiController->ParseFile(midiFileIdx);
+            globalMidiController->Play();
+        }
+        return FALSE;
+    }
+
+    return TRUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Supervisor::PlayAudio(char *path)
 {
     char wavName[256];
