@@ -22,25 +22,16 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 64, g_SpellcardScore) = {
     700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000};
 DIFFABLE_STATIC(EclManager, g_EclManager);
 typedef void (*ExInsn)(Enemy *, EclRawInstr *);
-DIFFABLE_STATIC_ARRAY_ASSIGN(ExInsn, 17, g_EclExInsn) = {
-    Enemy::ExInsCirnoRainbowBallJank,
-    Enemy::ExInsShootAtRandomArea,
-    Enemy::ExInsShootStarPattern,
-    Enemy::ExInsPatchouliShottypeSetVars,
-    Enemy::ExInsStage56Func4,
-    Enemy::ExInsStage5Func5,
-    Enemy::ExInsStage6XFunc6,
-    Enemy::ExInsStage6Func7,
-    Enemy::ExInsStage6Func8,
-    Enemy::ExInsStage6Func9,
-    Enemy::ExInsStage6XFunc10,
-    Enemy::ExInsStage6Func11,
-    Enemy::ExInsStage4Func12,
-    Enemy::ExInsStageXFunc13,
-    Enemy::ExInsStageXFunc14,
-    Enemy::ExInsStageXFunc15,
-    Enemy::ExInsStageXFunc16
-};
+DIFFABLE_STATIC_ARRAY_ASSIGN(ExInsn, 17,
+                             g_EclExInsn) = {Enemy::ExInsCirnoRainbowBallJank, Enemy::ExInsShootAtRandomArea,
+                                             Enemy::ExInsShootStarPattern,     Enemy::ExInsPatchouliShottypeSetVars,
+                                             Enemy::ExInsStage56Func4,         Enemy::ExInsStage5Func5,
+                                             Enemy::ExInsStage6XFunc6,         Enemy::ExInsStage6Func7,
+                                             Enemy::ExInsStage6Func8,          Enemy::ExInsStage6Func9,
+                                             Enemy::ExInsStage6XFunc10,        Enemy::ExInsStage6Func11,
+                                             Enemy::ExInsStage4Func12,         Enemy::ExInsStageXFunc13,
+                                             Enemy::ExInsStageXFunc14,         Enemy::ExInsStageXFunc15,
+                                             Enemy::ExInsStageXFunc16};
 
 ZunResult EclManager::Load(char *eclPath)
 {

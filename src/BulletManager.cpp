@@ -905,7 +905,6 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-
 #pragma var_order(idx, sine, curLaser, laserOffset, cosine, curBullet1, curBullet2)
 ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
 {
