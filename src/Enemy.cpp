@@ -1170,4 +1170,67 @@ void Enemy::ExInsStageXFunc14(Enemy *enemy, EclRawInstr *instr)
         }
     }
 }
+
+#pragma var_order(unusedBulletProps, totalIterations, i, innerBullet, enemyAngle, distance, currentBullet, bulletsAngle, j)
+void Enemy::ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr) {
+    f32 bulletsAngle;
+    Bullet *currentBullet;
+    f32 distance;
+    f32 enemyAngle;
+    i32 i;
+    Bullet *innerBullet;
+    i32 j;
+    i32 totalIterations;
+    EnemyBulletShooter unusedBulletProps;
+
+    totalIterations = 0;
+    currentBullet = g_BulletManager.bullets;
+    memset(&unusedBulletProps, 0, sizeof(unusedBulletProps));
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
+    {
+        if (currentBullet->state == 0 || currentBullet->state == 5)
+        {
+            continue;
+        }
+
+        if (currentBullet->sprites.spriteBullet.sprite != NULL &&
+            currentBullet->sprites.spriteBullet.sprite->heightPx >= 30.0f)
+        {
+            totalIterations++;
+            enemyAngle = atan2f(currentBullet->pos.y - enemy->position.y, currentBullet->pos.x - enemy->position.x);
+
+            for (j = 0, innerBullet = g_BulletManager.bullets; j < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); j++, innerBullet++)
+            {
+                if (innerBullet->state == 0 || innerBullet->state == 5)
+                {
+                    continue;
+                }
+
+                if (innerBullet->sprites.spriteBullet.sprite != NULL &&
+                    innerBullet->sprites.spriteBullet.sprite->heightPx < 30.0f &&
+                    innerBullet->speed == 0.0f &&
+                    (distance = sqrtf((innerBullet->pos.x - currentBullet->pos.x) *
+                                      (innerBullet->pos.x - currentBullet->pos.x) +
+                                      (innerBullet->pos.y - currentBullet->pos.y) *
+                                      (innerBullet->pos.y - currentBullet->pos.y))) < 64.0f)
+                {
+                    innerBullet->exFlags |= 0x10;
+                    innerBullet->speed = 0.01f;
+                    innerBullet->timer.InitializeForPopup();
+                    innerBullet->ex5Int0 = 120;
+                    bulletsAngle = atan2f(innerBullet->pos.y - enemy->position.y, innerBullet->pos.x - enemy->position.x);
+                    innerBullet->angle = (bulletsAngle - enemyAngle) * 2.2f + enemyAngle;
+                    sincosmul(&innerBullet->ex4Acceleration, innerBullet->angle, 0.01f);
+                    innerBullet->spriteOffset += 1;
+                    g_AnmManager->SetActiveSprite(&innerBullet->sprites.spriteBullet, 
+                                                  innerBullet->sprites.spriteBullet.baseSpriteIndex + innerBullet->spriteOffset);
+                }
+            }
+        }
+    }
+
+    ExInsStage6XFunc10(enemy, instr);
+    enemy->currentContext.var3 = totalIterations;
+}
 }; // namespace th06
