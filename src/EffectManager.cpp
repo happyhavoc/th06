@@ -263,4 +263,11 @@ i32 EffectManager::EffectCallbackRandomSplashBig(Effect *effect)
     return 1;
 }
 
+i32 EffectManager::EffectCallbackStill(Effect *effect)
+{
+    effect->pos1 += effect->unk_11c * g_Supervisor.effectiveFramerateMultiplier;
+    effect->unk_11c += effect->unk_128 * g_Supervisor.effectiveFramerateMultiplier;
+    return 1;
+}
+
 }; // namespace th06
