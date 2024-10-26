@@ -91,6 +91,7 @@ th06::EffectManager::CutChain
 th06::EffectManager::OnUpdate
 th06::EffectManager::OnDraw
 th06::EffectManager::SpawnParticles
+th06::EffectManager::EffectCallbackRandomSplash
 th06::EnemyManager::Initialize
 th06::EnemyManager::RegisterChain
 th06::EnemyManager::CutChain

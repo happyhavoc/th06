@@ -4,6 +4,7 @@
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "GameManager.hpp"
+#include "Rng.hpp"
 #include "ZunResult.hpp"
 #include "utils.hpp"
 
@@ -228,4 +229,22 @@ Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count
     }
     return idx >= ARRAY_SIZE_SIGNED(this->effects) ? &this->dummyEffect : effect;
 }
+
+i32 EffectManager::EffectCallbackRandomSplash(Effect *effect)
+{
+
+    if (effect->timer == 0 && effect->timer.HasTicked())
+    {
+        effect->unk_11c.x = (g_Rng.GetRandomF32ZeroToOne() * 256.0f - 128.0f) / 12.0f;
+        effect->unk_11c.y = (g_Rng.GetRandomF32ZeroToOne() * 256.0f - 128.0f) / 12.0f;
+        effect->unk_11c.z = 0.0f;
+
+        effect->unk_128 = -effect->unk_11c / 19.0f;
+    }
+
+    effect->pos1 += effect->unk_11c * g_Supervisor.effectiveFramerateMultiplier;
+    effect->unk_11c += effect->unk_128 * g_Supervisor.effectiveFramerateMultiplier;
+    return 1;
+}
+
 }; // namespace th06
