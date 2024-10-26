@@ -94,6 +94,7 @@ th06::EffectManager::SpawnParticles
 th06::EffectManager::EffectCallbackRandomSplash
 th06::EffectManager::EffectCallbackRandomSplashBig
 th06::EffectManager::EffectCallbackStill
+th06::EffectManager::EffectUpdateCallback4
 th06::EnemyManager::Initialize
 th06::EnemyManager::RegisterChain
 th06::EnemyManager::CutChain

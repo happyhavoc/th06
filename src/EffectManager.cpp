@@ -270,4 +270,61 @@ i32 EffectManager::EffectCallbackStill(Effect *effect)
     return 1;
 }
 
+#pragma var_order(posOffset, verticalAngle, local_54, horizontalAngle, normalizedPos, alpha)
+i32 EffectManager::EffectUpdateCallback4(Effect *effect)
+{
+    D3DXVECTOR3 posOffset;
+    f32 verticalAngle;
+
+    D3DXMATRIX local_54;
+    f32 horizontalAngle;
+    D3DXVECTOR3 normalizedPos;
+    f32 alpha;
+
+    D3DXVec3Normalize(&normalizedPos, &effect->pos2);
+
+    verticalAngle = sinf(effect->angleRelated);
+    horizontalAngle = cosf(effect->angleRelated);
+
+    effect->quaternion.x = normalizedPos.x * verticalAngle;
+    effect->quaternion.y = normalizedPos.y * verticalAngle;
+    effect->quaternion.z = normalizedPos.z * verticalAngle;
+    effect->quaternion.w = horizontalAngle;
+    D3DXMatrixRotationQuaternion(&local_54, &effect->quaternion);
+
+    posOffset.x = normalizedPos.y * 1.0f - normalizedPos.z * 0.0f;
+    posOffset.y = normalizedPos.z * 0.0f - normalizedPos.x * 1.0f;
+    posOffset.z = normalizedPos.x * 0.0f - normalizedPos.y * 0.0f;
+
+    if (D3DXVec3LengthSq(&posOffset) < 0)
+    {
+        normalizedPos = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+    }
+    else
+    {
+        D3DXVec3Normalize(&posOffset, &posOffset);
+    }
+
+    posOffset *= effect->unk_15c;
+    D3DXVec3TransformCoord(&posOffset, &posOffset, &local_54);
+    posOffset.z *= 6.0f;
+
+    effect->pos1 = posOffset + effect->position;
+    if (effect->unk_17a)
+    {
+        effect->unk_17b++;
+        if (effect->unk_17b >= 16)
+        {
+            return 0;
+        }
+
+        alpha = 1.0f - effect->unk_17b / 16.0f;
+        effect->vm.color = COLOR_SET_ALPHA3(effect->vm.color, (i32)(alpha * 255.0f));
+
+        effect->vm.scaleY = 2.0f - alpha;
+        effect->vm.scaleX = effect->vm.scaleY;
+    }
+    return 1;
+}
+
 }; // namespace th06
