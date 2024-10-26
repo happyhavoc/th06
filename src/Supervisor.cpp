@@ -1112,6 +1112,32 @@ ZunResult Supervisor::PlayAudio(char *path)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+ZunResult Supervisor::StopAudio()
+{
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            g_Supervisor.midiOutput->StopPlayback();
+        }
+    }
+    else
+    {
+        if (g_Supervisor.cfg.musicMode == WAV)
+        {
+            g_SoundPlayer.StopBGM();
+        }
+        else
+        {
+            return ZUN_ERROR;
+        }
+    }
+
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 {
     i32 unused1;

@@ -24,7 +24,6 @@ th06::ResultScreen::ParsePscr
 th06::ResultScreen::ParseCatk
 th06::ResultScreen::GetHighScore
 th06::Supervisor::DeletedCallback
-th06::Supervisor::StopAudio
 th06::Supervisor::SetupMidiPlayback
 th06::Supervisor::ReadMidiFile
 th06::Ending::RegisterChain
