@@ -327,4 +327,23 @@ i32 EffectManager::EffectUpdateCallback4(Effect *effect)
     return 1;
 }
 
+i32 EffectManager::EffectCallbackAttract(Effect *effect)
+{
+    f32 angle;
+
+    if (effect->timer == 0 && effect->timer.HasTicked())
+    {
+        effect->position = effect->pos1;
+
+        angle = g_Rng.GetRandomF32ZeroToOne() * ZUN_2PI - ZUN_PI;
+        effect->pos2.x = cosf(angle);
+        effect->pos2.y = sinf(angle);
+        effect->pos2.z = 0.0;
+    }
+    angle = 256.0f - effect->timer.AsFramesFloat() * 256.0f / 60.0f;
+
+    effect->pos1 = angle * effect->pos2 + effect->position;
+    return 1;
+}
+
 }; // namespace th06

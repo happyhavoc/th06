@@ -1,5 +1,4 @@
 th06::EclManager::Unload
-th06::EffectManager::EffectCallbackAttract
 th06::EffectManager::EffectCallbackAttractSlow
 th06::AsciiManager::DrawPopupsWithHwVertexProcessing
 th06::AsciiManager::DrawPopupsWithoutHwVertexProcessing
