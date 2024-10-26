@@ -1110,4 +1110,48 @@ ZunResult Supervisor::PlayAudio(char *path)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
+{
+    i32 unused1;
+    i32 unused2;
+    i32 unused3;
+
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            g_Supervisor.midiOutput->SetFadeOut(1000.0f * fadeOutSeconds);
+        }
+    }
+    else
+    {
+        if (g_Supervisor.cfg.musicMode == WAV)
+        {
+            if (this->effectiveFramerateMultiplier == 0.0f)
+            {
+                g_SoundPlayer.FadeOut(fadeOutSeconds);
+            }
+            else
+            {
+                if (this->effectiveFramerateMultiplier > 1.0f)
+                {
+                    g_SoundPlayer.FadeOut(fadeOutSeconds);                    
+                }
+                else
+                {
+                    g_SoundPlayer.FadeOut(fadeOutSeconds / this->effectiveFramerateMultiplier);
+                }
+            }
+        }
+        else
+        {
+            return ZUN_ERROR;
+        }
+    }
+
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
 }; // namespace th06

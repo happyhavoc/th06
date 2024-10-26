@@ -17,6 +17,7 @@ th06::MidiOutput::ReleaseFileData
 th06::MidiOutput::Play
 th06::MidiOutput::ParseFile
 th06::MidiOutput::LoadFile
+th06::MidiOutput::SetFadeOut
 th06::ResultScreen::OpenScore
 th06::ResultScreen::ParseClrd
 th06::ResultScreen::ParsePscr
@@ -26,7 +27,6 @@ th06::Supervisor::DeletedCallback
 th06::Supervisor::StopAudio
 th06::Supervisor::SetupMidiPlayback
 th06::Supervisor::ReadMidiFile
-th06::Supervisor::FadeOutMusic
 th06::Ending::RegisterChain
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::RegisterChain

@@ -62,6 +62,8 @@ struct MidiOutput : MidiTimer
     ZunResult LoadFile(char *midiPath);
     ZunResult Play();
 
+    void SetFadeOut(u32 ms);
+
     MIDIHDR *midiHeaders[32];
     i32 midiHeadersCursor;
     u8 *midiFileData[32];
