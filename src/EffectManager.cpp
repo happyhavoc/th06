@@ -144,7 +144,7 @@ ChainCallbackResult EffectManager::OnUpdate(EffectManager *mgr)
             continue;
         }
         mgr->activeEffects++;
-        if (effect->updateCallback != NULL && (effect->updateCallback)(effect) != 1)
+        if (effect->updateCallback != NULL && (effect->updateCallback)(effect) != EFFECT_CALLBACK_RESULT_DONE)
         {
             effect->inUseFlag = 0;
         }
@@ -244,7 +244,7 @@ i32 EffectManager::EffectCallbackRandomSplash(Effect *effect)
 
     effect->pos1 += effect->unk_11c * g_Supervisor.effectiveFramerateMultiplier;
     effect->unk_11c += effect->unk_128 * g_Supervisor.effectiveFramerateMultiplier;
-    return 1;
+    return EFFECT_CALLBACK_RESULT_DONE;
 }
 
 i32 EffectManager::EffectCallbackRandomSplashBig(Effect *effect)
@@ -260,14 +260,14 @@ i32 EffectManager::EffectCallbackRandomSplashBig(Effect *effect)
 
     effect->pos1 += effect->unk_11c * g_Supervisor.effectiveFramerateMultiplier;
     effect->unk_11c += effect->unk_128 * g_Supervisor.effectiveFramerateMultiplier;
-    return 1;
+    return EFFECT_CALLBACK_RESULT_DONE;
 }
 
 i32 EffectManager::EffectCallbackStill(Effect *effect)
 {
     effect->pos1 += effect->unk_11c * g_Supervisor.effectiveFramerateMultiplier;
     effect->unk_11c += effect->unk_128 * g_Supervisor.effectiveFramerateMultiplier;
-    return 1;
+    return EFFECT_CALLBACK_RESULT_DONE;
 }
 
 #pragma var_order(posOffset, verticalAngle, local_54, horizontalAngle, normalizedPos, alpha)
@@ -315,7 +315,7 @@ i32 EffectManager::EffectUpdateCallback4(Effect *effect)
         effect->unk_17b++;
         if (effect->unk_17b >= 16)
         {
-            return 0;
+            return EFFECT_CALLBACK_RESULT_STOP;
         }
 
         alpha = 1.0f - effect->unk_17b / 16.0f;
@@ -324,7 +324,7 @@ i32 EffectManager::EffectUpdateCallback4(Effect *effect)
         effect->vm.scaleY = 2.0f - alpha;
         effect->vm.scaleX = effect->vm.scaleY;
     }
-    return 1;
+    return EFFECT_CALLBACK_RESULT_DONE;
 }
 
 i32 EffectManager::EffectCallbackAttract(Effect *effect)
@@ -343,7 +343,7 @@ i32 EffectManager::EffectCallbackAttract(Effect *effect)
     angle = 256.0f - effect->timer.AsFramesFloat() * 256.0f / 60.0f;
 
     effect->pos1 = angle * effect->pos2 + effect->position;
-    return 1;
+    return EFFECT_CALLBACK_RESULT_DONE;
 }
 
 i32 EffectManager::EffectCallbackAttractSlow(Effect *effect)
@@ -362,7 +362,7 @@ i32 EffectManager::EffectCallbackAttractSlow(Effect *effect)
     angle = 256.0f - effect->timer.AsFramesFloat() * 256.0f / 240.0f;
 
     effect->pos1 = angle * effect->pos2 + effect->position;
-    return 1;
+    return EFFECT_CALLBACK_RESULT_DONE;
 }
 
 }; // namespace th06

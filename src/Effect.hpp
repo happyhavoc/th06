@@ -6,6 +6,12 @@
 
 namespace th06
 {
+enum EffectCallbackResult
+{
+    EFFECT_CALLBACK_RESULT_STOP = 0,
+    EFFECT_CALLBACK_RESULT_DONE = 1
+};
+
 struct Effect;
 
 typedef i32 (*EffectUpdateCallback)(Effect *);
