@@ -178,6 +178,25 @@ MidiOutput::MidiOutput()
     this->midiHeadersCursor = 0;
 }
 
+#pragma var_order(trackIndex, data, tracks)
+void MidiOutput::ClearTracks()
+{
+    i32 trackIndex;
+    u8 *data;
+    MidiTrack *tracks;
+
+    for (trackIndex = 0; trackIndex < this->numTracks; trackIndex++)
+    {
+        data = this->tracks[trackIndex].trackData;
+        free(data);
+    }
+
+    tracks = this->tracks;
+    free(tracks);
+    this->tracks = NULL;
+    this->numTracks = 0;
+}
+
 MidiOutput::~MidiOutput()
 {
     this->StopPlayback();

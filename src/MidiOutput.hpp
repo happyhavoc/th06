@@ -74,7 +74,7 @@ struct MidiOutput : MidiTimer
     MIDIHDR *midiHeaders[32];
     i32 midiHeadersCursor;
     u8 *midiFileData[32];
-    u32 numTracks;
+    i32 numTracks;
     u32 format;
     u32 division;
     u32 unk120;
