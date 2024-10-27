@@ -17,6 +17,8 @@ struct Ending
     static ZunResult AddedCallback(Ending *ending);
     static ZunResult DeletedCallback(Ending *ending);
 
+    ZunResult ParseEndFile();
+
     ZunResult LoadEnding(char *endFilePath);
     void FadingEffect();
 

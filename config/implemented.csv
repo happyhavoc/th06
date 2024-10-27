@@ -90,6 +90,7 @@ th06::EclManager::RunEcl
 th06::Ending::RegisterChain
 th06::Ending::AddedCallback
 th06::Ending::OnDraw
+th06::Ending::OnUpdate
 th06::Ending::LoadEnding
 th06::EffectManager::Reset
 th06::EffectManager::AddedCallback

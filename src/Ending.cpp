@@ -174,4 +174,33 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
+#pragma var_order(framesPressed, idx)
+ChainCallbackResult Ending::OnUpdate(Ending *ending)
+{
+    i32 idx;
+    i32 framesPressed;
+
+    for (framesPressed = 0;;)
+    {
+        if (ending->ParseEndFile() != ZUN_SUCCESS)
+        {
+            return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
+        }
+        for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
+        {
+            if (ending->sprites[idx].anmFileIndex != 0)
+            {
+                g_AnmManager->ExecuteScript(&ending->sprites[idx]);
+            }
+        }
+        if (ending->unk_111a != 0 && IS_PRESSED(TH_BUTTON_SKIP) && framesPressed < 4)
+        {
+            framesPressed++;
+            continue;
+        }
+        break;
+    };
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 }; // namespace th06
