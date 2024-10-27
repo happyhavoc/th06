@@ -1,3 +1,8 @@
+#include "inttypes.hpp"
+#include <Windows.h>
+#include <mmreg.h>
+#include <mmsystem.h>
+
 #include "MidiOutput.hpp"
 
 namespace th06
@@ -11,6 +16,20 @@ MidiTimer::MidiTimer()
 void MidiTimer::OnTimerElapsed()
 {
 }
+
+i32 MidiTimer::StopTimer()
+{
+    if (this->timerId != 0)
+    {
+        timeKillEvent(this->timerId);
+    }
+
+    timeEndPeriod(this->timeCaps.wPeriodMin);
+    this->timerId = 0;
+
+    return 1;
+}
+
 MidiTimer::~MidiTimer()
 {
     this->StopTimer();
