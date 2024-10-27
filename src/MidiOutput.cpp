@@ -67,6 +67,20 @@ MidiDevice::MidiDevice()
     this->deviceId = 0;
 }
 
+ZunResult MidiDevice::Close()
+{
+    if (this->handle == 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    midiOutReset(this->handle);
+    midiOutClose(this->handle);
+    this->handle = 0;
+
+    return ZUN_SUCCESS;
+}
+
 MidiDevice::~MidiDevice()
 {
     this->Close();
