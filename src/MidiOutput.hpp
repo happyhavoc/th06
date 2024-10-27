@@ -72,6 +72,7 @@ struct MidiOutput : MidiTimer
     ZunResult Play();
 
     u32 SetFadeOut(u32 ms);
+    static u16 Ntohs(u16 val);
 
     MIDIHDR *midiHeaders[32];
     i32 midiHeadersCursor;

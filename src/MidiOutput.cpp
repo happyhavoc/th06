@@ -304,6 +304,16 @@ ZunResult MidiOutput::LoadFile(char *midiPath)
     return ZUN_SUCCESS;
 }
 
+u16 MidiOutput::Ntohs(u16 val)
+{
+    u8 tmp[2];
+
+    tmp[0] = ((u8 *)&val)[1];
+    tmp[1] = ((u8 *)&val)[0];
+
+    return *(const u16 *)(&tmp);
+}
+
 MidiOutput::~MidiOutput()
 {
     this->StopPlayback();
