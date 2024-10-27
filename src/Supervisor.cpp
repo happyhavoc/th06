@@ -1052,12 +1052,11 @@ ZunBool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
         {
             g_Supervisor.midiOutput->ReadFileData(midiFileIdx, path);
         }
+
         return FALSE;
     }
-    else
-    {
-        return TRUE;
-    }
+
+    return TRUE;
 }
 #pragma optimize("", on)
 
@@ -1071,11 +1070,11 @@ i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
         if (g_Supervisor.midiOutput != NULL)
         {
             globalMidiController = g_Supervisor.midiOutput;
-
             globalMidiController->StopPlayback();
             globalMidiController->ParseFile(midiFileIdx);
             globalMidiController->Play();
         }
+
         return FALSE;
     }
 
@@ -1173,6 +1172,7 @@ ZunResult Supervisor::SetupMidiPlayback(char *path)
     {
         return ZUN_ERROR;
     }
+
 success:
     return ZUN_SUCCESS;
 }
