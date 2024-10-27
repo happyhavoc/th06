@@ -198,6 +198,43 @@ void MidiOutput::ClearTracks()
     this->numTracks = 0;
 }
 
+ZunResult MidiOutput::UnprepareHeader(LPMIDIHDR pmh)
+{
+    if (pmh == NULL)
+    {
+        utils::DebugPrint2("error :\n");
+    }
+
+    if (this->midiOutDev.handle == 0)
+    {
+        utils::DebugPrint2("error :\n");
+    }
+
+    i32 i;
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->midiHeaders); i++)
+    {
+        if (this->midiHeaders[i] == pmh)
+        {
+            this->midiHeaders[i] = NULL;
+            goto success;
+        }
+    }
+
+    return ZUN_ERROR;
+
+success:
+    MMRESULT res = midiOutUnprepareHeader(this->midiOutDev.handle, pmh, sizeof(*pmh));
+    if (res != MMSYSERR_NOERROR)
+    {
+        utils::DebugPrint2("error :\n");
+    }
+
+    void *lpData = pmh->lpData;
+    free(lpData);
+    free(pmh);
+    return ZUN_SUCCESS;
+}
+
 ZunResult MidiOutput::StopPlayback()
 {
     if (this->tracks == NULL)
