@@ -168,14 +168,16 @@ MidiOutput::MidiOutput()
     this->unk2dc = 0;
     this->unk2e0 = 0;
 
-    for (int i = 0; i < sizeof(this->midiFileData) / sizeof(this->midiFileData[0]); i++)
+    for (int i = 0; i < ARRAY_SIZE_SIGNED(this->midiFileData); i++)
     {
-        this->midiFileData[i] = 0;
+        this->midiFileData[i] = NULL;
     }
-    for (int i = 0; i < sizeof(this->midiHeaders) / sizeof(this->midiHeaders[0]); i++)
+
+    for (int i = 0; i < ARRAY_SIZE_SIGNED(this->midiHeaders); i++)
     {
-        this->midiHeaders[i] = 0;
+        this->midiHeaders[i] = NULL;
     }
+
     this->midiHeadersCursor = 0;
 }
 
