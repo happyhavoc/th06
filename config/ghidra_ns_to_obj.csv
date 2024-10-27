@@ -5,6 +5,7 @@ BulletManager,th06::BulletManager
 Chain,th06::Chain,th06::ChainElem
 EclManager,th06::EclManager
 EffectManager,th06::EffectManager
+Ending,th06::Ending
 Enemy,th06::Enemy
 EnemyManager,th06::EnemyManager
 FileAbstraction,th06::FileAbstraction

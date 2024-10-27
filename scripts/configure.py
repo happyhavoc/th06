@@ -97,6 +97,7 @@ def configure(build_type):
             "BulletManager",
             "Chain",
             "EclManager",
+            "Ending",
             "EnemyManager",
             "Enemy",
             "FileSystem",

@@ -75,6 +75,14 @@
             "reverse_fn_order": false
         },
         {
+            "name": "Ending",
+
+            "target_path": "build/objdiff/orig/Ending.obj",
+            "base_path": "build/objdiff/reimpl/Ending.obj",
+
+            "reverse_fn_order": false
+        },
+        {
             "name": "Enemy",
 
             "target_path": "build/objdiff/orig/Enemy.obj",
