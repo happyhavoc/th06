@@ -130,6 +130,23 @@ ZunBool MidiDevice::SendShortMsg(u8 midiStatus, u8 firstByte, u8 secondByte)
     }
 }
 
+ZunBool MidiDevice::SendLongMsg(LPMIDIHDR pmh)
+{
+    if (this->handle == 0)
+    {
+        return false;
+    }
+    else
+    {
+        if (midiOutPrepareHeader(this->handle, pmh, sizeof(*pmh)) != MMSYSERR_NOERROR)
+        {
+            return true;
+        }
+
+        return midiOutLongMsg(this->handle, pmh, sizeof(*pmh)) != MMSYSERR_NOERROR;
+    }
+}
+
 MidiDevice::~MidiDevice()
 {
     this->Close();
