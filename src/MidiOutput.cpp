@@ -102,6 +102,34 @@ ZunBool MidiDevice::OpenDevice(u32 uDeviceId)
            MMSYSERR_NOERROR;
 }
 
+union MidiShortMsg {
+    struct
+    {
+        u8 midiStatus;
+        i8 firstByte;
+        i8 secondByte;
+        i8 unused;
+    } msg;
+    u32 dwMsg;
+};
+
+ZunBool MidiDevice::SendShortMsg(u8 midiStatus, u8 firstByte, u8 secondByte)
+{
+    MidiShortMsg pkt;
+
+    if (this->handle == 0)
+    {
+        return false;
+    }
+    else
+    {
+        pkt.msg.midiStatus = midiStatus;
+        pkt.msg.firstByte = firstByte;
+        pkt.msg.secondByte = secondByte;
+        return midiOutShortMsg(this->handle, pkt.dwMsg) != MMSYSERR_NOERROR;
+    }
+}
+
 MidiDevice::~MidiDevice()
 {
     this->Close();

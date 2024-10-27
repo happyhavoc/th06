@@ -44,6 +44,7 @@ struct MidiDevice
 
     ZunResult Close();
     ZunBool OpenDevice(u32 uDeviceId);
+    ZunBool SendShortMsg(u8 midiStatus, u8 firstByte, u8 secondByte);
 
     HMIDIOUT handle;
     u32 deviceId;
