@@ -7,6 +7,7 @@ MidiTimer::MidiTimer()
     timeGetDevCaps(&this->timeCaps, sizeof(TIMECAPS));
     this->timerId = 0;
 }
+
 void MidiTimer::OnTimerElapsed()
 {
 }
@@ -21,6 +22,7 @@ MidiDevice::MidiDevice()
     this->handle = NULL;
     this->deviceId = 0;
 }
+
 MidiDevice::~MidiDevice()
 {
     this->Close();
@@ -61,4 +63,5 @@ MidiOutput::~MidiOutput()
         this->ReleaseFileData(i);
     }
 }
+
 }; // namespace th06
