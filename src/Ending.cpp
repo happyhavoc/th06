@@ -3,6 +3,8 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "FileSystem.hpp"
+#include "GameErrorContext.hpp"
 #include "GameManager.hpp"
 #include "Player.hpp"
 #include "Supervisor.hpp"
@@ -128,6 +130,31 @@ ZunResult Ending::AddedCallback(Ending *ending)
         }
     }
     return ZUN_SUCCESS;
+}
+
+ZunResult Ending::LoadEnding(char *endFilePath)
+{
+    char *endFileDat;
+
+    endFileDat = this->endFileData;
+    this->endFileData = (char *)FileSystem::OpenPath(endFilePath, false);
+    if (this->endFileData == NULL)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ENDING_END_FILE_CORRUPTED);
+        return ZUN_ERROR;
+    }
+    else
+    {
+        this->endFileDataPtr = this->endFileData;
+        this->line2Delay = 8;
+        this->timer2.InitializeForPopup();
+        this->timer1.InitializeForPopup();
+        if (endFileDat != NULL)
+        {
+            free(endFileDat);
+        }
+        return ZUN_SUCCESS;
+    }
 }
 
 }; // namespace th06
