@@ -239,6 +239,7 @@ th06::MidiDevice::SendLongMsg
 th06::MidiDevice::~MidiDevice
 th06::MidiOutput::MidiOutput
 th06::MidiOutput::ClearTracks
+th06::MidiOutput::LoadFile
 th06::MidiOutput::UnprepareHeader
 th06::MidiOutput::ReadFileData
 th06::MidiOutput::ReleaseFileData

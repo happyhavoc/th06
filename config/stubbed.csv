@@ -5,7 +5,6 @@ th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::Play
 th06::MidiOutput::ParseFile
-th06::MidiOutput::LoadFile
 th06::MidiOutput::SetFadeOut
 th06::ResultScreen::OpenScore
 th06::ResultScreen::ParseClrd

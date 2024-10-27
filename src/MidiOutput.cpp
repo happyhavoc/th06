@@ -291,6 +291,19 @@ void MidiOutput::ReleaseFileData(u32 idx)
     this->midiFileData[idx] = NULL;
 }
 
+ZunResult MidiOutput::LoadFile(char *midiPath)
+{
+    if (this->ReadFileData(0x1f, midiPath) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+
+    this->ParseFile(0x1f);
+    this->ReleaseFileData(0x1f);
+
+    return ZUN_SUCCESS;
+}
+
 MidiOutput::~MidiOutput()
 {
     this->StopPlayback();
