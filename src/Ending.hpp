@@ -18,10 +18,11 @@ struct Ending
     static ZunResult DeletedCallback(Ending *ending);
 
     ZunResult LoadEnding(char *endFilePath);
+    void FadingEffect();
 
     ChainElem *calcChain;
     ChainElem *drawChain;
-    ZunTimer anmTimer4;
+    D3DXVECTOR3 unk_8;
     AnmVm sprites[16];
     char *endFileData;
     i32 unk_111a;

@@ -159,6 +159,7 @@ struct AnmManager
     ZunResult LoadSurface(i32 surfaceIdx, char *path);
     void ReleaseSurface(i32 surfaceIdx);
     void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
+    void DrawEndingRect(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLeft, i32 rectTop, i32 width, i32 height);
 
     void TranslateRotation(VertexTex1Xyzrwh *param_1, float x, float y, float sine, float cosine, float xOffset,
                            float yOffset);

@@ -9,6 +9,7 @@
 #include "Player.hpp"
 #include "Supervisor.hpp"
 #include "i18n.hpp"
+#include "utils.hpp"
 
 namespace th06
 {
@@ -155,6 +156,22 @@ ZunResult Ending::LoadEnding(char *endFilePath)
         }
         return ZUN_SUCCESS;
     }
+}
+
+ChainCallbackResult Ending::OnDraw(Ending *ending)
+{
+    i32 idx;
+
+    g_AnmManager->DrawEndingRect(0, 0, 0, ending->unk_8.x, ending->unk_8.y, 640, 480);
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
+    {
+        if (ending->sprites[idx].anmFileIndex != 0)
+        {
+            g_AnmManager->DrawNoRotation(&ending->sprites[idx]);
+        }
+    }
+    ending->FadingEffect();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
 }; // namespace th06
