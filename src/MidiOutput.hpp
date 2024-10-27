@@ -53,9 +53,9 @@ struct MidiOutput : MidiTimer
     void OnTimerElapsed();
 
     ZunResult UnprepareHeader(LPMIDIHDR param_1);
-
     ZunResult StopPlayback();
     void ClearTracks();
+    ZunResult ReadFileData(u32 idx, char *path);
     void ReleaseFileData(u32 idx);
 
     void ParseFile(i32 idx);

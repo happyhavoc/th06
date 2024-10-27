@@ -13,6 +13,7 @@ th06::MidiOutput::ClearTracks
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::StopPlayback
 th06::MidiOutput::UnprepareHeader
+th06::MidiOutput::ReadFileData
 th06::MidiOutput::ReleaseFileData
 th06::MidiOutput::Play
 th06::MidiOutput::ParseFile
@@ -25,7 +26,6 @@ th06::ResultScreen::ParseCatk
 th06::ResultScreen::GetHighScore
 th06::Supervisor::DeletedCallback
 th06::Supervisor::SetupMidiPlayback
-th06::Supervisor::ReadMidiFile
 th06::Ending::RegisterChain
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::RegisterChain

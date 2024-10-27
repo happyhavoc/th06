@@ -1043,6 +1043,25 @@ void Controller::ResetKeyboard(void)
 }
 
 #pragma optimize("s", on)
+ZunBool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
+{
+    // Return conventions seem opposite of normal? But they're never used anyway
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            g_Supervisor.midiOutput->ReadFileData(midiFileIdx, path);
+        }
+        return FALSE;
+    }
+    else
+    {
+        return TRUE;
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
 {
     MidiOutput *globalMidiController;
