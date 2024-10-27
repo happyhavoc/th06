@@ -3,8 +3,10 @@
 #include <mmreg.h>
 #include <mmsystem.h>
 
+#include "FileSystem.hpp"
 #include "MidiOutput.hpp"
 #include "Supervisor.hpp"
+#include "i18n.hpp"
 #include "utils.hpp"
 
 namespace th06
@@ -258,6 +260,27 @@ ZunResult MidiOutput::StopPlayback()
 
         return ZUN_SUCCESS;
     }
+}
+
+ZunResult MidiOutput::ReadFileData(u32 idx, char *path)
+{
+    if (g_Supervisor.cfg.musicMode != MIDI)
+    {
+        return ZUN_SUCCESS;
+    }
+
+    this->StopPlayback();
+    this->ReleaseFileData(idx);
+
+    this->midiFileData[idx] = FileSystem::OpenPath(path, false);
+
+    if (this->midiFileData[idx] == (byte *)0x0)
+    {
+        g_GameErrorContext.Log(&g_GameErrorContext, TH_ERR_MIDI_FAILED_TO_READ_FILE, path);
+        return ZUN_ERROR;
+    }
+
+    return ZUN_SUCCESS;
 }
 
 void MidiOutput::ReleaseFileData(u32 idx)
