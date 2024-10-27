@@ -1157,6 +1157,28 @@ ZunResult Supervisor::StopAudio()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+ZunResult Supervisor::SetupMidiPlayback(char *path)
+{
+    // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
+    // Standard short circuiting boolean operators and nested conditionals don't seem to work, at least
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        goto success;
+    }
+    else if (g_Supervisor.cfg.musicMode == WAV) 
+    {
+        goto success;
+    }
+    else
+    {
+        return ZUN_ERROR;
+    }
+success:
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 {
     i32 unused1;
