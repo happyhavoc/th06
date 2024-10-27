@@ -2,7 +2,6 @@ th06::EclManager::Unload
 th06::AsciiManager::DrawPopupsWithHwVertexProcessing
 th06::AsciiManager::DrawPopupsWithoutHwVertexProcessing
 th06::MidiDevice::Close
-th06::MidiTimer::DefaultTimerCallback
 th06::MidiOutput::ClearTracks
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::StopPlayback
