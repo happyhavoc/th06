@@ -15,7 +15,8 @@ i32 FileAbstraction::Open(char *filename, char *mode)
 
     this->Close();
 
-    for (char *curMode = mode; *curMode != '\0'; curMode += 1)
+	char *curMode;
+    for (curMode = mode; *curMode != '\0'; curMode += 1)
     {
         if (*curMode == 'r')
         {
