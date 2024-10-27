@@ -260,6 +260,14 @@ ZunResult MidiOutput::StopPlayback()
     }
 }
 
+void MidiOutput::ReleaseFileData(u32 idx)
+{
+    u8 *data = this->midiFileData[idx];
+    free(data);
+
+    this->midiFileData[idx] = NULL;
+}
+
 MidiOutput::~MidiOutput()
 {
     this->StopPlayback();
