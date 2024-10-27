@@ -5,6 +5,7 @@
 
 #include "MidiOutput.hpp"
 #include "Supervisor.hpp"
+#include "utils.hpp"
 
 namespace th06
 {
@@ -195,6 +196,29 @@ void MidiOutput::ClearTracks()
     free(tracks);
     this->tracks = NULL;
     this->numTracks = 0;
+}
+
+ZunResult MidiOutput::StopPlayback()
+{
+    if (this->tracks == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    else
+    {
+        for (i32 i = 0; i < ARRAY_SIZE_SIGNED(this->midiHeaders); i++)
+        {
+            if (this->midiHeaders[this->midiHeadersCursor] != NULL)
+            {
+                this->UnprepareHeader(this->midiHeaders[this->midiHeadersCursor]);
+            }
+        }
+
+        this->StopTimer();
+        this->midiOutDev.Close();
+
+        return ZUN_SUCCESS;
+    }
 }
 
 MidiOutput::~MidiOutput()

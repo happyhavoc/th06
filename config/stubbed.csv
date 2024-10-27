@@ -3,7 +3,6 @@ th06::AsciiManager::DrawPopupsWithHwVertexProcessing
 th06::AsciiManager::DrawPopupsWithoutHwVertexProcessing
 th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
-th06::MidiOutput::StopPlayback
 th06::MidiOutput::UnprepareHeader
 th06::MidiOutput::ReadFileData
 th06::MidiOutput::ReleaseFileData
