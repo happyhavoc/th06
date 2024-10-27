@@ -17,6 +17,8 @@ struct Ending
     static ZunResult AddedCallback(Ending *ending);
     static ZunResult DeletedCallback(Ending *ending);
 
+    ZunResult LoadEnding(char *endFilePath);
+
     ChainElem *calcChain;
     ChainElem *drawChain;
     ZunTimer anmTimer4;

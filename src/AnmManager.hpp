@@ -130,6 +130,14 @@ struct AnmManager
     {
         this->currentZWriteDisable = zwriteDisable;
     }
+    void SetCurrentTexture(IDirect3DTexture8 *texture)
+    {
+        this->currentTexture = texture;
+    }
+    void SetCurrentSprite(AnmLoadedSprite *sprite)
+    {
+        this->currentSprite = sprite;
+    }
 
     i32 ExecuteScript(AnmVm *vm);
     ZunResult Draw(AnmVm *vm);

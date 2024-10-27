@@ -85,6 +85,7 @@ struct GameConfiguration
 #define MD_PBG3_INDEX 1
 #define ST_PBG3_INDEX 2
 #define CM_PBG3_INDEX 4
+#define ED_PBG3_INDEX 5
 
 typedef char Pbg3ArchiveName[32];
 
@@ -154,7 +155,7 @@ struct Supervisor
 
     i32 unk194;
     i32 unk198;
-    i32 unk19c;
+    ZunBool isInEnding;
 
     i32 vsyncEnabled;
     i32 lastFrameTime;
