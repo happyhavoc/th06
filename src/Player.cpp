@@ -951,9 +951,10 @@ ZunResult Player::HandlePlayerInputs()
 #pragma var_order(bulletIdx, bullets)
 void Player::DrawBullets(Player *p)
 {
-    int bulletIdx;
-    PlayerBullet *bullets = p->bullets;
+    i32 bulletIdx;
+    PlayerBullet *bullets;
 
+    bullets = p->bullets;
     for (bulletIdx = 0; bulletIdx < ARRAY_SIZE_SIGNED(p->bullets); bulletIdx++, bullets++)
     {
         if (bullets->bulletState != BULLET_STATE_FIRED)
@@ -964,6 +965,28 @@ void Player::DrawBullets(Player *p)
         {
             bullets->sprite.rotation.z = ZUN_PI / 2 - utils::AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
         }
+        g_AnmManager->Draw2(&bullets->sprite);
+    }
+}
+
+#pragma var_order(bulletIdx, bullets)
+void Player::DrawBulletExplosions(Player *p)
+{
+    i32 bulletIdx;
+    PlayerBullet *bullets;
+
+    bullets = p->bullets;
+    for (bulletIdx = 0; bulletIdx < ARRAY_SIZE_SIGNED(p->bullets); bulletIdx++, bullets++)
+    {
+        if (bullets->bulletState != BULLET_STATE_COLLIDED)
+        {
+            continue;
+        }
+        if (bullets->sprite.autoRotate)
+        {
+            bullets->sprite.rotation.z = ZUN_PI / 2 - utils::AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
+        }
+        bullets->sprite.pos.z = 0.4f;
         g_AnmManager->Draw2(&bullets->sprite);
     }
 }
@@ -1577,6 +1600,36 @@ void th06::Player::BombMarisaADraw(Player *player)
         g_AnmManager->Draw(bombSprite);
         bombSprite++;
     }
+}
+
+#pragma var_order(local8, viewport, darkeningTimeLeft)
+void Player::DarkenViewport(Player *player)
+{
+    ZunRect viewport;
+    f32 darkeningTimeLeft;
+    i32 darknessLevel; // Controls alpha level of black rectangle drawn over view
+
+    viewport.left = 32.0f;
+    viewport.top = 16.0f;
+    viewport.right = 416.0f;
+    viewport.bottom = 464.0f;
+
+    if (player->bombInfo.timer < 60)
+    {
+        darkeningTimeLeft = (player->bombInfo.timer.AsFramesFloat() * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32) darkeningTimeLeft;
+    }
+    else if (player->bombInfo.timer >= player->bombInfo.duration + -60)
+    {
+        darkeningTimeLeft = ((player->bombInfo.duration - player->bombInfo.timer.AsFramesFloat()) * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32) darkeningTimeLeft;
+    }
+    else
+    {
+        darknessLevel = 176;
+    }
+
+    ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
 }
 
 }; // namespace th06

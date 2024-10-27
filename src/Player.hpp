@@ -118,7 +118,7 @@ C_ASSERT(sizeof(PlayerBullet) == 0x158);
 struct PlayerBombInfo
 {
     u32 isInUse;
-    u32 duration;
+    i32 duration;
     ZunTimer timer;
     void (*calc)(Player *p);
     void (*draw)(Player *p);
@@ -205,10 +205,10 @@ struct Player
     static ZunResult UpdateFireBulletsTimer(Player *);
 
     static void SpawnBullets(Player *, u32 timer);
-    static void DrawBullets(Player *);
-    static void DrawBulletExplosions(Player *);
+    static void DrawBullets(Player *p);
+    static void DrawBulletExplosions(Player *p);
 
-    static void DarkenViewport(Player *);
+    static void DarkenViewport(Player *player);
 
     f32 AngleToPlayer(D3DXVECTOR3 *pos);
     i32 CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *hitbox);

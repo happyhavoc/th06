@@ -250,6 +250,7 @@ th06::Player::Die
 th06::Player::HandlePlayerInputs
 th06::Player::AngleToPlayer
 th06::Player::DrawBullets
+th06::Player::DrawBulletExplosions
 th06::Player::SpawnBullets
 th06::Player::StartFireBulletTimer
 th06::Player::FireSingleBullet
@@ -258,6 +259,7 @@ th06::Player::BombReimuACalc
 th06::Player::BombReimuADraw
 th06::Player::BombMarisaACalc
 th06::Player::BombMarisaADraw
+th06::Player::DarkenViewport
 th06::Player::FireBulletReimuB
 th06::Player::FireBulletMarisaA
 th06::Player::FireBulletMarisaB
