@@ -348,7 +348,7 @@ LPDIRECTSOUNDBUFFER CSound::GetFreeBuffer()
     if (m_apDSBuffer == NULL)
         return FALSE;
 
-	DWORD i;
+    DWORD i;
     for (i = 0; i < m_dwNumBuffers; i++)
     {
         if (m_apDSBuffer[i])
