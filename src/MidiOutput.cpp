@@ -4,6 +4,7 @@
 #include <mmsystem.h>
 
 #include "MidiOutput.hpp"
+#include "Supervisor.hpp"
 
 namespace th06
 {
@@ -79,6 +80,26 @@ ZunResult MidiDevice::Close()
     this->handle = 0;
 
     return ZUN_SUCCESS;
+}
+
+ZunBool MidiDevice::OpenDevice(u32 uDeviceId)
+{
+    if (this->handle != 0)
+    {
+        if (this->deviceId != uDeviceId)
+        {
+            this->Close();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    this->deviceId = uDeviceId;
+
+    return midiOutOpen(&this->handle, uDeviceId, (DWORD_PTR)g_Supervisor.hwndGameWindow, NULL, CALLBACK_WINDOW) !=
+           MMSYSERR_NOERROR;
 }
 
 MidiDevice::~MidiDevice()

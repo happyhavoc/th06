@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ZunBool.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 #include <Windows.h>
@@ -42,6 +43,7 @@ struct MidiDevice
     ~MidiDevice();
 
     ZunResult Close();
+    ZunBool OpenDevice(u32 uDeviceId);
 
     HMIDIOUT handle;
     u32 deviceId;

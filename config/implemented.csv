@@ -198,6 +198,7 @@ th06::MainMenu::ColorMenuItem
 th06::MainMenu::LoadReplayMenu
 th06::MidiDevice::MidiDevice
 th06::MidiDevice::Close
+th06::MidiDevice::OpenDevice
 th06::MidiDevice::~MidiDevice
 th06::MidiOutput::MidiOutput
 th06::MidiOutput::~MidiOutput
