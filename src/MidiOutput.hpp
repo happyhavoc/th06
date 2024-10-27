@@ -14,6 +14,9 @@ struct MidiTimer
     virtual void OnTimerElapsed();
 
     i32 StopTimer();
+    u32 StartTimer(u32 delay, LPTIMECALLBACK cb, DWORD_PTR data);
+
+    static void DefaultTimerCallback(u32 uTimerID, u32 uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2);
 
     u32 timerId;
     TIMECAPS timeCaps;

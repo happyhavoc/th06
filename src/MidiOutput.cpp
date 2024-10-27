@@ -30,6 +30,24 @@ i32 MidiTimer::StopTimer()
     return 1;
 }
 
+u32 MidiTimer::StartTimer(u32 delay, LPTIMECALLBACK cb, DWORD_PTR data)
+{
+    this->StopTimer();
+    timeBeginPeriod(this->timeCaps.wPeriodMin);
+
+    if (cb != NULL)
+    {
+        this->timerId = timeSetEvent(delay, this->timeCaps.wPeriodMin, cb, data, TIME_PERIODIC);
+    }
+    else
+    {
+        this->timerId = timeSetEvent(delay, this->timeCaps.wPeriodMin, (LPTIMECALLBACK)MidiTimer::DefaultTimerCallback,
+                                     (DWORD_PTR)this, TIME_PERIODIC);
+    }
+
+    return this->timerId;
+}
+
 MidiTimer::~MidiTimer()
 {
     this->StopTimer();
