@@ -1165,7 +1165,7 @@ ZunResult Supervisor::SetupMidiPlayback(char *path)
     {
         goto success;
     }
-    else if (g_Supervisor.cfg.musicMode == WAV) 
+    else if (g_Supervisor.cfg.musicMode == WAV)
     {
         goto success;
     }
@@ -1204,7 +1204,7 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
             {
                 if (this->effectiveFramerateMultiplier > 1.0f)
                 {
-                    g_SoundPlayer.FadeOut(fadeOutSeconds);                    
+                    g_SoundPlayer.FadeOut(fadeOutSeconds);
                 }
                 else
                 {

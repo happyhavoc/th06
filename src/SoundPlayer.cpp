@@ -346,7 +346,7 @@ WAVEFORMATEX *SoundPlayer::GetWavFormatData(u8 *soundData, char *formatString, i
     return NULL;
 }
 
-#pragma var_order(sFDCursor, dsBuffer, wavDataPtr, formatSize, audioPtr2, audioSize2, audioSize1, audioPtr1,       \
+#pragma var_order(sFDCursor, dsBuffer, wavDataPtr, formatSize, audioPtr2, audioSize2, audioSize1, audioPtr1,           \
                   soundFileData, wavData, fileSize)
 ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
 {
