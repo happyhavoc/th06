@@ -247,4 +247,20 @@ i32 EffectManager::EffectCallbackRandomSplash(Effect *effect)
     return 1;
 }
 
+i32 EffectManager::EffectCallbackRandomSplashBig(Effect *effect)
+{
+    if (effect->timer == 0 && effect->timer.HasTicked())
+    {
+        effect->unk_11c.x = (g_Rng.GetRandomF32ZeroToOne() * 256.0f - 128.0f) * 4.0f / 33.0f;
+        effect->unk_11c.y = (g_Rng.GetRandomF32ZeroToOne() * 256.0f - 128.0f) * 4.0f / 33.0f;
+        effect->unk_11c.z = 0.0f;
+
+        effect->unk_128 = -effect->unk_11c / 20.0f;
+    }
+
+    effect->pos1 += effect->unk_11c * g_Supervisor.effectiveFramerateMultiplier;
+    effect->unk_11c += effect->unk_128 * g_Supervisor.effectiveFramerateMultiplier;
+    return 1;
+}
+
 }; // namespace th06
