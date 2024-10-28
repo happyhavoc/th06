@@ -9,6 +9,15 @@
 namespace th06
 {
 
+enum EndingFadeType
+{
+    ENDING_FADE_TYPE_NO_FADE,
+    ENDING_FADE_TYPE_FADE_IN_BLACK,
+    ENDING_FADE_TYPE_FADE_OUT_BLACK,
+    ENDING_FADE_TYPE_FADE_IN_WHITE,
+    ENDING_FADE_TYPE_FADE_OUT_WHITE,
+};
+
 #define END_READ_OPCODE '@'
 enum EndOpcode
 {
@@ -64,10 +73,10 @@ struct Ending
     i32 unk_1150;
     i32 timesFileParsed;
     ZunColor textColor;
-    ZunColor unk_115c;
+    ZunColor endingFadeColor;
     i32 timeFading;
     i32 fadeFrames;
-    i32 fadeType;
+    EndingFadeType fadeType;
     char *endFileDataPtr;
 };
 C_ASSERT(sizeof(Ending) == 0x1170);

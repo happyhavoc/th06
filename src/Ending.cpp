@@ -7,6 +7,7 @@
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"
 #include "Player.hpp"
+#include "ScreenEffect.hpp"
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
@@ -185,6 +186,83 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
     }
     ending->FadingEffect();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(endingRect, color)
+void Ending::FadingEffect()
+{
+    ZunRect endingRect;
+    ZunColor color;
+
+    endingRect.left = 0.0;
+    endingRect.top = 0.0;
+    endingRect.right = 640.0;
+    endingRect.bottom = 480.0;
+
+    switch (this->fadeType)
+    {
+    case ENDING_FADE_TYPE_FADE_IN_BLACK:
+        if (this->timeFading >= this->fadeFrames)
+        {
+            this->fadeType = ENDING_FADE_TYPE_NO_FADE;
+            this->endingFadeColor = 0x00000000;
+            break;
+        }
+        else
+        {
+            color = 255 - this->timeFading * 255 / this->fadeFrames;
+            this->endingFadeColor = COLOR_SET_ALPHA(COLOR_BLACK, color);
+            this->timeFading++;
+            break;
+        }
+    case ENDING_FADE_TYPE_FADE_OUT_BLACK:
+        if (this->timeFading >= this->fadeFrames)
+        {
+            this->endingFadeColor = COLOR_BLACK;
+            break;
+        }
+        else
+        {
+            color = this->timeFading * 255 / this->fadeFrames;
+            this->endingFadeColor = COLOR_SET_ALPHA(COLOR_BLACK, color);
+            this->timeFading++;
+            break;
+        }
+    case ENDING_FADE_TYPE_FADE_IN_WHITE:
+        if (this->timeFading >= this->fadeFrames)
+        {
+            this->fadeType = ENDING_FADE_TYPE_NO_FADE;
+            this->endingFadeColor = 0x00000000;
+            break;
+        }
+        else
+        {
+            color = 255 - this->timeFading * 255 / this->fadeFrames;
+            this->endingFadeColor = COLOR_SET_ALPHA(COLOR_WHITE, color);
+            this->timeFading++;
+            break;
+        }
+    case ENDING_FADE_TYPE_FADE_OUT_WHITE:
+        if (this->timeFading >= this->fadeFrames)
+        {
+            this->endingFadeColor = COLOR_WHITE;
+            break;
+        }
+        else
+        {
+            color = this->timeFading * 255 / this->fadeFrames;
+            this->endingFadeColor = COLOR_SET_ALPHA(COLOR_WHITE, color);
+            this->timeFading++;
+            break;
+        }
+    case ENDING_FADE_TYPE_NO_FADE:
+        this->endingFadeColor = 0x00000000;
+        break;
+    }
+    if ((this->endingFadeColor & COLOR_BLACK) != 0)
+    {
+        ScreenEffect::DrawSquare(&endingRect, this->endingFadeColor);
+    }
 }
 
 #pragma var_order(framesPressed, idx)
@@ -433,7 +511,7 @@ ZunResult Ending::ParseEndFile()
             case END_OPCODE_FADE_IN_BLACK:
                 /* fadeinblack(frames). UNUSED */
                 this->endFileDataPtr++;
-                this->fadeType = 1;
+                this->fadeType = ENDING_FADE_TYPE_FADE_IN_BLACK;
                 this->timeFading = 0;
                 this->fadeFrames = this->ReadEndFileParameter(); // fadeInBlackFrames
                 break;
@@ -441,7 +519,7 @@ ZunResult Ending::ParseEndFile()
             case END_OPCODE_FADE_OUT_BLACK:
                 /* fadeoutblack(frames). UNUSED */
                 this->endFileDataPtr++;
-                this->fadeType = 2;
+                this->fadeType = ENDING_FADE_TYPE_FADE_OUT_BLACK;
                 this->timeFading = 0;
                 this->fadeFrames = this->ReadEndFileParameter(); // fadeOutBlackFrames
                 break;
@@ -449,7 +527,7 @@ ZunResult Ending::ParseEndFile()
             case END_OPCODE_FADE_IN:
                 /* fadein(frames) */
                 this->endFileDataPtr++;
-                this->fadeType = 3;
+                this->fadeType = ENDING_FADE_TYPE_FADE_IN_WHITE;
                 this->timeFading = 0;
                 this->fadeFrames = this->ReadEndFileParameter(); // fadeInFrames
                 break;
@@ -457,7 +535,7 @@ ZunResult Ending::ParseEndFile()
             case END_OPCODE_FADE_OUT:
                 /* fadeout(frames) */
                 this->endFileDataPtr++;
-                this->fadeType = 4;
+                this->fadeType = ENDING_FADE_TYPE_FADE_OUT_WHITE;
                 this->timeFading = 0;
                 this->fadeFrames = this->ReadEndFileParameter(); // fadeOutFrames
                 break;
