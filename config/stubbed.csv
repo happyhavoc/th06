@@ -26,7 +26,6 @@ th06::MainMenu::SelectRelated
 th06::Gui::FreeMsgFile
 th06::Gui::ShowSpellcardBonus
 th06::Gui::ShowBombNamePortrait
-th06::Gui::ShowBonusScore
 th06::Gui::EndPlayerSpellcard
 th06::ItemManager::RemoveAllItems
 th06::ReplayManager::RegisterChain
