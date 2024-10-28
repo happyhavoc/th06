@@ -53,13 +53,13 @@ f32 AddNormalizeAngle(f32 a, f32 b)
     a += b;
     while (a > ZUN_PI)
     {
-        a -= 2 * ZUN_PI;
+        a -= ZUN_2PI;
         if (i++ > 16)
             break;
     }
     while (a < -ZUN_PI)
     {
-        a += 2 * ZUN_PI;
+        a += ZUN_2PI;
         if (i++ > 16)
             break;
     }
