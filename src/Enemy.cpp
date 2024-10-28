@@ -232,6 +232,182 @@ void Enemy::MathAdd(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarI
     return;
 }
 
+#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+void Enemy::MathSub(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
+{
+    EclValueType outType;
+    i32 *outPtr;
+    i32 *lhsPtr;
+    i32 *rhsPtr;
+
+    outPtr = Enemy::GetVar(enemy, &outVarId, &outType);
+    if (outType == ECL_VALUE_TYPE_INT)
+    {
+        lhsPtr = Enemy::GetVar(enemy, lhsVarId, NULL);
+        rhsPtr = Enemy::GetVar(enemy, rhsVarId, NULL);
+        *outPtr = *lhsPtr - *rhsPtr;
+    }
+    else if (outType == ECL_VALUE_TYPE_FLOAT)
+    {
+        lhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)lhsVarId, NULL);
+        rhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)rhsVarId, NULL);
+        *(f32 *)outPtr = *(f32 *)lhsPtr - *(f32 *)rhsPtr;
+    }
+    return;
+}
+
+#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+void Enemy::MathMul(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
+{
+    EclValueType outType;
+    i32 *outPtr;
+    i32 *lhsPtr;
+    i32 *rhsPtr;
+
+    lhsPtr = Enemy::GetVar(enemy, lhsVarId, NULL);
+    rhsPtr = Enemy::GetVar(enemy, rhsVarId, NULL);
+    outPtr = Enemy::GetVar(enemy, &outVarId, &outType);
+    if (outType == ECL_VALUE_TYPE_INT)
+    {
+        lhsPtr = Enemy::GetVar(enemy, lhsVarId, NULL);
+        rhsPtr = Enemy::GetVar(enemy, rhsVarId, NULL);
+        *outPtr = *lhsPtr * *rhsPtr;
+    }
+    else if (outType == ECL_VALUE_TYPE_FLOAT)
+    {
+        lhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)lhsVarId, NULL);
+        rhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)rhsVarId, NULL);
+        *(f32 *)outPtr = *(f32 *)lhsPtr * *(f32 *)rhsPtr;
+    }
+    return;
+}
+
+#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+void Enemy::MathDiv(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
+{
+    EclValueType outType;
+    i32 *outPtr;
+    i32 *lhsPtr;
+    i32 *rhsPtr;
+
+    outPtr = Enemy::GetVar(enemy, &outVarId, &outType);
+    if (outType == ECL_VALUE_TYPE_INT)
+    {
+        lhsPtr = Enemy::GetVar(enemy, lhsVarId, NULL);
+        rhsPtr = Enemy::GetVar(enemy, rhsVarId, NULL);
+        *outPtr = *lhsPtr / *rhsPtr;
+    }
+    else if (outType == ECL_VALUE_TYPE_FLOAT)
+    {
+        lhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)lhsVarId, NULL);
+        rhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)rhsVarId, NULL);
+        *(f32 *)outPtr = *(f32 *)lhsPtr / *(f32 *)rhsPtr;
+    }
+    return;
+}
+
+#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+void Enemy::MathMod(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
+{
+    EclValueType outType;
+    i32 *outPtr;
+    i32 *lhsPtr;
+    i32 *rhsPtr;
+
+    outPtr = Enemy::GetVar(enemy, &outVarId, &outType);
+    if (outType == ECL_VALUE_TYPE_INT)
+    {
+        lhsPtr = Enemy::GetVar(enemy, lhsVarId, NULL);
+        rhsPtr = Enemy::GetVar(enemy, rhsVarId, NULL);
+        *outPtr = *lhsPtr % *rhsPtr;
+    }
+    else if (outType == ECL_VALUE_TYPE_FLOAT)
+    {
+        lhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)lhsVarId, NULL);
+        rhsPtr = (i32 *)Enemy::GetVarFloat(enemy, (f32 *)rhsVarId, NULL);
+        *(f32 *)outPtr = fmodf(*(f32 *)lhsPtr, *(f32 *)rhsPtr);
+    }
+    return;
+}
+
+#pragma var_order(y2Ptr, outPtr, x1Ptr, y1Ptr, outType, x2Ptr)
+void Enemy::MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2, f32 *x2)
+{
+    EclValueType outType;
+    f32 *outPtr;
+    f32 *y1Ptr, *x1Ptr, *x2Ptr, *y2Ptr;
+
+    outPtr = (f32 *)Enemy::GetVar(enemy, &outVarId, &outType);
+    if (outType == ECL_VALUE_TYPE_FLOAT)
+    {
+        y1Ptr = Enemy::GetVarFloat(enemy, x1, NULL);
+        x1Ptr = Enemy::GetVarFloat(enemy, y1, NULL);
+        y2Ptr = Enemy::GetVarFloat(enemy, y2, NULL);
+        x2Ptr = Enemy::GetVarFloat(enemy, x2, NULL);
+        *outPtr = atan2f(*x2Ptr - *x1Ptr, *y2Ptr - *y1Ptr);
+    }
+    return;
+}
+
+void Enemy::MoveTime(Enemy *enemy, EclRawInstr *instr)
+{
+    EclRawInstrAluArgs *alu;
+    f32 angle;
+
+    alu = &instr->args.alu;
+    angle = *Enemy::GetVarFloat(enemy, &enemy->angle, NULL);
+
+    enemy->moveInterp.x = sinf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.y = cosf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.z = 0.0f;
+
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+}
+
+void Enemy::MovePosTime(Enemy *enemy, EclRawInstr *instr)
+{
+    D3DXVECTOR3 newPos;
+    EclRawInstrAluArgs *alu = &instr->args.alu;
+
+    newPos.x = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
+    newPos.y = *Enemy::GetVarFloat(enemy, &alu->arg2.f32, NULL);
+    newPos.z = *Enemy::GetVarFloat(enemy, &alu->arg3.f32, NULL);
+
+    enemy->moveInterp = newPos - enemy->position;
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+}
+
+void Enemy::MoveDirTime(Enemy *enemy, EclRawInstr *instr)
+{
+    EclRawInstrAluArgs *alu;
+    f32 angle;
+
+    alu = &instr->args.alu;
+    angle = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
+
+    enemy->moveInterp.x = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.y = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.z = 0.0f;
+
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+}
+
 void Enemy::Move()
 {
     if (!this->flags.unk4)

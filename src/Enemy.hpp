@@ -42,8 +42,8 @@ C_ASSERT(sizeof(EnemyBulletShooter) == 0x54);
 
 struct EnemyLaserShooter
 {
-    u16 sprite;
-    u16 spriteOffset;
+    i16 sprite;
+    i16 spriteOffset;
     D3DXVECTOR3 position;
     f32 angle;
     u32 unk_14;

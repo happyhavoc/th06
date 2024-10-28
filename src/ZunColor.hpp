@@ -7,8 +7,9 @@
 #define COLOR_GREY 0xff808080
 #define COLOR_WHITE 0xffffffff
 #define COLOR_RED 0xffff0000
+#define COLOR_YELLOW 0xffffff00
 #define COLOR_LIGHT_RED 0xffff8080
-#define COLOR_YELLOW 0xffffff40
+#define COLOR_SUNSHINEYELLOW 0xffffff40
 #define COLOR_PINK 0xffffe0e0
 #define COLOR_LIGHTCYAN 0xffe0ffff
 #define COLOR_LAVENDER 0xffe0e0ff

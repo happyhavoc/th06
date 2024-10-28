@@ -314,9 +314,9 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     if (g_GameManager.demoMode == 0)
     {
         // Read boss battle, and store it for use when boss is started.
-        g_Supervisor.ReadMidiFile(1, g_Stage.stdData->songPaths[2]);
+        g_Supervisor.ReadMidiFile(1, g_Stage.stdData->songPaths[1]);
         // Immediately start playing this level's theme.
-        g_Supervisor.PlayAudio(g_Stage.stdData->songPaths[1]);
+        g_Supervisor.PlayAudio(g_Stage.stdData->songPaths[0]);
     }
     mgr->isInRetryMenu = 0;
     mgr->isInMenu = 1;

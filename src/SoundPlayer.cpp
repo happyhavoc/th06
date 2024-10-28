@@ -346,8 +346,8 @@ WAVEFORMATEX *SoundPlayer::GetWavFormatData(u8 *soundData, char *formatString, i
     return NULL;
 }
 
-#pragma var_order(fileSize, soundFileData, audioPtr1, audioSize1, audioPtr2, audioSize2, formatSize, wavDataPtr,       \
-                  dsBuffer, wavData, sFDCursor)
+#pragma var_order(sFDCursor, dsBuffer, wavDataPtr, formatSize, audioPtr2, audioSize2, audioSize1, audioPtr1,           \
+                  soundFileData, wavData, fileSize)
 ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
 {
     u8 *soundFileData;
@@ -373,7 +373,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
     }
     soundFileData = (u8 *)FileSystem::OpenPath(path, 0);
     sFDCursor = soundFileData;
-    if (soundFileData == NULL)
+    if (sFDCursor == NULL)
     {
         return ZUN_ERROR;
     }
@@ -428,7 +428,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, char *path)
         return ZUN_ERROR;
     }
     memcpy(audioPtr1, wavDataPtr, audioSize1);
-    if (audioPtr2 != NULL)
+    if (audioSize2 != 0)
     {
         memcpy(audioPtr2, (i8 *)wavDataPtr + audioSize1, audioSize2);
     }
