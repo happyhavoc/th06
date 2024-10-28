@@ -1064,4 +1064,15 @@ void Gui::DrawStageElements()
     }
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+void Gui::ShowFullPowerMode(i32 fmtArg) 
+{
+    this->impl->fullPowerMode.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
+    this->impl->fullPowerMode.isShown = 1;
+    this->impl->fullPowerMode.timer.InitializeForPopup();
+    this->impl->fullPowerMode.fmtArg = fmtArg;
+    return;
+}
+
 }; // namespace th06

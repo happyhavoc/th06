@@ -27,7 +27,6 @@ th06::Gui::FreeMsgFile
 th06::Gui::IsStageFinished
 th06::Gui::ShowSpellcardBonus
 th06::Gui::ShowBombNamePortrait
-th06::Gui::ShowFullPowerMode
 th06::Gui::ShowBonusScore
 th06::Gui::EndPlayerSpellcard
 th06::ItemManager::RemoveAllItems
