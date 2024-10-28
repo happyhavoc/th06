@@ -114,7 +114,15 @@ th06::Enemy::GetVar
 th06::Enemy::GetVarFloat
 th06::Enemy::SetVar
 th06::Enemy::MathAdd
+th06::Enemy::MathSub
+th06::Enemy::MathMul
+th06::Enemy::MathDiv
+th06::Enemy::MathMod
+th06::Enemy::MathAtan2
 th06::Enemy::Move
+th06::Enemy::MoveTime
+th06::Enemy::MoveDirTime
+th06::Enemy::MovePosTime
 th06::Enemy::ClampPos
 th06::Enemy::HandleLifeCallback
 th06::Enemy::HandleTimerCallback
