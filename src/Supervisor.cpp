@@ -1221,4 +1221,63 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+// this is for rebinding keys
+u8 *th06::Controller::GetControllerState()
+{
+    static u32 controllerData[32];
+    memset(&controllerData, 0, sizeof(controllerData));
+    if (g_Supervisor.controller == NULL)
+    {
+        // TODO: not tested
+        JOYINFOEX joyinfo;
+        memset(&joyinfo, 0, sizeof(JOYINFOEX));
+        joyinfo.dwSize = sizeof(JOYINFOEX);
+        joyinfo.dwFlags = JOY_RETURNALL;
+        MMRESULT MVar1 = joyGetPosEx(0, &joyinfo);
+        if (MVar1 == 0)
+        {
+            u32 local_3c = joyinfo.dwButtons;
+            for (u32 local_40 = 0; local_40 < 32; local_40 += 1)
+            {
+                if ((local_3c & 1) != 0)
+                {
+                    *(u8 *)((int)controllerData + local_40) = 0x80;
+                }
+                local_3c = local_3c >> 1;
+            }
+        }
+    }
+    else
+    {
+        HRESULT HVar2 = g_Supervisor.controller->Poll();
+        if (FAILED(HVar2))
+        {
+            int local_retryCount = 0;
+            utils::DebugPrint2("error : DIERR_INPUTLOST\n");
+            HRESULT local_44 = g_Supervisor.controller->Acquire();
+            do
+            {
+                if (local_44 != DIERR_INPUTLOST)
+                    break;
+                local_44 = g_Supervisor.controller->Acquire();
+                utils::DebugPrint2("error : DIERR_INPUTLOST %d\n", local_retryCount);
+                local_retryCount++;
+            } while (local_retryCount < 400);
+        }
+        else
+        {
+            DIJOYSTATE2 local_15c;
+            HVar2 = g_Supervisor.controller->GetDeviceState(0x110, &local_15c);
+            // TODO: is there no "HVar2 =" in ZUN code?
+            if (SUCCEEDED(HVar2))
+            {
+                memcpy(&controllerData, local_15c.rgbButtons, sizeof(local_15c.rgbButtons));
+            }
+        }
+    }
+    return (byte *)controllerData;
+}
+#pragma optimize("", on)
 }; // namespace th06
