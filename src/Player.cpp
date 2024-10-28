@@ -1321,6 +1321,30 @@ i32 Player::CalcBoxCollision(D3DXVECTOR3 *itemCenter, D3DXVECTOR3 *itemSize)
     }
 }
 
+void Player::ScoreGraze(D3DXVECTOR3 *center)
+{
+    D3DXVECTOR3 particlePosition;
+
+    if (g_Player.bombInfo.isInUse == 0)
+    {
+        if (g_GameManager.grazeInStage < 9999)
+        {
+            g_GameManager.grazeInStage++;
+        }
+        if (g_GameManager.grazeInTotal < 999999)
+        {
+            g_GameManager.grazeInTotal++;
+        }
+    }
+
+    particlePosition = (this->positionCenter + *center) * invertf(2.0f);
+    g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_8, &particlePosition, 1, COLOR_WHITE);
+    g_GameManager.AddScore(500);
+    g_GameManager.IncreaseSubrank(6);
+    g_Gui.flags.flag3 = 2;
+    g_SoundPlayer.PlaySoundByIdx(SOUND_GRAZE, 0);
+}
+
 #pragma var_order(curLaserTimerIdx)
 void Player::Die()
 {

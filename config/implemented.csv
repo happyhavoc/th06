@@ -247,6 +247,7 @@ th06::Player::CalcBoxCollision
 th06::Player::CheckGraze
 th06::Player::CalcKillBoxCollision
 th06::Player::CalcDamageToEnemy
+th06::Player::ScoreGraze
 th06::Player::Die
 th06::Player::HandlePlayerInputs
 th06::Player::AngleToPlayer
