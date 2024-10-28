@@ -6,6 +6,12 @@
 
 namespace th06
 {
+enum EffectCallbackResult
+{
+    EFFECT_CALLBACK_RESULT_STOP = 0,
+    EFFECT_CALLBACK_RESULT_DONE = 1
+};
+
 struct Effect;
 
 typedef i32 (*EffectUpdateCallback)(Effect *);
@@ -13,12 +19,8 @@ struct Effect
 {
     AnmVm vm;
     D3DXVECTOR3 pos1;
-    f32 unk_11c;
-    f32 unk_120;
-    f32 unk_124;
-    f32 unk_128;
-    f32 unk_12c;
-    f32 unk_130;
+    D3DXVECTOR3 unk_11c;
+    D3DXVECTOR3 unk_128;
     D3DXVECTOR3 position;
     D3DXVECTOR3 pos2;
     D3DXQUATERNION quaternion;

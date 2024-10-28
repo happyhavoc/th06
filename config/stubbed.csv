@@ -1,10 +1,4 @@
 th06::EclManager::Unload
-th06::EffectManager::EffectCallbackRandomSplash
-th06::EffectManager::EffectCallbackRandomSplashBig
-th06::EffectManager::EffectCallbackStill
-th06::EffectManager::EffectUpdateCallback4
-th06::EffectManager::EffectCallbackAttract
-th06::EffectManager::EffectCallbackAttractSlow
 th06::AsciiManager::DrawPopupsWithHwVertexProcessing
 th06::AsciiManager::DrawPopupsWithoutHwVertexProcessing
 th06::MidiDevice::Close

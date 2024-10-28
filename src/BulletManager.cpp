@@ -130,14 +130,14 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
     case CIRCLE_AIMED:
         bulletAngle += angle;
     case CIRCLE:
-        bulletAngle += bulletIdx1 * (ZUN_PI * 2.0f) / bulletProps->count1;
+        bulletAngle += bulletIdx1 * ZUN_2PI / bulletProps->count1;
         bulletAngle += bulletIdx2 * bulletProps->angle2 + bulletProps->angle1;
         break;
     case OFFSET_CIRCLE_AIMED:
         bulletAngle += angle;
     case OFFSET_CIRCLE:
         bulletAngle += ZUN_PI / bulletProps->count1;
-        bulletAngle += bulletIdx1 * (ZUN_PI * 2.0f) / bulletProps->count1;
+        bulletAngle += bulletIdx1 * ZUN_2PI / bulletProps->count1;
         bulletAngle += bulletProps->angle1;
         break;
     case RANDOM_ANGLE:
@@ -145,7 +145,7 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
         break;
     case RANDOM_SPEED:
         bulletSpeed = g_Rng.GetRandomF32InRange(bulletProps->speed1 - bulletProps->speed2) + bulletProps->speed2;
-        bulletAngle += bulletIdx1 * (ZUN_PI * 2.0f) / bulletProps->count1;
+        bulletAngle += bulletIdx1 * ZUN_2PI / bulletProps->count1;
         bulletAngle += bulletIdx2 * bulletProps->angle2 + bulletProps->angle1;
         break;
     case RANDOM:
