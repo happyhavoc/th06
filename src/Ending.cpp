@@ -147,6 +147,34 @@ ZunResult Ending::AddedCallback(Ending *ending)
     return ZUN_SUCCESS;
 }
 
+ZunResult Ending::DeletedCallback(Ending *ending)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF01);
+    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF02);
+    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF03);
+
+    g_Supervisor.curState = SUPERVISOR_STATE_RESULTSCREEN_FROMGAME;
+
+    g_AnmManager->ReleaseSurface(0);
+
+    // This has the same effect as doing "delete ending->endFileData" since delete just calls free, but for some reason,
+    // in both ways, the stack doesn't match with the other variable used in delete ending, in theory this should should
+    // be correct since ending->endFileData was allocated with malloc. One way to solve it, would be to do the same with
+    // ending, and align both variables with var_order, but that would be "incorrect", weird...
+    char *endfiledata = ending->endFileData;
+    free(endfiledata);
+
+    g_Chain.Cut(ending->drawChain);
+    ending->drawChain = NULL;
+
+    delete ending;
+    ending = NULL;
+
+    g_Supervisor.isInEnding = false;
+    g_Supervisor.ReleasePbg3(ED_PBG3_INDEX);
+    return ZUN_SUCCESS;
+}
+
 ZunResult Ending::LoadEnding(char *endFilePath)
 {
     char *endFileDat;
