@@ -1074,5 +1074,13 @@ void Gui::ShowFullPowerMode(i32 fmtArg)
     this->impl->fullPowerMode.fmtArg = fmtArg;
     return;
 }
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunBool Gui::IsStageFinished() 
+{
+    return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
+}
+#pragma optimize("", on)
 
 }; // namespace th06
