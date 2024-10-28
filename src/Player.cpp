@@ -1246,7 +1246,7 @@ i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
     }
     
     // Bullet clips player's graze hitbox, add score and check for death upon return 
-    ScoreGraze(center);
+    this->ScoreGraze(center);
     return 1;
 }
 
@@ -1296,6 +1296,67 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
         this->Die();
         return 1;
     }
+}
+
+#pragma var_order(playerRelativeTopLeft, laserBottomRight, laserTopLeft, playerRelativeBottomRight)
+i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
+                    i32 canGraze)
+{
+    D3DXVECTOR3 laserTopLeft;
+    D3DXVECTOR3 laserBottomRight;
+    D3DXVECTOR3 playerRelativeTopLeft;
+    D3DXVECTOR3 playerRelativeBottomRight;
+
+    laserTopLeft = this->positionCenter - *rotation;
+    utils::Rotate(&laserBottomRight, &laserTopLeft, angle);
+    laserBottomRight.z = 0;
+    laserTopLeft = laserBottomRight + *rotation;
+    playerRelativeTopLeft = laserTopLeft - this->hitboxSize;
+    playerRelativeBottomRight = laserTopLeft + this->hitboxSize;
+
+    laserTopLeft = *laserCenter - *laserSize * invertf(2.0f);
+    laserBottomRight = *laserCenter + *laserSize * invertf(2.0f);
+
+    if (!(playerRelativeTopLeft.x > laserBottomRight.x ||
+          playerRelativeBottomRight.x < laserTopLeft.x ||
+          playerRelativeTopLeft.y > laserBottomRight.y ||
+          playerRelativeBottomRight.y < laserTopLeft.y))
+    {
+        goto LASER_COLLISION;
+    }
+    if (canGraze == 0)
+    {
+        return 0;
+    }
+        
+    laserTopLeft.x -= 48.0f;
+    laserTopLeft.y -= 48.0f;
+    laserBottomRight.x += 48.0f;
+    laserBottomRight.y += 48.0f;
+
+    if (playerRelativeTopLeft.x > laserBottomRight.x ||
+        playerRelativeBottomRight.x < laserTopLeft.x ||
+        playerRelativeTopLeft.y > laserBottomRight.y ||
+        playerRelativeBottomRight.y < laserTopLeft.y)
+    {
+        return 0;
+    }
+    if (this->playerState == PLAYER_STATE_DEAD || this->playerState == PLAYER_STATE_SPAWNING)
+    {
+        return 0;
+    }
+    
+    this->ScoreGraze(&this->positionCenter);
+    return 2;
+
+LASER_COLLISION:
+    if (this->playerState != PLAYER_STATE_ALIVE)
+    {
+        return 0;
+    }
+    
+    this->Die();
+    return 1;
 }
 
 #pragma var_order(itemBottomRight, itemTopLeft)

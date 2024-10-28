@@ -62,5 +62,4 @@ th06::Player::BombReimuBCalc
 th06::Player::BombMarisaBCalc
 th06::Player::BombReimuBDraw
 th06::Player::BombMarisaBDraw
-th06::Player::CalcLaserHitbox
 th06::Pbg3Archive::Pbg3Archive
