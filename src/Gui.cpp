@@ -1081,7 +1081,7 @@ ZunBool Gui::IsStageFinished()
 }
 
 void Gui::ShowBonusScore(u32 bonusScore) {
-    this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
+    this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 32.0f, 0.0f);
     this->impl->bonusScore.isShown = 1;
     this->impl->bonusScore.timer.InitializeForPopup();
     this->impl->bonusScore.fmtArg = bonusScore;
