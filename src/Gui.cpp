@@ -1074,12 +1074,18 @@ void Gui::ShowFullPowerMode(i32 fmtArg)
     this->impl->fullPowerMode.fmtArg = fmtArg;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunBool Gui::IsStageFinished() 
 {
     return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
+}
+
+void Gui::ShowBonusScore(u32 bonusScore) {
+    this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
+    this->impl->bonusScore.isShown = 1;
+    this->impl->bonusScore.timer.InitializeForPopup();
+    this->impl->bonusScore.fmtArg = bonusScore;
+    return;
 }
 #pragma optimize("", on)
 
