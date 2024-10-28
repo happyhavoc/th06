@@ -1222,7 +1222,7 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 }
 #pragma optimize("", on)
 
-#pragma optimize("s", on)
+#pragma optimize("", on)
 // this is for rebinding keys
 u8 *th06::Controller::GetControllerState()
 {
@@ -1235,17 +1235,14 @@ u8 *th06::Controller::GetControllerState()
         memset(&joyinfo, 0, sizeof(JOYINFOEX));
         joyinfo.dwSize = sizeof(JOYINFOEX);
         joyinfo.dwFlags = JOY_RETURNALL;
-        MMRESULT MVar1 = joyGetPosEx(0, &joyinfo);
-        if (MVar1 == 0)
+        if (joyGetPosEx(0, &joyinfo) == JOYERR_NOERROR)
         {
-            u32 local_3c = joyinfo.dwButtons;
-            for (u32 local_40 = 0; local_40 < 32; local_40 += 1)
+            for (u32 local_3c = joyinfo.dwButtons, local_40 = 0; local_40 < 32; local_40 += 1, local_3c >>= 1)
             {
                 if ((local_3c & 1) != 0)
                 {
                     *(u8 *)((int)controllerData + local_40) = 0x80;
                 }
-                local_3c = local_3c >> 1;
             }
         }
     }
