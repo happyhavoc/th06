@@ -203,6 +203,22 @@ ChainCallbackResult Ending::OnUpdate(Ending *ending)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
+i32 Ending::ReadEndFileParameter()
+{
+    i32 readResult;
+
+    readResult = atol(this->endFileDataPtr);
+    while (this->endFileDataPtr[0] != '\0')
+    {
+        this->endFileDataPtr++;
+    }
+    while (this->endFileDataPtr[0] == '\0')
+    {
+        this->endFileDataPtr++;
+    }
+    return readResult;
+}
+
 #pragma var_order(lineDisplayed, textBuffer, charactersReaded, anmScriptIdx, vmIndex, anmSpriteIdx, scrollBGDistance,  \
                   scrollBGDuration, characterIdx, diffIdx, spriteIdx, musicFadeFrames, fill)
 ZunResult Ending::ParseEndFile()
