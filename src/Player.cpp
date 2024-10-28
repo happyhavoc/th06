@@ -1195,6 +1195,61 @@ FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet,
     return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
 }
 
+#pragma var_order(bombTopLeft, i, bulletBottomRight, bulletTopLeft, bombProjectile, bombBottomRight)
+i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
+{
+    D3DXVECTOR3 bombBottomRight;
+    PlayerRect *bombProjectile;
+    D3DXVECTOR3 bombTopLeft;
+    D3DXVECTOR3 bulletBottomRight;
+    D3DXVECTOR3 bulletTopLeft;
+    i32 i;
+
+    bulletTopLeft.x = center->x - size->x / 2.0f - 20.0f;
+    bulletTopLeft.y = center->y - size->y / 2.0f - 20.0f;
+    bulletBottomRight.x = center->x + size->x / 2.0f + 20.0f;
+    bulletBottomRight.y = center->y + size->y / 2.0f + 20.0f;
+    bombProjectile = this->bombProjectiles;
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->bombProjectiles); i++, bombProjectile++)
+    {
+        if (bombProjectile->size.x == 0.0f)
+        {
+            continue;
+        }
+        
+        bombTopLeft.x = bombProjectile->pos.x - bombProjectile->size.x / 2.0f;
+        bombTopLeft.y = bombProjectile->pos.y - bombProjectile->size.y / 2.0f;
+        bombBottomRight.x = bombProjectile->size.x / 2.0f + bombProjectile->pos.x;
+        bombBottomRight.y = bombProjectile->size.y / 2.0f + bombProjectile->pos.y;
+
+        // Bomb clips bullet's hitbox, destroys bullet upon return
+        if (!(bombTopLeft.x > bulletBottomRight.x ||
+              bombBottomRight.x < bulletTopLeft.x ||
+              bombTopLeft.y > bulletBottomRight.y ||
+              bombBottomRight.y < bulletTopLeft.y))
+        {
+            return 2;
+        }
+    }
+
+    if (this->playerState == PLAYER_STATE_DEAD || this->playerState == PLAYER_STATE_SPAWNING)
+    {
+        return 0;
+    }
+    if (this->hitboxTopLeft.x > bulletBottomRight.x ||
+        this->hitboxBottomRight.x < bulletTopLeft.x ||
+        this->hitboxTopLeft.y > bulletBottomRight.y ||
+        this->hitboxBottomRight.y < bulletTopLeft.y)
+    {
+        return 0;
+    }
+    
+    // Bullet clips player's graze hitbox, add score and check for death upon return 
+    ScoreGraze(center);
+    return 1;
+}
+
 #pragma var_order(padding1, bombProjectileTop, bombProjectileLeft, curBombIdx, padding2, bulletBottom, bulletRight,    \
                   padding3, bulletTop, bulletLeft, curBombProjectile, padding4, bombProjectileBottom,                  \
                   bombProjectileRight)
