@@ -56,12 +56,12 @@ ZunResult Ending::AddedCallback(Ending *ending)
     g_AnmManager->SetCurrentVertexShader(0xff);
 
     shotTypeAndCharacter = g_GameManager.character * 2 + g_GameManager.shotType;
-    ending->unk_111a = 0;
+    ending->hasSeenEnding = false;
     if (g_GameManager.numRetries == 0)
     {
         if (g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithRetries[g_GameManager.difficulty] == 99)
         {
-            ending->unk_111a = 1;
+            ending->hasSeenEnding = true;
         }
 
         g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithRetries[g_GameManager.difficulty] = 99;
@@ -70,7 +70,7 @@ ZunResult Ending::AddedCallback(Ending *ending)
     {
         if (g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithoutRetries[g_GameManager.difficulty] == 99)
         {
-            ending->unk_111a = 1;
+            ending->hasSeenEnding = true;
         }
     }
     g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithoutRetries[g_GameManager.difficulty] = 99;
@@ -162,7 +162,7 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
 {
     i32 idx;
 
-    g_AnmManager->DrawEndingRect(0, 0, 0, ending->unk_8.x, ending->unk_8.y, 640, 480);
+    g_AnmManager->DrawEndingRect(0, 0, 0, ending->backgroundPos.x, ending->backgroundPos.y, 640, 480);
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
     {
         if (ending->sprites[idx].anmFileIndex != 0)
@@ -193,7 +193,7 @@ ChainCallbackResult Ending::OnUpdate(Ending *ending)
                 g_AnmManager->ExecuteScript(&ending->sprites[idx]);
             }
         }
-        if (ending->unk_111a != 0 && IS_PRESSED(TH_BUTTON_SKIP) && framesPressed < 4)
+        if (ending->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP) && framesPressed < 4)
         {
             framesPressed++;
             continue;
@@ -201,6 +201,325 @@ ChainCallbackResult Ending::OnUpdate(Ending *ending)
         break;
     };
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(lineDisplayed, textBuffer, charactersReaded, anmScriptIdx, vmIndex, anmSpriteIdx, scrollBGDistance,  \
+                  scrollBGDuration, characterIdx, diffIdx, spriteIdx, musicFadeFrames, fill)
+ZunResult Ending::ParseEndFile()
+{
+    i32 vmIndex;
+    i32 anmScriptIdx;
+    i32 anmSpriteIdx;
+    i32 scrollBGDistance;
+    i32 scrollBGDuration;
+    f32 musicFadeFrames;
+    i32 spriteIdx;
+    i32 diffIdx;
+    i32 characterIdx;
+    i32 charactersReaded;
+    ZunBool lineDisplayed;
+    i32 fill[6];
+
+    char textBuffer[39];
+
+    lineDisplayed = false;
+    charactersReaded = 0;
+
+    memset(textBuffer, 0, sizeof(textBuffer) - 1);
+
+    if (this->timer3 > 0)
+    {
+        this->timer3.Decrement(1);
+        if (this->minWaitResetFrames != 0)
+        {
+            this->minWaitResetFrames--;
+        }
+        else
+        {
+            if (WAS_PRESSED(TH_BUTTON_SELECTMENU) || this->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP))
+            {
+                this->timer3.InitializeForPopup();
+            }
+        }
+        if (this->timer3 <= 0)
+        {
+            memset(this->sprites, 0, sizeof(this->sprites));
+            this->timesFileParsed = 0;
+        }
+        else
+        {
+            goto endParsing;
+        }
+    }
+
+    if (this->timer2 > 0)
+    {
+        this->timer2.Decrement(1);
+
+        if (this->minWaitFrames != 0)
+        {
+            this->minWaitFrames--;
+        }
+        else
+        {
+            if (WAS_PRESSED(TH_BUTTON_SELECTMENU) || this->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP))
+            {
+                this->timer2.InitializeForPopup();
+            }
+        }
+        goto endParsing;
+    }
+
+    while (true)
+    {
+        switch (this->endFileDataPtr[0])
+        {
+        case END_READ_OPCODE:
+            /* If there is an @ symbol, that means we have an opcode to read. */
+            this->endFileDataPtr++;
+            switch (this->endFileDataPtr[0])
+            {
+            case END_OPCODE_BACKGROUND:
+                /* background(jpg_file) */
+
+                if (g_AnmManager->LoadSurface(0, this->endFileDataPtr + 1) != ZUN_SUCCESS)
+                {
+                    return ZUN_ERROR;
+                }
+                break;
+
+            case END_OPCODE_EXECUTE_ANM:
+                /* anm(vm_index, script_index, sprite_index) */
+                this->endFileDataPtr++;
+                vmIndex = this->ReadEndFileParameter();      // vm_index
+                anmScriptIdx = this->ReadEndFileParameter(); // script_index
+                anmSpriteIdx = this->ReadEndFileParameter(); // sprite_index
+                g_AnmManager->ExecuteAnmIdx(&this->sprites[vmIndex], ANM_OFFSET_STAFF01 + anmScriptIdx);
+                g_AnmManager->SetActiveSprite(&this->sprites[vmIndex], ANM_OFFSET_STAFF01 + anmSpriteIdx);
+                break;
+
+            case END_OPCODE_SCROLL_BACKGROUND:
+                /* scrollbg(distance, duration) */
+                this->endFileDataPtr++;
+                scrollBGDistance = this->ReadEndFileParameter(); // distance
+                scrollBGDuration = this->ReadEndFileParameter(); // duration
+                this->backgroundScrollSpeed = scrollBGDistance / (f32)scrollBGDuration;
+                break;
+
+            case END_OPCODE_SET_VERTICAL_SCROLL_POS:
+                /* setscroll(newVertCoordinate) */
+                this->endFileDataPtr++;
+
+                this->backgroundPos.y = this->ReadEndFileParameter(); // newVertCoordinate
+                break;
+
+            case END_OPCODE_EXEC_END_FILE:
+                /* exec(endfile) */
+
+                if (this->LoadEnding(this->endFileDataPtr + 1) != ZUN_SUCCESS)
+                {
+                    return ZUN_ERROR;
+                }
+                charactersReaded = 0;
+                lineDisplayed = false;
+                for (characterIdx = 0; characterIdx < ARRAY_SIZE_SIGNED(g_GameManager.clrd); characterIdx++)
+                {
+                    for (diffIdx = 0; diffIdx < EXTRA; diffIdx++)
+                    {
+                        if (g_GameManager.clrd[characterIdx].difficultyClearedWithRetries[diffIdx] == 99 ||
+                            g_GameManager.clrd[characterIdx].difficultyClearedWithoutRetries[diffIdx] == 99)
+                        {
+                            this->hasSeenEnding = true;
+                            break;
+                        }
+                    }
+                }
+
+            case END_OPCODE_ROLL_STAFF:
+                /* staffroll()
+                   Assumingly this clears the entire anm stack allocated for Ending. */
+
+                for (spriteIdx = 0; spriteIdx < ARRAY_SIZE_SIGNED(this->sprites); spriteIdx++)
+                {
+                    this->sprites[spriteIdx].anmFileIndex = 0;
+                }
+                break;
+
+            case END_OPCODE_PLAY_MUSIC:
+                /* musicplay(file) */
+                g_Supervisor.PlayAudio(this->endFileDataPtr + 1);
+                break;
+
+            case END_OPCODE_FADE_MUSIC:
+                /* musicfade(duration) */
+                this->endFileDataPtr++;
+                musicFadeFrames = this->ReadEndFileParameter();
+                g_Supervisor.FadeOutMusic(musicFadeFrames);
+                break;
+
+            case END_OPCODE_SET_DELAY:
+                /* setdelay(line2Delay, topLineDelay) */
+                this->endFileDataPtr++;
+
+                this->line2Delay = this->ReadEndFileParameter();   // line2Delay
+                this->topLineDelay = this->ReadEndFileParameter(); // topLineDelay
+                break;
+
+            case END_OPCODE_COLOR:
+                /* color(bgr_color) */
+                this->endFileDataPtr++;
+                this->textColor = this->ReadEndFileParameter(); // newcolor
+                break;
+
+            case END_OPCODE_WAIT_RESET:
+                /* waitreset(maxframes, minframes) */
+                this->endFileDataPtr++;
+                this->timer3.SetCurrent(this->ReadEndFileParameter());   // maxFrames
+                this->minWaitResetFrames = this->ReadEndFileParameter(); // minframes
+                while (this->endFileDataPtr[0] != '\n' && this->endFileDataPtr[0] != '\r')
+                {
+                    this->endFileDataPtr++;
+                }
+                while (this->endFileDataPtr[0] == '\n' || this->endFileDataPtr[0] == '\r')
+                {
+                    this->endFileDataPtr++;
+                }
+                goto endParsing;
+
+            case END_OPCODE_WAIT:
+                /* wait(maxFrames, minFrames) */
+                this->endFileDataPtr++;
+                this->timer2.SetCurrent(this->ReadEndFileParameter()); // maxFrames
+                this->minWaitFrames = this->ReadEndFileParameter();    // minFrames
+                while (this->endFileDataPtr[0] != '\n' && this->endFileDataPtr[0] != '\r')
+                {
+                    this->endFileDataPtr++;
+                }
+                while (this->endFileDataPtr[0] == '\n' || this->endFileDataPtr[0] == '\r')
+                {
+                    this->endFileDataPtr++;
+                }
+                goto endParsing;
+
+            case END_OPCODE_FADE_IN_BLACK:
+                /* fadeinblack(frames). UNUSED */
+                this->endFileDataPtr++;
+                this->fadeType = 1;
+                this->timeFading = 0;
+                this->fadeFrames = this->ReadEndFileParameter(); // fadeInBlackFrames
+                break;
+
+            case END_OPCODE_FADE_OUT_BLACK:
+                /* fadeoutblack(frames). UNUSED */
+                this->endFileDataPtr++;
+                this->fadeType = 2;
+                this->timeFading = 0;
+                this->fadeFrames = this->ReadEndFileParameter(); // fadeOutBlackFrames
+                break;
+
+            case END_OPCODE_FADE_IN:
+                /* fadein(frames) */
+                this->endFileDataPtr++;
+                this->fadeType = 3;
+                this->timeFading = 0;
+                this->fadeFrames = this->ReadEndFileParameter(); // fadeInFrames
+                break;
+
+            case END_OPCODE_FADE_OUT:
+                /* fadeout(frames) */
+                this->endFileDataPtr++;
+                this->fadeType = 4;
+                this->timeFading = 0;
+                this->fadeFrames = this->ReadEndFileParameter(); // fadeOutFrames
+                break;
+
+            case END_OPCODE_END:
+                return ZUN_ERROR;
+            }
+
+            while ((this->endFileDataPtr[0] != '\n' && (this->endFileDataPtr[0] != '\r')))
+            {
+                this->endFileDataPtr++;
+            }
+            while ((this->endFileDataPtr[0] == '\n' || (this->endFileDataPtr[0] == '\r')))
+            {
+                this->endFileDataPtr++;
+            }
+            goto nextOpcode;
+
+        case '\0':
+        case '\n':
+        case '\r':
+            // When encountered a breakline or null byte, display the text already loaded in textBuffer
+            if (charactersReaded != 0)
+            {
+                g_AnmManager->SetAndExecuteScriptIdx(&this->sprites[lineDisplayed + this->timesFileParsed * 2],
+                                                     lineDisplayed + ANM_SCRIPT_TEXT_ENDING_TEXT +
+                                                         this->timesFileParsed * 2);
+                AnmManager::DrawVmTextFmt(g_AnmManager, &this->sprites[lineDisplayed + this->timesFileParsed * 2],
+                                          this->textColor, COLOR_END_TEXT_SHADOW, textBuffer);
+            }
+            while (this->endFileDataPtr[0] == '\n' || this->endFileDataPtr[0] == '\0' ||
+                   this->endFileDataPtr[0] == '\r')
+            {
+                this->endFileDataPtr++;
+            }
+
+            // If select button is pressed, display the next line instantly? not sure
+            if (IS_PRESSED(TH_BUTTON_SELECTMENU))
+            {
+                this->timer2.SetCurrent(this->topLineDelay);
+                this->minWaitFrames = this->topLineDelay;
+            }
+            else
+            {
+                this->timer2.SetCurrent(this->line2Delay);
+                this->minWaitFrames = this->line2Delay;
+            }
+
+            this->timesFileParsed++;
+            goto endParsing;
+        default:
+            // Read 2 characters at a time
+            textBuffer[charactersReaded] = this->endFileDataPtr[0];
+            textBuffer[charactersReaded + 1] = this->endFileDataPtr[1];
+            charactersReaded += 2;
+            this->endFileDataPtr += 2;
+
+            // When reached the character limit, display the text now
+            if (charactersReaded >= 32)
+            {
+                g_AnmManager->SetAndExecuteScriptIdx(&this->sprites[lineDisplayed + this->timesFileParsed * 2],
+                                                     lineDisplayed + ANM_SCRIPT_TEXT_ENDING_TEXT +
+                                                         this->timesFileParsed * 2);
+                AnmManager::DrawVmTextFmt(g_AnmManager, &this->sprites[lineDisplayed + this->timesFileParsed * 2],
+                                          this->textColor, COLOR_END_TEXT_SHADOW, textBuffer);
+                if (lineDisplayed)
+                {
+                    goto endParsing;
+                }
+                lineDisplayed = true;
+                charactersReaded = 0;
+
+                memset(textBuffer, 0, sizeof(textBuffer) - 1);
+            }
+        nextOpcode:
+            continue;
+        }
+
+        break;
+    }
+
+endParsing:
+    this->timer1.Tick();
+    this->backgroundPos.y -= this->backgroundScrollSpeed;
+    if (this->backgroundPos.y <= 0.0f)
+    {
+        this->backgroundPos.y = 0.0f;
+        this->backgroundScrollSpeed = 0.0f;
+    }
+
+    return ZUN_SUCCESS;
 }
 
 }; // namespace th06
