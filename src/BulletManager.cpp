@@ -387,14 +387,14 @@ Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
         }
 
         g_AnmManager->SetAndExecuteScriptIdx(&laser->vm0, bulletProps->sprite + ANM_SCRIPT_BULLET3_LASER);
-        g_AnmManager->SetActiveSprite(&laser->vm0, laser->vm0.activeSpriteIndex + bulletProps->color);
+        g_AnmManager->SetActiveSprite(&laser->vm0, laser->vm0.activeSpriteIndex + bulletProps->spriteOffset);
 
-        g_AnmManager->InitializeAndSetSprite(&laser->vm1, g_BulletSpriteOffset16Px[bulletProps->color] +
+        g_AnmManager->InitializeAndSetSprite(&laser->vm1, g_BulletSpriteOffset16Px[bulletProps->spriteOffset] +
                                                               ANM_SPRITE_BULLET3_SPAWN_BIG_BALL);
 
         laser->vm1.flags.blendMode = AnmVmBlendMode_One;
         laser->pos = bulletProps->position;
-        laser->color = bulletProps->color;
+        laser->color = bulletProps->spriteOffset;
         laser->inUse = true;
         laser->angle = bulletProps->angle;
 
