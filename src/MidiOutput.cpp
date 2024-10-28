@@ -183,6 +183,26 @@ MidiOutput::MidiOutput()
     this->midiHeadersCursor = 0;
 }
 
+void MidiOutput::LoadTracks()
+{
+    i32 trackIndex;
+    MidiTrack *track = this->tracks;
+
+    this->fadeOutVolumeMultiplier = 1.0;
+    this->unk2dc = 0;
+    this->fadeOutFlag = 0;
+    this->unk128 = 0;
+    this->unk130 = 0;
+
+    for (trackIndex = 0; trackIndex < this->numTracks; trackIndex++, track++)
+    {
+        track->curTrackDataCursor = track->trackData;
+        track->startTrackDataMaybe = track->curTrackDataCursor;
+        track->trackPlaying = 1;
+        track->trackLengthOther = MidiOutput::SkipVariableLength(&track->curTrackDataCursor);
+    }
+}
+
 #pragma var_order(trackIndex, data, tracks)
 void MidiOutput::ClearTracks()
 {

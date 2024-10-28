@@ -27,12 +27,12 @@ C_ASSERT(sizeof(MidiTimer) == 0x10);
 struct MidiTrack
 {
     u32 trackPlaying;
-    u32 unk2;
+    u32 trackLengthOther;
     u32 trackLength;
     u32 unk3;
     u8 *trackData;
-    void *unk4;
-    void *unk5;
+    u8 *curTrackDataCursor;
+    u8 *startTrackDataMaybe;
     u32 unk6;
 };
 C_ASSERT(sizeof(MidiTrack) == 0x20);
@@ -62,6 +62,7 @@ struct MidiOutput : MidiTimer
     ZunResult UnprepareHeader(LPMIDIHDR pmh);
 
     ZunResult StopPlayback();
+    void LoadTracks();
     void ClearTracks();
     ZunResult ReadFileData(u32 idx, char *path);
     void ReleaseFileData(u32 idx);
@@ -83,10 +84,8 @@ struct MidiOutput : MidiTimer
     u32 division;
     u32 unk120;
     u32 unk124;
-    u32 unk128;
-    u32 unk12c;
-    u32 unk130;
-    u32 unk134;
+    f64 unk128;
+    f64 unk130;
     MidiTrack *tracks;
     MidiDevice midiOutDev;
     u8 unk144[384];
