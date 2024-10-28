@@ -162,13 +162,13 @@ MidiOutput::MidiOutput()
     this->unk120 = 0;
     this->numTracks = 0;
     this->unk2c4 = 0;
-    this->unk2c8 = 0;
-    this->unk2cc = 0;
+    this->fadeOutVolumeMultiplier = 0;
+    this->fadeOutLastSetVolume = 0;
     this->unk2d0 = 0;
     this->unk2d4 = 0;
     this->unk2d8 = 0;
     this->unk2dc = 0;
-    this->unk2e0 = 0;
+    this->fadeOutFlag = 0;
 
     for (int i = 0; i < ARRAY_SIZE_SIGNED(this->midiFileData); i++)
     {
@@ -302,6 +302,17 @@ ZunResult MidiOutput::LoadFile(char *midiPath)
     this->ReleaseFileData(0x1f);
 
     return ZUN_SUCCESS;
+}
+
+u32 MidiOutput::SetFadeOut(u32 ms)
+{
+    this->fadeOutVolumeMultiplier = 0.0;
+    this->fadeOutInterval = ms;
+    this->fadeOutElapsedMS = 0;
+    this->unk2dc = 0;
+    this->fadeOutFlag = 1;
+
+    return 0;
 }
 
 u16 MidiOutput::Ntohs(u16 val)
