@@ -19,7 +19,6 @@ th06::ResultScreen::ParseCatk
 th06::ResultScreen::GetHighScore
 th06::Supervisor::DeletedCallback
 th06::Ending::DeletedCallback
-th06::Ending::Ending
 th06::Ending::FadingEffect
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::RegisterChain
