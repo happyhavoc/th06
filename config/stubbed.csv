@@ -30,6 +30,7 @@ th06::Gui::IsStageFinished
 th06::Gui::ShowSpellcardBonus
 th06::Gui::ShowBombNamePortrait
 th06::Gui::ShowFullPowerMode
+th06::Gui::ShowBonusScore
 th06::Gui::EndPlayerSpellcard
 th06::Enemy::MathSub
 th06::Enemy::MathMul
@@ -39,10 +40,6 @@ th06::Enemy::MathAtan2
 th06::Enemy::MovePosTime
 th06::Enemy::MoveDirTime
 th06::Enemy::MoveTime
-th06::BulletManager::DespawnBullets
-th06::BulletManager::RemoveAllBullets
-th06::BulletManager::SpawnLaserPattern
-th06::BulletManager::TurnAllBulletsIntoPoints
 th06::ItemManager::RemoveAllItems
 th06::ReplayManager::RegisterChain
 th06::ReplayManager::StopRecording
