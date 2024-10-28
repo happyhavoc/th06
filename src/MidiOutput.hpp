@@ -73,6 +73,7 @@ struct MidiOutput : MidiTimer
 
     u32 SetFadeOut(u32 ms);
     static u16 Ntohs(u16 val);
+    static u32 SkipVariableLength(u8 **curTrackDataCursor);
 
     MIDIHDR *midiHeaders[32];
     i32 midiHeadersCursor;

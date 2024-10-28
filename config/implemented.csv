@@ -245,6 +245,7 @@ th06::MidiOutput::ReadFileData
 th06::MidiOutput::ReleaseFileData
 th06::MidiOutput::StopPlayback
 th06::MidiOutput::Ntohs
+th06::MidiOutput::SkipVariableLength
 th06::MidiOutput::~MidiOutput
 th06::MidiTimer::MidiTimer
 th06::MidiTimer::~MidiTimer

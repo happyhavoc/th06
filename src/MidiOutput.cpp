@@ -314,6 +314,22 @@ u16 MidiOutput::Ntohs(u16 val)
     return *(const u16 *)(&tmp);
 }
 
+u32 MidiOutput::SkipVariableLength(u8 **curTrackDataCursor)
+{
+    u32 length;
+    u8 tmp;
+
+    length = 0;
+    do
+    {
+        tmp = **curTrackDataCursor;
+        *curTrackDataCursor = *curTrackDataCursor + 1;
+        length = length * 0x80 + (tmp & 0x7f);
+    } while ((tmp & 0x80) != 0);
+
+    return length;
+}
+
 MidiOutput::~MidiOutput()
 {
     this->StopPlayback();
