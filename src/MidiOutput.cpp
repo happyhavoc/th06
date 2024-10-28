@@ -324,6 +324,20 @@ ZunResult MidiOutput::LoadFile(char *midiPath)
     return ZUN_SUCCESS;
 }
 
+ZunResult MidiOutput::Play()
+{
+    if (this->tracks == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    this->LoadTracks();
+    this->midiOutDev.OpenDevice(0xFFFFFFFF);
+    this->StartTimer(1, NULL, NULL);
+
+    return ZUN_SUCCESS;
+}
+
 u32 MidiOutput::SetFadeOut(u32 ms)
 {
     this->fadeOutVolumeMultiplier = 0.0;

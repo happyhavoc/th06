@@ -3,7 +3,6 @@ th06::AsciiManager::DrawPopupsWithHwVertexProcessing
 th06::AsciiManager::DrawPopupsWithoutHwVertexProcessing
 th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
-th06::MidiOutput::Play
 th06::MidiOutput::ParseFile
 th06::ResultScreen::OpenScore
 th06::ResultScreen::ParseClrd
