@@ -1,4 +1,10 @@
+#include "inttypes.hpp"
+#include <Windows.h>
+#include <mmreg.h>
+#include <mmsystem.h>
+
 #include "MidiOutput.hpp"
+#include "Supervisor.hpp"
 
 namespace th06
 {
@@ -7,9 +13,49 @@ MidiTimer::MidiTimer()
     timeGetDevCaps(&this->timeCaps, sizeof(TIMECAPS));
     this->timerId = 0;
 }
+
 void MidiTimer::OnTimerElapsed()
 {
 }
+
+i32 MidiTimer::StopTimer()
+{
+    if (this->timerId != 0)
+    {
+        timeKillEvent(this->timerId);
+    }
+
+    timeEndPeriod(this->timeCaps.wPeriodMin);
+    this->timerId = 0;
+
+    return 1;
+}
+
+u32 MidiTimer::StartTimer(u32 delay, LPTIMECALLBACK cb, DWORD_PTR data)
+{
+    this->StopTimer();
+    timeBeginPeriod(this->timeCaps.wPeriodMin);
+
+    if (cb != NULL)
+    {
+        this->timerId = timeSetEvent(delay, this->timeCaps.wPeriodMin, cb, data, TIME_PERIODIC);
+    }
+    else
+    {
+        this->timerId = timeSetEvent(delay, this->timeCaps.wPeriodMin, (LPTIMECALLBACK)MidiTimer::DefaultTimerCallback,
+                                     (DWORD_PTR)this, TIME_PERIODIC);
+    }
+
+    return this->timerId;
+}
+
+void MidiTimer::DefaultTimerCallback(u32 uTimerID, u32 uMsg, DWORD_PTR dwUser, DWORD_PTR dw1, DWORD_PTR dw2)
+{
+    MidiTimer *timer = (MidiTimer *)dwUser;
+
+    timer->OnTimerElapsed();
+}
+
 MidiTimer::~MidiTimer()
 {
     this->StopTimer();
@@ -21,6 +67,86 @@ MidiDevice::MidiDevice()
     this->handle = NULL;
     this->deviceId = 0;
 }
+
+ZunResult MidiDevice::Close()
+{
+    if (this->handle == 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    midiOutReset(this->handle);
+    midiOutClose(this->handle);
+    this->handle = 0;
+
+    return ZUN_SUCCESS;
+}
+
+ZunBool MidiDevice::OpenDevice(u32 uDeviceId)
+{
+    if (this->handle != 0)
+    {
+        if (this->deviceId != uDeviceId)
+        {
+            this->Close();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    this->deviceId = uDeviceId;
+
+    return midiOutOpen(&this->handle, uDeviceId, (DWORD_PTR)g_Supervisor.hwndGameWindow, NULL, CALLBACK_WINDOW) !=
+           MMSYSERR_NOERROR;
+}
+
+union MidiShortMsg {
+    struct
+    {
+        u8 midiStatus;
+        i8 firstByte;
+        i8 secondByte;
+        i8 unused;
+    } msg;
+    u32 dwMsg;
+};
+
+ZunBool MidiDevice::SendShortMsg(u8 midiStatus, u8 firstByte, u8 secondByte)
+{
+    MidiShortMsg pkt;
+
+    if (this->handle == 0)
+    {
+        return false;
+    }
+    else
+    {
+        pkt.msg.midiStatus = midiStatus;
+        pkt.msg.firstByte = firstByte;
+        pkt.msg.secondByte = secondByte;
+        return midiOutShortMsg(this->handle, pkt.dwMsg) != MMSYSERR_NOERROR;
+    }
+}
+
+ZunBool MidiDevice::SendLongMsg(LPMIDIHDR pmh)
+{
+    if (this->handle == 0)
+    {
+        return false;
+    }
+    else
+    {
+        if (midiOutPrepareHeader(this->handle, pmh, sizeof(*pmh)) != MMSYSERR_NOERROR)
+        {
+            return true;
+        }
+
+        return midiOutLongMsg(this->handle, pmh, sizeof(*pmh)) != MMSYSERR_NOERROR;
+    }
+}
+
 MidiDevice::~MidiDevice()
 {
     this->Close();
@@ -61,4 +187,5 @@ MidiOutput::~MidiOutput()
         this->ReleaseFileData(i);
     }
 }
+
 }; // namespace th06

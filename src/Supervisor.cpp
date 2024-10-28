@@ -1043,6 +1043,46 @@ void Controller::ResetKeyboard(void)
 }
 
 #pragma optimize("s", on)
+ZunBool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
+{
+    // Return conventions seem opposite of normal? But they're never used anyway
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            g_Supervisor.midiOutput->ReadFileData(midiFileIdx, path);
+        }
+
+        return FALSE;
+    }
+
+    return TRUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
+{
+    MidiOutput *globalMidiController;
+
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            globalMidiController = g_Supervisor.midiOutput;
+            globalMidiController->StopPlayback();
+            globalMidiController->ParseFile(midiFileIdx);
+            globalMidiController->Play();
+        }
+
+        return FALSE;
+    }
+
+    return TRUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 ZunResult Supervisor::PlayAudio(char *path)
 {
     char wavName[256];
@@ -1085,6 +1125,99 @@ ZunResult Supervisor::PlayAudio(char *path)
     {
         return ZUN_ERROR;
     }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Supervisor::StopAudio()
+{
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            g_Supervisor.midiOutput->StopPlayback();
+        }
+    }
+    else
+    {
+        if (g_Supervisor.cfg.musicMode == WAV)
+        {
+            g_SoundPlayer.StopBGM();
+        }
+        else
+        {
+            return ZUN_ERROR;
+        }
+    }
+
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Supervisor::SetupMidiPlayback(char *path)
+{
+    // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
+    // Standard short circuiting boolean operators and nested conditionals don't seem to work, at least
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        goto success;
+    }
+    else if (g_Supervisor.cfg.musicMode == WAV)
+    {
+        goto success;
+    }
+    else
+    {
+        return ZUN_ERROR;
+    }
+
+success:
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
+{
+    i32 unused1;
+    i32 unused2;
+    i32 unused3;
+
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        if (g_Supervisor.midiOutput != NULL)
+        {
+            g_Supervisor.midiOutput->SetFadeOut(1000.0f * fadeOutSeconds);
+        }
+    }
+    else
+    {
+        if (g_Supervisor.cfg.musicMode == WAV)
+        {
+            if (this->effectiveFramerateMultiplier == 0.0f)
+            {
+                g_SoundPlayer.FadeOut(fadeOutSeconds);
+            }
+            else
+            {
+                if (this->effectiveFramerateMultiplier > 1.0f)
+                {
+                    g_SoundPlayer.FadeOut(fadeOutSeconds);
+                }
+                else
+                {
+                    g_SoundPlayer.FadeOut(fadeOutSeconds / this->effectiveFramerateMultiplier);
+                }
+            }
+        }
+        else
+        {
+            return ZUN_ERROR;
+        }
+    }
+
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)

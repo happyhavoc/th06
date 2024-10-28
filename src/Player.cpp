@@ -1470,7 +1470,7 @@ void th06::Player::BombReimuACalc(Player *player)
             player->bombInfo.reimuABombProjectilesRelated[i] = 4.0f;
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
 
-            angle.x = g_Rng.GetRandomF32ZeroToOne() * (ZUN_PI * 2) - ZUN_PI;
+            angle.x = g_Rng.GetRandomF32ZeroToOne() * ZUN_2PI - ZUN_PI;
 
             player->bombInfo.bombRegionVelocities[i].x =
                 cosf(angle.x) * player->bombInfo.reimuABombProjectilesRelated[i];
@@ -1621,7 +1621,7 @@ void th06::Player::BombMarisaACalc(Player *player)
             g_AnmManager->ExecuteAnmIdx(starSprite, ANM_SCRIPT_PLAYER_MARISA_A_BLUE_STAR + i % 3);
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
 
-            starAngle = i * (ZUN_PI * 2) / 8.0f;
+            starAngle = i * ZUN_2PI / 8.0f;
 
             player->bombInfo.bombRegionVelocities[i].x = cosf(starAngle) * 2;
 
