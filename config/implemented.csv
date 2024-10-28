@@ -219,7 +219,12 @@ th06::Supervisor::OnUpdate
 th06::Supervisor::OnDraw
 th06::Supervisor::TickTimer
 th06::Supervisor::SetupDInput
+th06::Supervisor::ReadMidiFile
+th06::Supervisor::PlayMidiFile
 th06::Supervisor::PlayAudio
+th06::Supervisor::StopAudio
+th06::Supervisor::SetupMidiPlayback
+th06::Supervisor::FadeOutMusic
 th06::GameWindow::InitD3dDevice
 th06::GameWindow::InitD3dRendering
 th06::ScreenEffect::Clear
