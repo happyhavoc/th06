@@ -1862,6 +1862,24 @@ void Player::BombReimuADraw(Player *player)
     return;
 }
 
+#pragma var_order(bombSprite, i)
+void Player::BombReimuBDraw(Player *player)
+{
+    AnmVm *bombSprite;
+    i32 i;
+
+    Player::DarkenViewport(player);
+    bombSprite = player->bombInfo.sprites[0];
+    for (i = 0; i < 4; i++, bombSprite++)
+    {
+        bombSprite->pos = player->bombInfo.bombRegionPositions[i] + bombSprite->posOffset;
+        bombSprite->pos.x += g_GameManager.arcadeRegionTopLeftPos.x;
+        bombSprite->pos.y += g_GameManager.arcadeRegionTopLeftPos.y;
+        bombSprite->pos.z = 0.0f;
+        g_AnmManager->Draw(bombSprite);
+    }
+}
+
 #pragma var_order(bombSprite, idx)
 void Player::BombMarisaADraw(Player *player)
 {
