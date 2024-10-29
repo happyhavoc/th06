@@ -1087,6 +1087,16 @@ void Gui::ShowBonusScore(u32 bonusScore) {
     this->impl->bonusScore.fmtArg = bonusScore;
     return;
 }
+
+void Gui::FreeMsgFile() {
+    MsgRawHeader* msg;
+    if ((this->impl->msg).msgFile != NULL) {
+        msg = (this->impl->msg).msgFile;
+        free(msg);
+        (this->impl->msg).msgFile = NULL;
+    }
+}
+
 #pragma optimize("", on)
 
 }; // namespace th06

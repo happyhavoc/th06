@@ -23,7 +23,6 @@ th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
 th06::MainMenu::SelectRelated
-th06::Gui::FreeMsgFile
 th06::Gui::ShowSpellcardBonus
 th06::Gui::ShowBombNamePortrait
 th06::Gui::EndPlayerSpellcard
