@@ -1119,15 +1119,16 @@ ZunBool Gui::IsDialogueSkippable()
     return (this->impl->msg).dialogueSkippable;
 }
 
-#pragma var_order(impl, anm)
+
 void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
 {
-    GuiImpl *impl = this->impl;
+    AnmVm* playerSCP = &this->impl->playerSpellcardPortrait;
+    AnmVm* bombSCName;
     AnmManager *anm = g_AnmManager;
 
-    anm->SetAndExecuteScriptIdx(&impl->playerSpellcardPortrait, 0x4a1);
+    anm->SetAndExecuteScriptIdx(playerSCP, 0x4a1);
     anm->SetActiveSprite(&this->impl->playerSpellcardPortrait, sprite);
-    anm->SetAndExecuteScriptIdx(&impl->bombSpellcardName, 0x706);
+    anm->SetAndExecuteScriptIdx(&this->impl->bombSpellcardName, 0x706);
     g_AnmManager->DrawVmTextFmt(g_AnmManager, &this->impl->bombSpellcardName, 0xf0f0ff, 0x0, bombName);
     this->bombSpellcardBarLength = strlen(bombName) * 0xf / 2.0f + 16;
     g_Supervisor.unk198 = 3;
