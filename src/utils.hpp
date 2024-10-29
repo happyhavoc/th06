@@ -1,5 +1,6 @@
 #pragma once
 #include "GameErrorContext.hpp"
+#include "ZunMath.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 

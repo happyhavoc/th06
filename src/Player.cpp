@@ -1425,7 +1425,14 @@ void Player::Die()
     return;
 }
 
-#pragma var_order(angle, i, bombSprite, vecLength, bombPivot, bombIdx, unused)
+// MSVC allocates stack space for unused inlined variables and one of Zun's inlined bomb functions has an unused variable
+// This keeps the stack where it should be for when that happens, since it isn't clear what the original function was
+void inline WasteStackSpace()
+{
+    D3DXVECTOR3 waste;
+}
+
+#pragma var_order(angle, i, bombSprite, vecLength, bombPivot, bombIdx)
 void th06::Player::BombReimuACalc(Player *player)
 {
     i32 i;
@@ -1434,7 +1441,6 @@ void th06::Player::BombReimuACalc(Player *player)
     D3DXVECTOR3 bombPivot;
     AnmVm *bombSprite;
     ZunVec2 angle;
-    i32 unused[6]; // these variables are unsused, but they are most likely not declared explicitly
 
     if (player->bombInfo.timer >= player->bombInfo.duration)
     {
@@ -1466,6 +1472,9 @@ void th06::Player::BombReimuACalc(Player *player)
 
         if (player->bombInfo.timer.AsFrames() % 16 == 0 && (i = (player->bombInfo.timer.AsFrames() - 60) / 16))
         {
+            WasteStackSpace();
+            WasteStackSpace();
+
             player->bombInfo.reimuABombProjectilesState[i] = 1;
             player->bombInfo.reimuABombProjectilesRelated[i] = 4.0f;
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
@@ -1591,13 +1600,12 @@ void th06::Player::BombReimuACalc(Player *player)
     player->bombInfo.timer.Tick();
 }
 
-#pragma var_order(i, starSprite, unused, starAngle, unused2)
+#pragma var_order(i, starSprite, unused, starAngle)
 void th06::Player::BombMarisaACalc(Player *player)
 {
 
     f32 starAngle;
     i32 unused[3];
-    i32 unused2[6];
     AnmVm *starSprite;
     i32 i;
 
@@ -1618,6 +1626,9 @@ void th06::Player::BombMarisaACalc(Player *player)
         starSprite = player->bombInfo.sprites[0];
         for (i = 0; i < ARRAY_SIZE_SIGNED(player->bombInfo.sprites); i++, starSprite++)
         {
+            WasteStackSpace();
+            WasteStackSpace();
+
             g_AnmManager->ExecuteAnmIdx(starSprite, ANM_SCRIPT_PLAYER_MARISA_A_BLUE_STAR + i % 3);
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
 
@@ -1740,6 +1751,79 @@ void th06::Player::BombMarisaADraw(Player *player)
         g_AnmManager->Draw(bombSprite);
         bombSprite++;
     }
+}
+
+#pragma var_order(i, bombSprite, unusedVector)
+void Player::BombMarisaBCalc(Player *player)
+{
+    i32 i;
+    AnmVm *bombSprite;
+    D3DXVECTOR3 unusedVector;
+
+    if (player->bombInfo.timer >= player->bombInfo.duration)
+    {
+        g_Gui.EndPlayerSpellcard();
+        player->bombInfo.isInUse = 0;
+        player->verticalMovementSpeedMultiplierDuringBomb = 1.0f;
+        player->horizontalMovementSpeedMultiplierDuringBomb = 1.0f;
+        return;
+    }
+
+    if (player->bombInfo.timer.HasTicked() &&
+        player->bombInfo.timer == 0)
+    {
+        g_ItemManager.RemoveAllItems();
+        g_Gui.ShowBombNamePortrait(ANM_SCRIPT_FACE_BOMB_PORTRAIT, TH_MARISA_B_BOMB_NAME);
+        player->bombInfo.duration = 300;
+        player->invulnerabilityTimer.SetCurrent(360);
+        bombSprite = player->bombInfo.sprites[0];
+        for (i = 0; i < 4; i++, bombSprite++)
+        {
+            g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_MARISA_B_MASTER_SPARK + i);
+            player->bombInfo.bombRegionPositions[i] = player->positionCenter;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_MARISA_B, 0);
+        player->verticalMovementSpeedMultiplierDuringBomb = 0.3f;
+        player->horizontalMovementSpeedMultiplierDuringBomb = 0.3f;
+    }
+    else
+    {
+        WasteStackSpace();
+        WasteStackSpace();
+
+        if (player->bombInfo.timer == 60)
+        {
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 60, 1, 7, 0);
+        }
+        else if (player->bombInfo.timer == 120)
+        {
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 200, 24, 0, 0);
+        }
+
+        if (player->bombInfo.timer.HasTicked())
+        {
+            if (player->bombInfo.timer.AsFrames() % 4 != 0)
+            {
+                player->bombProjectiles[0].pos.x = 192.0f;
+                player->bombProjectiles[0].pos.y = player->positionCenter.y / 2.0f;
+                player->bombProjectiles[0].size.x = 384.0f;
+                player->bombProjectiles[0].size.y = player->positionCenter.y;
+                player->bombRegionSizes[0].x = 384.0f;
+                player->bombRegionSizes[0].y = player->positionCenter.y;
+                player->bombRegionPositions[0].x = player->bombProjectiles[0].pos.x;
+                player->bombRegionPositions[0].y = player->bombProjectiles[0].pos.y;
+                player->bombRegionDamages[0] = 12;
+            }
+        }
+
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][0]);
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][1]);
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][2]);
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][3]);
+    }
+
+    player->playerState = PLAYER_STATE_INVULNERABLE;
+    player->bombInfo.timer.Tick();
 }
 
 #pragma var_order(local8, viewport, darkeningTimeLeft)
