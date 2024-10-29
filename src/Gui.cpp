@@ -1130,7 +1130,6 @@ void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
     g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
 }
 
-
 #pragma optimize("", on)
 
 }; // namespace th06
