@@ -1217,17 +1217,15 @@ i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
         {
             continue;
         }
-        
+
         bombTopLeft.x = bombProjectile->pos.x - bombProjectile->size.x / 2.0f;
         bombTopLeft.y = bombProjectile->pos.y - bombProjectile->size.y / 2.0f;
         bombBottomRight.x = bombProjectile->size.x / 2.0f + bombProjectile->pos.x;
         bombBottomRight.y = bombProjectile->size.y / 2.0f + bombProjectile->pos.y;
 
         // Bomb clips bullet's hitbox, destroys bullet upon return
-        if (!(bombTopLeft.x > bulletBottomRight.x ||
-              bombBottomRight.x < bulletTopLeft.x ||
-              bombTopLeft.y > bulletBottomRight.y ||
-              bombBottomRight.y < bulletTopLeft.y))
+        if (!(bombTopLeft.x > bulletBottomRight.x || bombBottomRight.x < bulletTopLeft.x ||
+              bombTopLeft.y > bulletBottomRight.y || bombBottomRight.y < bulletTopLeft.y))
         {
             return 2;
         }
@@ -1237,15 +1235,13 @@ i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
     {
         return 0;
     }
-    if (this->hitboxTopLeft.x > bulletBottomRight.x ||
-        this->hitboxBottomRight.x < bulletTopLeft.x ||
-        this->hitboxTopLeft.y > bulletBottomRight.y ||
-        this->hitboxBottomRight.y < bulletTopLeft.y)
+    if (this->hitboxTopLeft.x > bulletBottomRight.x || this->hitboxBottomRight.x < bulletTopLeft.x ||
+        this->hitboxTopLeft.y > bulletBottomRight.y || this->hitboxBottomRight.y < bulletTopLeft.y)
     {
         return 0;
     }
-    
-    // Bullet clips player's graze hitbox, add score and check for death upon return 
+
+    // Bullet clips player's graze hitbox, add score and check for death upon return
     this->ScoreGraze(center);
     return 1;
 }
@@ -1300,7 +1296,7 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
 
 #pragma var_order(playerRelativeTopLeft, laserBottomRight, laserTopLeft, playerRelativeBottomRight)
 i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
-                    i32 canGraze)
+                            i32 canGraze)
 {
     D3DXVECTOR3 laserTopLeft;
     D3DXVECTOR3 laserBottomRight;
@@ -1317,10 +1313,8 @@ i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3
     laserTopLeft = *laserCenter - *laserSize * invertf(2.0f);
     laserBottomRight = *laserCenter + *laserSize * invertf(2.0f);
 
-    if (!(playerRelativeTopLeft.x > laserBottomRight.x ||
-          playerRelativeBottomRight.x < laserTopLeft.x ||
-          playerRelativeTopLeft.y > laserBottomRight.y ||
-          playerRelativeBottomRight.y < laserTopLeft.y))
+    if (!(playerRelativeTopLeft.x > laserBottomRight.x || playerRelativeBottomRight.x < laserTopLeft.x ||
+          playerRelativeTopLeft.y > laserBottomRight.y || playerRelativeBottomRight.y < laserTopLeft.y))
     {
         goto LASER_COLLISION;
     }
@@ -1328,16 +1322,14 @@ i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3
     {
         return 0;
     }
-        
+
     laserTopLeft.x -= 48.0f;
     laserTopLeft.y -= 48.0f;
     laserBottomRight.x += 48.0f;
     laserBottomRight.y += 48.0f;
 
-    if (playerRelativeTopLeft.x > laserBottomRight.x ||
-        playerRelativeBottomRight.x < laserTopLeft.x ||
-        playerRelativeTopLeft.y > laserBottomRight.y ||
-        playerRelativeBottomRight.y < laserTopLeft.y)
+    if (playerRelativeTopLeft.x > laserBottomRight.x || playerRelativeBottomRight.x < laserTopLeft.x ||
+        playerRelativeTopLeft.y > laserBottomRight.y || playerRelativeBottomRight.y < laserTopLeft.y)
     {
         return 0;
     }
@@ -1345,7 +1337,7 @@ i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3
     {
         return 0;
     }
-    
+
     this->ScoreGraze(&this->positionCenter);
     return 2;
 
@@ -1354,7 +1346,7 @@ LASER_COLLISION:
     {
         return 0;
     }
-    
+
     this->Die();
     return 1;
 }
@@ -1425,8 +1417,9 @@ void Player::Die()
     return;
 }
 
-// MSVC allocates stack space for unused inlined variables and one of Zun's inlined bomb functions has an unused variable
-// This keeps the stack where it should be for when that happens, since it isn't clear what the original function was
+// MSVC allocates stack space for unused inlined variables and one of Zun's inlined bomb functions has an unused
+// variable This keeps the stack where it should be for when that happens, since it isn't clear what the original
+// function was
 void inline WasteStackSpace()
 {
     D3DXVECTOR3 waste;
@@ -1614,8 +1607,7 @@ void Player::BombReimuBCalc(Player *player)
         return;
     }
 
-    if (player->bombInfo.timer.HasTicked() &&
-        player->bombInfo.timer == 0)
+    if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer == 0)
     {
         g_ItemManager.RemoveAllItems();
         g_Gui.ShowBombNamePortrait(ANM_SCRIPT_FACE_ENEMY_SPELLCARD_PORTRAIT, TH_REIMU_B_BOMB_NAME);
@@ -1630,7 +1622,7 @@ void Player::BombReimuBCalc(Player *player)
         {
             g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_REIMU_B_BOMB_ARRAY + i);
         }
-        
+
         g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMARI, 0);
         player->bombInfo.bombRegionPositions[0].x = player->positionCenter.x;
         player->bombInfo.bombRegionPositions[0].y = 224.0f;
@@ -1665,14 +1657,16 @@ void Player::BombReimuBCalc(Player *player)
         for (i = 0; i < 4; i++)
         {
             g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][i]);
-            if (player->bombInfo.timer.HasTicked() && 
-                player->bombInfo.timer.AsFrames() % 2 != 0)
+            if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer.AsFrames() % 2 != 0)
             {
-                player->bombProjectiles[i].pos.x = player->bombInfo.bombRegionPositions[i].x + player->bombInfo.sprites[0][i].posOffset.x;
-                player->bombProjectiles[i].pos.y = player->bombInfo.bombRegionPositions[i].y + player->bombInfo.sprites[0][i].posOffset.y;
+                player->bombProjectiles[i].pos.x =
+                    player->bombInfo.bombRegionPositions[i].x + player->bombInfo.sprites[0][i].posOffset.x;
+                player->bombProjectiles[i].pos.y =
+                    player->bombInfo.bombRegionPositions[i].y + player->bombInfo.sprites[0][i].posOffset.y;
                 player->bombRegionSizes[i].x = player->bombProjectiles[i].size.x;
                 player->bombRegionSizes[i].y = player->bombProjectiles[i].size.y;
-                player->bombRegionPositions[i] = player->bombInfo.bombRegionPositions[i] + player->bombInfo.sprites[0][i].posOffset;
+                player->bombRegionPositions[i] =
+                    player->bombInfo.bombRegionPositions[i] + player->bombInfo.sprites[0][i].posOffset;
                 player->bombRegionDamages[i] = 8;
             }
         }
@@ -1768,8 +1762,7 @@ void Player::BombMarisaBCalc(Player *player)
         return;
     }
 
-    if (player->bombInfo.timer.HasTicked() &&
-        player->bombInfo.timer == 0)
+    if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer == 0)
     {
         g_ItemManager.RemoveAllItems();
         g_Gui.ShowBombNamePortrait(ANM_SCRIPT_FACE_BOMB_PORTRAIT, TH_MARISA_B_BOMB_NAME);
@@ -1799,8 +1792,7 @@ void Player::BombMarisaBCalc(Player *player)
             ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 200, 24, 0, 0);
         }
 
-        if (player->bombInfo.timer.HasTicked() &&
-            player->bombInfo.timer.AsFrames() % 4 != 0)
+        if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer.AsFrames() % 4 != 0)
         {
             player->bombProjectiles[0].pos.x = 192.0f;
             player->bombProjectiles[0].pos.y = player->positionCenter.y / 2.0f;
@@ -1964,12 +1956,12 @@ void Player::DarkenViewport(Player *player)
     if (player->bombInfo.timer < 60)
     {
         darkeningTimeLeft = (player->bombInfo.timer.AsFramesFloat() * 176.0f) / 60.0f;
-        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32) darkeningTimeLeft;
+        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32)darkeningTimeLeft;
     }
     else if (player->bombInfo.timer >= player->bombInfo.duration + -60)
     {
         darkeningTimeLeft = ((player->bombInfo.duration - player->bombInfo.timer.AsFramesFloat()) * 176.0f) / 60.0f;
-        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32) darkeningTimeLeft;
+        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32)darkeningTimeLeft;
     }
     else
     {
