@@ -49,6 +49,7 @@ struct Gui
     void ShowBonusScore(u32 bonusScore);
     void EndEnemySpellcard();
     void EndPlayerSpellcard();
+    ZunBool IsDialogueSkippable();
 
     void ShowFullPowerMode(i32 fmtArg);
 

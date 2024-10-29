@@ -1114,6 +1114,10 @@ void Gui::EndPlayerSpellcard()
     (this->impl->bombSpellcardName).pendingInterrupt = 1;
 }
 
+ZunBool Gui::IsDialogueSkippable() {
+    return (this->impl->msg).dialogueSkippable;
+}
+
 #pragma var_order(impl, anm)
 void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
 {
