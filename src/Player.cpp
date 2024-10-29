@@ -1756,8 +1756,8 @@ void th06::Player::BombMarisaADraw(Player *player)
 #pragma var_order(i, bombSprite, unusedVector)
 void Player::BombMarisaBCalc(Player *player)
 {
-    i32 i;
     AnmVm *bombSprite;
+    i32 i;
     D3DXVECTOR3 unusedVector;
 
     if (player->bombInfo.timer >= player->bombInfo.duration)
@@ -1824,6 +1824,31 @@ void Player::BombMarisaBCalc(Player *player)
 
     player->playerState = PLAYER_STATE_INVULNERABLE;
     player->bombInfo.timer.Tick();
+}
+
+#pragma var_order(bombSprite, i, spriteAngle)
+void Player::BombMarisaBDraw(Player *player)
+{
+    AnmVm *bombSprite;
+    i32 i;
+    f32 spriteAngle;
+
+    Player::DarkenViewport(player);
+    bombSprite = player->bombInfo.sprites[0];
+    for (i = 0; i < 4; i++)
+    {
+        spriteAngle = (((ZUN_PI / 5) * i) / 3.0f - ZUN_PI) + ((2 * ZUN_PI) / 5);
+        bombSprite->pos = player->positionCenter;
+        bombSprite->pos.x += (cosf(spriteAngle) * bombSprite->sprite->heightPx * bombSprite->scaleY) / 2.0f;
+        bombSprite->pos.y += (sinf(spriteAngle) * bombSprite->sprite->heightPx * bombSprite->scaleY) / 2.0f;
+        spriteAngle = (ZUN_PI / 2) - spriteAngle;
+        bombSprite->rotation.z = utils::AddNormalizeAngle(spriteAngle, ZUN_PI);
+        bombSprite->pos.x += g_GameManager.arcadeRegionTopLeftPos.x;
+        bombSprite->pos.y += g_GameManager.arcadeRegionTopLeftPos.y;
+        bombSprite->pos.z = 0.0f;
+        g_AnmManager->Draw(bombSprite);
+        bombSprite++;
+    }
 }
 
 #pragma var_order(local8, viewport, darkeningTimeLeft)
