@@ -1115,9 +1115,10 @@ void Gui::EndPlayerSpellcard()
 }
 
 #pragma var_order(impl, anm)
-void Gui::ShowBombNamePortrait(u32 sprite, char* bombName) {
-    GuiImpl* impl = this->impl;
-    AnmManager* anm = g_AnmManager;
+void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
+{
+    GuiImpl *impl = this->impl;
+    AnmManager *anm = g_AnmManager;
 
     anm->SetAndExecuteScriptIdx(&impl->playerSpellcardPortrait, 0x4a1);
     anm->SetActiveSprite(&this->impl->playerSpellcardPortrait, sprite);
@@ -1128,8 +1129,6 @@ void Gui::ShowBombNamePortrait(u32 sprite, char* bombName) {
     g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
 }
 
-
 #pragma optimize("", on)
-
 
 }; // namespace th06
