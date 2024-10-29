@@ -168,6 +168,7 @@ th06::Gui::ShowBonusScore
 th06::Gui::ShowSpellcardBonus
 th06::Gui::IsStageFinished
 th06::Gui::FreeMsgFile
+th06::Gui::EndPlayerSpellcard
 th06::GuiImpl::DrawDialogue
 th06::GuiImpl::MsgRead
 th06::GuiImpl::RunMsg

@@ -1105,6 +1105,10 @@ void Gui::FreeMsgFile() {
     }
 }
 
+void Gui::EndPlayerSpellcard() {
+    (this->impl->bombSpellcardName).pendingInterrupt = 1;
+}
+
 #pragma optimize("", on)
 
 }; // namespace th06
