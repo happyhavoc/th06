@@ -1114,7 +1114,8 @@ void Gui::EndPlayerSpellcard()
     (this->impl->bombSpellcardName).pendingInterrupt = 1;
 }
 
-ZunBool Gui::IsDialogueSkippable() {
+ZunBool Gui::IsDialogueSkippable()
+{
     return (this->impl->msg).dialogueSkippable;
 }
 
