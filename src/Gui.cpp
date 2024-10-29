@@ -1066,7 +1066,7 @@ void Gui::DrawStageElements()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-void Gui::ShowFullPowerMode(i32 fmtArg) 
+void Gui::ShowFullPowerMode(i32 fmtArg)
 {
     this->impl->fullPowerMode.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
     this->impl->fullPowerMode.isShown = 1;
@@ -1075,7 +1075,8 @@ void Gui::ShowFullPowerMode(i32 fmtArg)
     return;
 }
 
-void Gui::ShowBonusScore(u32 bonusScore) {
+void Gui::ShowBonusScore(u32 bonusScore)
+{
     this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 32.0f, 0.0f);
     this->impl->bonusScore.isShown = 1;
     this->impl->bonusScore.timer.InitializeForPopup();
@@ -1083,7 +1084,8 @@ void Gui::ShowBonusScore(u32 bonusScore) {
     return;
 }
 
-void Gui::ShowSpellcardBonus(u32 spellcardScore) {
+void Gui::ShowSpellcardBonus(u32 spellcardScore)
+{
     this->impl->spellCardBonus.pos = D3DXVECTOR3(224.0f, 16.0f, 0.0f);
     this->impl->spellCardBonus.isShown = 1;
     this->impl->spellCardBonus.timer.InitializeForPopup();
@@ -1091,21 +1093,24 @@ void Gui::ShowSpellcardBonus(u32 spellcardScore) {
     return;
 }
 
-ZunBool Gui::IsStageFinished() 
+ZunBool Gui::IsStageFinished()
 {
     return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
 }
 
-void Gui::FreeMsgFile() {
-    MsgRawHeader* msg;
-    if ((this->impl->msg).msgFile != NULL) {
+void Gui::FreeMsgFile()
+{
+    MsgRawHeader *msg;
+    if ((this->impl->msg).msgFile != NULL)
+    {
         msg = (this->impl->msg).msgFile;
         free(msg);
         (this->impl->msg).msgFile = NULL;
     }
 }
 
-void Gui::EndPlayerSpellcard() {
+void Gui::EndPlayerSpellcard()
+{
     (this->impl->bombSpellcardName).pendingInterrupt = 1;
 }
 
