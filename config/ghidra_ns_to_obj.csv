@@ -22,6 +22,7 @@ MidiOutput,th06::MidiDevice,th06::MidiTimer,th06::MidiOutput
 Pbg3Archive,th06::Pbg3Archive
 Pbg3Parser,th06::Pbg3Parser
 Player,th06::Player
+ResultScreen,th06::ResultScreen
 Rng,th06::Rng
 ScreenEffect,th06::ScreenEffect
 SoundPlayer,th06::SoundPlayer

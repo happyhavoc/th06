@@ -219,6 +219,14 @@
             "reverse_fn_order": false
         },
         {
+            "name": "ResultScreen",
+
+            "target_path": "build/objdiff/orig/ResultScreen.obj",
+            "base_path": "build/objdiff/reimpl/ResultScreen.obj",
+
+            "reverse_fn_order": false
+        },
+        {
             "name": "Rng",
 
             "target_path": "build/objdiff/orig/Rng.obj",

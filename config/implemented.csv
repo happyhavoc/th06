@@ -254,6 +254,8 @@ th06::MidiTimer::MidiTimer
 th06::MidiTimer::~MidiTimer
 th06::MidiTimer::StopTimer
 th06::MidiTimer::DefaultTimerCallback
+th06::ResultScreen::RegisterChain
+th06::ResultScreen::ResultScreen
 th06::Stage::RegisterChain
 th06::Stage::CutChain
 th06::Stage::AddedCallback

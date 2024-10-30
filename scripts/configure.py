@@ -118,6 +118,7 @@ def configure(build_type):
             "Gui",
             "GuiImpl",
             "Rng",
+            "ResultScreen",
             "utils",
             "ZunTimer",
             "zwave",

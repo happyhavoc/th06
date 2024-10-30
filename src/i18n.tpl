@@ -6,6 +6,7 @@
 #define TH_JP_CONFIG_FILE "東方紅魔郷.cfg"
 #define TH_JP_WINDOW_TITLE "東方紅魔郷　〜 the Embodiment of Scarlet Devil"
 #define TH_JP_DBG_MAINMENU_VRAM "Debug : title 開始 VRAM = %d\n"
+#define TH_JP_DBG_RESULTSCREEN_COUNAT "counat = %d\n"
 #define TH_JP_ERR_ALREADY_RUNNING "二つは起動できません\n"
 #define TH_JP_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D オブジェクトは何故か作成出来なかった\n"
 #define TH_JP_ERR_LOGGER_START "東方動作記録 --------------------------------------------- \n"
@@ -92,6 +93,7 @@
 #define TH_EN_CONFIG_FILE "th06.cfg"
 #define TH_EN_WINDOW_TITLE "Touhou Koumakyou ~ the Embodiment of Scarlet Devil"
 #define TH_EN_DBG_MAINMENU_VRAM "Debug : title menu VRAM = %d\n"
+#define TH_EN_DBG_RESULTSCREEN_COUNAT "counat = %d\n"
 #define TH_EN_ERR_ALREADY_RUNNING "Touhou cannot be started\n"
 #define TH_EN_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D object could not be created for some reason\n"
 #define TH_EN_ERR_LOGGER_START "Logger started --------------------------------------------- \n"
@@ -179,6 +181,7 @@
 #define TH_CONFIG_FILE TH_MAKE_LANG_STR(TH_LANG, _CONFIG_FILE)
 #define TH_WINDOW_TITLE TH_MAKE_LANG_STR(TH_LANG, _WINDOW_TITLE)
 #define TH_DBG_MAINMENU_VRAM TH_MAKE_LANG_STR(TH_LANG, _DBG_MAINMENU_VRAM)
+#define TH_DBG_RESULTSCREEN_COUNAT TH_MAKE_LANG_STR(TH_LANG, _DBG_RESULTSCREEN_COUNAT)
 #define TH_ERR_ALREADY_RUNNING TH_MAKE_LANG_STR(TH_LANG, _ERR_ALREADY_RUNNING)
 #define TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ TH_MAKE_LANG_STR(TH_LANG, _ERR_D3D_COULD_NOT_CREATE_OBJ)
 #define TH_ERR_LOGGER_START TH_MAKE_LANG_STR(TH_LANG, _ERR_LOGGER_START)
