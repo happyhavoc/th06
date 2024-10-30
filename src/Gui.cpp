@@ -1064,4 +1064,72 @@ void Gui::DrawStageElements()
     }
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+void Gui::ShowFullPowerMode(i32 fmtArg)
+{
+    this->impl->fullPowerMode.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
+    this->impl->fullPowerMode.isShown = 1;
+    this->impl->fullPowerMode.timer.InitializeForPopup();
+    this->impl->fullPowerMode.fmtArg = fmtArg;
+    return;
+}
+
+void Gui::ShowBonusScore(u32 bonusScore)
+{
+    this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 32.0f, 0.0f);
+    this->impl->bonusScore.isShown = 1;
+    this->impl->bonusScore.timer.InitializeForPopup();
+    this->impl->bonusScore.fmtArg = bonusScore;
+    return;
+}
+
+void Gui::ShowSpellcardBonus(u32 spellcardScore)
+{
+    this->impl->spellCardBonus.pos = D3DXVECTOR3(224.0f, 16.0f, 0.0f);
+    this->impl->spellCardBonus.isShown = 1;
+    this->impl->spellCardBonus.timer.InitializeForPopup();
+    this->impl->spellCardBonus.fmtArg = spellcardScore;
+    return;
+}
+
+ZunBool Gui::IsStageFinished()
+{
+    return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
+}
+
+void Gui::FreeMsgFile()
+{
+    MsgRawHeader *msg;
+    if ((this->impl->msg).msgFile != NULL)
+    {
+        msg = (this->impl->msg).msgFile;
+        free(msg);
+        (this->impl->msg).msgFile = NULL;
+    }
+}
+
+void Gui::EndPlayerSpellcard()
+{
+    (this->impl->bombSpellcardName).pendingInterrupt = 1;
+}
+
+ZunBool Gui::IsDialogueSkippable()
+{
+    return (this->impl->msg).dialogueSkippable;
+}
+
+void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
+{
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->playerSpellcardPortrait, 0x4a1);
+    g_AnmManager->SetActiveSprite(&this->impl->playerSpellcardPortrait, sprite);
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->bombSpellcardName, 0x706);
+    g_AnmManager->DrawVmTextFmt(g_AnmManager, &this->impl->bombSpellcardName, 0xf0f0ff, 0x0, bombName);
+    this->bombSpellcardBarLength = strlen(bombName) * 0xf / 2.0f + 16;
+    g_Supervisor.unk198 = 3;
+    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
+}
+
+#pragma optimize("", on)
+
 }; // namespace th06

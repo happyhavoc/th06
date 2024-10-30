@@ -163,6 +163,14 @@ th06::Gui::OnDraw
 th06::Gui::DrawGameScene
 th06::Gui::DrawStageElements
 th06::Gui::UpdateStageElements
+th06::Gui::ShowFullPowerMode
+th06::Gui::ShowBonusScore
+th06::Gui::ShowSpellcardBonus
+th06::Gui::IsStageFinished
+th06::Gui::FreeMsgFile
+th06::Gui::EndPlayerSpellcard
+th06::Gui::ShowBombNamePortrait
+th06::Gui::IsDialogueSkippable
 th06::GuiImpl::DrawDialogue
 th06::GuiImpl::MsgRead
 th06::GuiImpl::RunMsg
