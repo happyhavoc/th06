@@ -165,7 +165,7 @@ i32 *Enemy::GetVar(Enemy *enemy, EclVarId *eclVarId, EclValueType *valueType)
         return &enemy->life;
 
     case ECL_VAR_PLAYER_SHOT:
-        g_PlayerShot = g_GameManager.character * 2 + g_GameManager.shotType;
+        g_PlayerShot = g_GameManager.CharacterShotType();
         if (valueType != NULL)
             *valueType = ECL_VALUE_TYPE_INT;
         return &g_PlayerShot;

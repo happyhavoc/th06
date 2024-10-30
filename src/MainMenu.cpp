@@ -1474,10 +1474,10 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
             }
             menu->cursor = g_GameManager.menuCursorBackup;
-            local_4c = g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+            local_4c = g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                    .difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6
                            ? 6
-                           : g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+                           : g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                  .difficultyClearedWithoutRetries[g_GameManager.difficulty];
             if (g_GameManager.difficulty == EASY && local_4c == 6)
             {
@@ -1490,10 +1490,10 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         }
         break;
     case STATE_PRACTICE_LVL_SELECT:
-        chosenStage = g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+        chosenStage = g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                   .difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6
                           ? 6
-                          : g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+                          : g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                 .difficultyClearedWithoutRetries[g_GameManager.difficulty];
         if (g_GameManager.difficulty == EASY && chosenStage == 6)
         {

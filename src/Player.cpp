@@ -117,7 +117,7 @@ ZunResult Player::AddedCallback(Player *p)
     p->grabItemSize.y = 12.0;
     p->grabItemSize.z = 5.0;
     p->playerDirection = MOVEMENT_NONE;
-    memcpy(&p->characterData, &g_CharData[g_GameManager.character * 2 + g_GameManager.shotType], sizeof(CharacterData));
+    memcpy(&p->characterData, &g_CharData[g_GameManager.CharacterShotType()], sizeof(CharacterData));
     p->characterData.diagonalMovementSpeed = p->characterData.orthogonalMovementSpeed / sqrtf(2.0);
     p->characterData.diagonalMovementSpeedFocus = p->characterData.orthogonalMovementSpeedFocus / sqrtf(2.0);
     p->fireBulletCallback = p->characterData.fireBulletCallback;
@@ -132,8 +132,8 @@ ZunResult Player::AddedCallback(Player *p)
         curBullet->bulletState = 0;
     }
     p->fireBulletTimer.SetCurrent(-1);
-    p->bombInfo.calc = g_BombData[g_GameManager.character * 2 + g_GameManager.shotType].calc;
-    p->bombInfo.draw = g_BombData[g_GameManager.character * 2 + g_GameManager.shotType].draw;
+    p->bombInfo.calc = g_BombData[g_GameManager.CharacterShotType()].calc;
+    p->bombInfo.draw = g_BombData[g_GameManager.CharacterShotType()].draw;
     p->bombInfo.isInUse = 0;
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->laserTimer); idx++)
     {

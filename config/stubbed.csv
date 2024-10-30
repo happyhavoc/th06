@@ -8,7 +8,7 @@ th06::ResultScreen::OpenScore
 th06::ResultScreen::ParseClrd
 th06::ResultScreen::OnUpdate
 th06::ResultScreen::OnDraw
-th06::ResultScreen::AddedCallback
+th06::ResultScreen::LinkScoreEx
 th06::ResultScreen::DeletedCallback
 th06::ResultScreen::ParsePscr
 th06::ResultScreen::ParseCatk

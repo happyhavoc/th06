@@ -45,6 +45,9 @@ enum StageNumber
 #define GAME_REGION_RIGHT (GAME_REGION_LEFT + GAME_REGION_WIDTH)
 #define GAME_REGION_BOTTOM (GAME_REGION_TOP + GAME_REGION_HEIGHT)
 
+struct GameManager;
+
+DIFFABLE_EXTERN(GameManager, g_GameManager);
 struct GameManager
 {
     GameManager();
@@ -65,6 +68,11 @@ struct GameManager
     void AddScore(i32 points)
     {
         this->score += points;
+    }
+
+    static i32 CharacterShotType()
+    {
+        return g_GameManager.shotType + g_GameManager.character * 2;
     }
 
     u32 guiScore;
@@ -123,6 +131,4 @@ struct GameManager
     i32 subRank;
 };
 C_ASSERT(sizeof(GameManager) == 0x1a80);
-
-DIFFABLE_EXTERN(GameManager, g_GameManager);
 }; // namespace th06

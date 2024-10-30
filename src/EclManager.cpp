@@ -752,7 +752,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                                 {
                                     ((u8 *)&local_80->nameCsum)[local_84 + 1] = ((u8 *)&local_80->nameCsum)[local_84];
                                 }
-                                local_80->characterShotType = g_GameManager.character * 2 + g_GameManager.shotType;
+                                local_80->characterShotType = g_GameManager.CharacterShotType();
                             }
                             g_GameManager.unk_28++;
                         }

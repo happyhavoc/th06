@@ -7,25 +7,29 @@
 namespace th06
 {
 
+#define HSCR_NUM_CHARS_SHOTTYPES 4
+#define HSCR_NUM_DIFFICULTIES 5
+#define HSCR_NUM_SCORES_SLOTS 10
+
 enum ResultScreenState
 {
     RESULT_SCREEN_STATE_UNK_0 = 0,
-    RESULT_SCREEN_STATE_UNK_1,
-    RESULT_SCREEN_STATE_UNK_2,
-    RESULT_SCREEN_STATE_UNK_3,
-    RESULT_SCREEN_STATE_UNK_4,
-    RESULT_SCREEN_STATE_UNK_5,
-    RESULT_SCREEN_STATE_UNK_6,
-    RESULT_SCREEN_STATE_UNK_7,
-    RESULT_SCREEN_STATE_UNK_8,
-    RESULT_SCREEN_STATE_UNK_9,
-    RESULT_SCREEN_STATE_UNK_10,
+    RESULT_SCREEN_STATE_CHOOSING_DIFFICULTY,
+    RESULT_SCREEN_STATE_EXITING,
+    RESULT_SCREEN_STATE_BEST_SCORES_EASY,
+    RESULT_SCREEN_STATE_BEST_SCORES_NORMAL,
+    RESULT_SCREEN_STATE_BEST_SCORES_HARD,
+    RESULT_SCREEN_STATE_BEST_SCORES_LUNATIC,
+    RESULT_SCREEN_STATE_BEST_SCORES_EXTRA,
+    RESULT_SCREEN_STATE_SPELLCARDS,
+    RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME,
+    RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION,
     RESULT_SCREEN_STATE_UNK_11,
-    RESULT_SCREEN_STATE_UNK_12,
-    RESULT_SCREEN_STATE_UNK_13,
-    RESULT_SCREEN_STATE_UNK_14,
-    RESULT_SCREEN_STATE_UNK_15,
-    RESULT_SCREEN_STATE_UNK_16,
+    RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE,
+    RESULT_SCREEN_STATE_WRITING_REPLAY_NAME,
+    RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE,
+    RESULT_SCREEN_STATE_STATS_SCREEN,
+    RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION,
     RESULT_SCREEN_STATE_UNK_17,
 };
 struct Th6k
@@ -34,6 +38,7 @@ struct Th6k
     u16 th6kLen;
     u16 unkLen;
     u8 version;
+    u8 unk_9;
 };
 C_ASSERT(sizeof(Th6k) == 0xc);
 
@@ -78,7 +83,7 @@ struct Hscr
     u8 character;
     u8 difficulty;
     u8 stage;
-    u8 name[9];
+    char name[9];
 };
 C_ASSERT(sizeof(Hscr) == 0x1c);
 
@@ -124,6 +129,7 @@ struct ResultScreen
     static ZunResult ParsePscr(ScoreDat *s, Pscr *out);
     static u32 GetHighScore(ScoreDat *score_dat, ScoreListNode *node, u32 character, u32 difficulty);
     static void ReleaseScoreDat(ScoreDat *s);
+    void LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
 
     ScoreDat *scoreDat;
     i32 unk_4;
@@ -139,8 +145,8 @@ struct ResultScreen
     AnmVm unk_40[38];
     AnmVm unk_28a0[16];
     AnmVm unk_39a0;
-    ScoreListNode scores[20];
-    Hscr defaultScore[5][4][10];
+    ScoreListNode scores[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES];
+    Hscr defaultScore[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES][HSCR_NUM_SCORES_SLOTS];
     Hscr hscr;
     u8 unk_519c[12];
     ChainElem *calcChain;

@@ -1,4 +1,5 @@
 _g_BulletTypeInfos,                     0x0046a6e8
+_g_DefaultMagic,                        0x0046bdf4
 _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_StageFiles,                          0x004760e0
 _g_SpellcardScore,                      0x00476120
