@@ -3,6 +3,7 @@ _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_StageFiles,                          0x004760e0
 _g_SpellcardScore,                      0x00476120
 _g_EclExInsn,                           0x00476220
+_g_PatchouliShottypeVars,               0x00476264
 _g_Effects,                             0x00476298
 _g_RandomItems,                         0x00476338
 _g_EffectsColorWithTextureBlending,     0x00476358
@@ -79,6 +80,9 @@ _g_PlayerShot,                          0x00487e44
 _g_PlayerDistance,                      0x00487e48
 _g_PlayerAngle,                         0x00487e4c
 _g_EclManager,                          0x00487e50
+_g_StarAngleTable,                      0x00487edc
+_g_EnemyPosVector,                      0x00487f5c
+_g_PlayerPosVector,                     0x00487f68
 _g_EffectManager,                       0x00487fe0
 _g_EffectManagerCalcChain,              0x004b7964
 _g_EffectManagerDrawChain,              0x004b7984

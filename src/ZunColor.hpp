@@ -17,6 +17,7 @@
 #define COLOR_LIGHTYELLOW 0xffffff80
 #define COLOR_PALEBLUE 0xffc0b0ff
 #define COLOR_NEONBLUE 0xff4040ff
+#define COLOR_DEEPBLUE 0xff3030ff
 #define COLOR_GUI_1 0xffe8f0ff
 #define COLOR_GUI_2 0xffffe8f0
 

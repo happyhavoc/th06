@@ -13,6 +13,7 @@
 #include <Windows.h>
 #include <d3d8.h>
 #include <d3dx8math.h>
+#include <string.h>
 
 namespace th06
 {
@@ -42,7 +43,7 @@ C_ASSERT(sizeof(EnemyBulletShooter) == 0x54);
 struct EnemyLaserShooter
 {
     i16 sprite;
-    i16 color;
+    i16 spriteOffset;
     D3DXVECTOR3 position;
     f32 angle;
     u32 unk_14;
@@ -147,6 +148,24 @@ struct Enemy
     static void MovePosTime(Enemy *enemy, EclRawInstr *instr);
     static void MoveTime(Enemy *enemy, EclRawInstr *instr);
 
+    static void ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsShootAtRandomArea(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage6XFunc10(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStageXFunc14(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr);
+    static void ExInsStageXFunc16(Enemy *enemy, EclRawInstr *instr);
+
     f32 LifePercent()
     {
         return (f32)this->life / (f32)this->maxLife;
@@ -241,7 +260,7 @@ struct Enemy
     i8 itemDrop;
     u8 bossId;
     u8 unk_e41;
-    ZunTimer unk_e44;
+    ZunTimer exInsFunc10Timer;
     EnemyFlags flags;
     u8 anmExFlags;
     i16 anmExDefaults;
@@ -258,8 +277,8 @@ struct Enemy
     i32 lifeCallbackSub;
     i32 timerCallbackThreshold;
     i32 timerCallbackSub;
-    f32 unk_eb8;
-    ZunTimer unk_ebc;
+    f32 exInsFunc6Angle;
+    ZunTimer exInsFunc6Timer;
 };
 C_ASSERT(sizeof(Enemy) == 0xec8);
 }; // namespace th06

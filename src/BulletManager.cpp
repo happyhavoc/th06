@@ -387,14 +387,14 @@ Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
         }
 
         g_AnmManager->SetAndExecuteScriptIdx(&laser->vm0, bulletProps->sprite + ANM_SCRIPT_BULLET3_LASER);
-        g_AnmManager->SetActiveSprite(&laser->vm0, laser->vm0.activeSpriteIndex + bulletProps->color);
+        g_AnmManager->SetActiveSprite(&laser->vm0, laser->vm0.activeSpriteIndex + bulletProps->spriteOffset);
 
-        g_AnmManager->InitializeAndSetSprite(&laser->vm1, g_BulletSpriteOffset16Px[bulletProps->color] +
+        g_AnmManager->InitializeAndSetSprite(&laser->vm1, g_BulletSpriteOffset16Px[bulletProps->spriteOffset] +
                                                               ANM_SPRITE_BULLET3_SPAWN_BIG_BALL);
 
         laser->vm1.flags.blendMode = AnmVmBlendMode_One;
         laser->pos = bulletProps->position;
-        laser->color = bulletProps->color;
+        laser->color = bulletProps->spriteOffset;
         laser->inUse = true;
         laser->angle = bulletProps->angle;
 
@@ -1036,18 +1036,6 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 
     mgr->time.Tick();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
-}
-
-void __inline fsincos_wrapper(f32 *out_sine, f32 *out_cosine, f32 angle)
-{
-    __asm {
-        fld [angle]
-        fsincos
-        mov eax, [out_cosine]
-        fstp [eax]
-        mov eax, [out_sine]
-        fstp [eax]
-    }
 }
 
 #pragma var_order(idx, sine, curLaser, laserOffset, cosine, curBullet1, curBullet2)

@@ -280,6 +280,15 @@ struct EclRawInstrBulletRankInfluenceArgs
     i32 bulletRankAmount2High;
 };
 
+struct EclRawInstrExInstrArgs
+{
+    u32 exInstrIndex;
+    union {
+        i32 i32Param;
+        u8 u8Param;
+    };
+};
+
 union EclRawInstrArgs {
     EclRawInstrAluArgs alu;
     EclRawInstrCmpArgs cmp;
@@ -305,6 +314,7 @@ union EclRawInstrArgs {
     EclRawInstrAnmInterruptSlotArgs anmInterruptSlot;
     EclRawInstrBulletSoundArgs bulletSound;
     EclRawInstrBulletRankInfluenceArgs bulletRankInfluence;
+    EclRawInstrExInstrArgs exInstr;
     i32 setInt;
 
     i32 GetBossLifeCount()
