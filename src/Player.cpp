@@ -951,9 +951,10 @@ ZunResult Player::HandlePlayerInputs()
 #pragma var_order(bulletIdx, bullets)
 void Player::DrawBullets(Player *p)
 {
-    int bulletIdx;
-    PlayerBullet *bullets = p->bullets;
+    i32 bulletIdx;
+    PlayerBullet *bullets;
 
+    bullets = p->bullets;
     for (bulletIdx = 0; bulletIdx < ARRAY_SIZE_SIGNED(p->bullets); bulletIdx++, bullets++)
     {
         if (bullets->bulletState != BULLET_STATE_FIRED)
@@ -964,6 +965,28 @@ void Player::DrawBullets(Player *p)
         {
             bullets->sprite.rotation.z = ZUN_PI / 2 - utils::AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
         }
+        g_AnmManager->Draw2(&bullets->sprite);
+    }
+}
+
+#pragma var_order(bulletIdx, bullets)
+void Player::DrawBulletExplosions(Player *p)
+{
+    i32 bulletIdx;
+    PlayerBullet *bullets;
+
+    bullets = p->bullets;
+    for (bulletIdx = 0; bulletIdx < ARRAY_SIZE_SIGNED(p->bullets); bulletIdx++, bullets++)
+    {
+        if (bullets->bulletState != BULLET_STATE_COLLIDED)
+        {
+            continue;
+        }
+        if (bullets->sprite.autoRotate)
+        {
+            bullets->sprite.rotation.z = ZUN_PI / 2 - utils::AddNormalizeAngle(bullets->unk_134.z, ZUN_PI);
+        }
+        bullets->sprite.pos.z = 0.4f;
         g_AnmManager->Draw2(&bullets->sprite);
     }
 }
@@ -1172,6 +1195,57 @@ FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet,
     return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
 }
 
+#pragma var_order(bombTopLeft, i, bulletBottomRight, bulletTopLeft, bombProjectile, bombBottomRight)
+i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
+{
+    D3DXVECTOR3 bombBottomRight;
+    PlayerRect *bombProjectile;
+    D3DXVECTOR3 bombTopLeft;
+    D3DXVECTOR3 bulletBottomRight;
+    D3DXVECTOR3 bulletTopLeft;
+    i32 i;
+
+    bulletTopLeft.x = center->x - size->x / 2.0f - 20.0f;
+    bulletTopLeft.y = center->y - size->y / 2.0f - 20.0f;
+    bulletBottomRight.x = center->x + size->x / 2.0f + 20.0f;
+    bulletBottomRight.y = center->y + size->y / 2.0f + 20.0f;
+    bombProjectile = this->bombProjectiles;
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->bombProjectiles); i++, bombProjectile++)
+    {
+        if (bombProjectile->size.x == 0.0f)
+        {
+            continue;
+        }
+
+        bombTopLeft.x = bombProjectile->pos.x - bombProjectile->size.x / 2.0f;
+        bombTopLeft.y = bombProjectile->pos.y - bombProjectile->size.y / 2.0f;
+        bombBottomRight.x = bombProjectile->size.x / 2.0f + bombProjectile->pos.x;
+        bombBottomRight.y = bombProjectile->size.y / 2.0f + bombProjectile->pos.y;
+
+        // Bomb clips bullet's hitbox, destroys bullet upon return
+        if (!(bombTopLeft.x > bulletBottomRight.x || bombBottomRight.x < bulletTopLeft.x ||
+              bombTopLeft.y > bulletBottomRight.y || bombBottomRight.y < bulletTopLeft.y))
+        {
+            return 2;
+        }
+    }
+
+    if (this->playerState == PLAYER_STATE_DEAD || this->playerState == PLAYER_STATE_SPAWNING)
+    {
+        return 0;
+    }
+    if (this->hitboxTopLeft.x > bulletBottomRight.x || this->hitboxBottomRight.x < bulletTopLeft.x ||
+        this->hitboxTopLeft.y > bulletBottomRight.y || this->hitboxBottomRight.y < bulletTopLeft.y)
+    {
+        return 0;
+    }
+
+    // Bullet clips player's graze hitbox, add score and check for death upon return
+    this->ScoreGraze(center);
+    return 1;
+}
+
 #pragma var_order(padding1, bombProjectileTop, bombProjectileLeft, curBombIdx, padding2, bulletBottom, bulletRight,    \
                   padding3, bulletTop, bulletLeft, curBombProjectile, padding4, bombProjectileBottom,                  \
                   bombProjectileRight)
@@ -1220,6 +1294,63 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
     }
 }
 
+#pragma var_order(playerRelativeTopLeft, laserBottomRight, laserTopLeft, playerRelativeBottomRight)
+i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3DXVECTOR3 *rotation, f32 angle,
+                            i32 canGraze)
+{
+    D3DXVECTOR3 laserTopLeft;
+    D3DXVECTOR3 laserBottomRight;
+    D3DXVECTOR3 playerRelativeTopLeft;
+    D3DXVECTOR3 playerRelativeBottomRight;
+
+    laserTopLeft = this->positionCenter - *rotation;
+    utils::Rotate(&laserBottomRight, &laserTopLeft, angle);
+    laserBottomRight.z = 0;
+    laserTopLeft = laserBottomRight + *rotation;
+    playerRelativeTopLeft = laserTopLeft - this->hitboxSize;
+    playerRelativeBottomRight = laserTopLeft + this->hitboxSize;
+
+    laserTopLeft = *laserCenter - *laserSize * invertf(2.0f);
+    laserBottomRight = *laserCenter + *laserSize * invertf(2.0f);
+
+    if (!(playerRelativeTopLeft.x > laserBottomRight.x || playerRelativeBottomRight.x < laserTopLeft.x ||
+          playerRelativeTopLeft.y > laserBottomRight.y || playerRelativeBottomRight.y < laserTopLeft.y))
+    {
+        goto LASER_COLLISION;
+    }
+    if (canGraze == 0)
+    {
+        return 0;
+    }
+
+    laserTopLeft.x -= 48.0f;
+    laserTopLeft.y -= 48.0f;
+    laserBottomRight.x += 48.0f;
+    laserBottomRight.y += 48.0f;
+
+    if (playerRelativeTopLeft.x > laserBottomRight.x || playerRelativeBottomRight.x < laserTopLeft.x ||
+        playerRelativeTopLeft.y > laserBottomRight.y || playerRelativeBottomRight.y < laserTopLeft.y)
+    {
+        return 0;
+    }
+    if (this->playerState == PLAYER_STATE_DEAD || this->playerState == PLAYER_STATE_SPAWNING)
+    {
+        return 0;
+    }
+
+    this->ScoreGraze(&this->positionCenter);
+    return 2;
+
+LASER_COLLISION:
+    if (this->playerState != PLAYER_STATE_ALIVE)
+    {
+        return 0;
+    }
+
+    this->Die();
+    return 1;
+}
+
 #pragma var_order(itemBottomRight, itemTopLeft)
 i32 Player::CalcBoxCollision(D3DXVECTOR3 *itemCenter, D3DXVECTOR3 *itemSize)
 {
@@ -1243,6 +1374,30 @@ i32 Player::CalcBoxCollision(D3DXVECTOR3 *itemCenter, D3DXVECTOR3 *itemSize)
     }
 }
 
+void Player::ScoreGraze(D3DXVECTOR3 *center)
+{
+    D3DXVECTOR3 particlePosition;
+
+    if (g_Player.bombInfo.isInUse == 0)
+    {
+        if (g_GameManager.grazeInStage < 9999)
+        {
+            g_GameManager.grazeInStage++;
+        }
+        if (g_GameManager.grazeInTotal < 999999)
+        {
+            g_GameManager.grazeInTotal++;
+        }
+    }
+
+    particlePosition = (this->positionCenter + *center) * invertf(2.0f);
+    g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_8, &particlePosition, 1, COLOR_WHITE);
+    g_GameManager.AddScore(500);
+    g_GameManager.IncreaseSubrank(6);
+    g_Gui.flags.flag3 = 2;
+    g_SoundPlayer.PlaySoundByIdx(SOUND_GRAZE, 0);
+}
+
 #pragma var_order(curLaserTimerIdx)
 void Player::Die()
 {
@@ -1262,8 +1417,16 @@ void Player::Die()
     return;
 }
 
-#pragma var_order(angle, i, bombSprite, vecLength, bombPivot, bombIdx, unused)
-void th06::Player::BombReimuACalc(Player *player)
+// MSVC allocates stack space for unused inlined variables and one of Zun's inlined bomb functions has an unused
+// variable This keeps the stack where it should be for when that happens, since it isn't clear what the original
+// function was
+void inline WasteStackSpace()
+{
+    D3DXVECTOR3 waste;
+}
+
+#pragma var_order(angle, i, bombSprite, vecLength, bombPivot, bombIdx)
+void Player::BombReimuACalc(Player *player)
 {
     i32 i;
     f32 vecLength;
@@ -1271,7 +1434,6 @@ void th06::Player::BombReimuACalc(Player *player)
     D3DXVECTOR3 bombPivot;
     AnmVm *bombSprite;
     ZunVec2 angle;
-    i32 unused[6]; // these variables are unsused, but they are most likely not declared explicitly
 
     if (player->bombInfo.timer >= player->bombInfo.duration)
     {
@@ -1303,6 +1465,9 @@ void th06::Player::BombReimuACalc(Player *player)
 
         if (player->bombInfo.timer.AsFrames() % 16 == 0 && (i = (player->bombInfo.timer.AsFrames() - 60) / 16))
         {
+            WasteStackSpace();
+            WasteStackSpace();
+
             player->bombInfo.reimuABombProjectilesState[i] = 1;
             player->bombInfo.reimuABombProjectilesRelated[i] = 4.0f;
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
@@ -1428,13 +1593,95 @@ void th06::Player::BombReimuACalc(Player *player)
     player->bombInfo.timer.Tick();
 }
 
-#pragma var_order(i, starSprite, unused, starAngle, unused2)
-void th06::Player::BombMarisaACalc(Player *player)
+#pragma var_order(i, bombSprite, unusedVector)
+void Player::BombReimuBCalc(Player *player)
+{
+    AnmVm *bombSprite;
+    i32 i;
+    D3DXVECTOR3 unusedVector;
+
+    if (player->bombInfo.timer >= player->bombInfo.duration)
+    {
+        g_Gui.EndPlayerSpellcard();
+        player->bombInfo.isInUse = 0;
+        return;
+    }
+
+    if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer == 0)
+    {
+        g_ItemManager.RemoveAllItems();
+        g_Gui.ShowBombNamePortrait(ANM_SCRIPT_FACE_ENEMY_SPELLCARD_PORTRAIT, TH_REIMU_B_BOMB_NAME);
+        player->bombInfo.duration = 140;
+        player->invulnerabilityTimer.SetCurrent(200);
+        bombSprite = player->bombInfo.sprites[0];
+
+        WasteStackSpace();
+        WasteStackSpace();
+
+        for (i = 0; i < 4; i++, bombSprite++)
+        {
+            g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_REIMU_B_BOMB_ARRAY + i);
+        }
+
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMARI, 0);
+        player->bombInfo.bombRegionPositions[0].x = player->positionCenter.x;
+        player->bombInfo.bombRegionPositions[0].y = 224.0f;
+        player->bombInfo.bombRegionPositions[0].z = 0.42f;
+        player->bombInfo.bombRegionPositions[1].x = 192.0f;
+        player->bombInfo.bombRegionPositions[1].y = player->positionCenter.y;
+        player->bombInfo.bombRegionPositions[1].z = 0.415f;
+        player->bombInfo.bombRegionPositions[2].x = player->positionCenter.x;
+        player->bombInfo.bombRegionPositions[2].y = 224.0f;
+        player->bombInfo.bombRegionPositions[2].z = 0.41f;
+        player->bombInfo.bombRegionPositions[3].x = 192.0f;
+        player->bombInfo.bombRegionPositions[3].y = player->positionCenter.y;
+        player->bombInfo.bombRegionPositions[3].z = 0.405f;
+        ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 60, 2, 6, 0);
+    }
+    else
+    {
+        if (player->bombInfo.timer == 60)
+        {
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 80, 20, 0, 0);
+        }
+
+        player->bombProjectiles[0].size.x = 62.0f;
+        player->bombProjectiles[0].size.y = 448.0f;
+        player->bombProjectiles[1].size.x = 384.0f;
+        player->bombProjectiles[1].size.y = 62.0f;
+        player->bombProjectiles[2].size.x = 62.0f;
+        player->bombProjectiles[2].size.y = 448.0f;
+        player->bombProjectiles[3].size.x = 384.0f;
+        player->bombProjectiles[3].size.y = 62.0f;
+
+        for (i = 0; i < 4; i++)
+        {
+            g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][i]);
+            if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer.AsFrames() % 2 != 0)
+            {
+                player->bombProjectiles[i].pos.x =
+                    player->bombInfo.bombRegionPositions[i].x + player->bombInfo.sprites[0][i].posOffset.x;
+                player->bombProjectiles[i].pos.y =
+                    player->bombInfo.bombRegionPositions[i].y + player->bombInfo.sprites[0][i].posOffset.y;
+                player->bombRegionSizes[i].x = player->bombProjectiles[i].size.x;
+                player->bombRegionSizes[i].y = player->bombProjectiles[i].size.y;
+                player->bombRegionPositions[i] =
+                    player->bombInfo.bombRegionPositions[i] + player->bombInfo.sprites[0][i].posOffset;
+                player->bombRegionDamages[i] = 8;
+            }
+        }
+    }
+
+    player->playerState = PLAYER_STATE_INVULNERABLE;
+    player->bombInfo.timer.Tick();
+}
+
+#pragma var_order(i, starSprite, unused, starAngle)
+void Player::BombMarisaACalc(Player *player)
 {
 
     f32 starAngle;
     i32 unused[3];
-    i32 unused2[6];
     AnmVm *starSprite;
     i32 i;
 
@@ -1455,6 +1702,9 @@ void th06::Player::BombMarisaACalc(Player *player)
         starSprite = player->bombInfo.sprites[0];
         for (i = 0; i < ARRAY_SIZE_SIGNED(player->bombInfo.sprites); i++, starSprite++)
         {
+            WasteStackSpace();
+            WasteStackSpace();
+
             g_AnmManager->ExecuteAnmIdx(starSprite, ANM_SCRIPT_PLAYER_MARISA_A_BLUE_STAR + i % 3);
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
 
@@ -1496,8 +1746,77 @@ void th06::Player::BombMarisaACalc(Player *player)
     return;
 }
 
+#pragma var_order(i, bombSprite, unusedVector)
+void Player::BombMarisaBCalc(Player *player)
+{
+    AnmVm *bombSprite;
+    i32 i;
+    D3DXVECTOR3 unusedVector;
+
+    if (player->bombInfo.timer >= player->bombInfo.duration)
+    {
+        g_Gui.EndPlayerSpellcard();
+        player->bombInfo.isInUse = 0;
+        player->verticalMovementSpeedMultiplierDuringBomb = 1.0f;
+        player->horizontalMovementSpeedMultiplierDuringBomb = 1.0f;
+        return;
+    }
+
+    if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer == 0)
+    {
+        g_ItemManager.RemoveAllItems();
+        g_Gui.ShowBombNamePortrait(ANM_SCRIPT_FACE_BOMB_PORTRAIT, TH_MARISA_B_BOMB_NAME);
+        player->bombInfo.duration = 300;
+        player->invulnerabilityTimer.SetCurrent(360);
+        bombSprite = player->bombInfo.sprites[0];
+        for (i = 0; i < 4; i++, bombSprite++)
+        {
+            g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_MARISA_B_MASTER_SPARK + i);
+            player->bombInfo.bombRegionPositions[i] = player->positionCenter;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_MARISA_B, 0);
+        player->verticalMovementSpeedMultiplierDuringBomb = 0.3f;
+        player->horizontalMovementSpeedMultiplierDuringBomb = 0.3f;
+    }
+    else
+    {
+        WasteStackSpace();
+        WasteStackSpace();
+
+        if (player->bombInfo.timer == 60)
+        {
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 60, 1, 7, 0);
+        }
+        else if (player->bombInfo.timer == 120)
+        {
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 200, 24, 0, 0);
+        }
+
+        if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer.AsFrames() % 4 != 0)
+        {
+            player->bombProjectiles[0].pos.x = 192.0f;
+            player->bombProjectiles[0].pos.y = player->positionCenter.y / 2.0f;
+            player->bombProjectiles[0].size.x = 384.0f;
+            player->bombProjectiles[0].size.y = player->positionCenter.y;
+            player->bombRegionSizes[0].x = 384.0f;
+            player->bombRegionSizes[0].y = player->positionCenter.y;
+            player->bombRegionPositions[0].x = player->bombProjectiles[0].pos.x;
+            player->bombRegionPositions[0].y = player->bombProjectiles[0].pos.y;
+            player->bombRegionDamages[0] = 12;
+        }
+
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][0]);
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][1]);
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][2]);
+        g_AnmManager->ExecuteScript(&player->bombInfo.sprites[0][3]);
+    }
+
+    player->playerState = PLAYER_STATE_INVULNERABLE;
+    player->bombInfo.timer.Tick();
+}
+
 #pragma var_order(bombSprite, idx)
-void th06::Player::BombReimuADraw(Player *player)
+void Player::BombReimuADraw(Player *player)
 {
     i32 idx;
     AnmVm *bombSprite;
@@ -1535,8 +1854,26 @@ void th06::Player::BombReimuADraw(Player *player)
     return;
 }
 
+#pragma var_order(bombSprite, i)
+void Player::BombReimuBDraw(Player *player)
+{
+    AnmVm *bombSprite;
+    i32 i;
+
+    Player::DarkenViewport(player);
+    bombSprite = player->bombInfo.sprites[0];
+    for (i = 0; i < 4; i++, bombSprite++)
+    {
+        bombSprite->pos = player->bombInfo.bombRegionPositions[i] + bombSprite->posOffset;
+        bombSprite->pos.x += g_GameManager.arcadeRegionTopLeftPos.x;
+        bombSprite->pos.y += g_GameManager.arcadeRegionTopLeftPos.y;
+        bombSprite->pos.z = 0.0f;
+        g_AnmManager->Draw(bombSprite);
+    }
+}
+
 #pragma var_order(bombSprite, idx)
-void th06::Player::BombMarisaADraw(Player *player)
+void Player::BombMarisaADraw(Player *player)
 {
 
     AnmVm *bombSprite;
@@ -1577,6 +1914,61 @@ void th06::Player::BombMarisaADraw(Player *player)
         g_AnmManager->Draw(bombSprite);
         bombSprite++;
     }
+}
+
+#pragma var_order(bombSprite, i, spriteAngle)
+void Player::BombMarisaBDraw(Player *player)
+{
+    AnmVm *bombSprite;
+    i32 i;
+    f32 spriteAngle;
+
+    Player::DarkenViewport(player);
+    bombSprite = player->bombInfo.sprites[0];
+    for (i = 0; i < 4; i++)
+    {
+        spriteAngle = (((ZUN_PI / 5) * i) / 3.0f - ZUN_PI) + ((2 * ZUN_PI) / 5);
+        bombSprite->pos = player->positionCenter;
+        bombSprite->pos.x += (cosf(spriteAngle) * bombSprite->sprite->heightPx * bombSprite->scaleY) / 2.0f;
+        bombSprite->pos.y += (sinf(spriteAngle) * bombSprite->sprite->heightPx * bombSprite->scaleY) / 2.0f;
+        spriteAngle = (ZUN_PI / 2) - spriteAngle;
+        bombSprite->rotation.z = utils::AddNormalizeAngle(spriteAngle, ZUN_PI);
+        bombSprite->pos.x += g_GameManager.arcadeRegionTopLeftPos.x;
+        bombSprite->pos.y += g_GameManager.arcadeRegionTopLeftPos.y;
+        bombSprite->pos.z = 0.0f;
+        g_AnmManager->Draw(bombSprite);
+        bombSprite++;
+    }
+}
+
+#pragma var_order(local8, viewport, darkeningTimeLeft)
+void Player::DarkenViewport(Player *player)
+{
+    ZunRect viewport;
+    f32 darkeningTimeLeft;
+    i32 darknessLevel; // Controls alpha level of black rectangle drawn over view
+
+    viewport.left = 32.0f;
+    viewport.top = 16.0f;
+    viewport.right = 416.0f;
+    viewport.bottom = 464.0f;
+
+    if (player->bombInfo.timer < 60)
+    {
+        darkeningTimeLeft = (player->bombInfo.timer.AsFramesFloat() * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32)darkeningTimeLeft;
+    }
+    else if (player->bombInfo.timer >= player->bombInfo.duration + -60)
+    {
+        darkeningTimeLeft = ((player->bombInfo.duration - player->bombInfo.timer.AsFramesFloat()) * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32)darkeningTimeLeft;
+    }
+    else
+    {
+        darknessLevel = 176;
+    }
+
+    ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
 }
 
 }; // namespace th06

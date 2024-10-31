@@ -74,3 +74,8 @@ void __inline sincosmul(D3DXVECTOR3 *out_vel, f32 input, f32 multiplier)
         fstp [eax+4]
     }
 }
+
+f32 __inline invertf(f32 x)
+{
+    return 1.f / x;
+}

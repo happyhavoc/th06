@@ -72,8 +72,8 @@ struct GameManager
     u32 nextScoreIncrement;
     u32 highScore;
     Difficulty difficulty;
-    u32 grazeInStage;
-    u32 grazeInTotal;
+    i32 grazeInStage;
+    i32 grazeInTotal;
     u32 isInReplay;
     u32 deaths;
     u32 bombsUsed;

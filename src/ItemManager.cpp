@@ -309,7 +309,7 @@ void ItemManager::OnUpdate()
                 g_Gui.flags.flag2 = 2;
                 break;
             case ITEM_POINT_BULLET:
-                itemScore = ((i32)g_GameManager.grazeInStage / 3) * 10 + 500;
+                itemScore = (g_GameManager.grazeInStage / 3) * 10 + 500;
                 if (g_Player.bombInfo.isInUse != 0)
                 {
                     itemScore = 100;
