@@ -109,6 +109,7 @@ def configure(build_type):
             "FileSystem",
             "GameErrorContext",
             "Rng",
+            "ReplayManager",
             "ResultScreen",
             "utils",
             "TextHelper",
