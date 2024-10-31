@@ -157,7 +157,9 @@ def configure(build_type):
         with open("objdiff.json") as f:
             objdiff_json = json.load(f)
         objdiff_deps = []
-        for obj in objdiff_json["objects"]:
+        for obj in objdiff_json.get("objects", {}):
+            objdiff_deps.append(obj["base_path"].replace("build", "$builddir"))
+        for obj in objdiff_json.get("units", {}):
             objdiff_deps.append(obj["base_path"].replace("build", "$builddir"))
         writer.build("objdiff", "phony", [], objdiff_deps)
 
