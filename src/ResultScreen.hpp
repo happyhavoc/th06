@@ -13,7 +13,7 @@ namespace th06
 
 enum ResultScreenState
 {
-    RESULT_SCREEN_STATE_UNK_0 = 0,
+    RESULT_SCREEN_STATE_INIT = 0,
     RESULT_SCREEN_STATE_CHOOSING_DIFFICULTY,
     RESULT_SCREEN_STATE_EXITING,
     RESULT_SCREEN_STATE_BEST_SCORES_EASY,
@@ -30,8 +30,20 @@ enum ResultScreenState
     RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE,
     RESULT_SCREEN_STATE_STATS_SCREEN,
     RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION,
-    RESULT_SCREEN_STATE_UNK_17,
+    RESULT_SCREEN_STATE_EXIT,
 };
+
+enum ResultScreenMainMenuCursor
+{
+    RESULT_SCREEN_CURSOR_EASY,
+    RESULT_SCREEN_CURSOR_NORMAL,
+    RESULT_SCREEN_CURSOR_HARD,
+    RESULT_SCREEN_CURSOR_LUNATIC,
+    RESULT_SCREEN_CURSOR_EXTRA,
+    RESULT_SCREEN_CURSOR_SPELLCARDS,
+    RESULT_SCREEN_CURSOR_EXIT
+};
+
 struct Th6k
 {
     u32 magic;
@@ -129,19 +141,30 @@ struct ResultScreen
     static ZunResult ParsePscr(ScoreDat *s, Pscr *out);
     static u32 GetHighScore(ScoreDat *score_dat, ScoreListNode *node, u32 character, u32 difficulty);
     static void ReleaseScoreDat(ScoreDat *s);
+
+    static void MoveCursor(ResultScreen *r, i32 len);
+    static i32 MoveCursorHorizontally(ResultScreen *r, i32 len);
+
+    void HandleResultKeyboard();
+    void HandleReplaySaveKeyboard();
+    ZunResult CheckConfirmButton();
+
     void LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
 
     ScoreDat *scoreDat;
-    i32 unk_4;
+    i32 frameTimer;
     i32 resultScreenState;
     i32 unk_c;
     i32 cursor;
-    i32 unk_14[3];
+    i32 unk_14;
+    i32 previousCursor;
+    i32 unk_1c;
     i32 selectedCharacter;
     i32 charUsed;
-    i32 unk_28;
-    i32 *unk_2c;
-    i32 unk_30[4];
+    i32 lastSpellcardSelected;
+    i32 diffSelected;
+    i32 cheatCodeStep;
+    i32 unk_34[3];
     AnmVm unk_40[38];
     AnmVm unk_28a0[16];
     AnmVm unk_39a0;
