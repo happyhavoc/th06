@@ -1,6 +1,7 @@
 th06::EclManager::Unload
 th06::AsciiManager::DrawPopupsWithHwVertexProcessing
 th06::AsciiManager::DrawPopupsWithoutHwVertexProcessing
+th06::AnmManager::DrawEndingRect
 th06::MidiOutput::ClearTracks
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::StopPlayback
@@ -17,7 +18,6 @@ th06::ResultScreen::ParsePscr
 th06::ResultScreen::ParseCatk
 th06::ResultScreen::GetHighScore
 th06::Supervisor::DeletedCallback
-th06::Ending::RegisterChain
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat

@@ -37,6 +37,9 @@
 #define COLOR_MENU_ITEM_HIGHLIGHT 0x800000ff
 #define COLOR_MENU_ITEM_DEFAULT 0x80202050
 
+// BGR
+#define COLOR_END_TEXT_SHADOW 0xc0d0d0
+
 // TODO: The following assumes little endian
 #define COLOR_RED_BYTE_IDX 0
 #define COLOR_GREEN_BYTE_IDX 1
