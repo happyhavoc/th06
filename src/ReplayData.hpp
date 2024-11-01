@@ -15,7 +15,7 @@ struct StageReplayData
 {
     i32 score;
     i16 randomSeed;
-    i16 unk_6;
+    i16 pointItemsCollected;
     i8 power;
     i8 livesRemaining;
     i8 bombsRemaining;
