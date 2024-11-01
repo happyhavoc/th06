@@ -150,7 +150,7 @@ void ItemManager::OnUpdate()
             curItem->startPosition.y = 3.0f;
         }
     yolo:
-        if (g_Player.CalcBoxCollision(&curItem->currentPosition, &g_ItemSize))
+        if (g_Player.CalcItemBoxCollision(&curItem->currentPosition, &g_ItemSize))
         {
             switch (curItem->itemType)
             {
