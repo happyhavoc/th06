@@ -21,7 +21,6 @@
 #include "MidiOutput.hpp"
 #include "MusicRoom.hpp"
 #include "Player.hpp"
-#include "Replay.hpp"
 #include "ReplayData.hpp"
 #include "ReplayManager.hpp"
 #include "ResultScreen.hpp"

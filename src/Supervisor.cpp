@@ -10,7 +10,7 @@
 #include "GameWindow.hpp"
 #include "MainMenu.hpp"
 #include "MusicRoom.hpp"
-#include "Replay.hpp"
+#include "ReplayManager.hpp"
 #include "ResultScreen.hpp"
 #include "Rng.hpp"
 #include "SoundPlayer.hpp"
@@ -290,7 +290,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             RETURN_TO_MENU_FROM_GAME:
                 GameManager::CutChain();
                 s->curState = SUPERVISOR_STATE_INIT;
-                SaveReplay(NULL, NULL);
+                ReplayManager::SaveReplay(NULL, NULL);
                 goto REINIT_MAINMENU;
 
             case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
@@ -315,7 +315,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             case SUPERVISOR_STATE_MAINMENU_REPLAY:
                 GameManager::CutChain();
                 s->curState = SUPERVISOR_STATE_INIT;
-                SaveReplay(NULL, NULL);
+                ReplayManager::SaveReplay(NULL, NULL);
                 s->curState = SUPERVISOR_STATE_MAINMENU;
                 g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
                 if (MainMenu::RegisterChain(1) != ZUN_SUCCESS)
@@ -337,11 +337,11 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             switch (s->curState)
             {
             case SUPERVISOR_STATE_EXITSUCCESS:
-                SaveReplay(NULL, NULL);
+                ReplayManager::SaveReplay(NULL, NULL);
                 return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
             case SUPERVISOR_STATE_MAINMENU:
                 s->curState = SUPERVISOR_STATE_INIT;
-                SaveReplay(NULL, NULL);
+                ReplayManager::SaveReplay(NULL, NULL);
                 goto REINIT_MAINMENU;
             }
             break;
