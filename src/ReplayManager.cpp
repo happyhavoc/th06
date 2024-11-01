@@ -1,6 +1,7 @@
 #include "ReplayManager.hpp"
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
+#include "Gui.hpp"
 #include "Rng.hpp"
 #include "Supervisor.hpp"
 #include "utils.hpp"
@@ -89,6 +90,19 @@ ChainCallbackResult ReplayManager::OnUpdate(ReplayManager *mgr)
         mgr->replayInputs->inputKey = inputs;
     }
     mgr->frameId += 1;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult ReplayManager::OnUpdateDemoLowPrio(ReplayManager *mgr)
+{
+    if (!g_GameManager.isInMenu)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    if (g_Gui.HasCurrentMsgIdx() && g_Gui.IsDialogueSkippable() && mgr->frameId % 3 != 2)
+    {
+        return CHAIN_CALLBACK_RESULT_RESTART_FROM_FIRST_JOB;
+    }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 

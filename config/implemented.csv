@@ -333,6 +333,7 @@ th06::SoundPlayer::BackgroundMusicPlayerThread
 th06::SoundPlayer::InitSoundBuffers
 th06::ReplayManager::RegisterChain
 th06::ReplayManager::OnUpdate
+th06::ReplayManager::OnUpdateDemoLowPrio
 th06::ReplayManager::OnDraw
 th06::ReplayManager::AddedCallback
 th06::ReplayManager::AddedCallbackDemo

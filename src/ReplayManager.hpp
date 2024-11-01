@@ -25,7 +25,7 @@ struct ReplayManager
     {
     }
 
-    u32 frameId;
+    i32 frameId;
     ReplayData *replayData;
     i32 isDemo;
     char *replayFile;
