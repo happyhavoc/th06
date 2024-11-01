@@ -257,6 +257,7 @@ th06::MidiTimer::DefaultTimerCallback
 th06::ResultScreen::OnUpdate
 th06::ResultScreen::RegisterChain
 th06::ResultScreen::ResultScreen
+th06::ResultScreen::MoveCursor
 th06::ResultScreen::AddedCallback
 th06::Stage::RegisterChain
 th06::Stage::CutChain

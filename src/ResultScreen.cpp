@@ -190,6 +190,30 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
+{
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
+    {
+        resultScreen->cursor--;
+        if (resultScreen->cursor < 0)
+        {
+            resultScreen->cursor += length;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+    }
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
+    {
+        resultScreen->cursor++;
+        if (resultScreen->cursor >= length)
+        {
+            resultScreen->cursor -= length;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
 ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 {
