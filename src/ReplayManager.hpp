@@ -25,6 +25,11 @@ struct ReplayManager
     {
     }
 
+    i32 IsDemo()
+    {
+        return this->isDemo;
+    }
+
     i32 frameId;
     ReplayData *replayData;
     i32 isDemo;

@@ -1,4 +1,6 @@
 #include <stddef.h>
+#include <stdio.h>
+#include <time.h>
 
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
@@ -216,6 +218,11 @@ __inline void ReleaseReplayData(void *data)
     return free(data);
 }
 
+__inline void ReleaseStageReplayData(void *data)
+{
+    return free(data);
+}
+
 #pragma var_order(stageReplayData, idx, oldStageReplayData)
 ZunResult ReplayManager::AddedCallback(ReplayManager *mgr)
 {
@@ -343,4 +350,139 @@ void ReplayManager::StopRecording()
     }
 }
 
+#pragma var_order(stageIdx, mgr, slowDown, replayCopy, stageReplayPos, file, csumStagePos, checksum, checksumCursor,   \
+                  obfOffset, obfStagePos, obfuscateCursor)
+void ReplayManager::SaveReplay(char *replayPath, char *replayName)
+{
+    ReplayManager *mgr;
+    FILE *file;
+    u8 *checksumCursor;
+    ReplayData replayCopy;
+    u8 *obfuscateCursor;
+    i32 obfStagePos;
+    u8 obfOffset;
+    u32 checksum;
+    i32 csumStagePos;
+    size_t stageReplayPos;
+    f32 slowDown;
+    i32 stageIdx;
+
+    if (g_ReplayManager != NULL)
+    {
+        mgr = g_ReplayManager;
+        if (!mgr->IsDemo())
+        {
+            if (replayPath != NULL)
+            {
+                replayCopy = *mgr->replayData;
+                ReplayManager::StopRecording();
+                stageReplayPos = sizeof(ReplayData);
+                for (stageIdx = 0; stageIdx < ARRAY_SIZE_SIGNED(g_ReplayManager->replayData->stageReplayData);
+                     stageIdx += 1)
+                {
+                    if (mgr->replayData->stageReplayData[stageIdx] != NULL)
+                    {
+                        replayCopy.stageReplayData[stageIdx] = (StageReplayData *)stageReplayPos;
+                        stageReplayPos += (size_t)mgr->replayInputStageBookmarks[stageIdx] -
+                                          (size_t)mgr->replayData->stageReplayData[stageIdx];
+                    }
+                }
+                utils::DebugPrint2("%s write ...\n", replayPath);
+                replayCopy.score = g_GameManager.guiScore;
+                slowDown = (g_Supervisor.unk1b4 / g_Supervisor.unk1b8 - 0.5f) * 2.0f;
+                if (slowDown < 0.0f)
+                {
+                    slowDown = 0.0f;
+                }
+                else if (slowDown >= 1.0f)
+                {
+                    slowDown = 1.0f;
+                }
+                replayCopy.slowdownRate = (1.0f - slowDown) * 100.0f;
+                replayCopy.slowdownRate2 = replayCopy.slowdownRate + 1.12f;
+                replayCopy.slowdownRate3 = replayCopy.slowdownRate + 2.34f;
+                mgr->replayData->stageReplayData[g_GameManager.currentStage - 1]->score = g_GameManager.score;
+                strcpy(replayCopy.name, replayName);
+                _strdate(replayCopy.date);
+                replayCopy.key = g_Rng.GetRandomU16InRange(128) + 64;
+                replayCopy.rngValue3 = g_Rng.GetRandomU16InRange(256);
+                replayCopy.rngValue1 = g_Rng.GetRandomU16InRange(256);
+                replayCopy.rngValue2 = g_Rng.GetRandomU16InRange(256);
+
+                // Calculate the checksum.
+                checksumCursor = (u8 *)&replayCopy.key;
+                checksum = 0x3f000318;
+                for (stageIdx = 0; stageIdx < sizeof(ReplayData) - offsetof(ReplayData, key);
+                     stageIdx += 1, checksumCursor += 1)
+                {
+                    checksum += *checksumCursor;
+                }
+                for (stageIdx = 0; stageIdx < ARRAY_SIZE_SIGNED(mgr->replayData->stageReplayData); stageIdx += 1)
+                {
+                    if (mgr->replayData->stageReplayData[stageIdx] != NULL)
+                    {
+                        checksumCursor = (u8 *)mgr->replayData->stageReplayData[stageIdx];
+                        for (csumStagePos = 0; csumStagePos < (i32)mgr->replayInputStageBookmarks[stageIdx] -
+                                                                  (i32)mgr->replayData->stageReplayData[stageIdx];
+                             csumStagePos += 1, checksumCursor += 1)
+                        {
+                            checksum += *checksumCursor;
+                        }
+                    }
+                }
+                replayCopy.checksum = checksum;
+
+                // Obfuscate the data.
+                obfuscateCursor = (u8 *)&replayCopy.rngValue3;
+                obfOffset = replayCopy.key;
+                for (stageIdx = 0; stageIdx < sizeof(ReplayData) - offsetof(ReplayData, rngValue3);
+                     stageIdx += 1, obfuscateCursor += 1)
+                {
+                    *obfuscateCursor += obfOffset;
+                    obfOffset += 7;
+                }
+                for (stageIdx = 0; stageIdx < ARRAY_SIZE_SIGNED(mgr->replayData->stageReplayData); stageIdx += 1)
+                {
+                    if (mgr->replayData->stageReplayData[stageIdx] != NULL)
+                    {
+                        obfuscateCursor = (u8 *)mgr->replayData->stageReplayData[stageIdx];
+                        for (obfStagePos = 0; obfStagePos < (i32)mgr->replayInputStageBookmarks[stageIdx] -
+                                                                (i32)mgr->replayData->stageReplayData[stageIdx];
+                             obfStagePos += 1, obfuscateCursor += 1)
+                        {
+                            *obfuscateCursor += obfOffset;
+                            obfOffset += 7;
+                        }
+                    }
+                }
+
+                // Write the data to the replay file.
+                file = fopen(replayPath, "wb");
+                fwrite(&replayCopy, sizeof(ReplayData), 1, file);
+                for (stageIdx = 0; stageIdx < ARRAY_SIZE_SIGNED(mgr->replayData->stageReplayData); stageIdx += 1)
+                {
+                    if (mgr->replayData->stageReplayData[stageIdx] != NULL)
+                    {
+                        fwrite(mgr->replayData->stageReplayData[stageIdx], 1,
+                               (i32)mgr->replayInputStageBookmarks[stageIdx] -
+                                   (i32)mgr->replayData->stageReplayData[stageIdx],
+                               file);
+                    }
+                }
+                fclose(file);
+            }
+            for (stageIdx = 0; stageIdx < ARRAY_SIZE_SIGNED(mgr->replayData->stageReplayData); stageIdx += 1)
+            {
+                if (g_ReplayManager->replayData->stageReplayData[stageIdx] != NULL)
+                {
+                    utils::DebugPrint2("Replay Size %d\n", (i32)mgr->replayInputStageBookmarks[stageIdx] -
+                                                               (i32)mgr->replayData->stageReplayData[stageIdx]);
+                    ReleaseStageReplayData(g_ReplayManager->replayData->stageReplayData[stageIdx]);
+                }
+            }
+        }
+        g_Chain.Cut(g_ReplayManager->calcChain);
+    }
+    return;
+}
 }; // namespace th06
