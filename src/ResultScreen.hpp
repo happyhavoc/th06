@@ -143,7 +143,7 @@ struct ResultScreen
     static void ReleaseScoreDat(ScoreDat *s);
 
     static void MoveCursor(ResultScreen *r, i32 len);
-    static i32 MoveCursorHorizontally(ResultScreen *r, i32 len);
+    static ZunBool MoveCursorHorizontally(ResultScreen *r, i32 len);
 
     void HandleResultKeyboard();
     void HandleReplaySaveKeyboard();

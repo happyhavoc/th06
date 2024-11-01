@@ -214,6 +214,36 @@ void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 length)
+{
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
+    {
+        resultScreen->cursor--;
+        if (resultScreen->cursor < 0)
+        {
+            resultScreen->cursor += length;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        return true;
+    }
+    else if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
+    {
+        resultScreen->cursor++;
+        if (resultScreen->cursor >= length)
+        {
+            resultScreen->cursor -= length;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
 ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 {
