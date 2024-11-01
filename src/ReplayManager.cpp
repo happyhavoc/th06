@@ -1,7 +1,9 @@
-#include "ReplayManager.hpp"
+#include <stddef.h>
+
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"
+#include "ReplayManager.hpp"
 #include "Rng.hpp"
 #include "Supervisor.hpp"
 #include "utils.hpp"
@@ -9,6 +11,60 @@
 namespace th06
 {
 DIFFABLE_STATIC(ReplayManager *, g_ReplayManager)
+
+#pragma var_order(idx, decryptedData, obfOffset, obfuscateCursor, checksum, checksumCursor)
+ZunResult ReplayManager::ValidateReplayData(ReplayData *data, i32 fileSize)
+{
+    u8 *checksumCursor;
+    u32 checksum;
+    u8 *obfuscateCursor;
+    u8 obfOffset;
+    i32 idx;
+    ReplayData *decryptedData;
+
+    decryptedData = data;
+
+    if (decryptedData == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    /* "T6RP" magic bytes */
+    if (*(i32 *)decryptedData->magic != *(i32 *)"T6RP")
+    {
+        return ZUN_ERROR;
+    }
+
+    /* Deobfuscate the replay decryptedData */
+    obfuscateCursor = (u8 *)&decryptedData->rngValue3;
+    obfOffset = decryptedData->key;
+    for (idx = 0; idx < fileSize - (i32)offsetof(ReplayData, rngValue3); idx += 1, obfuscateCursor += 1)
+    {
+        *obfuscateCursor -= obfOffset;
+        obfOffset += 7;
+    }
+
+    /* Calculate the checksum */
+    /* (0x3f000318 + key + sum(c for c in decryptedData)) % (2 ** 32) */
+    checksumCursor = (u8 *)&decryptedData->key;
+    checksum = 0x3f000318;
+    for (idx = 0; idx < fileSize - (i32)offsetof(ReplayData, key); idx += 1, checksumCursor += 1)
+    {
+        checksum += *checksumCursor;
+    }
+
+    if (checksum != decryptedData->checksum)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (decryptedData->version != 0x102)
+    {
+        return ZUN_ERROR;
+    }
+
+    return ZUN_SUCCESS;
+}
 
 ZunResult ReplayManager::RegisterChain(i32 isDemo, char *replayFile)
 {
