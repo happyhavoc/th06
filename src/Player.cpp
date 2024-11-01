@@ -1367,7 +1367,7 @@ LASER_COLLISION:
 }
 
 #pragma var_order(itemBottomRight, itemTopLeft)
-i32 Player::CalcBoxCollision(D3DXVECTOR3 *itemCenter, D3DXVECTOR3 *itemSize)
+i32 Player::CalcItemBoxCollision(D3DXVECTOR3 *itemCenter, D3DXVECTOR3 *itemSize)
 {
     if (this->playerState != PLAYER_STATE_ALIVE && this->playerState != PLAYER_STATE_INVULNERABLE)
     {
