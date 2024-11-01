@@ -73,6 +73,9 @@ ZunResult ReplayManager::RegisterChain(i32 isDemo, char *replayFile)
     return ZUN_SUCCESS;
 }
 
+#define TH_BUTTON_REPLAY_CAPTURE                                                                                       \
+    (TH_BUTTON_SHOOT | TH_BUTTON_BOMB | TH_BUTTON_FOCUS | TH_BUTTON_SKIP | TH_BUTTON_DIRECTION)
+
 ChainCallbackResult ReplayManager::OnUpdate(ReplayManager *mgr)
 {
     u16 inputs;
@@ -81,7 +84,7 @@ ChainCallbackResult ReplayManager::OnUpdate(ReplayManager *mgr)
     {
         return CHAIN_CALLBACK_RESULT_CONTINUE;
     }
-    inputs = IS_PRESSED(TH_BUTTON_SHOOT | TH_BUTTON_BOMB | TH_BUTTON_FOCUS | TH_BUTTON_SKIP | TH_BUTTON_DIRECTION);
+    inputs = IS_PRESSED(TH_BUTTON_REPLAY_CAPTURE);
     if (inputs != mgr->replayInputs->inputKey)
     {
         mgr->replayInputs += 1;
@@ -103,6 +106,42 @@ ChainCallbackResult ReplayManager::OnUpdateDemoLowPrio(ReplayManager *mgr)
     {
         return CHAIN_CALLBACK_RESULT_RESTART_FROM_FIRST_JOB;
     }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult ReplayManager::OnUpdateDemoHighPrio(ReplayManager *mgr)
+{
+    if (!g_GameManager.isInMenu)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+
+    while (mgr->frameId >= mgr->replayInputs[1].frameNum)
+    {
+        mgr->replayInputs += 1;
+    }
+    g_CurFrameInput = IS_PRESSED(0xFFFFFFFF & ~TH_BUTTON_REPLAY_CAPTURE) | mgr->replayInputs->inputKey;
+    g_IsEigthFrameOfHeldInput = 0;
+    if (g_LastFrameInput == g_CurFrameInput)
+    {
+        if (30 <= g_NumOfFramesInputsWereHeld)
+        {
+            if (g_NumOfFramesInputsWereHeld % 8 == 0)
+            {
+                g_IsEigthFrameOfHeldInput = 1;
+            }
+            if (38 <= g_NumOfFramesInputsWereHeld)
+            {
+                g_NumOfFramesInputsWereHeld = 30;
+            }
+        }
+        g_NumOfFramesInputsWereHeld++;
+    }
+    else
+    {
+        g_NumOfFramesInputsWereHeld = 0;
+    }
+    mgr->frameId += 1;
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 

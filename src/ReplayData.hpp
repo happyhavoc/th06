@@ -6,7 +6,7 @@ namespace th06
 {
 struct ReplayDataInput
 {
-    u32 frameNum;
+    i32 frameNum;
     u16 inputKey;
     u16 padding;
 };

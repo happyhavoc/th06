@@ -231,4 +231,5 @@ DIFFABLE_EXTERN(u16, g_LastFrameInput)
 DIFFABLE_EXTERN(u16, g_CurFrameInput)
 DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
 DIFFABLE_EXTERN(IDirect3DSurface8 *, g_TextBufferSurface)
+DIFFABLE_EXTERN(u16, g_NumOfFramesInputsWereHeld);
 }; // namespace th06
