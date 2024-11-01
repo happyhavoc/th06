@@ -120,6 +120,7 @@ _g_LastFrameTime,                       0x006c6bf8
 _g_ExclusiveMutex,                      0x006c6c00
 _g_Supervisor,                          0x006c6d18
 _g_Player,                              0x006ca628
+_g_ReplayManager,                       0x006d3f18
 _g_SoundPlayer,                         0x006d3f50
 _g_AnmManager,                          0x006d4588
 _g_PrimitivesToDrawNoVertexBuf,         0x006d4590

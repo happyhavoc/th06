@@ -12,7 +12,13 @@ th06::MusicRoom::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
 th06::MainMenu::SelectRelated
-th06::ReplayManager::RegisterChain
+th06::ReplayManager::OnUpdate
+th06::ReplayManager::OnUpdateDemoHighPrio
+th06::ReplayManager::OnUpdateDemoLowPrio
+th06::ReplayManager::OnDraw
+th06::ReplayManager::AddedCallback
+th06::ReplayManager::AddedCallbackDemo
+th06::ReplayManager::DeletedCallback
 th06::ReplayManager::StopRecording
 th06::ReplayManager::SaveReplay
 th06::ReplayManager::ValidateReplayData
