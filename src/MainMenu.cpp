@@ -12,6 +12,7 @@
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"
 #include "ReplayData.hpp"
+#include "ReplayManager.hpp"
 #include "ResultScreen.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
@@ -415,7 +416,7 @@ i32 MainMenu::ReplayHandling()
                     {
                         continue;
                     }
-                    if (!ValidateReplayData(replayData, g_LastFileSize))
+                    if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                     {
                         // FIXME: wrong assembly
                         memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
@@ -437,7 +438,7 @@ i32 MainMenu::ReplayHandling()
                         {
                             continue;
                         }
-                        if (!ValidateReplayData(replayData, g_LastFileSize))
+                        if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                         {
                             // FIXME: wrong assembly
                             memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
@@ -497,7 +498,7 @@ i32 MainMenu::ReplayHandling()
                 this->cursor = 0;
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
                 this->currentReplay = (ReplayData *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
-                ValidateReplayData(this->currentReplay, g_LastFileSize);
+                ReplayManager::ValidateReplayData(this->currentReplay, g_LastFileSize);
                 for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore); cur++)
                 {
                     if (this->currentReplay->stageScore[cur] != NULL)

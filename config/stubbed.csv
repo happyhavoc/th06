@@ -26,8 +26,8 @@ th06::MainMenu::SelectRelated
 th06::ItemManager::RemoveAllItems
 th06::ReplayManager::RegisterChain
 th06::ReplayManager::StopRecording
-th06::SaveReplay
-th06::ValidateReplayData
+th06::ReplayManager::SaveReplay
+th06::ReplayManager::ValidateReplayData
 th06::ScreenEffect::DrawSquare
 th06::Controller::GetControllerState
 th06::Pbg3Archive::Pbg3Archive
