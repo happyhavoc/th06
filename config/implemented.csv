@@ -332,6 +332,7 @@ th06::SoundPlayer::PlaySoundByIdx
 th06::SoundPlayer::BackgroundMusicPlayerThread
 th06::SoundPlayer::InitSoundBuffers
 th06::ReplayManager::RegisterChain
+th06::ReplayManager::OnDraw
 th06::ReplayManager::AddedCallback
 th06::ReplayManager::AddedCallbackDemo
 th06::ReplayManager::DeletedCallback

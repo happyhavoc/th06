@@ -72,6 +72,11 @@ ZunResult ReplayManager::RegisterChain(i32 isDemo, char *replayFile)
     return ZUN_SUCCESS;
 }
 
+ChainCallbackResult ReplayManager::OnDraw(ReplayManager *mgr)
+{
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 __inline StageReplayData *AllocateStageReplayData(i32 size)
 {
     return (StageReplayData *)malloc(size);
