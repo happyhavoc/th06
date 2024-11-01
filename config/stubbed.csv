@@ -5,7 +5,6 @@ th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::ParseFile
 th06::ResultScreen::OpenScore
-th06::ResultScreen::ParseClrd
 th06::ResultScreen::OnDraw
 th06::ResultScreen::LinkScoreEx
 th06::ResultScreen::DeletedCallback

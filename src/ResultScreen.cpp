@@ -311,6 +311,57 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma var_order(parsedClrd, characterShotType, cursor, difficulty, sd)
+ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
+{
+    i32 cursor;
+    Clrd *parsedClrd;
+    ScoreDat *sd;
+    i32 characterShotType;
+    i32 difficulty;
+    sd = scoreDat;
+
+    if (outClrd == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    for (characterShotType = 0; characterShotType < CLRD_NUM_CHARACTERS; characterShotType++)
+    {
+        memset(&outClrd[characterShotType], 0, sizeof(Clrd));
+
+        outClrd[characterShotType].base.magic = 'DRLC';
+        outClrd[characterShotType].base.unkLen = sizeof(Clrd);
+        outClrd[characterShotType].base.th6kLen = sizeof(Clrd);
+        outClrd[characterShotType].base.version = 16;
+        outClrd[characterShotType].characterShotType = characterShotType;
+
+        for (difficulty = 0; difficulty < ARRAY_SIZE_SIGNED(outClrd[0].difficultyClearedWithoutRetries); difficulty++)
+        {
+            outClrd[characterShotType].difficultyClearedWithRetries[difficulty] = 1;
+            outClrd[characterShotType].difficultyClearedWithoutRetries[difficulty] = 1;
+        }
+    }
+
+    parsedClrd = (Clrd *)&sd->xorseed[sd->dataOffset];
+    cursor = sd->fileLen - sd->dataOffset;
+    while (cursor > 0)
+    {
+        if (parsedClrd->base.magic == 'DRLC' && parsedClrd->base.version == 16)
+        {
+            if (parsedClrd->characterShotType >= CLRD_NUM_CHARACTERS)
+                break;
+
+            outClrd[parsedClrd->characterShotType] = *parsedClrd;
+        }
+        cursor -= parsedClrd->base.th6kLen;
+        parsedClrd = (Clrd *)((i32)&parsedClrd->base + parsedClrd->base.th6kLen);
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
 ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 {
