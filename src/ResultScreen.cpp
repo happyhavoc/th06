@@ -362,6 +362,65 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma var_order(pscr, parsedPscr, character, stage, cursor, difficulty, sd)
+ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
+{
+    i32 cursor;
+    Pscr *parsedPscr;
+    ScoreDat *sd;
+    i32 stage;
+    i32 character;
+    i32 difficulty;
+    sd = scoreDat;
+    Pscr *pscr;
+
+    if (outClrd == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    for (pscr = outClrd, character = 0; character < PSCR_NUM_CHARS_SHOTTYPES; character++)
+    {
+        for (stage = 0; stage < PSCR_NUM_STAGES; stage++)
+        {
+            for (difficulty = 0; difficulty < PSCR_NUM_DIFFICULTIES; difficulty++, pscr++)
+            {
+
+                memset(pscr, 0, sizeof(Pscr));
+
+                pscr->base.magic = 'RCSP';
+                pscr->base.unkLen = sizeof(Pscr);
+                pscr->base.th6kLen = sizeof(Pscr);
+                pscr->base.version = 16;
+                pscr->character = character;
+                pscr->difficulty = difficulty;
+                pscr->stage = stage;
+            }
+        }
+    }
+
+    parsedPscr = (Pscr *)&sd->xorseed[sd->dataOffset];
+    cursor = sd->fileLen - sd->dataOffset;
+
+    while (cursor > 0)
+    {
+        if (parsedPscr->base.magic == 'RCSP' && parsedPscr->base.version == 16)
+        {
+            pscr = parsedPscr;
+            if (pscr->character >= PSCR_NUM_CHARS_SHOTTYPES || pscr->difficulty >= PSCR_NUM_DIFFICULTIES + 1 ||
+                pscr->stage >= PSCR_NUM_STAGES + 1)
+                break;
+
+            outClrd[pscr->character * 6 * 4 + pscr->stage * 4 + pscr->difficulty] = *pscr;
+        }
+        cursor -= parsedPscr->base.th6kLen;
+        parsedPscr = (Pscr *)((i32)&parsedPscr->base + parsedPscr->base.th6kLen);
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
 ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 {

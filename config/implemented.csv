@@ -262,6 +262,7 @@ th06::ResultScreen::MoveCursorHorizontally
 th06::ResultScreen::CheckConfirmButton
 th06::ResultScreen::ParseCatk
 th06::ResultScreen::ParseClrd
+th06::ResultScreen::ParsePscr
 th06::ResultScreen::AddedCallback
 th06::Stage::RegisterChain
 th06::Stage::CutChain
