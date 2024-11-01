@@ -334,6 +334,7 @@ th06::SoundPlayer::InitSoundBuffers
 th06::ReplayManager::RegisterChain
 th06::ReplayManager::AddedCallback
 th06::ReplayManager::AddedCallbackDemo
+th06::ReplayManager::DeletedCallback
 th06::Player::AddedCallback
 th06::Player::DeletedCallback
 th06::Player::RegisterChain

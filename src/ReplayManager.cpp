@@ -77,6 +77,11 @@ __inline StageReplayData *AllocateStageReplayData(i32 size)
     return (StageReplayData *)malloc(size);
 }
 
+__inline void ReleaseReplayData(void *data)
+{
+    return free(data);
+}
+
 #pragma var_order(stageReplayData, idx, oldStageReplayData)
 ZunResult ReplayManager::AddedCallback(ReplayManager *mgr)
 {
@@ -170,6 +175,22 @@ ZunResult ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
         g_GameManager.guiScore = mgr->replayData->stageReplayData[g_GameManager.currentStage - 2]->score;
         g_GameManager.score = g_GameManager.guiScore;
     }
+    return ZUN_SUCCESS;
+}
+
+ZunResult ReplayManager::DeletedCallback(ReplayManager *mgr)
+{
+    g_Chain.Cut(mgr->drawChain);
+    mgr->drawChain = NULL;
+    if (mgr->calcChainDemoHighPrio != NULL)
+    {
+        g_Chain.Cut(mgr->calcChainDemoHighPrio);
+        mgr->calcChainDemoHighPrio = NULL;
+    }
+    ReleaseReplayData(g_ReplayManager->replayData);
+    delete g_ReplayManager;
+    g_ReplayManager = NULL;
+    g_ReplayManager = NULL;
     return ZUN_SUCCESS;
 }
 }; // namespace th06
