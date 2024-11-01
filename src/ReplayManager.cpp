@@ -1,5 +1,7 @@
 #include "ReplayManager.hpp"
+#include "FileSystem.hpp"
 #include "GameManager.hpp"
+#include "Rng.hpp"
 #include "Supervisor.hpp"
 #include "utils.hpp"
 
@@ -122,6 +124,52 @@ ZunResult ReplayManager::AddedCallback(ReplayManager *mgr)
     mgr->replayInputs->frameNum = 0;
     mgr->replayInputs->inputKey = 0;
     mgr->unk44 = 0;
+    return ZUN_SUCCESS;
+}
+
+ZunResult ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
+{
+    i32 idx;
+    StageReplayData *replayData;
+
+    mgr->frameId = 0;
+    if (mgr->replayData == NULL)
+    {
+        mgr->replayData = (ReplayData *)FileSystem::OpenPath(mgr->replayFile, g_GameManager.demoMode == 0);
+        if (ValidateReplayData(mgr->replayData, g_LastFileSize) != ZUN_SUCCESS)
+        {
+            return ZUN_ERROR;
+        }
+        for (idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->replayData->stageReplayData); idx += 1)
+        {
+            if (mgr->replayData->stageReplayData[idx] != NULL)
+            {
+                mgr->replayData->stageReplayData[idx] =
+                    (StageReplayData *)((i32)mgr->replayData->stageReplayData[idx] + (i32)mgr->replayData);
+            }
+        }
+    }
+    if (mgr->replayData->stageReplayData[g_GameManager.currentStage - 1] == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    replayData = mgr->replayData->stageReplayData[g_GameManager.currentStage - 1];
+    g_GameManager.character = mgr->replayData->shottypeChara / 2;
+    g_GameManager.shotType = mgr->replayData->shottypeChara % 2;
+    g_GameManager.difficulty = (Difficulty)mgr->replayData->difficulty;
+    g_GameManager.pointItemsCollected = replayData->pointItemsCollected;
+    g_Rng.Initialize(replayData->randomSeed);
+    g_GameManager.rank = replayData->rank;
+    g_GameManager.livesRemaining = replayData->livesRemaining;
+    g_GameManager.bombsRemaining = replayData->bombsRemaining;
+    g_GameManager.currentPower = replayData->power;
+    mgr->replayInputs = replayData->replayInputs;
+    g_GameManager.powerItemCountForScore = replayData->powerItemCountForScore;
+    if (2 <= g_GameManager.currentStage && mgr->replayData->stageReplayData[g_GameManager.currentStage - 2] != NULL)
+    {
+        g_GameManager.guiScore = mgr->replayData->stageReplayData[g_GameManager.currentStage - 2]->score;
+        g_GameManager.score = g_GameManager.guiScore;
+    }
     return ZUN_SUCCESS;
 }
 }; // namespace th06

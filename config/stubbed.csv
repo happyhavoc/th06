@@ -16,7 +16,6 @@ th06::ReplayManager::OnUpdate
 th06::ReplayManager::OnUpdateDemoHighPrio
 th06::ReplayManager::OnUpdateDemoLowPrio
 th06::ReplayManager::OnDraw
-th06::ReplayManager::AddedCallbackDemo
 th06::ReplayManager::DeletedCallback
 th06::ReplayManager::StopRecording
 th06::ReplayManager::SaveReplay
