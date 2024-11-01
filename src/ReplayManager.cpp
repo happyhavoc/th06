@@ -72,6 +72,26 @@ ZunResult ReplayManager::RegisterChain(i32 isDemo, char *replayFile)
     return ZUN_SUCCESS;
 }
 
+ChainCallbackResult ReplayManager::OnUpdate(ReplayManager *mgr)
+{
+    u16 inputs;
+
+    if (!g_GameManager.isInMenu)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    inputs = IS_PRESSED(TH_BUTTON_SHOOT | TH_BUTTON_BOMB | TH_BUTTON_FOCUS | TH_BUTTON_SKIP | TH_BUTTON_DIRECTION);
+    if (inputs != mgr->replayInputs->inputKey)
+    {
+        mgr->replayInputs += 1;
+        mgr->replayInputStageBookmarks[g_GameManager.currentStage - 1] = mgr->replayInputs + 1;
+        mgr->replayInputs->frameNum = mgr->frameId;
+        mgr->replayInputs->inputKey = inputs;
+    }
+    mgr->frameId += 1;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 ChainCallbackResult ReplayManager::OnDraw(ReplayManager *mgr)
 {
     return CHAIN_CALLBACK_RESULT_CONTINUE;
