@@ -1,5 +1,7 @@
 #include "ReplayManager.hpp"
+#include "GameManager.hpp"
 #include "Supervisor.hpp"
+#include "utils.hpp"
 
 namespace th06
 {
@@ -65,6 +67,61 @@ ZunResult ReplayManager::RegisterChain(i32 isDemo, char *replayFile)
             break;
         }
     }
+    return ZUN_SUCCESS;
+}
+
+__inline StageReplayData *AllocateStageReplayData(i32 size)
+{
+    return (StageReplayData *)malloc(size);
+}
+
+#pragma var_order(stageReplayData, idx, oldStageReplayData)
+ZunResult ReplayManager::AddedCallback(ReplayManager *mgr)
+{
+    StageReplayData *stageReplayData;
+    StageReplayData *oldStageReplayData;
+    i32 idx;
+
+    mgr->frameId = 0;
+    if (mgr->replayData == NULL)
+    {
+        mgr->replayData = new ReplayData();
+        memcpy(&mgr->replayData->magic[0], "T6RP", 4);
+        mgr->replayData->shottypeChara = g_GameManager.character * 2 + g_GameManager.shotType;
+        mgr->replayData->version = 0x102;
+        mgr->replayData->difficulty = g_GameManager.difficulty;
+        memcpy(&mgr->replayData->name, "NO NAME", 4);
+        for (idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->replayData->stageReplayData); idx += 1)
+        {
+            mgr->replayData->stageReplayData[idx] = NULL;
+        }
+    }
+    else
+    {
+        oldStageReplayData = mgr->replayData->stageReplayData[g_GameManager.currentStage - 2];
+        if (oldStageReplayData == NULL)
+        {
+            return ZUN_ERROR;
+        }
+        oldStageReplayData->score = g_GameManager.score;
+    }
+    if (mgr->replayData->stageReplayData[g_GameManager.currentStage - 1] != NULL)
+    {
+        utils::DebugPrint2("error : replay.cpp");
+    }
+    mgr->replayData->stageReplayData[g_GameManager.currentStage - 1] = AllocateStageReplayData(sizeof(StageReplayData));
+    stageReplayData = mgr->replayData->stageReplayData[g_GameManager.currentStage - 1];
+    stageReplayData->bombsRemaining = g_GameManager.bombsRemaining;
+    stageReplayData->livesRemaining = g_GameManager.livesRemaining;
+    stageReplayData->power = g_GameManager.currentPower;
+    stageReplayData->rank = g_GameManager.rank;
+    stageReplayData->pointItemsCollected = g_GameManager.pointItemsCollected;
+    stageReplayData->randomSeed = g_GameManager.randomSeed;
+    stageReplayData->powerItemCountForScore = g_GameManager.powerItemCountForScore;
+    mgr->replayInputs = stageReplayData->replayInputs;
+    mgr->replayInputs->frameNum = 0;
+    mgr->replayInputs->inputKey = 0;
+    mgr->unk44 = 0;
     return ZUN_SUCCESS;
 }
 }; // namespace th06

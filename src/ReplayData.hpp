@@ -28,7 +28,7 @@ C_ASSERT(sizeof(StageReplayData) == 0x69780);
 
 struct ReplayData
 {
-    char *magic;
+    char magic[4];
     i16 version;
     u8 shottypeChara;
     u8 difficulty;
