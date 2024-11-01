@@ -327,4 +327,20 @@ ZunResult ReplayManager::DeletedCallback(ReplayManager *mgr)
     g_ReplayManager = NULL;
     return ZUN_SUCCESS;
 }
+
+void ReplayManager::StopRecording()
+{
+    ReplayManager *mgr = g_ReplayManager;
+    if (mgr != NULL)
+    {
+        mgr->replayInputs += 1;
+        mgr->replayInputs->frameNum = mgr->frameId;
+        mgr->replayInputs->inputKey = 0;
+        mgr->replayInputs += 1;
+        mgr->replayInputs->frameNum = 9999999;
+        mgr->replayInputs->inputKey = 0;
+        mgr->replayInputStageBookmarks[g_GameManager.currentStage - 1] = mgr->replayInputs + 1;
+    }
+}
+
 }; // namespace th06
