@@ -244,6 +244,40 @@ ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 len
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+ZunResult ResultScreen::CheckConfirmButton()
+{
+    AnmVm *viewport;
+
+    switch (this->resultScreenState)
+    {
+    case RESULT_SCREEN_STATE_STATS_SCREEN:
+        if (this->frameTimer <= 30)
+        {
+            viewport = &this->unk_40[37];
+            viewport->pendingInterrupt = 16;
+        }
+        if (this->frameTimer >= 90 && WAS_PRESSED(TH_BUTTON_SELECTMENU))
+        {
+            viewport = &this->unk_40[37];
+            viewport->pendingInterrupt = 2;
+            this->frameTimer = 0;
+            this->resultScreenState = RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION;
+        }
+        break;
+
+    case RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION:
+        if (this->frameTimer >= 30)
+        {
+            this->frameTimer = 59;
+            this->resultScreenState = RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION;
+        }
+        break;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
 ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 {
