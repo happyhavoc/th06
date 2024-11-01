@@ -1222,7 +1222,7 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 }
 #pragma optimize("", on)
 
-DIFFABLE_STATIC_ARRAY(u8, (32*4), g_ControllerData)
+DIFFABLE_STATIC_ARRAY(u8, (32 * 4), g_ControllerData)
 
 #pragma optimize("", on)
 #pragma var_order(joyinfoex, joyButtonBit, joyButtonIndex, dires, dijoystate2, diRetryCount)
@@ -1232,11 +1232,11 @@ u8 *th06::Controller::GetControllerState()
     JOYINFOEX joyinfoex;
     u32 joyButtonBit;
     u32 joyButtonIndex;
-    
+
     i32 dires;
     DIJOYSTATE2 dijoystate2;
     i32 diRetryCount;
-    
+
     memset(&g_ControllerData, 0, sizeof(g_ControllerData));
     if (g_Supervisor.controller == NULL)
     {
@@ -1247,7 +1247,8 @@ u8 *th06::Controller::GetControllerState()
         {
             return g_ControllerData;
         }
-        for (joyButtonBit = joyinfoex.dwButtons, joyButtonIndex = 0; joyButtonIndex < 32; joyButtonIndex += 1, joyButtonBit >>= 1)
+        for (joyButtonBit = joyinfoex.dwButtons, joyButtonIndex = 0; joyButtonIndex < 32;
+             joyButtonIndex += 1, joyButtonBit >>= 1)
         {
             if ((joyButtonBit & 1) != 0)
             {
@@ -1264,11 +1265,13 @@ u8 *th06::Controller::GetControllerState()
             diRetryCount = 0;
             utils::DebugPrint2("error : DIERR_INPUTLOST\n");
             dires = g_Supervisor.controller->Acquire();
-            while (dires == DIERR_INPUTLOST) {
+            while (dires == DIERR_INPUTLOST)
+            {
                 dires = g_Supervisor.controller->Acquire();
                 utils::DebugPrint2("error : DIERR_INPUTLOST %d\n", diRetryCount);
                 diRetryCount++;
-                if (diRetryCount >= 400) {
+                if (diRetryCount >= 400)
+                {
                     return g_ControllerData;
                 }
             }
