@@ -1277,17 +1277,14 @@ u8 *th06::Controller::GetControllerState()
             }
             return g_ControllerData;
         }
-        else
+        /* dires = */ g_Supervisor.controller->GetDeviceState(sizeof(DIJOYSTATE2), &dijoystate2);
+        // TODO: seems ZUN forgot "dires =" above
+        if (FAILED(dires))
         {
-            /* dires = */ g_Supervisor.controller->GetDeviceState(sizeof(DIJOYSTATE2), &dijoystate2);
-            // TODO: seems ZUN forgot "dires =" above
-            if (FAILED(dires))
-            {
-                return g_ControllerData;
-            }
-            memcpy(&g_ControllerData, dijoystate2.rgbButtons, sizeof(dijoystate2.rgbButtons));
             return g_ControllerData;
         }
+        memcpy(&g_ControllerData, dijoystate2.rgbButtons, sizeof(dijoystate2.rgbButtons));
+        return g_ControllerData;
     }
 }
 #pragma optimize("", on)
