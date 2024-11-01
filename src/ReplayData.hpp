@@ -42,7 +42,7 @@ struct ReplayData
     i8 padding[11];
     f32 slowdownRate;
     i8 padding2[4];
-    StageReplayData *stageScore[7];
+    StageReplayData *stageReplayData[7];
 };
 C_ASSERT(sizeof(ReplayData) == 0x50);
 }; // namespace th06

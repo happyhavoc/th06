@@ -499,22 +499,23 @@ i32 MainMenu::ReplayHandling()
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
                 this->currentReplay = (ReplayData *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
                 ReplayManager::ValidateReplayData(this->currentReplay, g_LastFileSize);
-                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore); cur++)
+                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData); cur++)
                 {
-                    if (this->currentReplay->stageScore[cur] != NULL)
+                    if (this->currentReplay->stageReplayData[cur] != NULL)
                     {
-                        this->currentReplay->stageScore[cur] =
-                            (StageReplayData *)((u32)this->currentReplay + (u32)this->currentReplay->stageScore[cur]);
+                        this->currentReplay->stageReplayData[cur] =
+                            (StageReplayData *)((u32)this->currentReplay +
+                                                (u32)this->currentReplay->stageReplayData[cur]);
                     }
                 }
 
                 do
                 {
                     // FIXME: there's an additional jump
-                    if (this->replayFileData[this->chosenReplay].stageScore[this->cursor])
+                    if (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor])
                         goto leaveDo;
                     this->cursor = this->cursor + 1;
-                } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore));
+                } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData));
                 return ZUN_SUCCESS;
             }
         }
@@ -540,7 +541,7 @@ i32 MainMenu::ReplayHandling()
         cur = MoveCursor(this, 7);
         if (cur < 0)
         {
-            while (this->replayFileData[this->chosenReplay].stageScore[this->cursor] == NULL)
+            while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
             {
                 this->cursor--;
                 if (this->cursor < 0)
@@ -551,7 +552,7 @@ i32 MainMenu::ReplayHandling()
         }
         else if (cur > 0)
         {
-            while (this->replayFileData[this->chosenReplay].stageScore[this->cursor] == NULL)
+            while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
             {
                 this->cursor++;
                 if (this->cursor >= 7)
@@ -560,7 +561,7 @@ i32 MainMenu::ReplayHandling()
                 }
             }
         }
-        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageScore)
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageReplayData)
         {
             g_GameManager.isInReplay = 1;
             g_Supervisor.framerateMultiplier = 1.0;
@@ -569,12 +570,12 @@ i32 MainMenu::ReplayHandling()
             g_GameManager.character = this->currentReplay->shottypeChara / 2;
             g_GameManager.shotType = this->currentReplay->shottypeChara % 2;
             cur = 0;
-            while (this->currentReplay->stageScore[cur] == NULL)
+            while (this->currentReplay->stageReplayData[cur] == NULL)
             {
                 cur++;
             }
-            g_GameManager.livesRemaining = this->currentReplay->stageScore[cur]->livesRemaining;
-            g_GameManager.bombsRemaining = this->currentReplay->stageScore[cur]->bombsRemaining;
+            g_GameManager.livesRemaining = this->currentReplay->stageReplayData[cur]->livesRemaining;
+            g_GameManager.bombsRemaining = this->currentReplay->stageReplayData[cur]->bombsRemaining;
             ReplayData *uh = this->currentReplay;
             free(uh);
             this->currentReplay = NULL;
@@ -2268,10 +2269,10 @@ ZunResult MainMenu::DrawReplayMenu()
                     g_AsciiManager.color = COLOR_GREY;
                 }
             }
-            if (this->currentReplay->stageScore[i])
+            if (this->currentReplay->stageReplayData[i])
             {
                 g_AsciiManager.AddFormatText(&vmRef->pos, "%s %9d", g_StageList[i],
-                                             this->currentReplay->stageScore[i]->score);
+                                             this->currentReplay->stageReplayData[i]->score);
             }
             else
             {
