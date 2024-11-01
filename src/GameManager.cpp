@@ -181,7 +181,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
         g_GameManager.powerItemCountForScore = 0;
         mgr->rank = 8;
         mgr->grazeInTotal = 0;
-        mgr->unk_1816 = 0;
+        mgr->pointItemsCollected = 0;
         for (catk = mgr->catk, i = 0; i < ARRAY_SIZE_SIGNED(mgr->catk); i++, catk++)
         {
             // Randomize catk content.

@@ -223,7 +223,7 @@ void ItemManager::OnUpdate()
                 }
                 g_GameManager.score += itemScore;
                 g_GameManager.pointItemsCollectedInStage++;
-                g_GameManager.unk_1816++;
+                g_GameManager.pointItemsCollected++;
                 g_Gui.flags.flag4 = 2;
                 if (curItem->currentPosition.y < 128.0f)
                 {
