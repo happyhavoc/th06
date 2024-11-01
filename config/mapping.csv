@@ -330,7 +330,7 @@ th06::Player::DrawBulletExplosions,0x429bb0,0x99,default,,void,Player*
 th06::Player::AddedCallback,0x429c50,0x45e,default,,ZunResult,Player*
 th06::Player::DeletedCallback,0x42a0b0,0x24,default,,ZunResult,Player*
 th06::Player::CutChain,0x42a0e0,0x55,default,,void
-th06::ValidateReplayData,0x42a140,0x100,default,,ZunResult,ReplayData*,i32
+th06::ReplayManager::ValidateReplayData,0x42a140,0x100,default,,ZunResult,ReplayData*,i32
 th06::ReplayManager::RegisterChain,0x42a240,0x228,default,,ZunResult,i32,char*
 th06::ReplayManager::OnUpdate,0x42a470,0x97,default,,ChainCallbackResult,ReplayManager*
 th06::ReplayManager::OnUpdateDemoLowPrio,0x42a510,0x51,default,,ChainCallbackResult,ReplayManager*
@@ -340,7 +340,7 @@ th06::ReplayManager::AddedCallback,0x42a680,0x1bd,default,,ZunResult,ReplayManag
 th06::ReplayManager::AddedCallbackDemo,0x42a840,0x1d5,default,,ZunResult,ReplayManager*
 th06::ReplayManager::DeletedCallback,0x42aa20,0x8c,default,,ZunResult,ReplayManager*
 th06::ReplayManager::StopRecording,0x42aab0,0x7b,default,,void
-th06::SaveReplay,0x42ab30,0x5a9,default,,void,char*,char*
+th06::ReplayManager::SaveReplay,0x42ab30,0x5a9,default,,void,char*,char*
 th06::ResultScreen::OpenScore,0x42b0d9,0x1a7,default,,ScoreDat*,char*
 th06::ResultScreen::GetHighScore,0x42b280,0x126,default,,u32,ScoreDat*,ScoreListNode*,u32,u32
 th06::ResultScreen::LinkScore,0x42b3a6,0x91,default,,i32,ScoreListNode*,Hscr*
