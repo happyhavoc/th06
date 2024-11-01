@@ -36,6 +36,10 @@ enum StageNumber
 #define PSCR_NUM_STAGES 6
 #define PSCR_NUM_DIFFICULTIES 4
 
+#define CLRD_NUM_CHARACTERS 4
+
+#define CATK_NUM_CAPTURES 64
+
 #define GAME_REGION_TOP 16.0
 #define GAME_REGION_LEFT 32.0
 
@@ -87,8 +91,8 @@ struct GameManager
     u32 bombsUsed;
     u32 unk_28;
     i8 isTimeStopped;
-    Catk catk[64];
-    Clrd clrd[4];
+    Catk catk[CATK_NUM_CAPTURES];
+    Clrd clrd[CLRD_NUM_CHARACTERS];
     Pscr pscr[PSCR_NUM_CHARS_SHOTTYPES][PSCR_NUM_STAGES][PSCR_NUM_DIFFICULTIES];
     u16 currentPower;
     i8 unk_1812;

@@ -278,6 +278,39 @@ ZunResult ResultScreen::CheckConfirmButton()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma var_order(parsedCatk, cursor, sd)
+ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
+{
+
+    i32 cursor;
+    Catk *parsedCatk;
+    ScoreDat *sd;
+    sd = scoreDat;
+
+    if (outCatk == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    parsedCatk = (Catk *)&sd->xorseed[sd->dataOffset];
+    cursor = sd->fileLen - sd->dataOffset;
+    while (cursor > 0)
+    {
+        if (parsedCatk->base.magic == 'KTAC' && parsedCatk->base.version == 16)
+        {
+            if (parsedCatk->idx >= CATK_NUM_CAPTURES)
+                break;
+
+            outCatk[parsedCatk->idx] = *parsedCatk;
+        }
+        cursor -= parsedCatk->base.th6kLen;
+        parsedCatk = (Catk *)&parsedCatk->name[parsedCatk->base.th6kLen - 0x18];
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
 ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 {
