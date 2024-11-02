@@ -835,4 +835,55 @@ void StageMenu::OnDrawRetryMenu()
     return;
 }
 
+#pragma var_order(currentPopup, j, i, currentDigit, unusedVec3)
+void AsciiManager::DrawPopupsWithHwVertexProcessing()
+{
+    u8 *currentDigit;
+    AsciiManagerPopup *currentPopup;
+    i32 i;
+    i32 j;
+    D3DXVECTOR3 unusedVec3;
+
+    currentPopup = this->popups;
+    g_Supervisor.viewport.X = g_GameManager.arcadeRegionTopLeftPos.x;
+    g_Supervisor.viewport.Y = g_GameManager.arcadeRegionTopLeftPos.y;
+    g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
+    g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
+    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->popups); i++, currentPopup++)
+    {
+        if (currentPopup->inUse == 0)
+        {
+            continue;
+        }
+
+        this->vm1.pos.x = currentPopup->position.x - (currentPopup->characterCount * 4);
+        this->vm1.pos.y = currentPopup->position.y;
+        this->vm1.color = currentPopup->color;
+
+        currentDigit = (u8 *) currentPopup->digits + currentPopup->characterCount - 1;
+        for (j = currentPopup->characterCount; 0 < j; j--)
+        {
+            this->vm1.sprite = g_AnmManager->sprites + *currentDigit;
+            if (*currentDigit >= '\n')
+            {
+                this->vm1.matrix.m[0][0] = 0.1875f;
+                this->vm1.matrix.m[1][1] = 0.03125f;
+                g_AnmManager->Draw2(&this->vm1);
+                this->vm1.matrix.m[0][0] = 0.03125f;
+                this->vm1.matrix.m[1][1] = 0.03125f;
+            }
+            else
+            {
+                g_AnmManager->Draw2(&this->vm1);
+            }
+
+            this->vm1.pos.x += 8.0f;
+            currentDigit--;
+        }
+    }
+
+    return;
+}
 }; // namespace th06
