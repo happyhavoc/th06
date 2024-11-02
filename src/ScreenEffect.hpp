@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <d3d8types.h>
+#include <string.h>
 
 #include "ZunResult.hpp"
 #include "inttypes.hpp"

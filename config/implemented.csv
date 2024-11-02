@@ -300,6 +300,7 @@ th06::GameWindow::InitD3dDevice
 th06::GameWindow::InitD3dRendering
 th06::ScreenEffect::Clear
 th06::ScreenEffect::SetViewport
+th06::ScreenEffect::DrawSquare
 th06::utils::AddNormalizeAngle
 th06::utils::Rotate
 th06::SoundPlayer::SoundPlayer

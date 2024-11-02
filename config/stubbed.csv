@@ -20,5 +20,4 @@ th06::ReplayManager::RegisterChain
 th06::ReplayManager::StopRecording
 th06::ReplayManager::SaveReplay
 th06::ReplayManager::ValidateReplayData
-th06::ScreenEffect::DrawSquare
 th06::Pbg3Archive::Pbg3Archive
