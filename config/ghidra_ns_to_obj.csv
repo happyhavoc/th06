@@ -19,6 +19,7 @@ IPbg3Parser,th06::IPbg3Parser
 ItemManager,th06::ItemManager
 MainMenu,th06::MainMenu
 MidiOutput,th06::MidiDevice,th06::MidiTimer,th06::MidiOutput
+MusicRoom,th06::MusicRoom
 Pbg3Archive,th06::Pbg3Archive
 Pbg3Parser,th06::Pbg3Parser
 Player,th06::Player
