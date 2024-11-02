@@ -125,4 +125,3 @@ _g_PrimitivesToDrawVertexBuf,           0x006d4600
 _g_PrimitivesToDrawUnknown,             0x006d4660
 _g_MainMenu,                            0x006d46c0
 _g_MusicRoom,                           0x006c71f0
-_g_MusicRoomDrawChain,                  0x006c71f4

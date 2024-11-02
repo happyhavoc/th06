@@ -12,7 +12,7 @@ th06::ResultScreen::GetHighScore
 th06::Supervisor::DeletedCallback
 th06::MusicRoom::AddedCallback
 th06::MusicRoom::DeletedCallback
-th06::MusicRoom::drawMusicList
+th06::MusicRoom::DrawMusicList
 th06::MusicRoom::FUN_00424e8f
 th06::MusicRoom::OnDraw
 th06::MusicRoom::OnUpdate
