@@ -10,6 +10,7 @@ th06::ResultScreen::ParsePscr
 th06::ResultScreen::ParseCatk
 th06::ResultScreen::GetHighScore
 th06::Supervisor::DeletedCallback
+th06::MusicRoom::MusicRoom
 th06::MusicRoom::AddedCallback
 th06::MusicRoom::DeletedCallback
 th06::MusicRoom::DrawMusicList
