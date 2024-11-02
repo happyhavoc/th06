@@ -112,7 +112,6 @@ def configure(build_type):
             "SoundPlayer",
             "Player",
             "Stage",
-            "StageMenu",
             "AnmVm",
             "AnmManager",
             "GameManager",
