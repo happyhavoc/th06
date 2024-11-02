@@ -12,6 +12,8 @@ th06::AsciiManager::AddFormatText
 th06::AsciiManager::CreatePopup1
 th06::AsciiManager::CreatePopup2
 th06::AsciiManager::DrawStrings
+th06::AsciiManager::DrawPopupsWithHwVertexProcessing
+th06::AsciiManager::DrawPopupsWithoutHwVertexProcessing
 th06::ZunTimer::Initialize
 th06::ZunTimer::Increment
 th06::ZunTimer::Decrement
