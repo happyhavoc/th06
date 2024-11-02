@@ -90,7 +90,6 @@ def configure(build_type):
             "python scripts/generate_objdiff_objs.py $in",
         )
 
-        main_sources = ["main"]
         cxx_sources = [
             "AsciiManager",
             "BulletData",
@@ -123,6 +122,7 @@ def configure(build_type):
             "utils",
             "ZunTimer",
             "zwave",
+            "main",
         ]
 
         pbg3_sources = [
@@ -163,7 +163,7 @@ def configure(build_type):
             objdiff_deps.append(obj["base_path"].replace("build", "$builddir"))
         writer.build("objdiff", "phony", [], objdiff_deps)
 
-        for rule in main_sources + cxx_sources:
+        for rule in cxx_sources:
             writer.build(
                 "$builddir/" + rule + ".obj",
                 "cc",
@@ -269,13 +269,12 @@ def configure(build_type):
             "gendef",
             inputs=[
                 "$builddir/" + x + ".obj"
-                for x in (main_sources + cxx_sources + pbg3_sources + ["stubs"])
+                for x in (cxx_sources + pbg3_sources + ["stubs"])
             ],
             implicit=["scripts/gendef.py"],
         )
         objfiles = (
-            ["$builddir/" + src + ".obj" for src in main_sources]
-            + ["$builddir/" + src + ".obj" for src in cxx_sources]
+            ["$builddir/" + src + ".obj" for src in cxx_sources]
             + ["$builddir/" + src + ".obj" for src in pbg3_sources]
             + ["$builddir/th06.res", "$builddir/stubs.obj"]
         )
