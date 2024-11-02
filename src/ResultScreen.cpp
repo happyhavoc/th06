@@ -2,6 +2,7 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
@@ -278,6 +279,94 @@ ZunResult ResultScreen::CheckConfirmButton()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma var_order(scoreData, bytesShifted, xorValue, checksum, bytes, remainingData, decryptedFilePointer, fileLen,    \
+                  scoreDatSize, scoreListNodeSize)
+ScoreDat *ResultScreen::OpenScore(char *path)
+{
+    u8 *bytes;
+    i32 bytesShifted;
+    i32 fileLen;
+    Th6k *decryptedFilePointer;
+    i32 remainingData;
+    i32 scoreListNodeSize;
+    u16 checksum;
+    u8 xorValue;
+    i32 scoreDatSize;
+    ScoreDat *scoreData;
+
+    scoreData = (ScoreDat *)FileSystem::OpenPath(path, true);
+    if (scoreData == NULL)
+    {
+    FAILED_TO_READ:
+        scoreDatSize = sizeof(ScoreDat);
+        scoreData = (ScoreDat *)malloc(scoreDatSize);
+        scoreData->dataOffset = sizeof(ScoreDat);
+        scoreData->fileLen = sizeof(ScoreDat);
+    }
+    else
+    {
+        if (g_LastFileSize < sizeof(ScoreDat))
+        {
+            free(scoreData);
+            goto FAILED_TO_READ;
+        }
+        else
+        {
+            remainingData = g_LastFileSize - 2;
+            checksum = 0;
+            xorValue = 0;
+            bytesShifted = 0;
+            bytes = &scoreData->xorseed[1];
+
+            while (0 < remainingData)
+            {
+
+                xorValue += bytes[0];
+                // Invert top 3 bits and bottom 5 bits
+                xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
+                // xor one byte later with the resulting inverted bits
+                bytes[1] ^= xorValue;
+                if (bytesShifted >= 2)
+                {
+                    checksum += bytes[1];
+                }
+                bytes++;
+                remainingData--;
+                bytesShifted++;
+            }
+            if (scoreData->csum != checksum)
+            {
+                free(scoreData);
+                goto FAILED_TO_READ;
+            }
+            fileLen = scoreData->fileLen;
+            decryptedFilePointer = scoreData->ShiftBytes(scoreData->dataOffset);
+            fileLen -= scoreData->dataOffset;
+            while (fileLen > 0)
+            {
+                if (decryptedFilePointer->magic == 'K6HT')
+                    break;
+
+                decryptedFilePointer = decryptedFilePointer->ShiftBytes(decryptedFilePointer->th6kLen);
+                fileLen = fileLen - decryptedFilePointer->th6kLen;
+            }
+            if (fileLen <= 0)
+            {
+                free(scoreData);
+                goto FAILED_TO_READ;
+            };
+        }
+    }
+    scoreListNodeSize = sizeof(ScoreListNode);
+    scoreData->scores = (ScoreListNode *)malloc(scoreListNodeSize);
+    scoreData->scores->next = NULL;
+    scoreData->scores->data = NULL;
+    scoreData->scores->prev = NULL;
+    return scoreData;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(parsedCatk, cursor, sd)
 ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
 {
@@ -292,7 +381,7 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
         return ZUN_ERROR;
     }
 
-    parsedCatk = (Catk *)&sd->xorseed[sd->dataOffset];
+    parsedCatk = (Catk *)sd->ShiftBytes(sd->dataOffset);
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
@@ -343,7 +432,7 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
         }
     }
 
-    parsedClrd = (Clrd *)&sd->xorseed[sd->dataOffset];
+    parsedClrd = (Clrd *)sd->ShiftBytes(sd->dataOffset);
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
@@ -399,7 +488,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
         }
     }
 
-    parsedPscr = (Pscr *)&sd->xorseed[sd->dataOffset];
+    parsedPscr = (Pscr *)sd->ShiftBytes(sd->dataOffset);
     cursor = sd->fileLen - sd->dataOffset;
 
     while (cursor > 0)
@@ -414,7 +503,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
             outClrd[pscr->character * 6 * 4 + pscr->stage * 4 + pscr->difficulty] = *pscr;
         }
         cursor -= parsedPscr->base.th6kLen;
-        parsedPscr = (Pscr *)((i32)&parsedPscr->base + parsedPscr->base.th6kLen);
+        parsedPscr = parsedPscr->ShiftBytes(parsedPscr->base.th6kLen);
     }
     return ZUN_SUCCESS;
 }
