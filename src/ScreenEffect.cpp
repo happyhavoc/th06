@@ -34,6 +34,26 @@ void ScreenEffect::SetViewport(D3DCOLOR color)
     ScreenEffect::Clear(color);
 }
 
+ChainCallbackResult ScreenEffect::CalcFadeIn(ScreenEffect *effect)
+{
+    if (effect->effectLength != 0)
+    {
+        effect->fadeAlpha = (255.0f - ((effect->timer.AsFramesFloat() * 255.0f)) / effect->effectLength);
+        if (effect->fadeAlpha < 0)
+        {
+            effect->fadeAlpha = 0;
+        }
+    }
+
+    if (effect->timer >= effect->effectLength)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
+    }
+
+    effect->timer.Tick();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 void ScreenEffect::DrawSquare(ZunRect *rect, D3DCOLOR rectColor)
 {
     VertexDiffuseXyzrwh vertices[4];
