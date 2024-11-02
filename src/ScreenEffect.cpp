@@ -38,7 +38,7 @@ ChainCallbackResult ScreenEffect::CalcFadeIn(ScreenEffect *effect)
 {
     if (effect->effectLength != 0)
     {
-        effect->fadeAlpha = (255.0f - ((effect->timer.AsFramesFloat() * 255.0f)) / effect->effectLength);
+        effect->fadeAlpha = 255.0f - ((effect->timer.AsFramesFloat() * 255.0f) / effect->effectLength);
         if (effect->fadeAlpha < 0)
         {
             effect->fadeAlpha = 0;
@@ -97,5 +97,25 @@ void ScreenEffect::DrawSquare(ZunRect *rect, D3DCOLOR rectColor)
     g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
     g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+}
+
+ChainCallbackResult ScreenEffect::CalcFadeOut(ScreenEffect *effect)
+{
+    if (effect->effectLength != 0)
+    {
+        effect->fadeAlpha = (effect->timer.AsFramesFloat() * 255.0f) / effect->effectLength;
+        if (effect->fadeAlpha < 0)
+        {
+            effect->fadeAlpha = 0;
+        }
+    }
+
+    if (effect->timer >= effect->effectLength)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
+    }
+
+    effect->timer.Tick();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 }; // namespace th06
