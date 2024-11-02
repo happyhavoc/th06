@@ -12,5 +12,12 @@ th06::MusicRoom::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
 th06::MainMenu::SelectRelated
+th06::ScreenEffect::CalcFadeIn
+th06::ScreenEffect::CalcFadeOut
+th06::ScreenEffect::DrawFadeIn
+th06::ScreenEffect::DrawFadeOut
+th06::ScreenEffect::ShakeScreen
+th06::ScreenEffect::AddedCallback
+th06::ScreenEffect::DeletedCallback
 th06::TextHelper::ReleaseTextBuffer
 th06::Pbg3Archive::Pbg3Archive
