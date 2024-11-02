@@ -32,14 +32,14 @@ struct ScreenEffect
     static ScreenEffect *RegisterChain(u32 effect, u32 ticks, u32 effectParam1, u32 effectParam2,
                                        u32 unusedEffectParam);
     
-    ZunResult AddedCallback(ScreenEffect *effect);
-    ZunResult DeletedCallback(ScreenEffect *effect);
+    static ZunResult AddedCallback(ScreenEffect *effect);
+    static ZunResult DeletedCallback(ScreenEffect *effect);
 
-    ChainCallbackResult DrawFadeIn(ScreenEffect *effect);
-    ChainCallbackResult CalcFadeIn(ScreenEffect *effect);
-    ChainCallbackResult ShakeScreen(ScreenEffect *effect);
-    ChainCallbackResult DrawFadeOut(ScreenEffect *effect);
-    ChainCallbackResult CalcFadeOut(ScreenEffect *effect);
+    static ChainCallbackResult DrawFadeIn(ScreenEffect *effect);
+    static ChainCallbackResult CalcFadeIn(ScreenEffect *effect);
+    static ChainCallbackResult ShakeScreen(ScreenEffect *effect);
+    static ChainCallbackResult DrawFadeOut(ScreenEffect *effect);
+    static ChainCallbackResult CalcFadeOut(ScreenEffect *effect);
 
     static void DrawSquare(ZunRect *rect, D3DCOLOR rectColor);
     static void Clear(D3DCOLOR color);
@@ -53,6 +53,7 @@ struct ScreenEffect
     i32 effectLength;
     i32 genericParam; // effectParam1
     i32 shakinessParam; // effectParam2
+    i32 unusedParam;
     ZunTimer timer;
 };
 }; // namespace th06
