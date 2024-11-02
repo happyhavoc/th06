@@ -862,7 +862,7 @@ void AsciiManager::DrawPopupsWithHwVertexProcessing()
         this->vm1.pos.y = currentPopup->position.y;
         this->vm1.color = currentPopup->color;
 
-        currentDigit = (u8 *) currentPopup->digits + currentPopup->characterCount - 1;
+        currentDigit = (u8 *)currentPopup->digits + currentPopup->characterCount - 1;
         for (j = currentPopup->characterCount; 0 < j; j--)
         {
             this->vm1.sprite = g_AnmManager->sprites + *currentDigit;
@@ -914,7 +914,7 @@ void AsciiManager::DrawPopupsWithoutHwVertexProcessing()
         this->vm1.pos.y = currentPopup->position.y;
         this->vm1.color = currentPopup->color;
 
-        currentDigit = (u8 *) currentPopup->digits + currentPopup->characterCount - 1;
+        currentDigit = (u8 *)currentPopup->digits + currentPopup->characterCount - 1;
         for (j = currentPopup->characterCount; 0 < j; j--)
         {
             this->vm1.sprite = g_AnmManager->sprites + *currentDigit;
