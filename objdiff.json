@@ -251,14 +251,6 @@
             "reverse_fn_order": false
         },
         {
-            "name": "StageMenu",
-
-            "target_path": "build/objdiff/orig/StageMenu.obj",
-            "base_path": "build/objdiff/reimpl/StageMenu.obj",
-
-            "reverse_fn_order": false
-        },
-        {
             "name": "Supervisor",
 
             "target_path": "build/objdiff/orig/Supervisor.obj",
