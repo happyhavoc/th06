@@ -443,7 +443,7 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
         gameManager->demoFrames++;
         if (gameManager->demoFrames == DEMO_FADEOUT_FRAMES)
         {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_OUT, 0x78, 0, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_OUT, 120, 0x000000, 0, 0);
         }
         if (gameManager->demoFrames >= DEMO_FRAMES)
         {

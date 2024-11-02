@@ -20,4 +20,11 @@ th06::ReplayManager::RegisterChain
 th06::ReplayManager::StopRecording
 th06::ReplayManager::SaveReplay
 th06::ReplayManager::ValidateReplayData
+th06::ScreenEffect::CalcFadeIn
+th06::ScreenEffect::CalcFadeOut
+th06::ScreenEffect::DrawFadeIn
+th06::ScreenEffect::DrawFadeOut
+th06::ScreenEffect::ShakeScreen
+th06::ScreenEffect::AddedCallback
+th06::ScreenEffect::DeletedCallback
 th06::Pbg3Archive::Pbg3Archive

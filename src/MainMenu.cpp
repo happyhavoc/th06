@@ -679,11 +679,11 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
         if (g_Supervisor.startupTimeBeforeMenuMusic == 0)
         {
             g_Supervisor.PlayAudio("bgm/th06_01.mid");
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_0, 0x78, 0xffffff, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_IN, 120, 0xffffff, 0, 0);
         }
         else
         {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_0, 200, 0xffffff, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_IN, 200, 0xffffff, 0, 0);
         }
     }
     g_GameManager.demoMode = 0;
