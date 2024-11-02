@@ -41,7 +41,7 @@ ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)
 
             curPopup->position.y -= 0.5f * g_Supervisor.effectiveFramerateMultiplier;
             curPopup->timer.Tick();
-            if ((bool)(curPopup->timer.current > 60))
+            if ((i32)(curPopup->timer.current > 60))
             {
                 curPopup->inUse = false;
             }
