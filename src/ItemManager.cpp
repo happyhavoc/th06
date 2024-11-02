@@ -332,6 +332,23 @@ void ItemManager::OnUpdate()
     return;
 }
 
+#pragma var_order(idx, cursor)
+void ItemManager::RemoveAllItems()
+{
+    Item *cursor;
+    i32 idx;
+
+    for (cursor = &this->items[0], idx = 0; idx < ARRAY_SIZE_SIGNED(this->items); idx += 1, cursor += 1)
+    {
+        if (!cursor->isInUse)
+        {
+            continue;
+        }
+        cursor->state = 1;
+    }
+    return;
+}
+
 #pragma var_order(itemAlpha, idx, curItem)
 void ItemManager::OnDraw()
 {
