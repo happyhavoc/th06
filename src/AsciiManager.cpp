@@ -170,6 +170,45 @@ void AsciiManager::CutChain()
     // to free it!
 }
 
+void AsciiManager::AddString(D3DXVECTOR3 *position, char *text)
+{
+    if (this->numStrings >= 0x100)
+    {
+        return;
+    }
+
+    AsciiManagerString *curString = &this->strings[this->numStrings];
+    this->numStrings += 1;
+    // Hello unguarded strcpy my old friend. If text is bigger than 64
+    // characters, kboom.
+    strcpy(curString->text, text);
+    curString->position = *position;
+    curString->color = this->color;
+    curString->scale.x = this->scale.x;
+    curString->scale.y = this->scale.y;
+    curString->isGui = this->isGui;
+    if (g_Supervisor.cfg.IsSoftwareTexturing())
+    {
+        curString->isSelected = this->isSelected;
+    }
+    else
+    {
+        curString->isSelected = 0;
+    }
+}
+
+void AsciiManager::AddFormatText(D3DXVECTOR3 *position, const char *fmt, ...)
+{
+    char tmpBuffer[512];
+    va_list args;
+
+    va_start(args, fmt);
+    vsprintf(tmpBuffer, fmt, args);
+    AddString(position, tmpBuffer);
+
+    va_end(args);
+}
+
 #pragma var_order(charWidth, i, string, text, guiString, padding_1, padding_2, padding_3)
 void AsciiManager::DrawStrings(void)
 {
@@ -242,45 +281,6 @@ void AsciiManager::DrawStrings(void)
             text++;
         }
     }
-}
-
-void AsciiManager::AddString(D3DXVECTOR3 *position, char *text)
-{
-    if (this->numStrings >= 0x100)
-    {
-        return;
-    }
-
-    AsciiManagerString *curString = &this->strings[this->numStrings];
-    this->numStrings += 1;
-    // Hello unguarded strcpy my old friend. If text is bigger than 64
-    // characters, kboom.
-    strcpy(curString->text, text);
-    curString->position = *position;
-    curString->color = this->color;
-    curString->scale.x = this->scale.x;
-    curString->scale.y = this->scale.y;
-    curString->isGui = this->isGui;
-    if (g_Supervisor.cfg.IsSoftwareTexturing())
-    {
-        curString->isSelected = this->isSelected;
-    }
-    else
-    {
-        curString->isSelected = 0;
-    }
-}
-
-void AsciiManager::AddFormatText(D3DXVECTOR3 *position, const char *fmt, ...)
-{
-    char tmpBuffer[512];
-    va_list args;
-
-    va_start(args, fmt);
-    vsprintf(tmpBuffer, fmt, args);
-    AddString(position, tmpBuffer);
-
-    va_end(args);
 }
 
 void AsciiManager::CreatePopup1(D3DXVECTOR3 *position, i32 value, D3DCOLOR color)
