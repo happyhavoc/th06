@@ -8,10 +8,16 @@ namespace th06 {
     ZunResult MusicRoom::RegisterChain(void) {
         int iVar1;
         int iVar2;
-        int iVar3;
-        MusicRoom *musicRoom = &MusicRoom(g_MusicRoom);
+        u32 hasConstructed;
+        MusicRoom *musicRoom;
 
-        memset(musicRoom, 0, 0xd0d);
+        if (!(hasConstructed & 1)) {
+            hasConstructed |= 1;
+
+            musicRoom = &MusicRoom();
+        }
+
+        memset(musicRoom, 0, 0x3434);
 
         musicRoom->calc_chain = g_Chain.CreateElem((ChainCallback)MusicRoom::OnUpdate);
         musicRoom->calc_chain->arg = musicRoom;
@@ -28,6 +34,10 @@ namespace th06 {
 
         return ZUN_SUCCESS;
     };
+
+    MusicRoom::~MusicRoom() {
+
+    }
     #pragma optimize("", on)
 
 
