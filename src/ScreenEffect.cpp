@@ -60,7 +60,8 @@ void ScreenEffect::DrawSquare(ZunRect *rect, D3DCOLOR rectColor)
 {
     VertexDiffuseXyzrwh vertices[4];
 
-    // In the original code, VertexDiffuseXyzrwh almost certainly is a vec3 with a trailing w, which would make these simple vec3 assigns
+    // In the original code, VertexDiffuseXyzrwh almost certainly is a vec3 with a trailing w, which would make these
+    // simple vec3 assigns
     memcpy(&vertices[0].position, &D3DXVECTOR3(rect->left, rect->top, 0.0f), sizeof(D3DXVECTOR3));
     memcpy(&vertices[1].position, &D3DXVECTOR3(rect->right, rect->top, 0.0f), sizeof(D3DXVECTOR3));
     memcpy(&vertices[2].position, &D3DXVECTOR3(rect->left, rect->bottom, 0.0f), sizeof(D3DXVECTOR3));
@@ -80,7 +81,7 @@ void ScreenEffect::DrawSquare(ZunRect *rect, D3DCOLOR rectColor)
         g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
         g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
     }
-    
+
     g_Supervisor.d3dDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
     g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
     g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(*vertices));
@@ -122,7 +123,8 @@ ChainCallbackResult ScreenEffect::CalcFadeOut(ScreenEffect *effect)
 }
 
 #pragma var_order(calcChainElem, drawChainElem, createdEffect)
-ScreenEffect *ScreenEffect::RegisterChain(u32 effect, u32 ticks, u32 effectParam1, u32 effectParam2, u32 unusedEffectParam)
+ScreenEffect *ScreenEffect::RegisterChain(u32 effect, u32 ticks, u32 effectParam1, u32 effectParam2,
+                                          u32 unusedEffectParam)
 {
     ChainElem *calcChainElem;
     ScreenEffect *createdEffect;
@@ -143,21 +145,21 @@ ScreenEffect *ScreenEffect::RegisterChain(u32 effect, u32 ticks, u32 effectParam
     switch (effect)
     {
     case SCREEN_EFFECT_FADE_IN:
-        calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::CalcFadeIn);
-        drawChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::DrawFadeIn);
+        calcChainElem = g_Chain.CreateElem((ChainCallback)ScreenEffect::CalcFadeIn);
+        drawChainElem = g_Chain.CreateElem((ChainCallback)ScreenEffect::DrawFadeIn);
         break;
     case SCREEN_EFFECT_SHAKE:
-        calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::ShakeScreen);
+        calcChainElem = g_Chain.CreateElem((ChainCallback)ScreenEffect::ShakeScreen);
         break;
     case SCREEN_EFFECT_FADE_OUT:
-        calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::CalcFadeOut);
-        drawChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::DrawFadeOut);
+        calcChainElem = g_Chain.CreateElem((ChainCallback)ScreenEffect::CalcFadeOut);
+        drawChainElem = g_Chain.CreateElem((ChainCallback)ScreenEffect::DrawFadeOut);
     }
 
-    calcChainElem->addedCallback = (ChainAddedCallback) ScreenEffect::AddedCallback;
-    calcChainElem->deletedCallback = (ChainAddedCallback) ScreenEffect::DeletedCallback;
+    calcChainElem->addedCallback = (ChainAddedCallback)ScreenEffect::AddedCallback;
+    calcChainElem->deletedCallback = (ChainAddedCallback)ScreenEffect::DeletedCallback;
     calcChainElem->arg = createdEffect;
-    createdEffect->usedEffect = (ScreenEffects) effect;
+    createdEffect->usedEffect = (ScreenEffects)effect;
     createdEffect->effectLength = ticks;
     createdEffect->genericParam = effectParam1;
     createdEffect->shakinessParam = effectParam2;
@@ -167,7 +169,7 @@ ScreenEffect *ScreenEffect::RegisterChain(u32 effect, u32 ticks, u32 effectParam
     {
         return NULL;
     }
-            
+
     if (drawChainElem != NULL)
     {
         drawChainElem->arg = createdEffect;
@@ -231,7 +233,9 @@ ChainCallbackResult ScreenEffect::ShakeScreen(ScreenEffect *effect)
         return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
     }
 
-    screenOffset = ((effect->timer.AsFramesFloat() * (effect->shakinessParam - effect->genericParam)) / effect->effectLength) + effect->genericParam;
+    screenOffset =
+        ((effect->timer.AsFramesFloat() * (effect->shakinessParam - effect->genericParam)) / effect->effectLength) +
+        effect->genericParam;
 
     switch (g_Rng.GetRandomU32InRange(3))
     {
