@@ -65,6 +65,14 @@ namespace th06 {
         return CHAIN_CALLBACK_RESULT_CONTINUE;
     };
 
+    ZunResult MusicRoom::FUN_00424e8f() {
+        if (0x8 <= this->unk_0x8) {
+            this->shouldDrawMusicList = 1;
+        }
+
+        return ZUN_SUCCESS;
+    };
+
     #pragma optimize("", on)
 } // namespace th06
 
