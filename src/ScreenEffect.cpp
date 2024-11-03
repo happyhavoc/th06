@@ -1,5 +1,6 @@
 #include "ScreenEffect.hpp"
 #include "AnmManager.hpp"
+#include "ChainPriorities.hpp"
 #include "GameWindow.hpp"
 #include "Supervisor.hpp"
 
@@ -117,5 +118,63 @@ ChainCallbackResult ScreenEffect::CalcFadeOut(ScreenEffect *effect)
 
     effect->timer.Tick();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(calcChainElem, drawChainElem, createdEffect)
+ScreenEffect *ScreenEffect::RegisterChain(i32 effect, u32 ticks, u32 effectParam1, u32 effectParam2, u32 unusedEffectParam)
+{
+    ChainElem *calcChainElem;
+    ScreenEffect *createdEffect;
+    ChainElem *drawChainElem;
+
+    calcChainElem = NULL;
+    drawChainElem = NULL;
+
+    createdEffect = new ScreenEffect;
+
+    if (createdEffect == NULL)
+    {
+        return NULL;
+    }
+
+    memset(createdEffect, 0, sizeof(*createdEffect));
+
+    switch (effect)
+    {
+    case SCREEN_EFFECT_FADE_IN:
+        calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::CalcFadeIn);
+        drawChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::CalcFadeIn);
+        break;
+    case SCREEN_EFFECT_SHAKE:
+        calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::ShakeScreen);
+        break;
+    case SCREEN_EFFECT_FADE_OUT:
+        calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::CalcFadeOut);
+        drawChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::DrawFadeOut);
+    }
+
+    calcChainElem->addedCallback = (ChainAddedCallback) ScreenEffect::AddedCallback;
+    calcChainElem->deletedCallback = (ChainAddedCallback) ScreenEffect::DeletedCallback;
+    calcChainElem->arg = createdEffect;
+    createdEffect->usedEffect = (ScreenEffects) effect;
+    createdEffect->effectLength = ticks;
+    createdEffect->genericParam = effectParam1;
+    createdEffect->shakinessParam = effectParam2;
+    createdEffect->unusedParam = unusedEffectParam;
+
+    if (g_Chain.AddToCalcChain(calcChainElem, TH_CHAIN_PRIO_CALC_SCREENEFFECT) != 0)
+    {
+        return NULL;
+    }
+            
+    if (drawChainElem != NULL)
+    {
+        drawChainElem->arg = createdEffect;
+        g_Chain.AddToDrawChain(drawChainElem, TH_CHAIN_PRIO_DRAW_SCREENEFFECT);
+    }
+
+    createdEffect->calcChainElement = calcChainElem;
+    createdEffect->drawChainElement = drawChainElem;
+    return createdEffect;
 }
 }; // namespace th06
