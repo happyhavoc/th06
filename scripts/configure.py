@@ -40,7 +40,7 @@ def configure(build_type):
         writer.variable("link", "link.exe")
         writer.variable(
             "th06_link_flags",
-            "/subsystem:windows /machine:X86 /filealign:4096 /incremental:no",
+            "/subsystem:windows /machine:X86 /filealign:4096 /incremental:no /opt:ref",
         )
 
         writer.variable("msvc_deps_prefix", "Note: including file:")
