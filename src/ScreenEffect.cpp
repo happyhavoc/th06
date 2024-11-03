@@ -2,6 +2,7 @@
 #include "AnmManager.hpp"
 #include "ChainPriorities.hpp"
 #include "GameWindow.hpp"
+#include "Rng.hpp"
 #include "Supervisor.hpp"
 
 namespace th06
@@ -204,6 +205,66 @@ ChainCallbackResult ScreenEffect::DrawFadeOut(ScreenEffect *effect)
     fadeRect.right = 416.0f;
     fadeRect.bottom = 464.0f;
     ScreenEffect::DrawSquare(&fadeRect, (effect->fadeAlpha << 24) | effect->genericParam);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult ScreenEffect::ShakeScreen(ScreenEffect *effect)
+{
+    f32 screenOffset;
+
+    if (g_GameManager.isTimeStopped)
+    {
+        g_GameManager.arcadeRegionTopLeftPos.x = 32.0f;
+        g_GameManager.arcadeRegionTopLeftPos.y = 16.0f;
+        g_GameManager.arcadeRegionSize.x = 384.0f;
+        g_GameManager.arcadeRegionSize.y = 448.0f;
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+
+    effect->timer.Tick();
+    if (effect->timer >= effect->effectLength)
+    {
+        g_GameManager.arcadeRegionTopLeftPos.x = 32.0f;
+        g_GameManager.arcadeRegionTopLeftPos.y = 16.0f;
+        g_GameManager.arcadeRegionSize.x = 384.0f;
+        g_GameManager.arcadeRegionSize.y = 448.0f;
+        return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
+    }
+
+    screenOffset = ((effect->timer.AsFramesFloat() * (effect->shakinessParam - effect->genericParam)) / effect->effectLength) + effect->genericParam;
+
+    switch (g_Rng.GetRandomU32InRange(3))
+    {
+    case 0:
+        g_GameManager.arcadeRegionTopLeftPos.x = 32.0f;
+        g_GameManager.arcadeRegionSize.x = 384.0f;
+        break;
+    case 1:
+        g_GameManager.arcadeRegionTopLeftPos.x = 32.0f + screenOffset;
+        g_GameManager.arcadeRegionSize.x = 384.0f - screenOffset;
+        break;
+    case 2:
+        g_GameManager.arcadeRegionTopLeftPos.x = 32.0f;
+        g_GameManager.arcadeRegionSize.x = 384.0f - screenOffset;
+        break;
+    }
+
+    switch (g_Rng.GetRandomU32InRange(3))
+    {
+    case 0:
+        g_GameManager.arcadeRegionTopLeftPos.y = 16.0f;
+        g_GameManager.arcadeRegionSize.y = 448.0f;
+        break;
+    case 1:
+        g_GameManager.arcadeRegionTopLeftPos.x = 16.0f + screenOffset;
+        g_GameManager.arcadeRegionSize.x = 448.0f - screenOffset;
+        break;
+    case 2:
+        g_GameManager.arcadeRegionTopLeftPos.x = 16.0f;
+        g_GameManager.arcadeRegionSize.x = 448.0f - screenOffset;
+        break;
+    }
+
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 }; // namespace th06
