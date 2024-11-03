@@ -1,5 +1,6 @@
 #include "MusicRoom.hpp"
 #include "Chain.hpp"
+#include "AnmManager.hpp"
 
 namespace th06 {
     DIFFABLE_STATIC(MusicRoom, g_MusicRoom);
@@ -14,7 +15,7 @@ namespace th06 {
 
         if (!(g_MRHasConstructed & 1)) {
             g_MRHasConstructed |= 1;
-            MusicRoom();
+            MusicRoom::MusicRoom();
         }
 
         memset(musicRoom, 0, sizeof(MusicRoom));
@@ -35,16 +36,49 @@ namespace th06 {
         return ZUN_SUCCESS;
     };
 
+    ZunResult MusicRoom::DeletedCallback(MusicRoom *musicRoom) {
+        delete musicRoom->musicRoomPtr;
+        musicRoom->musicRoomPtr = NULL;
+
+        g_AnmManager->ReleaseSurface(0);
+        g_AnmManager->ReleaseAnm(0x29);
+        g_AnmManager->ReleaseAnm(0x2a);
+        g_AnmManager->ReleaseAnm(0x2b);
+        g_Chain.Cut(musicRoom->draw_chain);
+        musicRoom->draw_chain = NULL;
+        
+        return ZUN_SUCCESS;
+    };
+
     MusicRoom::MusicRoom() {
+        i32 unused[12];
 
-    }
+        memset(this, 0, sizeof(MusicRoom));
+    };
 
-    MusicRoom::~MusicRoom() {
+    ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom) {
+        int shouldDraw;
+        int shouldDraw2 = musicRoom->shouldDrawMusicList;
+        do {
+            shouldDraw = musicRoom->shouldDrawMusicList;
+            if (shouldDraw != 0) {
+                if (shouldDraw != 1) {
+                    musicRoom->DrawMusicList();
+                    return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
+                }
+                break;
+            }
+        } while (musicRoom->FUN_00424e8f() != ZUN_SUCCESS);
+        
+        if (shouldDraw2 != musicRoom->shouldDrawMusicList) {
+            musicRoom->unk_0x8 = 0;
+        } else {
+            musicRoom->unk_0x8 += 1;
+        }
+        g_AnmManager->ExecuteScript(musicRoom->mainVM);
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    };
 
-    }
     #pragma optimize("", on)
-
-
-
 } // namespace th06
 
