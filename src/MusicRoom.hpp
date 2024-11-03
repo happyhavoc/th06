@@ -18,7 +18,7 @@ struct MusicRoom
 
     static ZunResult AddedCallback(MusicRoom* musicRoom);
     static ZunResult DeletedCallback(MusicRoom* musicRoom);
-    void DrawMusicList();
+    u32 DrawMusicList();
     ZunResult FUN_00424e8f();
     static ChainCallbackResult OnDraw(MusicRoom* musicRoom);
     static ChainCallbackResult OnUpdate(MusicRoom* musicRoom);
