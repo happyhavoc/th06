@@ -177,4 +177,21 @@ ScreenEffect *ScreenEffect::RegisterChain(u32 effect, u32 ticks, u32 effectParam
     createdEffect->drawChainElement = drawChainElem;
     return createdEffect;
 }
+
+ChainCallbackResult ScreenEffect::DrawFadeIn(ScreenEffect *effect)
+{
+    ZunRect fadeRect;
+
+    fadeRect.left = 0.0f;
+    fadeRect.top = 0.0f;
+    fadeRect.right = 640.0f;
+    fadeRect.bottom = 480.0f;
+    g_Supervisor.viewport.X = 0;
+    g_Supervisor.viewport.Y = 0;
+    g_Supervisor.viewport.Width = 640;
+    g_Supervisor.viewport.Height = 480;
+    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    ScreenEffect::DrawSquare(&fadeRect, (effect->fadeAlpha << 24) | effect->genericParam);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
 }; // namespace th06
