@@ -267,4 +267,10 @@ ChainCallbackResult ScreenEffect::ShakeScreen(ScreenEffect *effect)
 
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
+
+ZunResult ScreenEffect::AddedCallback(ScreenEffect *effect)
+{
+    effect->timer.InitializeForPopup();
+    return ZUN_SUCCESS;
+}
 }; // namespace th06
