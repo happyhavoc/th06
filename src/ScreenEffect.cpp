@@ -144,7 +144,7 @@ ScreenEffect *ScreenEffect::RegisterChain(u32 effect, u32 ticks, u32 effectParam
     {
     case SCREEN_EFFECT_FADE_IN:
         calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::CalcFadeIn);
-        drawChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::CalcFadeIn);
+        drawChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::DrawFadeIn);
         break;
     case SCREEN_EFFECT_SHAKE:
         calcChainElem = g_Chain.CreateElem((ChainCallback) ScreenEffect::ShakeScreen);
@@ -256,12 +256,12 @@ ChainCallbackResult ScreenEffect::ShakeScreen(ScreenEffect *effect)
         g_GameManager.arcadeRegionSize.y = 448.0f;
         break;
     case 1:
-        g_GameManager.arcadeRegionTopLeftPos.x = 16.0f + screenOffset;
-        g_GameManager.arcadeRegionSize.x = 448.0f - screenOffset;
+        g_GameManager.arcadeRegionTopLeftPos.y = 16.0f + screenOffset;
+        g_GameManager.arcadeRegionSize.y = 448.0f - screenOffset;
         break;
     case 2:
-        g_GameManager.arcadeRegionTopLeftPos.x = 16.0f;
-        g_GameManager.arcadeRegionSize.x = 448.0f - screenOffset;
+        g_GameManager.arcadeRegionTopLeftPos.y = 16.0f;
+        g_GameManager.arcadeRegionSize.y = 448.0f - screenOffset;
         break;
     }
 
