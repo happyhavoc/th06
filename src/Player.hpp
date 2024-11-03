@@ -72,13 +72,6 @@ enum BulletState
     BULLET_STATE_FIRED,
     BULLET_STATE_COLLIDED,
 };
-
-struct BombData
-{
-    void (*calc)(Player *p);
-    void (*draw)(Player *p);
-};
-
 struct PlayerRect
 {
     D3DXVECTOR2 pos;
@@ -190,15 +183,6 @@ struct Player
     static FireBulletResult FireBulletMarisaA(Player *, PlayerBullet *, u32, u32);
     static FireBulletResult FireBulletMarisaB(Player *, PlayerBullet *, u32, u32);
 
-    static void BombReimuACalc(Player *);
-    static void BombReimuBCalc(Player *);
-    static void BombMarisaACalc(Player *);
-    static void BombMarisaBCalc(Player *);
-    static void BombReimuADraw(Player *);
-    static void BombReimuBDraw(Player *);
-    static void BombMarisaADraw(Player *);
-    static void BombMarisaBDraw(Player *);
-
     static void StartFireBulletTimer(Player *);
     ZunResult HandlePlayerInputs();
     static void UpdatePlayerBullets(Player *);
@@ -207,8 +191,6 @@ struct Player
     static void SpawnBullets(Player *, u32 timer);
     static void DrawBullets(Player *p);
     static void DrawBulletExplosions(Player *p);
-
-    static void DarkenViewport(Player *player);
 
     f32 AngleFromPlayer(D3DXVECTOR3 *pos);
     f32 AngleToPlayer(D3DXVECTOR3 *pos);

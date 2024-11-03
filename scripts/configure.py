@@ -94,7 +94,7 @@ def configure(build_type):
             "AsciiManager",
             "AnmVm",
             "Stage",
-            # Player bombs.
+            "BombData",
             "EclManager",
             "Enemy",  # ECL instructions.
             "EffectManager",
