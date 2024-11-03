@@ -305,6 +305,7 @@ th06::ScreenEffect::DrawSquare
 th06::ScreenEffect::CalcFadeOut
 th06::ScreenEffect::RegisterChain
 th06::ScreenEffect::DrawFadeIn
+th06::ScreenEffect::DrawFadeOut
 th06::utils::AddNormalizeAngle
 th06::utils::Rotate
 th06::SoundPlayer::SoundPlayer
