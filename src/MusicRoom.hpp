@@ -9,7 +9,13 @@ namespace th06
 {
 struct MusicRoom
 {
-    MusicRoom();
+    MusicRoom()
+    {
+        i32 unused[12];
+
+        memset(this, 0, sizeof(MusicRoom));
+    }
+
     static ZunResult AddedCallback(MusicRoom* musicRoom);
     static ZunResult DeletedCallback(MusicRoom* musicRoom);
     void DrawMusicList();

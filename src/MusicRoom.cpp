@@ -1,23 +1,15 @@
 #include "MusicRoom.hpp"
 #include "Chain.hpp"
 #include "AnmManager.hpp"
+#include "ChainPriorities.hpp"
 
 namespace th06 {
-    DIFFABLE_STATIC(MusicRoom, g_MusicRoom);
-    DIFFABLE_STATIC(u32, g_MRHasConstructed);
-
     #pragma optimize("s", on)
     ZunResult MusicRoom::RegisterChain(void) {
-        int iVar1;
-        int iVar2;
-        int iVar3;
+        static MusicRoom g_MusicRoom;
         MusicRoom *musicRoom;
 
-        if (!(g_MRHasConstructed & 1)) {
-            g_MRHasConstructed |= 1;
-            MusicRoom::MusicRoom();
-        }
-
+        musicRoom = &g_MusicRoom;
         memset(musicRoom, 0, sizeof(MusicRoom));
 
         musicRoom->calc_chain = g_Chain.CreateElem((ChainCallback)MusicRoom::OnUpdate);
@@ -25,13 +17,13 @@ namespace th06 {
         musicRoom->calc_chain->addedCallback = (ChainAddedCallback)MusicRoom::AddedCallback;
         musicRoom->calc_chain->deletedCallback = (ChainDeletedCallback)MusicRoom::DeletedCallback;
 
-        if (g_Chain.AddToCalcChain(musicRoom->calc_chain, 2)) {
+        if (g_Chain.AddToCalcChain(musicRoom->calc_chain, TH_CHAIN_PRIO_CALC_MAINMENU)) {
             return ZUN_ERROR;
         }
 
         musicRoom->draw_chain = g_Chain.CreateElem((ChainCallback)MusicRoom::OnDraw);
         musicRoom->draw_chain->arg = musicRoom;
-        g_Chain.AddToDrawChain(musicRoom->draw_chain, 0);
+        g_Chain.AddToDrawChain(musicRoom->draw_chain, TH_CHAIN_PRIO_DRAW_MAINMENU);
 
         return ZUN_SUCCESS;
     };
@@ -48,12 +40,6 @@ namespace th06 {
         musicRoom->draw_chain = NULL;
         
         return ZUN_SUCCESS;
-    };
-
-    MusicRoom::MusicRoom() {
-        i32 unused[12];
-
-        memset(this, 0, sizeof(MusicRoom));
     };
 
     ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom) {

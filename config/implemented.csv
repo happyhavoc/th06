@@ -318,6 +318,10 @@ th06::SoundPlayer::PlaySounds
 th06::SoundPlayer::PlaySoundByIdx
 th06::SoundPlayer::BackgroundMusicPlayerThread
 th06::SoundPlayer::InitSoundBuffers
+th06::MusicRoom::RegisterChain
+th06::MusicRoom::MusicRoom
+th06::MusicRoom::DeletedCallback
+th06::MusicRoom::OnUpdate
 th06::Player::AddedCallback
 th06::Player::DeletedCallback
 th06::Player::RegisterChain

@@ -8,13 +8,10 @@ th06::ResultScreen::ParsePscr
 th06::ResultScreen::ParseCatk
 th06::ResultScreen::GetHighScore
 th06::Supervisor::DeletedCallback
-th06::MusicRoom::MusicRoom
 th06::MusicRoom::AddedCallback
-th06::MusicRoom::DeletedCallback
 th06::MusicRoom::DrawMusicList
 th06::MusicRoom::FUN_00424e8f
 th06::MusicRoom::OnDraw
-th06::MusicRoom::OnUpdate
 th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
