@@ -273,4 +273,15 @@ ZunResult ScreenEffect::AddedCallback(ScreenEffect *effect)
     effect->timer.InitializeForPopup();
     return ZUN_SUCCESS;
 }
+
+ZunResult ScreenEffect::DeletedCallback(ScreenEffect *effect)
+{
+    effect->calcChainElement->deletedCallback = NULL;
+    g_Chain.Cut(effect->drawChainElement);
+    effect->drawChainElement = NULL;
+    delete effect;
+    effect = NULL;
+
+    return ZUN_SUCCESS;
+}
 }; // namespace th06

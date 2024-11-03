@@ -11,6 +11,5 @@ th06::ResultScreen::GetHighScore
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::MainMenu::SelectRelated
-th06::ScreenEffect::DeletedCallback
 th06::TextHelper::ReleaseTextBuffer
 th06::Pbg3Archive::Pbg3Archive

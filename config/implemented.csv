@@ -323,6 +323,7 @@ th06::ScreenEffect::DrawFadeIn
 th06::ScreenEffect::DrawFadeOut
 th06::ScreenEffect::ShakeScreen
 th06::ScreenEffect::AddedCallback
+th06::ScreenEffect::DeletedCallback
 th06::utils::AddNormalizeAngle
 th06::utils::Rotate
 th06::SoundPlayer::SoundPlayer
