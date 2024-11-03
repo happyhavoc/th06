@@ -92,36 +92,41 @@ def configure(build_type):
 
         cxx_sources = [
             "AsciiManager",
-            "BulletData",
-            "BulletManager",
-            "Chain",
+            "AnmVm",
+            "Stage",
+            # Player bombs.
             "EclManager",
+            "Enemy",  # ECL instructions.
+            "EffectManager",
             "Ending",
             "EnemyManager",
-            "Enemy",
-            "FileSystem",
-            "Supervisor",
-            "GameErrorContext",
-            "TextHelper",
-            "GameWindow",
-            "MainMenu",
-            "ItemManager",
-            "MidiOutput",
-            "EffectManager",
-            "ScreenEffect",
-            "SoundPlayer",
-            "Player",
-            "Stage",
-            "AnmVm",
-            "AnmManager",
-            "GameManager",
+            "BulletManager",
             "Gui",
             "GuiImpl",
+            "GameManager",
+            "Chain",
+            # Controller
+            "FileSystem",
+            "GameErrorContext",
             "Rng",
             "utils",
-            "ZunTimer",
-            "zwave",
+            "TextHelper",
+            "ItemManager",
             "main",
+            "GameWindow",
+            "MidiOutput",
+            "Supervisor",
+            # MusicRoom
+            "Player",
+            # ReplayManager
+            # ResultScreen
+            "ScreenEffect",
+            "SoundPlayer",
+            "AnmManager",
+            "MainMenu",
+            "zwave",
+            "BulletData",
+            "ZunTimer",
         ]
 
         pbg3_sources = [
