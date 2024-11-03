@@ -4,10 +4,10 @@
 #include <d3d8types.h>
 #include <string.h>
 
-#include "ZunResult.hpp"
-#include "inttypes.hpp"
 #include "Chain.hpp"
+#include "ZunResult.hpp"
 #include "ZunTimer.hpp"
+#include "inttypes.hpp"
 
 namespace th06
 {
@@ -29,7 +29,8 @@ enum ScreenEffects
 struct ScreenEffect
 {
     // In fade effects, effectParam1 is an RGB color to fade to
-    // In shake effects, effectParam1 controls the "base" view offset, and effectParam2 controls the shakiness multiplier over time
+    // In shake effects, effectParam1 controls the "base" view offset, and effectParam2 controls the shakiness
+    // multiplier over time
     static ScreenEffect *RegisterChain(i32 effect, u32 ticks, u32 effectParam1, u32 effectParam2,
                                        u32 unusedEffectParam);
 
@@ -52,7 +53,7 @@ struct ScreenEffect
     u32 unused;
     i32 fadeAlpha;
     i32 effectLength;
-    i32 genericParam; // effectParam1
+    i32 genericParam;   // effectParam1
     i32 shakinessParam; // effectParam2
     i32 unusedParam;
     ZunTimer timer;
