@@ -2,10 +2,10 @@ th06::EclManager::Unload
 th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::ParseFile
-th06::ResultScreen::OnDraw
 th06::ResultScreen::LinkScoreEx
 th06::ResultScreen::DeletedCallback
 th06::ResultScreen::HandleResultKeyboard
+th06::ResultScreen::DrawFinalStats
 th06::ResultScreen::HandleReplaySaveKeyboard
 th06::ResultScreen::GetHighScore
 th06::MusicRoom::RegisterChain

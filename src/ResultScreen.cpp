@@ -1,9 +1,12 @@
 #include "ResultScreen.hpp"
 #include "AnmManager.hpp"
+#include "AsciiManager.hpp"
+#include "BulletManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
+#include "Player.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "i18n.hpp"
@@ -16,6 +19,10 @@ DIFFABLE_STATIC_ASSIGN(u32, g_DefaultMagic) = 'DMYS';
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 6, g_CharacterList) = {TH_HAKUREI_REIMU_SPIRIT,  TH_HAKUREI_REIMU_DREAM,
                                                             TH_KIRISAME_MARISA_DEVIL, TH_KIRISAME_MARISA_LOVE,
                                                             TH_SATSUKI_RIN_FLOWER,    TH_SATSUKI_RIN_WIND};
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList2) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
+
+DIFFABLE_STATIC_ASSIGN(char *, g_AlphabetList) =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,:;･@abcdefghijklmnopqrstuvwxyz+-/*=%0123456789(){}[]<>#!?'\"$      --";
 
 #define DEFAULT_HIGH_SCORE_NAME "Nanashi "
 
@@ -189,6 +196,7 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+#pragma intrinsic("strcpy")
 
 #pragma optimize("s", on)
 void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
@@ -310,52 +318,50 @@ ScoreDat *ResultScreen::OpenScore(char *path)
             free(scoreData);
             goto FAILED_TO_READ;
         }
-        else
+
+        remainingData = g_LastFileSize - 2;
+        checksum = 0;
+        xorValue = 0;
+        bytesShifted = 0;
+        bytes = &scoreData->xorseed[1];
+
+        while (0 < remainingData)
         {
-            remainingData = g_LastFileSize - 2;
-            checksum = 0;
-            xorValue = 0;
-            bytesShifted = 0;
-            bytes = &scoreData->xorseed[1];
 
-            while (0 < remainingData)
+            xorValue += bytes[0];
+            // Invert top 3 bits and bottom 5 bits
+            xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
+            // xor one byte later with the resulting inverted bits
+            bytes[1] ^= xorValue;
+            if (bytesShifted >= 2)
             {
-
-                xorValue += bytes[0];
-                // Invert top 3 bits and bottom 5 bits
-                xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
-                // xor one byte later with the resulting inverted bits
-                bytes[1] ^= xorValue;
-                if (bytesShifted >= 2)
-                {
-                    checksum += bytes[1];
-                }
-                bytes++;
-                remainingData--;
-                bytesShifted++;
+                checksum += bytes[1];
             }
-            if (scoreData->csum != checksum)
-            {
-                free(scoreData);
-                goto FAILED_TO_READ;
-            }
-            fileLen = scoreData->fileLen;
-            decryptedFilePointer = scoreData->ShiftBytes(scoreData->dataOffset);
-            fileLen -= scoreData->dataOffset;
-            while (fileLen > 0)
-            {
-                if (decryptedFilePointer->magic == 'K6HT')
-                    break;
-
-                decryptedFilePointer = decryptedFilePointer->ShiftBytes(decryptedFilePointer->th6kLen);
-                fileLen = fileLen - decryptedFilePointer->th6kLen;
-            }
-            if (fileLen <= 0)
-            {
-                free(scoreData);
-                goto FAILED_TO_READ;
-            };
+            bytes++;
+            remainingData--;
+            bytesShifted++;
         }
+        if (scoreData->csum != checksum)
+        {
+            free(scoreData);
+            goto FAILED_TO_READ;
+        }
+        fileLen = scoreData->fileLen;
+        decryptedFilePointer = scoreData->ShiftBytes(scoreData->dataOffset);
+        fileLen -= scoreData->dataOffset;
+        while (fileLen > 0)
+        {
+            if (decryptedFilePointer->magic == 'K6HT')
+                break;
+
+            decryptedFilePointer = decryptedFilePointer->ShiftBytes(decryptedFilePointer->th6kLen);
+            fileLen = fileLen - decryptedFilePointer->th6kLen;
+        }
+        if (fileLen <= 0)
+        {
+            free(scoreData);
+            goto FAILED_TO_READ;
+        };
     }
     scoreListNodeSize = sizeof(ScoreListNode);
     scoreData->scores = (ScoreListNode *)malloc(scoreListNodeSize);
@@ -793,7 +799,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
                 {
                     break;
                 }
-                if (g_GameManager.catk[i].numSuccess == 0)
+                if (g_GameManager.catk[i].numAttempts == 0)
                 {
                     AnmManager::DrawVmTextFmt(g_AnmManager, &resultScreen->unk_28a0[i % 10], COLOR_RGB(COLOR_WHITE),
                                               COLOR_RGB(COLOR_BLACK), TH_UNKNOWN_SPELLCARD);
@@ -857,6 +863,331 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
         g_AnmManager->ExecuteScript(vm);
     }
     resultScreen->frameTimer++;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(strPos, row, name, sprite, ShootScoreListNodeA, column, ShootScoreListNodeB, spritePos,              \
+                  spellcardIdx, charPos, unused, unused2, unused3, unk, keyboardCharacter)
+ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
+{
+    u8 unused[12];
+    u8 unused2;
+    u8 unused3;
+
+    AnmVm *sprite;
+    char keyboardCharacter;
+    u8 unk;
+    ZunVec2 charPos;
+
+    i32 spellcardIdx;
+    ZunVec3 spritePos;
+    ScoreListNode *ShootScoreListNodeB;
+    i32 column;
+    i32 row;
+    ScoreListNode *ShootScoreListNodeA;
+
+    char name[9];
+
+    D3DXVECTOR3 strPos;
+
+    sprite = &resultScreen->unk_40[0];
+    g_Supervisor.viewport.X = 0;
+    g_Supervisor.viewport.Y = 0;
+    g_Supervisor.viewport.Width = 640;
+    g_Supervisor.viewport.Height = 480;
+
+    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
+
+    for (row = 0; row < ARRAY_SIZE_SIGNED(resultScreen->unk_40); row++, sprite++)
+    {
+        *spritePos.AsD3dXVec() = sprite->pos;
+        sprite->pos += sprite->posOffset;
+        g_AnmManager->DrawNoRotation(sprite);
+        sprite->pos = *spritePos.AsD3dXVec();
+    }
+    sprite = &resultScreen->unk_40[14];
+    if (sprite->pos.x < 640.0f)
+    {
+        if (resultScreen->unk_c != 8)
+        {
+            *spritePos.AsD3dXVec() = sprite->pos;
+            resultScreen->unk_28a0->pos = *spritePos.AsD3dXVec();
+            g_AnmManager->DrawNoRotation(&resultScreen->unk_28a0[0]);
+
+            spritePos.AsD3dXVec()->x += 320.0f;
+
+            resultScreen->unk_28a0[1].pos = *spritePos.AsD3dXVec();
+            g_AnmManager->DrawNoRotation(&resultScreen->unk_28a0[1]);
+
+            spritePos.AsD3dXVec()->x -= -320.0f;
+            spritePos.AsD3dXVec()->y += 18.0f;
+            spritePos.AsD3dXVec()->y += 320.0f;
+
+            ShootScoreListNodeA = resultScreen->scores[resultScreen->diffSelected][resultScreen->charUsed * 2].next;
+            ShootScoreListNodeB = resultScreen->scores[resultScreen->diffSelected][resultScreen->charUsed * 2 + 1].next;
+            for (row = 0; row < 10; row++)
+            {
+                if (resultScreen->resultScreenState == RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME)
+                {
+                    if (g_GameManager.shotType == SHOT_TYPE_A)
+                    {
+                        if (ShootScoreListNodeA->data->base.unk_9 != 0)
+                        {
+                            g_AsciiManager.color = 0xfff0f0ff;
+
+                            strcpy(name, "       ");
+                            name[8] = 0;
+
+                            name[resultScreen->cursor >= 8 ? 7 : resultScreen->cursor] = '_';
+                            g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "   %8s", &name);
+                        }
+                        else
+                        {
+                            g_AsciiManager.color = COLOR_SET_ALPHA(0x20ffffc0, 0x80);
+                        }
+                    }
+                    else
+                    {
+                        g_AsciiManager.color = 0x80ffc0c0;
+                    }
+                }
+                else
+                {
+                    g_AsciiManager.color = 0xffffc0c0;
+                }
+                g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%2d", row + 1);
+
+                spritePos.x += 36.0f;
+                if (ShootScoreListNodeA->data->stage <= 6)
+                {
+                    g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%8s %9d(%d)", ShootScoreListNodeA->data->name,
+                                                 ShootScoreListNodeA->data->score, ShootScoreListNodeA->data->stage);
+                }
+                else if (ShootScoreListNodeA->data->stage == 7)
+                {
+                    g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%8s %9d(1)", ShootScoreListNodeA->data->name,
+                                                 ShootScoreListNodeA->data->score);
+                }
+                else
+                {
+                    g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%8s %9d(C)", ShootScoreListNodeA->data->name,
+                                                 ShootScoreListNodeA->data->score);
+                }
+                spritePos.AsD3dXVec()->x += 300.0f;
+                if (resultScreen->resultScreenState == RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME)
+                {
+                    if (g_GameManager.shotType == SHOT_TYPE_B)
+                    {
+                        if (ShootScoreListNodeB->data->base.unk_9 != 0)
+                        {
+                            g_AsciiManager.color = 0xfffff0f0;
+
+                            strcpy(name, "       ");
+                            name[8] = 0;
+
+                            name[resultScreen->cursor >= 8 ? 7 : resultScreen->cursor] = '_';
+                            g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%8s", &name);
+                        }
+                        else
+                        {
+                            g_AsciiManager.color = 0xc0c0c0ff;
+                        }
+                    }
+                    else
+                    {
+                        g_AsciiManager.color = 0x80c0c0ff;
+                    }
+                }
+                else
+                {
+                    g_AsciiManager.color = 0xffc0c0ff;
+                }
+                if (ShootScoreListNodeB->data->stage <= 6)
+                {
+                    g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%8s %9d(%d)", ShootScoreListNodeB->data->name,
+                                                 ShootScoreListNodeB->data->score, ShootScoreListNodeB->data->stage);
+                }
+                else if (ShootScoreListNodeB->data->stage == 7)
+                {
+                    g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%8s %9d(1)", ShootScoreListNodeB->data->name,
+                                                 ShootScoreListNodeB->data->score);
+                }
+                else
+                {
+                    g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%8s %9d(C)", ShootScoreListNodeB->data->name,
+                                                 ShootScoreListNodeB->data->score);
+                }
+                spritePos.AsD3dXVec()->x -= 336.0f;
+                spritePos.AsD3dXVec()->y += 336.0f;
+                ShootScoreListNodeA = ShootScoreListNodeA->next;
+                ShootScoreListNodeB = ShootScoreListNodeB->next;
+            }
+        }
+        else
+        {
+
+            *spritePos.AsD3dXVec() = sprite->pos;
+            spritePos.AsD3dXVec()->y += 16.0f;
+
+            for (row = 0; row < 10; row++)
+            {
+                spellcardIdx = resultScreen->lastSpellcardSelected * 10 + row;
+                if (spellcardIdx >= ARRAY_SIZE_SIGNED(g_GameManager.catk))
+                {
+                    break;
+                }
+
+                resultScreen->unk_28a0[row].pos = *spritePos.AsD3dXVec();
+                if (g_GameManager.catk[spellcardIdx].numAttempts == 0)
+                {
+                    g_AsciiManager.color = 0x80c0c0ff;
+                }
+                else if (g_GameManager.catk[spellcardIdx].numSuccess == 0)
+                {
+                    g_AsciiManager.color = 0xffc0a0a0;
+                }
+                else
+                {
+                    g_AsciiManager.color = 0xfff0f0ff - row * 0x80800;
+                }
+                g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.%.2d", spellcardIdx + 1);
+
+                // TODO: This is really cursed, there has to be a better way
+                (*(ZunVec3 *)&resultScreen->unk_28a0[row].pos).AsD3dXVec()->x += 96.0f;
+
+                g_AnmManager->DrawNoRotation(&resultScreen->unk_28a0[row]);
+
+                spritePos.AsD3dXVec()->x += 368.0f;
+
+                g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "%3d/%3d",
+                                             g_GameManager.catk[spellcardIdx].numSuccess,
+                                             g_GameManager.catk[spellcardIdx].numAttempts);
+                spritePos.AsD3dXVec()->x -= 368.0f;
+                spritePos.AsD3dXVec()->y += 30.0f;
+            }
+        }
+    }
+    if (resultScreen->resultScreenState == RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME ||
+        resultScreen->resultScreenState == RESULT_SCREEN_STATE_WRITING_REPLAY_NAME)
+    {
+        *spritePos.AsD3dXVec() = D3DXVECTOR3(160.0f, 356.0f, 0.0f);
+
+        for (row = 0; row < RESULT_KEYBOARD_ROWS; row++)
+        {
+            for (column = 0; column < RESULT_KEYBOARD_COLUMNS; column++)
+            {
+                charPos.y = 0.0f;
+                charPos.x = 0.0f;
+                if (resultScreen->selectedCharacter == row * RESULT_KEYBOARD_COLUMNS + column)
+                {
+                    g_AsciiManager.color = COLOR_KEYBOARD_KEY_HIGHLIGHT;
+                    if (resultScreen->frameTimer % 64 < 32)
+                    {
+                        charPos.y = 1.2f + 0.8f * (resultScreen->frameTimer % 0x20) / 32.0f;
+                    }
+                    else
+                    {
+                        charPos.y = 2.0f - 0.8f * (resultScreen->frameTimer % 0x20) / 32.0f;
+                    }
+                    g_AsciiManager.scale.x = charPos.y;
+                    g_AsciiManager.scale.y = charPos.y;
+                    charPos.y = -(charPos.y - 1.0f) * 8.0f;
+                    charPos.x = charPos.y;
+                }
+                else
+                {
+                    g_AsciiManager.color = COLOR_KEYBOARD_KEY_NORMAL;
+                    g_AsciiManager.scale.x = 1.0f;
+                    g_AsciiManager.scale.y = 1.0f;
+                }
+                strPos = *spritePos.AsD3dXVec();
+                strPos.x += charPos.y;
+                strPos.y += charPos.x;
+                keyboardCharacter = g_AlphabetList[row * RESULT_KEYBOARD_COLUMNS + column];
+                unk = 0;
+
+                if (row == 5)
+                {
+                    if (column == 14)
+                    {
+                        keyboardCharacter = 0x80; // SP
+                    }
+                    else if (column == 15)
+                    {
+                        keyboardCharacter = 0x81; // END
+                    }
+                }
+
+                g_AsciiManager.AddString(&strPos, &keyboardCharacter);
+
+                spritePos.AsD3dXVec()->x += 20.0f;
+            }
+            spritePos.AsD3dXVec()->x -= column * 20;
+            spritePos.AsD3dXVec()->y += 18.0f;
+        }
+    }
+    g_AsciiManager.scale.x = 1.0;
+    g_AsciiManager.scale.y = 1.0;
+    if ((resultScreen->resultScreenState >= RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION) &&
+        (resultScreen->resultScreenState <= RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE))
+    {
+        sprite = &resultScreen->unk_40[15];
+        for (row = 0; row < 6; row++, sprite++)
+        {
+            g_AnmManager->DrawNoRotation(sprite);
+        }
+        sprite = &resultScreen->unk_40[21];
+        *spritePos.AsD3dXVec() = sprite->pos;
+        sprite++;
+        g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.   Name     Date     Player Score");
+        for (row = 0; row < ARRAY_SIZE_SIGNED(resultScreen->replays); row++)
+        {
+            *spritePos.AsD3dXVec() = sprite->pos;
+            sprite++;
+            if (row == resultScreen->replayNumber)
+            {
+                g_AsciiManager.color = COLOR_LIGHT_RED;
+            }
+            else
+            {
+                g_AsciiManager.color = COLOR_GREY;
+            }
+            if (resultScreen->resultScreenState == RESULT_SCREEN_STATE_WRITING_REPLAY_NAME)
+            {
+                g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.%.2d %8s %8s %7s %9d", row + 1,
+                                             &resultScreen->replayName, resultScreen->defaultReplayMaybe.date,
+                                             g_ShortCharacterList2[g_GameManager.CharacterShotType()],
+                                             resultScreen->defaultReplayMaybe.score);
+                g_AsciiManager.color = 0xfff0f0ff;
+
+                strcpy(name, "       ");
+
+                name[8] = 0;
+
+                name[resultScreen->cursor >= 8 ? 7 : resultScreen->cursor] = '_';
+                g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "      %8s", &name);
+            }
+            else if (*(i32 *)&resultScreen->replays[row].magic != *(i32 *)"T6RP" ||
+                     resultScreen->replays[row].version != 0x102)
+            {
+                g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.%.2d -------- --/--/-- -------         0",
+                                             row + 1);
+            }
+            else
+            {
+                g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.%.2d %8s %8s %7s %9d", row + 1,
+                                             resultScreen->replays[row].name, resultScreen->replays[row].date,
+                                             g_ShortCharacterList2[resultScreen->replays[row].shottypeChara],
+                                             resultScreen->replays[row].score);
+            }
+        }
+    }
+    g_AsciiManager.color = COLOR_WHITE;
+    resultScreen->DrawFinalStats();
+
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)

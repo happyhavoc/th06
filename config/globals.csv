@@ -63,7 +63,9 @@ _g_CharacterPowerBulletDataMarisaBRank7,0x004781f8
 _g_CharacterPowerBulletDataMarisaBRank8,0x004782b0
 _g_CharacterPowerBulletDataMarisaBRank9,0x00478368
 _g_CharacterPowerDataMarisaB,           0x00478468
+_g_AlphabetList,                        0x004784d4
 _g_CharacterList,                       0x004784d8
+_g_ShortCharacterList2,                 0x00478518
 _g_SoundBufferIdxVol,                   0x00478528
 _g_SFXList,                             0x00478628
 _g_LastJoystickInput,                   0x00478690

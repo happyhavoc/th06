@@ -194,8 +194,8 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             catk->base.th6kLen = sizeof(Catk);
             catk->base.version = 0x10;
             catk->idx = i;
+            catk->numAttempts = 0;
             catk->numSuccess = 0;
-            catk->unk_3e = 0;
         }
         scoredat = ResultScreen::OpenScore("score.dat");
         g_GameManager.highScore =

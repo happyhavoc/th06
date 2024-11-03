@@ -1,6 +1,7 @@
 #pragma once
 
 #include "AnmVm.hpp"
+#include "ReplayData.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
@@ -10,6 +11,14 @@ namespace th06
 #define HSCR_NUM_CHARS_SHOTTYPES 4
 #define HSCR_NUM_DIFFICULTIES 5
 #define HSCR_NUM_SCORES_SLOTS 10
+
+#define TH6K_VERSION 16
+
+#define RESULT_KEYBOARD_COLUMNS 16
+#define RESULT_KEYBOARD_ROWS 6
+#define RESULT_KEYBOARD_CHARACTERS RESULT_KEYBOARD_COLUMNS *RESULT_KEYBOARD_ROWS
+#define RESULT_KEYBOARD_SPACE 94
+#define RESULT_KEYBOARD_END 95
 
 enum ResultScreenState
 {
@@ -73,9 +82,9 @@ struct Catk
     u8 characterShotType;
     u32 unk_14;
     char name[32];
-    u32 numAttempts;
+    u32 unk_38;
+    u16 numAttempts;
     u16 numSuccess;
-    u16 unk_3e;
 };
 C_ASSERT(sizeof(Catk) == 0x40);
 
@@ -175,11 +184,12 @@ struct ResultScreen
     static void MoveCursor(ResultScreen *r, i32 len);
     static ZunBool MoveCursorHorizontally(ResultScreen *r, i32 len);
 
-    void HandleResultKeyboard();
-    void HandleReplaySaveKeyboard();
+    i32 HandleResultKeyboard();
+    i32 HandleReplaySaveKeyboard();
     ZunResult CheckConfirmButton();
 
-    void LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
+    i32 LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
+    u32 DrawFinalStats();
 
     ScoreDat *scoreDat;
     i32 frameTimer;
@@ -188,13 +198,14 @@ struct ResultScreen
     i32 cursor;
     i32 unk_14;
     i32 previousCursor;
-    i32 unk_1c;
+    i32 replayNumber;
     i32 selectedCharacter;
     i32 charUsed;
     i32 lastSpellcardSelected;
     i32 diffSelected;
     i32 cheatCodeStep;
-    i32 unk_34[3];
+    char replayName[8];
+    i32 unk_3c;
     AnmVm unk_40[38];
     AnmVm unk_28a0[16];
     AnmVm unk_39a0;
@@ -204,11 +215,8 @@ struct ResultScreen
     u8 unk_519c[12];
     ChainElem *calcChain;
     ChainElem *drawChain;
-    u8 unk_51b0[1216];
-    char date[9];
-    u8 unk_5679[11];
-    u32 score;
-    u8 unk_5688[40];
+    ReplayData replays[15];
+    ReplayData defaultReplayMaybe;
 };
 C_ASSERT(sizeof(ResultScreen) == 0x56b0);
 }; // namespace th06
