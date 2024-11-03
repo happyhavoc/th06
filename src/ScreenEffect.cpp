@@ -194,4 +194,16 @@ ChainCallbackResult ScreenEffect::DrawFadeIn(ScreenEffect *effect)
     ScreenEffect::DrawSquare(&fadeRect, (effect->fadeAlpha << 24) | effect->genericParam);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
+
+ChainCallbackResult ScreenEffect::DrawFadeOut(ScreenEffect *effect)
+{
+    ZunRect fadeRect;
+
+    fadeRect.left = 32.0f;
+    fadeRect.top = 16.0f;
+    fadeRect.right = 416.0f;
+    fadeRect.bottom = 464.0f;
+    ScreenEffect::DrawSquare(&fadeRect, (effect->fadeAlpha << 24) | effect->genericParam);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
 }; // namespace th06
