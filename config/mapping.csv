@@ -183,7 +183,7 @@ th06::Chain::~Chain,0x41c6d0,0x4b,__thiscall,,void,Chain*
 th06::ChainElem::ChainElem,0x41c720,0x61,__thiscall,,ChainElem*,ChainElem*
 th06::ChainElem::~ChainElem,0x41c790,0x56,__thiscall,,void,ChainElem*
 th06::Chain::Chain,0x41c7f0,0x64,__thiscall,,void,Chain*
-th06::Chain::AddToCalcChain,0x41c860,0xda,__thiscall,,u32,Chain*,ChainElem*,i32
+th06::Chain::AddToCalcChain,0x41c860,0xda,__thiscall,,i32,Chain*,ChainElem*,i32
 th06::Chain::AddToDrawChain,0x41c940,0xcd,__thiscall,,u32,Chain*,ChainElem*,i32
 th06::Chain::RunCalcChain,0x41ca10,0x9d,__thiscall,,i32,Chain*
 th06::Chain::RunDrawChain,0x41cad0,0x9e,__thiscall,,i32,Chain*
@@ -295,7 +295,7 @@ th06::SoundPlayer::FadeOut,0x424e41,0x4e,__thiscall,,void,SoundPlayer*,f32
 th06::MusicRoom::FUN_00424e8f,0x424e8f,0x1e,__thiscall,,ZunResult,MusicRoom*
 th06::MusicRoom::DrawMusicList,0x424ead,0x38d,__thiscall,,void,MusicRoom*
 th06::MusicRoom::RegisterChain,0x42523a,0xde,default,,ZunResult
-th06::MusicRoom::MusicRoom,0x425318,0xc5,__thiscall,,u32*,MusicRoom*
+th06::MusicRoom::MusicRoom,0x425318,0xc5,__thiscall,,MusicRoom*,MusicRoom*
 th06::MusicRoom::OnUpdate,0x4253dd,0x7d,__cdecl,,ChainCallbackResult,MusicRoom*
 th06::MusicRoom::OnDraw,0x42545a,0x1f2,__cdecl,,ChainCallbackResult,MusicRoom*
 th06::MusicRoom::AddedCallback,0x42564c,0x74b,__cdecl,,ZunResult,MusicRoom*
