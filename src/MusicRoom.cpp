@@ -3,21 +3,21 @@
 
 namespace th06 {
     DIFFABLE_STATIC(MusicRoom, g_MusicRoom);
+    DIFFABLE_STATIC(u32, g_MRHasConstructed);
 
     #pragma optimize("s", on)
     ZunResult MusicRoom::RegisterChain(void) {
         int iVar1;
         int iVar2;
-        u32 hasConstructed;
+        int iVar3;
         MusicRoom *musicRoom;
 
-        if (!(hasConstructed & 1)) {
-            hasConstructed |= 1;
-
-            musicRoom = &MusicRoom();
+        if (!(g_MRHasConstructed & 1)) {
+            g_MRHasConstructed |= 1;
+            MusicRoom();
         }
 
-        memset(musicRoom, 0, 0x3434);
+        memset(musicRoom, 0, sizeof(MusicRoom));
 
         musicRoom->calc_chain = g_Chain.CreateElem((ChainCallback)MusicRoom::OnUpdate);
         musicRoom->calc_chain->arg = musicRoom;
@@ -34,6 +34,10 @@ namespace th06 {
 
         return ZUN_SUCCESS;
     };
+
+    MusicRoom::MusicRoom() {
+
+    }
 
     MusicRoom::~MusicRoom() {
 
