@@ -2,11 +2,6 @@
 
 namespace th06
 {
-AnmVm::AnmVm()
-{
-    this->activeSpriteIndex = -1;
-}
-
 void AnmVm::Initialize()
 {
     this->uvScrollPos.y = 0.0;
@@ -30,5 +25,10 @@ void AnmVm::Initialize()
     this->pendingInterrupt = 0;
     this->posInterpEndTime = 0;
     this->currentTimeInScript.Initialize();
+}
+
+AnmVm::AnmVm()
+{
+    this->activeSpriteIndex = -1;
 }
 }; // namespace th06
