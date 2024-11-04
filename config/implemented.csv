@@ -214,6 +214,7 @@ th06::FileSystem::WriteDataToFile
 th06::ItemManager::SpawnItem
 th06::ItemManager::OnUpdate
 th06::ItemManager::OnDraw
+th06::ItemManager::RemoveAllItems
 th06::MainMenu::AddedCallback
 th06::MainMenu::DeletedCallback
 th06::MainMenu::ReleaseTitleAnm
