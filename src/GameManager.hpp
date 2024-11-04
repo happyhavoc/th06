@@ -98,7 +98,7 @@ struct GameManager
     i8 unk_1812;
     i8 unk_1813;
     u16 pointItemsCollectedInStage;
-    i16 unk_1816;
+    i16 pointItemsCollected;
     u8 numRetries;
     i8 powerItemCountForScore;
     i8 livesRemaining;

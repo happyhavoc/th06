@@ -331,6 +331,17 @@ th06::SoundPlayer::PlaySounds
 th06::SoundPlayer::PlaySoundByIdx
 th06::SoundPlayer::BackgroundMusicPlayerThread
 th06::SoundPlayer::InitSoundBuffers
+th06::ReplayManager::ValidateReplayData
+th06::ReplayManager::RegisterChain
+th06::ReplayManager::OnUpdate
+th06::ReplayManager::OnUpdateDemoLowPrio
+th06::ReplayManager::OnUpdateDemoHighPrio
+th06::ReplayManager::OnDraw
+th06::ReplayManager::AddedCallback
+th06::ReplayManager::AddedCallbackDemo
+th06::ReplayManager::DeletedCallback
+th06::ReplayManager::StopRecording
+th06::ReplayManager::SaveReplay
 th06::Player::AddedCallback
 th06::Player::DeletedCallback
 th06::Player::RegisterChain
