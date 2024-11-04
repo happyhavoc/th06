@@ -15,14 +15,23 @@
 namespace th06
 {
 
+DIFFABLE_STATIC_ARRAY_ASSIGN(f32, 5, g_DifficultyWeightsList) = {-30.0f, -10.0f, 20.0f, 30.0f, 30.0f};
+
 DIFFABLE_STATIC_ASSIGN(u32, g_DefaultMagic) = 'DMYS';
-DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 6, g_CharacterList) = {TH_HAKUREI_REIMU_SPIRIT,  TH_HAKUREI_REIMU_DREAM,
-                                                            TH_KIRISAME_MARISA_DEVIL, TH_KIRISAME_MARISA_LOVE,
-                                                            TH_SATSUKI_RIN_FLOWER,    TH_SATSUKI_RIN_WIND};
-DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList2) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
 
 DIFFABLE_STATIC_ASSIGN(char *, g_AlphabetList) =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,:;･@abcdefghijklmnopqrstuvwxyz+-/*=%0123456789(){}[]<>#!?'\"$      --";
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 6, g_CharacterList) = {TH_HAKUREI_REIMU_SPIRIT,  TH_HAKUREI_REIMU_DREAM,
+                                                            TH_KIRISAME_MARISA_DEVIL, TH_KIRISAME_MARISA_LOVE,
+                                                            TH_SATSUKI_RIN_FLOWER,    TH_SATSUKI_RIN_WIND};
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(f32, 5, g_SpellcardsWeightsList) = {1.0f, 1.5f, 1.5f, 2.0f, 2.5f};
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 5, g_RightAlignedDifficultyList) = {"     Easy", "   Normal", "     Hard",
+                                                                         "  Lunatic", "    Extra"};
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList2) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
 
 #define DEFAULT_HIGH_SCORE_NAME "Nanashi "
 
@@ -283,6 +292,132 @@ ZunResult ResultScreen::CheckConfirmButton()
         break;
     }
     return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(viewport, strPos, unknownFloat, completion, slowdownRate, color)
+u32 ResultScreen::DrawFinalStats()
+{
+    f32 completion;
+    f32 unknownFloat;
+    D3DXVECTOR3 strPos;
+    AnmVm *viewport;
+    i32 color;
+    f32 slowdownRate;
+
+    switch (this->resultScreenState)
+    {
+    case RESULT_SCREEN_STATE_STATS_SCREEN:
+    case RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION:
+
+        viewport = &this->unk_40[37];
+        color = viewport->color;
+        g_AsciiManager.color = color;
+        unknownFloat = 0.0;
+
+        completion = g_GameManager.difficulty < 4 ? g_GameManager.counat / 39600.0f : g_GameManager.counat / 89500.0f;
+        strPos = viewport->pos;
+        strPos.x += 224.0f;
+        strPos.y += 32.0f;
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.score);
+
+        if (g_GameManager.guiScore < 2000000)
+        {
+            unknownFloat -= 20.0f;
+        }
+        else if (g_GameManager.guiScore < 200000000)
+        {
+            unknownFloat += (g_GameManager.guiScore - 2000000) / 198000000.0f * 60.0f - 20.0f;
+        }
+        else
+        {
+            unknownFloat += 40.0f;
+        }
+
+        strPos.y += 22.0f;
+        g_AsciiManager.AddString(&strPos, g_RightAlignedDifficultyList[g_GameManager.difficulty]);
+
+        unknownFloat += g_DifficultyWeightsList[g_GameManager.difficulty];
+        strPos.y += 22.0f;
+        if (g_GameManager.difficulty == EASY || !g_GameManager.isGameCompleted)
+        {
+            g_AsciiManager.AddFormatText(&strPos, "    %3.2f%%", completion * 100.0f);
+            unknownFloat += completion * 70.0f;
+        }
+        else
+        {
+            g_AsciiManager.AddFormatText(&strPos, "      100%%");
+            unknownFloat += 70.0f;
+        }
+        strPos.y += 22.0f;
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.numRetries);
+
+        unknownFloat -= g_GameManager.numRetries * 10.0f;
+        strPos.y += 22.0f;
+
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.deaths);
+
+        unknownFloat -= g_GameManager.deaths * 5.0f - 10.0f;
+
+        strPos.y += 22.0f;
+
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.bombsUsed);
+
+        unknownFloat -= g_GameManager.bombsUsed * 2.0f - 10.0f;
+        strPos.y += 22.0f;
+
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.spellcardsCaptured);
+
+        unknownFloat += g_GameManager.spellcardsCaptured * g_SpellcardsWeightsList[g_GameManager.difficulty];
+
+        slowdownRate = (g_Supervisor.unk1b4 / g_Supervisor.unk1b8 - 0.5f) * 2;
+
+        if (slowdownRate < 0.0f)
+        {
+            slowdownRate = 0.0f;
+        }
+        else if (slowdownRate >= 1.0f)
+        {
+            slowdownRate = 1.0f;
+        }
+
+        slowdownRate = (1 - slowdownRate) * 100.0f;
+
+        strPos.y += 22.0f;
+        g_AsciiManager.AddFormatText(&strPos, "    %3.2f%%", slowdownRate);
+
+        if (slowdownRate < 50.0f)
+        {
+            unknownFloat -= 70.0f * slowdownRate / 100.0f;
+        }
+        else
+        {
+            unknownFloat = -999.0f;
+        }
+        // Useless calculations, maybe in earlier versions it showed the point items and graze, but it was later
+        // removed? unknowFloat is also unused, maybe it was some kind of grading system
+        if (g_GameManager.pointItemsCollected < 800)
+        {
+            unknownFloat += 0.01f * g_GameManager.pointItemsCollected;
+        }
+        else
+        {
+            unknownFloat += 8.0f;
+        }
+
+        if (g_GameManager.grazeInTotal < 5000)
+        {
+            unknownFloat += 0.0025f * g_GameManager.grazeInTotal;
+        }
+        else
+        {
+            unknownFloat += 12.5f;
+        }
+
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+    return 0;
 }
 #pragma optimize("", on)
 

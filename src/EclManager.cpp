@@ -754,7 +754,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                                 }
                                 local_80->characterShotType = g_GameManager.CharacterShotType();
                             }
-                            g_GameManager.unk_28++;
+                            g_GameManager.spellcardsCaptured++;
                         }
                     }
                     g_EnemyManager.spellcardInfo.isActive = 0;

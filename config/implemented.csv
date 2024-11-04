@@ -261,6 +261,7 @@ th06::ResultScreen::OnUpdate
 th06::ResultScreen::OnDraw
 th06::ResultScreen::RegisterChain
 th06::ResultScreen::ResultScreen
+th06::ResultScreen::DrawFinalStats
 th06::ResultScreen::MoveCursor
 th06::ResultScreen::OpenScore
 th06::ResultScreen::MoveCursorHorizontally

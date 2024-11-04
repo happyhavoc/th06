@@ -215,7 +215,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
         mgr->maxRank = g_DifficultyInfo[g_GameManager.difficulty].maxRank;
         mgr->deaths = 0;
         mgr->bombsUsed = 0;
-        mgr->unk_28 = 0;
+        mgr->spellcardsCaptured = 0;
     }
     else
     {
