@@ -19,6 +19,7 @@ struct FormatInfo
 struct TextHelper
 {
     static void CreateTextBuffer();
+    static void ReleaseTextBuffer();
     static void RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
                                     i32 fontWidth, ZunColor textColor, ZunColor shadowColor, char *string,
                                     IDirect3DTexture8 *outTexture);

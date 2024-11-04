@@ -7,7 +7,6 @@ th06::ResultScreen::ParseClrd
 th06::ResultScreen::ParsePscr
 th06::ResultScreen::ParseCatk
 th06::ResultScreen::GetHighScore
-th06::Supervisor::DeletedCallback
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
@@ -18,4 +17,5 @@ th06::ReplayManager::StopRecording
 th06::ReplayManager::SaveReplay
 th06::ReplayManager::ValidateReplayData
 th06::ScreenEffect::DrawSquare
+th06::TextHelper::ReleaseTextBuffer
 th06::Pbg3Archive::Pbg3Archive

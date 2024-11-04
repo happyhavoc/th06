@@ -109,7 +109,7 @@ enum AnmVmAnchor
 };
 
 union AnmVmFlags {
-    u32 flags;
+    u16 flags;
     struct
     {
         u32 isVisible : 1;

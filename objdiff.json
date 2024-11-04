@@ -43,6 +43,14 @@
             "reverse_fn_order": false
         },
         {
+            "name": "BombData",
+
+            "target_path": "build/objdiff/orig/BombData.obj",
+            "base_path": "build/objdiff/reimpl/BombData.obj",
+
+            "reverse_fn_order": false
+        },
+        {
             "name": "BulletManager",
 
             "target_path": "build/objdiff/orig/BulletManager.obj",

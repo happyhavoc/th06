@@ -463,6 +463,54 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 }
 
 #pragma optimize("s", on)
+ZunResult Supervisor::DeletedCallback(Supervisor *s)
+{
+    i32 pbg3Idx;
+
+    g_AnmManager->ReleaseVertexBuffer();
+    for (pbg3Idx = 0; pbg3Idx < ARRAY_SIZE_SIGNED(s->pbg3Archives); pbg3Idx += 1)
+    {
+        s->ReleasePbg3(pbg3Idx);
+    }
+    g_AnmManager->ReleaseAnm(0);
+    AsciiManager::CutChain();
+    g_SoundPlayer.StopBGM();
+    if (s->midiOutput != NULL)
+    {
+        s->midiOutput->StopPlayback();
+        delete s->midiOutput;
+        s->midiOutput = NULL;
+    }
+    ReplayManager::SaveReplay(NULL, NULL);
+    TextHelper::ReleaseTextBuffer();
+    if (s->keyboard != NULL)
+    {
+        s->keyboard->Unacquire();
+    }
+    if (s->keyboard != NULL)
+    {
+        s->keyboard->Release();
+        s->keyboard = NULL;
+    }
+    if (s->controller != NULL)
+    {
+        s->controller->Unacquire();
+    }
+    if (s->controller != NULL)
+    {
+        s->controller->Release();
+        s->controller = NULL;
+    }
+    if (s->dinputIface != NULL)
+    {
+        s->dinputIface->Release();
+        s->dinputIface = NULL;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(curTime, framerate, fps, elapsed, fpsCounterPos)
 void Supervisor::DrawFpsCounter()
 {
