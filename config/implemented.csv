@@ -257,6 +257,17 @@ th06::MidiTimer::MidiTimer
 th06::MidiTimer::~MidiTimer
 th06::MidiTimer::StopTimer
 th06::MidiTimer::DefaultTimerCallback
+th06::ResultScreen::OnUpdate
+th06::ResultScreen::RegisterChain
+th06::ResultScreen::ResultScreen
+th06::ResultScreen::MoveCursor
+th06::ResultScreen::OpenScore
+th06::ResultScreen::MoveCursorHorizontally
+th06::ResultScreen::CheckConfirmButton
+th06::ResultScreen::ParseCatk
+th06::ResultScreen::ParseClrd
+th06::ResultScreen::ParsePscr
+th06::ResultScreen::AddedCallback
 th06::Stage::RegisterChain
 th06::Stage::CutChain
 th06::Stage::AddedCallback

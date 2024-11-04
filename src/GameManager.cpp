@@ -198,16 +198,16 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             catk->unk_3e = 0;
         }
         scoredat = ResultScreen::OpenScore("score.dat");
-        g_GameManager.highScore = ResultScreen::GetHighScore(
-            scoredat, NULL, g_GameManager.character * 2 + g_GameManager.shotType, g_GameManager.difficulty);
+        g_GameManager.highScore =
+            ResultScreen::GetHighScore(scoredat, NULL, g_GameManager.CharacterShotType(), g_GameManager.difficulty);
         ResultScreen::ParseCatk(scoredat, mgr->catk);
         ResultScreen::ParseClrd(scoredat, mgr->clrd);
         ResultScreen::ParsePscr(scoredat, (Pscr *)mgr->pscr);
         if (mgr->isInPracticeMode != 0)
         {
-            g_GameManager.highScore = mgr->pscr[g_GameManager.character * 2 + g_GameManager.shotType]
-                                               [g_GameManager.currentStage][g_GameManager.difficulty]
-                                                   .score;
+            g_GameManager.highScore =
+                mgr->pscr[g_GameManager.CharacterShotType()][g_GameManager.currentStage][g_GameManager.difficulty]
+                    .score;
         }
         ResultScreen::ReleaseScoreDat(scoredat);
         mgr->rank = g_DifficultyInfo[g_GameManager.difficulty].rank;
@@ -229,7 +229,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     mgr->currentStage = mgr->currentStage + 1;
     if (g_GameManager.isInReplay == 0)
     {
-        clrdIdx = g_GameManager.character * 2 + g_GameManager.shotType;
+        clrdIdx = g_GameManager.CharacterShotType();
         if (mgr->numRetries == 0 &&
             mgr->clrd[clrdIdx].difficultyClearedWithRetries[g_GameManager.difficulty] < mgr->currentStage - 1)
         {

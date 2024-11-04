@@ -1,16 +1,66 @@
 #pragma once
 
+#include "AnmVm.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06
 {
+
+#define HSCR_NUM_CHARS_SHOTTYPES 4
+#define HSCR_NUM_DIFFICULTIES 5
+#define HSCR_NUM_SCORES_SLOTS 10
+
+enum ResultScreenState
+{
+    RESULT_SCREEN_STATE_INIT = 0,
+    RESULT_SCREEN_STATE_CHOOSING_DIFFICULTY,
+    RESULT_SCREEN_STATE_EXITING,
+    RESULT_SCREEN_STATE_BEST_SCORES_EASY,
+    RESULT_SCREEN_STATE_BEST_SCORES_NORMAL,
+    RESULT_SCREEN_STATE_BEST_SCORES_HARD,
+    RESULT_SCREEN_STATE_BEST_SCORES_LUNATIC,
+    RESULT_SCREEN_STATE_BEST_SCORES_EXTRA,
+    RESULT_SCREEN_STATE_SPELLCARDS,
+    RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME,
+    RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION,
+    RESULT_SCREEN_STATE_UNK_11,
+    RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE,
+    RESULT_SCREEN_STATE_WRITING_REPLAY_NAME,
+    RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE,
+    RESULT_SCREEN_STATE_STATS_SCREEN,
+    RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION,
+    RESULT_SCREEN_STATE_EXIT,
+};
+
+enum ResultScreenMainMenuCursor
+{
+    RESULT_SCREEN_CURSOR_EASY,
+    RESULT_SCREEN_CURSOR_NORMAL,
+    RESULT_SCREEN_CURSOR_HARD,
+    RESULT_SCREEN_CURSOR_LUNATIC,
+    RESULT_SCREEN_CURSOR_EXTRA,
+    RESULT_SCREEN_CURSOR_SPELLCARDS,
+    RESULT_SCREEN_CURSOR_EXIT
+};
+
 struct Th6k
 {
+    Th6k *ShiftOneByte()
+    {
+        return (Th6k *)(((u8 *)this) + 1);
+    };
+
+    Th6k *ShiftBytes(i32 value)
+    {
+        return (Th6k *)(((u8 *)this) + value);
+    };
+
     u32 magic;
     u16 th6kLen;
     u16 unkLen;
     u8 version;
+    u8 unk_9;
 };
 C_ASSERT(sizeof(Th6k) == 0xc);
 
@@ -40,6 +90,16 @@ C_ASSERT(sizeof(Clrd) == 0x18);
 
 struct Pscr
 {
+    Pscr *ShiftOneByte()
+    {
+        return (Pscr *)(((u8 *)this) + 1);
+    };
+
+    Pscr *ShiftBytes(i32 value)
+    {
+        return (Pscr *)(((u8 *)this) + value);
+    };
+
     Th6k base;
     i32 score;
     u8 character;
@@ -55,12 +115,19 @@ struct Hscr
     u8 character;
     u8 difficulty;
     u8 stage;
-    u8 name[9];
+    char name[9];
 };
 C_ASSERT(sizeof(Hscr) == 0x1c);
 
 struct ScoreListNode
 {
+    ScoreListNode()
+    {
+        this->prev = NULL;
+        this->next = NULL;
+        this->data = NULL;
+    }
+
     ScoreListNode *prev;
     ScoreListNode *next;
     Hscr *data;
@@ -69,6 +136,16 @@ C_ASSERT(sizeof(ScoreListNode) == 0xc);
 
 struct ScoreDat
 {
+    Th6k *ShiftOneByte()
+    {
+        return (Th6k *)(((u8 *)this) + 1);
+    };
+
+    Th6k *ShiftBytes(i32 value)
+    {
+        return (Th6k *)(((u8 *)this) + value);
+    };
+
     u8 xorseed[2];
     u16 csum;
     u8 unk[4];
@@ -80,7 +157,13 @@ C_ASSERT(sizeof(ScoreDat) == 0x14);
 
 struct ResultScreen
 {
+    ResultScreen();
+
     static ZunResult RegisterChain(i32 unk);
+    static ChainCallbackResult OnUpdate(ResultScreen *r);
+    static ChainCallbackResult OnDraw(ResultScreen *r);
+    static ZunResult AddedCallback(ResultScreen *r);
+    static ZunResult DeletedCallback(ResultScreen *r);
 
     static ScoreDat *OpenScore(char *path);
     static ZunResult ParseCatk(ScoreDat *s, Catk *catk);
@@ -88,5 +171,44 @@ struct ResultScreen
     static ZunResult ParsePscr(ScoreDat *s, Pscr *out);
     static u32 GetHighScore(ScoreDat *score_dat, ScoreListNode *node, u32 character, u32 difficulty);
     static void ReleaseScoreDat(ScoreDat *s);
+
+    static void MoveCursor(ResultScreen *r, i32 len);
+    static ZunBool MoveCursorHorizontally(ResultScreen *r, i32 len);
+
+    void HandleResultKeyboard();
+    void HandleReplaySaveKeyboard();
+    ZunResult CheckConfirmButton();
+
+    void LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
+
+    ScoreDat *scoreDat;
+    i32 frameTimer;
+    i32 resultScreenState;
+    i32 unk_c;
+    i32 cursor;
+    i32 unk_14;
+    i32 previousCursor;
+    i32 unk_1c;
+    i32 selectedCharacter;
+    i32 charUsed;
+    i32 lastSpellcardSelected;
+    i32 diffSelected;
+    i32 cheatCodeStep;
+    i32 unk_34[3];
+    AnmVm unk_40[38];
+    AnmVm unk_28a0[16];
+    AnmVm unk_39a0;
+    ScoreListNode scores[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES];
+    Hscr defaultScore[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES][HSCR_NUM_SCORES_SLOTS];
+    Hscr hscr;
+    u8 unk_519c[12];
+    ChainElem *calcChain;
+    ChainElem *drawChain;
+    u8 unk_51b0[1216];
+    char date[9];
+    u8 unk_5679[11];
+    u32 score;
+    u8 unk_5688[40];
 };
+C_ASSERT(sizeof(ResultScreen) == 0x56b0);
 }; // namespace th06
