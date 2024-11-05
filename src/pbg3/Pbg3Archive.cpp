@@ -111,7 +111,7 @@ i32 Pbg3Archive::FindEntry(char *path)
 
 u32 Pbg3Archive::GetEntrySize(u32 entryIdx)
 {
-    if (this->numOfEntries <= entryIdx)
+    if (entryIdx >= this->numOfEntries)
     {
         return 0;
     }
