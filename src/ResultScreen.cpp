@@ -421,6 +421,210 @@ u32 ResultScreen::DrawFinalStats()
 }
 #pragma optimize("", on)
 
+#pragma function("strcpy")
+#pragma optimize("s", on)
+#pragma var_order(idx, sprite, replayNameIdx, replayNameIdx2)
+i32 ResultScreen::HandleResultKeyboard()
+{
+    i32 idx;
+    AnmVm *sprite;
+    i32 replayNameIdx;
+    i32 replayNameIdx2;
+
+    if (this->frameTimer == 0)
+    {
+        this->charUsed = g_GameManager.character;
+        this->diffSelected = g_GameManager.difficulty;
+
+        sprite = &this->unk_40[0];
+        for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+        {
+            sprite->pendingInterrupt = this->diffSelected + 3;
+        }
+
+        AnmManager::DrawStringFormat2(g_AnmManager, this->unk_28a0, COLOR_RGB(COLOR_WHITE), COLOR_RGB(COLOR_BLACK),
+                                      g_CharacterList[this->charUsed * 2]);
+        if (g_GameManager.shotType != SHOT_TYPE_A)
+        {
+            this->unk_28a0[0].color = COLOR_TRANSPARENT_WHITE;
+        }
+
+        AnmManager::DrawStringFormat2(g_AnmManager, &this->unk_28a0[1], COLOR_RGB(COLOR_WHITE), COLOR_RGB(COLOR_BLACK),
+                                      g_CharacterList[this->charUsed * 2]);
+        if (g_GameManager.shotType != SHOT_TYPE_B)
+        {
+            this->unk_28a0[1].color = COLOR_TRANSPARENT_WHITE;
+        }
+
+        this->hscr.character = this->charUsed * 2 + g_GameManager.shotType;
+        this->hscr.difficulty = this->diffSelected;
+        this->hscr.score = g_GameManager.score;
+        this->hscr.base.version = 16;
+        this->hscr.base.magic = *(i32 *)"HSCR";
+
+        if (g_GameManager.isGameCompleted == 0)
+        {
+            this->hscr.stage = g_GameManager.currentStage;
+        }
+        else
+        {
+            this->hscr.stage = 99;
+        }
+
+        this->hscr.base.unk_9 = 1;
+        strcpy(this->hscr.name, "        ");
+
+        if (this->LinkScoreEx(&this->hscr, this->diffSelected, this->charUsed * 2 + g_GameManager.shotType) >= 10)
+            goto RETURN_TO_STATS_SCREEN_WITHOUT_SOUND;
+
+        this->cursor = 0;
+        strcpy(this->replayName, "");
+    }
+    if (this->frameTimer < 30)
+    {
+        return 0;
+    }
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
+    {
+        for (;;)
+        {
+            this->selectedCharacter -= 16;
+
+            if (this->selectedCharacter < 0)
+            {
+                this->selectedCharacter += 96;
+            }
+
+            if (g_AlphabetList[this->selectedCharacter] == ' ')
+            {
+                continue;
+            }
+            break;
+        };
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+    }
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
+    {
+        for (;;)
+        {
+            this->selectedCharacter += 16;
+
+            if (this->selectedCharacter >= 96)
+            {
+                this->selectedCharacter -= 96;
+            }
+
+            if (g_AlphabetList[this->selectedCharacter] == ' ')
+            {
+                continue;
+            }
+            break;
+        };
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+    }
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
+    {
+        for (;;)
+        {
+            this->selectedCharacter--;
+            if (this->selectedCharacter % 16 == 15)
+            {
+                this->selectedCharacter += 16;
+            }
+
+            if (this->selectedCharacter < 0)
+            {
+                this->selectedCharacter = 15;
+            }
+
+            if (g_AlphabetList[this->selectedCharacter] == ' ')
+            {
+                continue;
+            }
+            break;
+        };
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+    }
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
+    {
+        for (;;)
+        {
+            this->selectedCharacter++;
+
+            if (this->selectedCharacter % 16 == 0)
+            {
+                this->selectedCharacter -= 16;
+            }
+
+            if (g_AlphabetList[this->selectedCharacter] == ' ')
+            {
+                continue;
+            }
+            break;
+        };
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+    }
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_SELECTMENU))
+    {
+        replayNameIdx = this->cursor >= 8 ? 7 : this->cursor;
+
+        if (this->selectedCharacter < 94)
+        {
+            this->hscr.name[replayNameIdx] = g_AlphabetList[this->selectedCharacter];
+        }
+        else if (this->selectedCharacter == 94)
+        {
+            this->hscr.name[replayNameIdx] = ' ';
+        }
+        else
+        {
+            goto RETURN_TO_STATS_SCREEN;
+        }
+
+        if (this->cursor < 8)
+        {
+            this->cursor++;
+            if (this->cursor == 8)
+            {
+                this->selectedCharacter = 95;
+            }
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+    }
+
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_RETURNMENU))
+    {
+        replayNameIdx2 = this->cursor >= 8 ? 7 : this->cursor;
+
+        if (this->cursor > 0)
+        {
+            this->cursor--;
+            this->hscr.name[replayNameIdx2] = ' ';
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+    }
+    if (WAS_PRESSED(TH_BUTTON_MENU))
+    {
+    RETURN_TO_STATS_SCREEN:
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+
+    RETURN_TO_STATS_SCREEN_WITHOUT_SOUND:
+
+        this->resultScreenState = RESULT_SCREEN_STATE_STATS_SCREEN;
+        this->frameTimer = 0;
+
+        sprite = &this->unk_40[0];
+        for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+        {
+            sprite->pendingInterrupt = 2;
+        }
+        strcpy(this->replayName, this->hscr.name);
+    }
+    return 0;
+}
+#pragma optimize("", on)
+#pragma intrinsic("strcpy")
+
 #pragma optimize("s", on)
 #pragma var_order(scoreData, bytesShifted, xorValue, checksum, bytes, remainingData, decryptedFilePointer, fileLen,    \
                   scoreDatSize, scoreListNodeSize)

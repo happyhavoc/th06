@@ -7,6 +7,7 @@
 #define COLOR_GREY 0xff808080
 #define COLOR_DARK_GREY 0xff505050
 #define COLOR_WHITE 0xffffffff
+#define COLOR_TRANSPARENT_WHITE 0x80ffffff
 #define COLOR_RED 0xffff0000
 #define COLOR_YELLOW 0xffffff00
 #define COLOR_LIGHT_RED 0xffff8080

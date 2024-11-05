@@ -264,6 +264,7 @@ th06::ResultScreen::ResultScreen
 th06::ResultScreen::DrawFinalStats
 th06::ResultScreen::MoveCursor
 th06::ResultScreen::OpenScore
+th06::ResultScreen::HandleResultKeyboard
 th06::ResultScreen::MoveCursorHorizontally
 th06::ResultScreen::CheckConfirmButton
 th06::ResultScreen::ParseCatk
