@@ -167,7 +167,7 @@ void BombData::BombReimuACalc(Player *player)
                     player->bombInfo.bombRegionVelocities[i] / 100.0f; // ZUN moment
 
                     g_SoundPlayer.PlaySoundByIdx(SOUND_F, 0);
-                    ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 16, 8, 0, 0);
+                    ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 16, 8, 0, 0);
                 }
             }
         }
@@ -274,13 +274,13 @@ void BombData::BombReimuBCalc(Player *player)
         player->bombInfo.bombRegionPositions[3].x = 192.0f;
         player->bombInfo.bombRegionPositions[3].y = player->positionCenter.y;
         player->bombInfo.bombRegionPositions[3].z = 0.405f;
-        ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 60, 2, 6, 0);
+        ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 60, 2, 6, 0);
     }
     else
     {
         if (player->bombInfo.timer == 60)
         {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 80, 20, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 80, 20, 0, 0);
         }
 
         player->bombProjectiles[0].size.x = 62.0f;
@@ -372,7 +372,7 @@ void BombData::BombMarisaACalc(Player *player)
             player->bombInfo.bombRegionVelocities[i].z = 0.0f;
         }
         g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMARI, 0);
-        ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 0x78, 4, 1, 0);
+        ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 120, 4, 1, 0);
     }
     else
     {
@@ -485,11 +485,11 @@ void BombData::BombMarisaBCalc(Player *player)
 
         if (player->bombInfo.timer == 60)
         {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 60, 1, 7, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 60, 1, 7, 0);
         }
         else if (player->bombInfo.timer == 120)
         {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_1, 200, 24, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 200, 24, 0, 0);
         }
 
         if (player->bombInfo.timer.HasTicked() && player->bombInfo.timer.AsFrames() % 4 != 0)
