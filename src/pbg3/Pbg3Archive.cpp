@@ -92,7 +92,7 @@ i32 Pbg3Archive::Release()
         this->entries = NULL;
     }
     delete this->unk;
-    return 1;
+    return TRUE;
 }
 
 i32 Pbg3Archive::FindEntry(char *path)
@@ -170,6 +170,11 @@ Pbg3Archive::~Pbg3Archive()
 
 i32 Pbg3Archive::Load(char *path)
 {
+    if (this->Release() == FALSE)
+    {
+        return FALSE;
+    }
+
     this->parser = new Pbg3Parser();
     if (this->parser == NULL)
     {
@@ -177,8 +182,11 @@ i32 Pbg3Archive::Load(char *path)
     }
 
     if (this->parser->OpenArchive(path) == FALSE)
-    {
-        delete this->parser;
+    {   if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
