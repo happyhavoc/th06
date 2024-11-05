@@ -19,7 +19,11 @@ i32 Pbg3Archive::ParseHeader()
 {
     if (this->parser->ReadMagic() != 0x33474250)
     {
-        delete this->parser;
+        if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
@@ -27,14 +31,22 @@ i32 Pbg3Archive::ParseHeader()
     this->fileTableOffset = this->parser->ReadVarInt();
     if (this->parser->SeekToOffset(this->fileTableOffset) == FALSE)
     {
-        delete this->parser;
+        if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
     this->entries = new Pbg3Entry[this->numOfEntries];
     if (this->entries == NULL)
     {
-        delete this->parser;
+        if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
@@ -47,8 +59,17 @@ i32 Pbg3Archive::ParseHeader()
         this->entries[idx].uncompressedSize = this->parser->ReadVarInt();
         if (this->parser->ReadString(this->entries[idx].filename, sizeof(this->entries[idx].filename)) == FALSE)
         {
-            delete this->parser;
-            delete[] this->entries;
+            if (this->parser != NULL)
+            {
+                delete this->parser;
+                this->parser = NULL;
+            }
+            if (this->entries != NULL)
+            {
+                delete[] this->entries;
+                this->entries = NULL;
+            }
+
             return FALSE;
         }
     }
