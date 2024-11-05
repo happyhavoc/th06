@@ -159,7 +159,7 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
                 resultScreen->defaultScore[i][characterShot][slot].score = 1000000 - slot * 100000;
                 resultScreen->defaultScore[i][characterShot][slot].base.magic = g_DefaultMagic;
                 resultScreen->defaultScore[i][characterShot][slot].difficulty = i;
-                resultScreen->defaultScore[i][characterShot][slot].base.version = 16;
+                resultScreen->defaultScore[i][characterShot][slot].base.version = TH6K_VERSION;
                 resultScreen->defaultScore[i][characterShot][slot].base.unkLen = 28;
                 resultScreen->defaultScore[i][characterShot][slot].base.th6kLen = 28;
                 resultScreen->defaultScore[i][characterShot][slot].stage = 1;
@@ -626,6 +626,68 @@ i32 ResultScreen::HandleResultKeyboard()
 #pragma intrinsic("strcpy")
 
 #pragma optimize("s", on)
+#pragma var_order(highScore, remainingSize, scoreData, dataScore, score)
+u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 character, u32 difficulty)
+{
+    u32 score;
+    u32 dataScore;
+    i32 remainingSize;
+    Hscr *highScore;
+    ScoreDat *scoreData;
+
+    scoreData = scoreDat;
+
+    if (node == NULL)
+    {
+        ResultScreen::FreeAllScores(scoreData->scores);
+        scoreData->scores->next = NULL;
+        scoreData->scores->data = NULL;
+        scoreData->scores->prev = NULL;
+    }
+
+    remainingSize = scoreData->fileLen;
+    highScore = (Hscr *)scoreData->ShiftBytes(scoreData->dataOffset);
+    remainingSize -= scoreData->dataOffset;
+
+    while (remainingSize > 0)
+    {
+        if (highScore->base.magic == 'RCSH' && highScore->base.version == TH6K_VERSION &&
+            highScore->character == character && highScore->difficulty == difficulty)
+        {
+            if (node != NULL)
+            {
+                ResultScreen::LinkScore(node, highScore);
+            }
+            else
+            {
+                ResultScreen::LinkScore(scoreData->scores, highScore);
+            }
+        }
+
+        remainingSize -= highScore->base.th6kLen;
+        highScore = highScore->ShiftBytes(highScore->base.th6kLen);
+    }
+    if (scoreData->scores->next != NULL)
+    {
+        if (scoreData->scores->next->data->score > 1000000)
+        {
+            dataScore = scoreData->scores->next->data->score;
+        }
+        else
+        {
+            dataScore = 1000000;
+        }
+        score = dataScore;
+    }
+    else
+    {
+        score = 1000000;
+    }
+    return score;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(scoreData, bytesShifted, xorValue, checksum, bytes, remainingData, decryptedFilePointer, fileLen,    \
                   scoreDatSize, scoreListNodeSize)
 ScoreDat *ResultScreen::OpenScore(char *path)
@@ -730,7 +792,7 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
-        if (parsedCatk->base.magic == 'KTAC' && parsedCatk->base.version == 16)
+        if (parsedCatk->base.magic == 'KTAC' && parsedCatk->base.version == TH6K_VERSION)
         {
             if (parsedCatk->idx >= CATK_NUM_CAPTURES)
                 break;
@@ -767,7 +829,7 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
         outClrd[characterShotType].base.magic = 'DRLC';
         outClrd[characterShotType].base.unkLen = sizeof(Clrd);
         outClrd[characterShotType].base.th6kLen = sizeof(Clrd);
-        outClrd[characterShotType].base.version = 16;
+        outClrd[characterShotType].base.version = TH6K_VERSION;
         outClrd[characterShotType].characterShotType = characterShotType;
 
         for (difficulty = 0; difficulty < ARRAY_SIZE_SIGNED(outClrd[0].difficultyClearedWithoutRetries); difficulty++)
@@ -781,7 +843,7 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
-        if (parsedClrd->base.magic == 'DRLC' && parsedClrd->base.version == 16)
+        if (parsedClrd->base.magic == 'DRLC' && parsedClrd->base.version == TH6K_VERSION)
         {
             if (parsedClrd->characterShotType >= CLRD_NUM_CHARACTERS)
                 break;
@@ -838,7 +900,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
 
     while (cursor > 0)
     {
-        if (parsedPscr->base.magic == 'RCSP' && parsedPscr->base.version == 16)
+        if (parsedPscr->base.magic == 'RCSP' && parsedPscr->base.version == TH6K_VERSION)
         {
             pscr = parsedPscr;
             if (pscr->character >= PSCR_NUM_CHARS_SHOTTYPES || pscr->difficulty >= PSCR_NUM_DIFFICULTIES + 1 ||

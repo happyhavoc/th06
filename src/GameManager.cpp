@@ -192,7 +192,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             catk->base.magic = (u32) "CATK";
             catk->base.unkLen = sizeof(Catk);
             catk->base.th6kLen = sizeof(Catk);
-            catk->base.version = 0x10;
+            catk->base.version = TH6K_VERSION;
             catk->idx = i;
             catk->numAttempts = 0;
             catk->numSuccess = 0;
