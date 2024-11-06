@@ -1024,7 +1024,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
 
 void EclManager::Unload()
 {
-    if (eclFile != NULL) {
+    if (eclFile != NULL)
+    {
         free(eclFile);
     }
     eclFile = NULL;
