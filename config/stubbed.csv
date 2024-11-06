@@ -6,7 +6,6 @@ th06::ResultScreen::LinkScore
 th06::ResultScreen::LinkScoreEx
 th06::ResultScreen::DeletedCallback
 th06::ResultScreen::FreeAllScores
-th06::ResultScreen::HandleReplaySaveKeyboard
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::MainMenu::SelectRelated

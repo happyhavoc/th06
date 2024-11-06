@@ -6,11 +6,13 @@
 #define COLOR_BLACK 0xff000000
 #define COLOR_GREY 0xff808080
 #define COLOR_DARK_GREY 0xff505050
+#define COLOR_ASHEN_GREY 0xff606060
 #define COLOR_WHITE 0xffffffff
 #define COLOR_TRANSPARENT_WHITE 0x80ffffff
 #define COLOR_RED 0xffff0000
 #define COLOR_YELLOW 0xffffff00
 #define COLOR_LIGHT_RED 0xffff8080
+#define COLOR_PASTEL_RED 0xffff6060
 #define COLOR_SUNSHINEYELLOW 0xffffff40
 #define COLOR_PINK 0xffffe0e0
 #define COLOR_LIGHTCYAN 0xffe0ffff

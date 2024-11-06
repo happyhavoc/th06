@@ -7,10 +7,14 @@
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "Player.hpp"
+#include "ReplayManager.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
+#include <direct.h>
+#include <stdio.h>
+#include <time.h>
 
 namespace th06
 {
@@ -488,11 +492,11 @@ i32 ResultScreen::HandleResultKeyboard()
     {
         for (;;)
         {
-            this->selectedCharacter -= 16;
+            this->selectedCharacter -= RESULT_KEYBOARD_COLUMNS;
 
             if (this->selectedCharacter < 0)
             {
-                this->selectedCharacter += 96;
+                this->selectedCharacter += RESULT_KEYBOARD_CHARACTERS;
             }
 
             if (g_AlphabetList[this->selectedCharacter] == ' ')
@@ -507,11 +511,11 @@ i32 ResultScreen::HandleResultKeyboard()
     {
         for (;;)
         {
-            this->selectedCharacter += 16;
+            this->selectedCharacter += RESULT_KEYBOARD_COLUMNS;
 
-            if (this->selectedCharacter >= 96)
+            if (this->selectedCharacter >= RESULT_KEYBOARD_CHARACTERS)
             {
-                this->selectedCharacter -= 96;
+                this->selectedCharacter -= RESULT_KEYBOARD_CHARACTERS;
             }
 
             if (g_AlphabetList[this->selectedCharacter] == ' ')
@@ -527,14 +531,14 @@ i32 ResultScreen::HandleResultKeyboard()
         for (;;)
         {
             this->selectedCharacter--;
-            if (this->selectedCharacter % 16 == 15)
+            if (this->selectedCharacter % RESULT_KEYBOARD_COLUMNS == RESULT_KEYBOARD_COLUMNS - 1)
             {
-                this->selectedCharacter += 16;
+                this->selectedCharacter += RESULT_KEYBOARD_COLUMNS;
             }
 
             if (this->selectedCharacter < 0)
             {
-                this->selectedCharacter = 15;
+                this->selectedCharacter = RESULT_KEYBOARD_COLUMNS - 1;
             }
 
             if (g_AlphabetList[this->selectedCharacter] == ' ')
@@ -551,9 +555,9 @@ i32 ResultScreen::HandleResultKeyboard()
         {
             this->selectedCharacter++;
 
-            if (this->selectedCharacter % 16 == 0)
+            if (this->selectedCharacter % RESULT_KEYBOARD_COLUMNS == 0)
             {
-                this->selectedCharacter -= 16;
+                this->selectedCharacter -= RESULT_KEYBOARD_COLUMNS;
             }
 
             if (g_AlphabetList[this->selectedCharacter] == ' ')
@@ -568,11 +572,11 @@ i32 ResultScreen::HandleResultKeyboard()
     {
         replayNameIdx = this->cursor >= 8 ? 7 : this->cursor;
 
-        if (this->selectedCharacter < 94)
+        if (this->selectedCharacter < RESULT_KEYBOARD_SPACE)
         {
             this->hscr.name[replayNameIdx] = g_AlphabetList[this->selectedCharacter];
         }
-        else if (this->selectedCharacter == 94)
+        else if (this->selectedCharacter == RESULT_KEYBOARD_SPACE)
         {
             this->hscr.name[replayNameIdx] = ' ';
         }
@@ -586,7 +590,7 @@ i32 ResultScreen::HandleResultKeyboard()
             this->cursor++;
             if (this->cursor == 8)
             {
-                this->selectedCharacter = 95;
+                this->selectedCharacter = RESULT_KEYBOARD_END;
             }
         }
         g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
@@ -624,6 +628,388 @@ i32 ResultScreen::HandleResultKeyboard()
 }
 #pragma optimize("", on)
 #pragma intrinsic("strcpy")
+
+#pragma optimize("s", on)
+#pragma var_order(sprite, saveInterrupt, idx, replayLoaded, replayToReadPath, replayNameCharacter, replayPath,         \
+                  replayNameCharacter2)
+i32 ResultScreen::HandleReplaySaveKeyboard()
+{
+    AnmVm *sprite;
+    i32 replayNameCharacter2;
+    char replayPath[64];
+    i32 replayNameCharacter;
+    char replayToReadPath[64];
+    ReplayData *replayLoaded;
+    i32 idx;
+    i32 saveInterrupt;
+
+    switch (this->resultScreenState)
+    {
+    case RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION:
+        if (this->frameTimer == 60)
+        {
+            if (g_GameManager.numRetries != 0)
+            {
+                saveInterrupt = 0xc;
+            }
+            else
+            {
+                if (g_Supervisor.framerateMultiplier < 0.99f)
+                {
+                    saveInterrupt = 0xd;
+                }
+                else
+                {
+                    saveInterrupt = 9;
+                }
+            }
+            sprite = &this->unk_40[1];
+            for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+            {
+                sprite->pendingInterrupt = saveInterrupt;
+            }
+            if (saveInterrupt != 9)
+            {
+                this->resultScreenState = RESULT_SCREEN_STATE_CANT_SAVE_REPLAY;
+            }
+            this->cursor = 0;
+        }
+        sprite = &this->unk_40[16];
+        if (this->cursor == 0)
+        {
+            sprite[0].color = COLOR_COMBINE_ALPHA(COLOR_PASTEL_RED, sprite[0].color);
+            sprite[1].color = COLOR_COMBINE_ALPHA(COLOR_ASHEN_GREY, sprite[1].color);
+        }
+        else
+        {
+            sprite[0].color = COLOR_COMBINE_ALPHA(COLOR_ASHEN_GREY, sprite[0].color);
+            sprite[1].color = COLOR_COMBINE_ALPHA(COLOR_PASTEL_RED, sprite[1].color);
+        }
+        if (this->frameTimer < 80)
+        {
+            return 0;
+        }
+        ResultScreen::MoveCursorHorizontally(this, 2);
+        if (WAS_PRESSED(TH_BUTTON_RETURNMENU) || WAS_PRESSED(TH_BUTTON_MENU))
+        {
+            goto asd;
+        }
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
+        {
+
+            if (this->cursor == 0)
+            {
+            YOLO:
+
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                this->resultScreenState = RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE;
+
+                sprite = &this->unk_40[0];
+                for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+                {
+                    sprite->pendingInterrupt = 0xa;
+                }
+
+                this->frameTimer = 0;
+                goto CHOOSE_REPLAY_FILE;
+            }
+
+        asd:
+
+            this->frameTimer = 0;
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            this->resultScreenState = RESULT_SCREEN_STATE_EXITING;
+            sprite = &this->unk_40[0];
+            for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+            {
+                sprite->pendingInterrupt = 2;
+            }
+        }
+        break;
+    case RESULT_SCREEN_STATE_CANT_SAVE_REPLAY:
+
+        if (this->frameTimer < 0x14)
+        {
+            return 0;
+        }
+
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) || WAS_PRESSED(TH_BUTTON_RETURNMENU))
+        {
+
+            this->frameTimer = 0;
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            this->resultScreenState = RESULT_SCREEN_STATE_EXITING;
+            sprite = &this->unk_40[0];
+            for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+            {
+                sprite->pendingInterrupt = 2;
+            }
+        }
+        break;
+
+    case RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE:
+
+    CHOOSE_REPLAY_FILE:
+
+        if (this->frameTimer == 0)
+        {
+            _mkdir("replay");
+            for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->replays); idx++)
+            {
+                sprintf(replayToReadPath, "./replay/th6_%.2d.rpy", idx + 1);
+                replayLoaded = (ReplayData *)FileSystem::OpenPath(replayToReadPath, 1);
+                if (replayLoaded == NULL)
+                {
+                    continue;
+                }
+
+                if (ReplayManager::ValidateReplayData(replayLoaded, g_LastFileSize) == ZUN_SUCCESS)
+                {
+                    this->replays[idx] = *replayLoaded;
+                }
+                free(replayLoaded);
+            }
+        }
+
+        if (this->frameTimer < 20)
+        {
+            return 0;
+        }
+
+        MoveCursor(this, 15);
+        this->replayNumber = this->cursor;
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
+        {
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            this->replayNumber = this->cursor;
+            this->frameTimer = 0;
+            _strdate(this->defaultReplayMaybe.date);
+            (this->defaultReplayMaybe).score = g_GameManager.score;
+            if (*(i32 *)&this->replays[this->cursor].magic != *(i32 *)&"PR6T" ||
+                this->replays[this->cursor].version != 0x102)
+            {
+                sprite = &this->unk_40[0];
+                for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+                {
+                    sprite->pendingInterrupt = 0xf;
+                }
+                sprite = &this->unk_40[this->replayNumber + 0x16];
+                sprite->pendingInterrupt = 0xe;
+                this->resultScreenState = RESULT_SCREEN_STATE_WRITING_REPLAY_NAME;
+            }
+            else
+            {
+                sprite = &this->unk_40[0];
+                for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+                {
+                    sprite->pendingInterrupt = 0xb;
+                }
+                sprite = &this->unk_40[this->replayNumber + 0x16];
+                sprite->pendingInterrupt = 0xe;
+                this->resultScreenState = RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE;
+            }
+            this->cursor = 0;
+            this->selectedCharacter = 0;
+        }
+        if (WAS_PRESSED(10))
+        {
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            this->resultScreenState = RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION;
+            sprite = &this->unk_40[0];
+            for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+            {
+                sprite->pendingInterrupt = 2;
+            }
+            this->frameTimer = 0;
+        }
+        break;
+    case RESULT_SCREEN_STATE_WRITING_REPLAY_NAME:
+        if (this->frameTimer < 30)
+        {
+            return 0;
+        }
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
+        {
+            for (;;)
+            {
+                this->selectedCharacter -= RESULT_KEYBOARD_COLUMNS;
+
+                if (this->selectedCharacter < 0)
+                {
+                    this->selectedCharacter += RESULT_KEYBOARD_CHARACTERS;
+                }
+
+                if (g_AlphabetList[this->selectedCharacter] == ' ')
+                {
+                    continue;
+                }
+                break;
+            };
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        }
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
+        {
+            for (;;)
+            {
+                this->selectedCharacter += RESULT_KEYBOARD_COLUMNS;
+
+                if (this->selectedCharacter >= RESULT_KEYBOARD_CHARACTERS)
+                {
+                    this->selectedCharacter -= RESULT_KEYBOARD_CHARACTERS;
+                }
+
+                if (g_AlphabetList[this->selectedCharacter] == ' ')
+                {
+                    continue;
+                }
+                break;
+            };
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        }
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
+        {
+            for (;;)
+            {
+                this->selectedCharacter--;
+                if (this->selectedCharacter % RESULT_KEYBOARD_COLUMNS == RESULT_KEYBOARD_COLUMNS - 1)
+                {
+                    this->selectedCharacter += RESULT_KEYBOARD_COLUMNS;
+                }
+
+                if (this->selectedCharacter < 0)
+                {
+                    this->selectedCharacter = RESULT_KEYBOARD_COLUMNS - 1;
+                }
+
+                if (g_AlphabetList[this->selectedCharacter] == ' ')
+                {
+                    continue;
+                }
+                break;
+            };
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        }
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
+        {
+            for (;;)
+            {
+                this->selectedCharacter++;
+                if (this->selectedCharacter % RESULT_KEYBOARD_COLUMNS == 0)
+                {
+                    this->selectedCharacter -= RESULT_KEYBOARD_COLUMNS;
+                }
+
+                if (g_AlphabetList[this->selectedCharacter] == ' ')
+                {
+                    continue;
+                }
+                break;
+            };
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        }
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_SELECTMENU))
+        {
+
+            replayNameCharacter = this->cursor >= 8 ? 7 : this->cursor;
+
+            if (this->selectedCharacter < RESULT_KEYBOARD_SPACE)
+            {
+                this->replayName[replayNameCharacter] = g_AlphabetList[this->selectedCharacter];
+            }
+            else if (this->selectedCharacter == RESULT_KEYBOARD_SPACE)
+            {
+                this->replayName[replayNameCharacter] = ' ';
+            }
+            else
+            {
+                sprintf(replayPath, "./replay/th6_%.2d.rpy", this->replayNumber + 1);
+                ReplayManager::SaveReplay(replayPath, this->replayName);
+                this->frameTimer = 0;
+                this->resultScreenState = RESULT_SCREEN_STATE_EXITING;
+                sprite = &this->unk_40[0];
+                for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+                {
+                    sprite->pendingInterrupt = 2;
+                }
+            }
+            if (this->cursor < 8)
+            {
+                this->cursor++;
+                if (this->cursor == 8)
+                {
+                    this->selectedCharacter = RESULT_KEYBOARD_END;
+                }
+            }
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+        }
+
+        if (WAS_PRESSED_WEIRD(TH_BUTTON_RETURNMENU))
+        {
+            replayNameCharacter2 = this->cursor >= 8 ? 7 : this->cursor;
+
+            if (this->cursor > 0)
+            {
+                this->cursor--;
+                this->replayName[replayNameCharacter2] = ' ';
+            }
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+        }
+        if (WAS_PRESSED(TH_BUTTON_MENU))
+        {
+            goto YOLO;
+        }
+        break;
+
+    case RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE:
+        sprite = &this->unk_40[16];
+        if (this->cursor == 0)
+        {
+            sprite[0].color = COLOR_COMBINE_ALPHA(COLOR_PASTEL_RED, sprite[0].color);
+            sprite[1].color = COLOR_COMBINE_ALPHA(COLOR_ASHEN_GREY, sprite[1].color);
+        }
+        else
+        {
+            sprite[0].color = COLOR_COMBINE_ALPHA(COLOR_ASHEN_GREY, sprite[0].color);
+            sprite[1].color = COLOR_COMBINE_ALPHA(COLOR_PASTEL_RED, sprite[1].color);
+        }
+
+        if (this->frameTimer < 20)
+        {
+            return 0;
+        }
+        MoveCursorHorizontally(this, 2);
+
+        if (WAS_PRESSED(TH_BUTTON_RETURNMENU) || WAS_PRESSED(TH_BUTTON_MENU))
+        {
+            goto YOLO;
+        }
+
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
+        {
+
+            this->frameTimer = 0;
+            if (this->cursor == 0)
+            {
+                sprite = &this->unk_40[0];
+                for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
+                {
+                    sprite->pendingInterrupt = 15;
+                }
+                sprite = &this->unk_40[this->replayNumber + 22];
+                sprite->pendingInterrupt = 14;
+                this->resultScreenState = RESULT_SCREEN_STATE_WRITING_REPLAY_NAME;
+                break;
+            }
+            goto YOLO;
+        }
+    }
+
+LAB_0042d095:
+
+    return 0;
+}
+
+#pragma optimize("s", on)
 
 #pragma optimize("s", on)
 #pragma var_order(highScore, remainingSize, scoreData, dataScore, score)
@@ -1245,7 +1631,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
         break;
 
     case RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION:
-    case RESULT_SCREEN_STATE_UNK_11:
+    case RESULT_SCREEN_STATE_CANT_SAVE_REPLAY:
     case RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE:
     case RESULT_SCREEN_STATE_WRITING_REPLAY_NAME:
     case RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE:
