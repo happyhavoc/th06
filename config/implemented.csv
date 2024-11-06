@@ -89,6 +89,7 @@ th06::Controller::EnumGameControllersCb
 th06::EclManager::CallEclSub
 th06::EclManager::Load
 th06::EclManager::RunEcl
+th06::EclManager::Unload
 th06::Ending::Ending
 th06::Ending::RegisterChain
 th06::Ending::AddedCallback
