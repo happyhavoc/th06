@@ -13,7 +13,7 @@ class Pbg3Parser : public IPbg3Parser, public FileAbstraction
     i32 OpenArchive(char *path);
     i32 ReadBit();
     u32 ReadInt(u32 numBitsAsPowersOf2);
-    u8 ReadByteAssumeAligned();
+    i32 ReadByteAssumeAligned();
     i32 SeekToOffset(u32 fileOffset);
     i32 SeekToNextByte();
     i32 ReadByteAlignedData(u8 *data, u32 bytesToRead);
