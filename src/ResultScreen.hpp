@@ -172,6 +172,11 @@ C_ASSERT(sizeof(ScoreDat) == 0x14);
 struct ResultScreen
 {
     ResultScreen();
+    ~ResultScreen()
+    {
+        ScoreDat *sd = this->scoreDat;
+        free(sd);
+    };
 
     static ZunResult RegisterChain(i32 unk);
     static ChainCallbackResult OnUpdate(ResultScreen *r);
@@ -183,6 +188,9 @@ struct ResultScreen
     static ZunResult ParseCatk(ScoreDat *s, Catk *catk);
     static ZunResult ParseClrd(ScoreDat *s, Clrd *out);
     static ZunResult ParsePscr(ScoreDat *s, Pscr *out);
+
+    static void WriteScore(ResultScreen *r);
+    void FreeScore(i32 difficulty, i32 character);
     static u32 GetHighScore(ScoreDat *s, ScoreListNode *node, u32 character, u32 difficulty);
     static void ReleaseScoreDat(ScoreDat *s);
 

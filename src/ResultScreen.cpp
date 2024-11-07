@@ -1979,4 +1979,42 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+#pragma var_order(difficulty, character)
+ZunResult ResultScreen::DeletedCallback(ResultScreen *resultScreen)
+{
+    i32 character;
+    i32 difficulty;
+
+    if (resultScreen->scoreDat != NULL)
+    {
+        ResultScreen::WriteScore(resultScreen);
+        ResultScreen::ReleaseScoreDat(resultScreen->scoreDat);
+    }
+
+    resultScreen->scoreDat = NULL;
+    for (difficulty = 0; difficulty < HSCR_NUM_DIFFICULTIES; difficulty++)
+    {
+        for (character = 0; character < HSCR_NUM_CHARS_SHOTTYPES; character++)
+        {
+            resultScreen->FreeScore(difficulty, character);
+        }
+    }
+    g_AnmManager->ReleaseAnm(ANM_FILE_RESULT00);
+    g_AnmManager->ReleaseAnm(ANM_FILE_RESULT01);
+    g_AnmManager->ReleaseAnm(ANM_FILE_RESULT02);
+    g_AnmManager->ReleaseAnm(ANM_FILE_RESULT03);
+    g_AnmManager->ReleaseSurface(0);
+
+    g_Chain.Cut(resultScreen->drawChain);
+
+    resultScreen->drawChain = NULL;
+
+    delete resultScreen;
+    resultScreen = NULL;
+
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
 }; // namespace th06
