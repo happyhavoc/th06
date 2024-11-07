@@ -96,7 +96,14 @@ i32 FileAbstraction::ReadByte()
     {
         return -1;
     }
-    return outBytesRead != 0 ? data : -1;
+    else
+    {
+        if (outBytesRead == 0)
+        {
+            return -1;
+        }
+        return data;
+    }
 }
 
 i32 FileAbstraction::WriteByte(u8 b)
