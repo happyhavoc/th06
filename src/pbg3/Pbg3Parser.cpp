@@ -11,11 +11,11 @@ i32 Pbg3Parser::OpenArchive(char *path)
 {
     this->Close();
     this->Reset();
-    if (this->Open(path, "r") == FALSE)
+    if (this->FileAbstraction::Open(path, "r") == FALSE)
     {
         return FALSE;
     }
-    this->fileSize = this->GetSize();
+    this->fileSize = GetFileSize(this->handle, NULL);
     return TRUE;
 }
 

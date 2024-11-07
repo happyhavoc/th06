@@ -51,8 +51,10 @@ class FileAbstraction : public IFileAbstraction
         return GetFileTime(this->handle, NULL, NULL, lastWriteTime);
     }
 
-  private:
+  protected:
     HANDLE handle;
+  
+  private:
     DWORD access;
 };
 C_ASSERT(sizeof(FileAbstraction) == 0xc);
