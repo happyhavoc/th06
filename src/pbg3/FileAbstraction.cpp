@@ -106,16 +106,24 @@ i32 FileAbstraction::ReadByte()
     }
 }
 
-i32 FileAbstraction::WriteByte(u8 b)
+i32 FileAbstraction::WriteByte(u32 b)
 {
-    u8 res;
+    u8 outByte;
     u32 outBytesWritten;
-
-    if (this->Write(&b, 1, &outBytesWritten) == FALSE)
+    
+    outByte = b;
+    if (this->Write(&outByte, 1, &outBytesWritten) == FALSE)
     {
         return -1;
     }
-    return outBytesWritten != 0 ? b : -1;
+    else
+    {
+        if (outBytesWritten == 0)
+        {
+            return -1;
+        }
+        return b;
+    }
 }
 
 i32 FileAbstraction::Seek(u32 amount, u32 seekFrom)
