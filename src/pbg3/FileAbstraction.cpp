@@ -150,6 +150,7 @@ u8 *FileAbstraction::ReadWholeFile(u32 maxSize)
     }
 
     u32 dataLen = this->GetSize();
+    u32 outDataLen;
     if (dataLen <= maxSize)
     {
         u8 *data = reinterpret_cast<u8 *>(LocalAlloc(LPTR, dataLen));
@@ -160,13 +161,13 @@ u8 *FileAbstraction::ReadWholeFile(u32 maxSize)
             // is buggy.
             if (this->Seek(oldLocation, FILE_BEGIN) != 0)
             {
-                u32 outDataLen;
-                if (this->Read(data, dataLen, &outDataLen) != 0)
+                if (this->Read(data, dataLen, &outDataLen) == 0)
                 {
-                    this->Seek(oldLocation, FILE_BEGIN);
-                    return data;
+                    LocalFree(data);
+                    return NULL;
                 }
-                LocalFree(data);
+                this->Seek(oldLocation, FILE_BEGIN);
+                return data;
             }
             // Yes, this case leaks the data. Amazing, I know.
         }
