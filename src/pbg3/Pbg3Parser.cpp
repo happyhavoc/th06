@@ -34,7 +34,7 @@ i32 Pbg3Parser::ReadBit()
 
     if (this->bitIdxInCurByte == 0x80)
     {
-        this->curByte = this->ReadByte();
+        this->curByte = this->FileAbstraction::ReadByte();
         if (this->curByte == -1)
         {
             return FALSE;
@@ -66,7 +66,7 @@ u32 Pbg3Parser::ReadInt(u32 numBitsAsPowersOf2)
     {
         if (this->bitIdxInCurByte == 0x80)
         {
-            this->curByte = this->ReadByte();
+            this->curByte = this->FileAbstraction::ReadByte();
             if (this->curByte == -1)
             {
                 return FALSE;
@@ -112,7 +112,7 @@ i32 Pbg3Parser::SeekToOffset(u32 fileOffset)
         return FALSE;
     }
 
-    if (this->Seek(fileOffset, FILE_BEGIN) == FALSE)
+    if (this->FileAbstraction::Seek(fileOffset, FILE_BEGIN) == FALSE)
     {
         return FALSE;
     }
@@ -141,7 +141,7 @@ i32 Pbg3Parser::ReadByteAlignedData(u8 *data, u32 bytesToRead)
     u32 numBytesRead;
 
     this->SeekToNextByte();
-    return this->Read(data, bytesToRead, &numBytesRead);
+    return this->FileAbstraction::Read(data, bytesToRead, &numBytesRead);
 }
 
 i32 Pbg3Parser::GetLastWriteTime(LPFILETIME lastWriteTime)
