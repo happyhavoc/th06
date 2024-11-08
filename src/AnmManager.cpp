@@ -1654,4 +1654,44 @@ void AnmManager::TakeScreenshot(i32 textureId, i32 left, i32 top, i32 width, i32
     sourceSurface->Release();
     return;
 }
+
+void AnmManager::DrawEndingRect(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLeft, i32 rectTop, i32 width, i32 height)
+{
+    IDirect3DSurface8 *D3D_Surface;
+
+    if (surfacesBis[surfaceIdx] == NULL)
+    {
+        return;
+    }
+    if (g_Supervisor.d3dDevice->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &D3D_Surface) != D3D_OK)
+    {
+        return;
+    }
+    if (surfaces[surfaceIdx] == NULL)
+    {
+        if ((g_Supervisor.d3dDevice->CreateRenderTarget(surfaceSourceInfo[surfaceIdx].Width,
+                                                        surfaceSourceInfo[surfaceIdx].Height,
+                                                        g_Supervisor.presentParameters.BackBufferFormat,
+                                                        D3DMULTISAMPLE_NONE, 1, surfaces + surfaceIdx) != D3D_OK) &&
+            (g_Supervisor.d3dDevice->CreateImageSurface(
+                surfaceSourceInfo[surfaceIdx].Width, surfaceSourceInfo[surfaceIdx].Height,
+                g_Supervisor.presentParameters.BackBufferFormat, surfaces + surfaceIdx)) != D3D_OK)
+        {
+            D3D_Surface->Release();
+            return;
+        }
+        if (D3DXLoadSurfaceFromSurface(surfaces[surfaceIdx], NULL, NULL, surfacesBis[surfaceIdx], NULL, NULL, 1, 0) !=
+            D3D_OK)
+        {
+            D3D_Surface->Release();
+            return;
+        }
+    }
+
+    RECT rect = {rectLeft, rectTop, rectLeft + width, rectTop + height};
+    POINT point = {rectX, rectY};
+    g_Supervisor.d3dDevice->CopyRects(surfaces[surfaceIdx], &rect, 1, D3D_Surface, &point);
+    D3D_Surface->Release();
+    return;
+}
 }; // namespace th06

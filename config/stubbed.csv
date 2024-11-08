@@ -1,5 +1,4 @@
 th06::EclManager::Unload
-th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::ParseFile
 th06::ResultScreen::OnDraw
