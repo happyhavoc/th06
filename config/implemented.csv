@@ -268,6 +268,7 @@ th06::ResultScreen::HandleResultKeyboard
 th06::ResultScreen::HandleReplaySaveKeyboard
 th06::ResultScreen::MoveCursorHorizontally
 th06::ResultScreen::CheckConfirmButton
+th06::ResultScreen::WriteScore
 th06::ResultScreen::ParseCatk
 th06::ResultScreen::ParseClrd
 th06::ResultScreen::ParsePscr

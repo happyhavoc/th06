@@ -8,6 +8,7 @@
 #include "GameManager.hpp"
 #include "Player.hpp"
 #include "ReplayManager.hpp"
+#include "Rng.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "i18n.hpp"
@@ -1301,6 +1302,163 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma function("memcpy")
+#pragma var_order(difficulty, characterSlot, fileBuffer, sizeOfFile, currentCharacter, character, clrd, catk, pscr,    \
+                  stage, shotType, originalByte, remainingSize, xorValue, bytes, sd, fileBufferSize)
+void ResultScreen::WriteScore(ResultScreen *resultScreen)
+{
+
+    u8 *fileBuffer;
+    u8 originalByte;
+    i32 fileBufferSize;
+    ScoreDat *sd;
+    i32 characterSlot;
+    u8 xorValue;
+    i32 remainingSize;
+    i32 shotType;
+    i32 stage;
+    Pscr *pscr;
+    Catk *catk;
+    Clrd *clrd;
+    i32 character;
+    ScoreListNode *currentCharacter;
+    i32 sizeOfFile;
+    u8 *bytes;
+    i32 difficulty;
+
+    sizeOfFile = 0;
+
+    fileBufferSize = SCORE_DAT_FILE_BUFFER_SIZE;
+    fileBuffer = (u8 *)malloc(fileBufferSize);
+
+    memcpy(fileBuffer + sizeOfFile, resultScreen->scoreDat, sizeof(ScoreDat));
+
+    sizeOfFile += sizeof(ScoreDat);
+    resultScreen->unk_519c.magic = 'K6HT';
+    resultScreen->unk_519c.unkLen = sizeof(Th6k);
+    resultScreen->unk_519c.th6kLen = sizeof(Th6k);
+    resultScreen->unk_519c.version = TH6K_VERSION;
+
+    memcpy(fileBuffer + sizeOfFile, &resultScreen->unk_519c, sizeof(Th6k));
+    sizeOfFile += sizeof(Th6k);
+
+    for (difficulty = 0; difficulty < HSCR_NUM_DIFFICULTIES; difficulty++)
+    {
+
+        for (character = 0; character < HSCR_NUM_CHARS_SHOTTYPES; character++)
+        {
+            currentCharacter = resultScreen->scores[difficulty][character].next;
+            characterSlot = 0;
+            for (;;)
+            {
+                if (currentCharacter != NULL)
+                {
+
+                    if (currentCharacter->data->base.magic == 'RCSH')
+                    {
+                        currentCharacter->data->character = character;
+                        currentCharacter->data->difficulty = difficulty;
+                        currentCharacter->data->base.unkLen = sizeof(Hscr);
+                        currentCharacter->data->base.th6kLen = sizeof(Hscr);
+                        currentCharacter->data->base.version = TH6K_VERSION;
+                        currentCharacter->data->base.unk_9 = 0;
+                        memcpy(fileBuffer + sizeOfFile, currentCharacter->data, sizeof(Hscr));
+                        sizeOfFile += sizeof(Hscr);
+                    }
+                    currentCharacter = currentCharacter->next;
+                    characterSlot++;
+
+                    if (characterSlot >= HSCR_NUM_SCORES_SLOTS)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                };
+                break;
+            };
+        }
+    };
+
+    clrd = g_GameManager.clrd;
+    for (difficulty = 0; difficulty < CLRD_NUM_CHARACTERS; difficulty++, clrd++)
+    {
+        clrd->base.magic = 'DRLC';
+        clrd->base.unkLen = sizeof(Clrd);
+        clrd->base.th6kLen = sizeof(Clrd);
+        clrd->base.version = TH6K_VERSION;
+        memcpy(fileBuffer + sizeOfFile, clrd, sizeof(Clrd));
+
+        sizeOfFile += sizeof(Clrd);
+    }
+    catk = &g_GameManager.catk[0];
+    for (difficulty = 0; difficulty < CATK_NUM_CAPTURES; difficulty++, catk++)
+    {
+        if (catk->base.magic == 'KTAC')
+        {
+            catk->idx = difficulty;
+            catk->base.unkLen = sizeof(Catk);
+            catk->base.th6kLen = sizeof(Catk);
+            catk->base.version = TH6K_VERSION;
+            memcpy(fileBuffer + sizeOfFile, catk, sizeof(Catk));
+            sizeOfFile += sizeof(Catk);
+        }
+    }
+    pscr = &g_GameManager.pscr[0][0][0];
+    for (difficulty = 0; difficulty < PSCR_NUM_DIFFICULTIES; difficulty++)
+    {
+        for (stage = 0; stage < PSCR_NUM_STAGES; stage++)
+        {
+            for (shotType = 0; shotType < PSCR_NUM_CHARS_SHOTTYPES; shotType++, pscr++)
+            {
+                if (pscr->score != 0)
+                {
+                    memcpy(fileBuffer + sizeOfFile, pscr, sizeof(Pscr));
+                    sizeOfFile += sizeof(Pscr);
+                }
+            }
+        }
+    }
+    sd = (ScoreDat *)fileBuffer;
+    sd->dataOffset = sizeof(Pscr);
+    sd->fileLen = sizeOfFile;
+    sd->csum = 0;
+
+    sd->xorseed[1] = g_Rng.GetRandomU16InRange(0x100);
+    sd->unk[0] = g_Rng.GetRandomU16InRange(0x100);
+    sd->unk_8 = 0x10;
+
+    for (remainingSize = 4; remainingSize < sizeOfFile; remainingSize++)
+    {
+        sd->csum += fileBuffer[remainingSize];
+    }
+    xorValue = 0;
+    originalByte = 0;
+
+    bytes = (u8 *)sd->ShiftOneByte();
+    remainingSize = sizeOfFile;
+
+    remainingSize -= 2;
+    xorValue = bytes[0];
+
+    while (remainingSize > 0)
+    {
+        originalByte = bytes[1];
+        xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
+        bytes[1] ^= xorValue;
+        xorValue += originalByte;
+        bytes++;
+        remainingSize--;
+    }
+    FileSystem::WriteDataToFile("score.dat", fileBuffer, sizeOfFile);
+    free(fileBuffer);
+}
+#pragma optimize("", on)
+#pragma intrinsic("memcpy")
 
 #pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)

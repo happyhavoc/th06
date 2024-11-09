@@ -20,6 +20,8 @@ namespace th06
 #define RESULT_KEYBOARD_SPACE 94
 #define RESULT_KEYBOARD_END 95
 
+#define SCORE_DAT_FILE_BUFFER_SIZE 0xa0000
+
 enum ResultScreenState
 {
     RESULT_SCREEN_STATE_INIT = 0,
@@ -162,7 +164,8 @@ struct ScoreDat
 
     u8 xorseed[2];
     u16 csum;
-    u8 unk[4];
+    u16 unk_8;
+    u8 unk[2];
     u32 dataOffset;
     ScoreListNode *scores;
     u32 fileLen;
@@ -228,7 +231,7 @@ struct ResultScreen
     ScoreListNode scores[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES];
     Hscr defaultScore[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES][HSCR_NUM_SCORES_SLOTS];
     Hscr hscr;
-    u8 unk_519c[12];
+    Th6k unk_519c;
     ChainElem *calcChain;
     ChainElem *drawChain;
     ReplayData replays[15];
