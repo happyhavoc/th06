@@ -122,6 +122,20 @@ i32 ResultScreen::LinkScore(ScoreListNode *prevNode, Hscr *newScore)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+void ResultScreen::FreeAllScores(ScoreListNode *scores)
+{
+    ScoreListNode *next;
+    scores = scores->next;
+    while (scores != NULL)
+    {
+        next = scores->next;
+        free(scores);
+        scores = next;
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
 {
     return ResultScreen::LinkScore(&this->scores[difficulty][character], out);

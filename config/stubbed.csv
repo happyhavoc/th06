@@ -3,7 +3,6 @@ th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::ParseFile
 th06::ResultScreen::FreeScore
-th06::ResultScreen::FreeAllScores
 th06::MusicRoom::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::MainMenu::SelectRelated
