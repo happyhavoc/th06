@@ -91,6 +91,13 @@ ZunResult ResultScreen::RegisterChain(i32 unk)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
+{
+    return ResultScreen::LinkScore(&this->scores[difficulty][character], out);
+}
+#pragma optimize("", on)
+
 #pragma function("strcpy")
 #pragma optimize("s", on)
 #pragma var_order(i, sprite, character, slot)
