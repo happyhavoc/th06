@@ -142,6 +142,13 @@ i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+void ResultScreen::FreeScore(i32 difficulty, i32 character)
+{
+    free(&this->scores[difficulty][character]);
+}
+#pragma optimize("", on)
+
 #pragma function("strcpy")
 #pragma optimize("s", on)
 #pragma var_order(i, sprite, character, slot)

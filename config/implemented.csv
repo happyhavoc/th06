@@ -260,6 +260,7 @@ th06::MidiTimer::DefaultTimerCallback
 th06::ResultScreen::OnUpdate
 th06::ResultScreen::OnDraw
 th06::ResultScreen::LinkScore
+th06::ResultScreen::FreeScore
 th06::ResultScreen::FreeAllScores
 th06::ResultScreen::LinkScoreEx
 th06::ResultScreen::RegisterChain
