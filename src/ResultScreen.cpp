@@ -92,6 +92,36 @@ ZunResult ResultScreen::RegisterChain(i32 unk)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma var_order(scoresAmount, nextNode, scoreNodeSize)
+i32 ResultScreen::LinkScore(ScoreListNode *prevNode, Hscr *newScore)
+{
+    i32 scoresAmount;
+    ScoreListNode *nextNode;
+    i32 scoreNodeSize;
+
+    scoresAmount = 0;
+    while (prevNode->next != NULL)
+    {
+        if (prevNode->next->data != NULL && prevNode->next->data->score <= newScore->score)
+        {
+            break;
+        }
+        prevNode = prevNode->next;
+        scoresAmount++;
+    }
+    nextNode = prevNode->next;
+    scoreNodeSize = sizeof(ScoreListNode);
+
+    prevNode->next = (ScoreListNode *)malloc(scoreNodeSize);
+    prevNode->next->prev = prevNode;
+    prevNode = prevNode->next;
+    prevNode->data = newScore;
+    prevNode->next = nextNode;
+    return scoresAmount;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
 {
     return ResultScreen::LinkScore(&this->scores[difficulty][character], out);
