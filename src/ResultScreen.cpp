@@ -1362,6 +1362,17 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+void ResultScreen::ReleaseScoreDat(ScoreDat *scoreDat)
+{
+    ScoreListNode *scores;
+    ResultScreen::FreeAllScores(scoreDat->scores);
+    scores = scoreDat->scores;
+    free(scores);
+    free(scoreDat);
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma function("memcpy")
 #pragma var_order(difficulty, characterSlot, fileBuffer, sizeOfFile, currentCharacter, character, clrd, catk, pscr,    \
                   stage, shotType, originalByte, remainingSize, xorValue, bytes, sd, fileBufferSize)
