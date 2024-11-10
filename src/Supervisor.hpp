@@ -14,6 +14,8 @@
 
 namespace th06
 {
+#define GAME_VERSION 0x102
+
 enum GameConfigOptsShifts
 {
     GCOS_USE_D3D_HW_TEXTURE_BLENDING = 0x0,

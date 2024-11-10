@@ -8,6 +8,12 @@
 namespace th06
 {
 
+#define TH6K_MAGIC 'K6HT'
+#define HSCR_MAGIC 'RCSH'
+#define CLRD_MAGIC 'DRLC'
+#define PSCR_MAGIC 'RCSP'
+#define CATK_MAGIC 'KTAC'
+
 #define HSCR_NUM_CHARS_SHOTTYPES 4
 #define HSCR_NUM_DIFFICULTIES 5
 #define HSCR_NUM_SCORES_SLOTS 10
@@ -213,9 +219,9 @@ struct ResultScreen
     ScoreDat *scoreDat;
     i32 frameTimer;
     i32 resultScreenState;
-    i32 unk_c;
+    i32 lastResultScreenState;
     i32 cursor;
-    i32 unk_14;
+    i32 lastBestScoresCursor;
     i32 previousCursor;
     i32 replayNumber;
     i32 selectedCharacter;
@@ -231,11 +237,11 @@ struct ResultScreen
     ScoreListNode scores[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES];
     Hscr defaultScore[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES][HSCR_NUM_SCORES_SLOTS];
     Hscr hscr;
-    Th6k unk_519c;
+    Th6k fileHeader;
     ChainElem *calcChain;
     ChainElem *drawChain;
     ReplayData replays[15];
-    ReplayData defaultReplayMaybe;
+    ReplayData defaultReplay;
 };
 C_ASSERT(sizeof(ResultScreen) == 0x56b0);
 }; // namespace th06

@@ -105,7 +105,7 @@ ScoreDat *ResultScreen::OpenScore(char *path)
         fileLen -= scoreData->dataOffset;
         while (fileLen > 0)
         {
-            if (decryptedFilePointer->magic == 'K6HT')
+            if (decryptedFilePointer->magic == TH6K_MAGIC)
                 break;
 
             decryptedFilePointer = decryptedFilePointer->ShiftBytes(decryptedFilePointer->th6kLen);
@@ -152,7 +152,7 @@ u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 char
 
     while (remainingSize > 0)
     {
-        if (highScore->base.magic == 'RCSH' && highScore->base.version == TH6K_VERSION &&
+        if (highScore->base.magic == HSCR_MAGIC && highScore->base.version == TH6K_VERSION &&
             highScore->character == character && highScore->difficulty == difficulty)
         {
             if (node != NULL)
@@ -251,7 +251,7 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
-        if (parsedCatk->base.magic == 'KTAC' && parsedCatk->base.version == TH6K_VERSION)
+        if (parsedCatk->base.magic == CATK_MAGIC && parsedCatk->base.version == TH6K_VERSION)
         {
             if (parsedCatk->idx >= CATK_NUM_CAPTURES)
                 break;
@@ -286,7 +286,7 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
     {
         memset(&outClrd[characterShotType], 0, sizeof(Clrd));
 
-        outClrd[characterShotType].base.magic = 'DRLC';
+        outClrd[characterShotType].base.magic = CLRD_MAGIC;
         outClrd[characterShotType].base.unkLen = sizeof(Clrd);
         outClrd[characterShotType].base.th6kLen = sizeof(Clrd);
         outClrd[characterShotType].base.version = TH6K_VERSION;
@@ -303,7 +303,7 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
-        if (parsedClrd->base.magic == 'DRLC' && parsedClrd->base.version == TH6K_VERSION)
+        if (parsedClrd->base.magic == CLRD_MAGIC && parsedClrd->base.version == TH6K_VERSION)
         {
             if (parsedClrd->characterShotType >= CLRD_NUM_CHARACTERS)
                 break;
@@ -346,7 +346,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
 
                 memset(pscr, 0, sizeof(Pscr));
 
-                pscr->base.magic = 'RCSP';
+                pscr->base.magic = PSCR_MAGIC;
                 pscr->base.unkLen = sizeof(Pscr);
                 pscr->base.th6kLen = sizeof(Pscr);
                 pscr->base.version = 16;
@@ -362,7 +362,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
 
     while (cursor > 0)
     {
-        if (parsedPscr->base.magic == 'RCSP' && parsedPscr->base.version == TH6K_VERSION)
+        if (parsedPscr->base.magic == PSCR_MAGIC && parsedPscr->base.version == TH6K_VERSION)
         {
             pscr = parsedPscr;
             if (pscr->character >= PSCR_NUM_CHARS_SHOTTYPES || pscr->difficulty >= PSCR_NUM_DIFFICULTIES + 1 ||
@@ -423,12 +423,12 @@ void ResultScreen::WriteScore(ResultScreen *resultScreen)
     memcpy(fileBuffer + sizeOfFile, resultScreen->scoreDat, sizeof(ScoreDat));
 
     sizeOfFile += sizeof(ScoreDat);
-    resultScreen->unk_519c.magic = 'K6HT';
-    resultScreen->unk_519c.unkLen = sizeof(Th6k);
-    resultScreen->unk_519c.th6kLen = sizeof(Th6k);
-    resultScreen->unk_519c.version = TH6K_VERSION;
+    resultScreen->fileHeader.magic = TH6K_MAGIC;
+    resultScreen->fileHeader.unkLen = sizeof(Th6k);
+    resultScreen->fileHeader.th6kLen = sizeof(Th6k);
+    resultScreen->fileHeader.version = TH6K_VERSION;
 
-    memcpy(fileBuffer + sizeOfFile, &resultScreen->unk_519c, sizeof(Th6k));
+    memcpy(fileBuffer + sizeOfFile, &resultScreen->fileHeader, sizeof(Th6k));
     sizeOfFile += sizeof(Th6k);
 
     for (difficulty = 0; difficulty < HSCR_NUM_DIFFICULTIES; difficulty++)
@@ -443,7 +443,7 @@ void ResultScreen::WriteScore(ResultScreen *resultScreen)
                 if (currentCharacter != NULL)
                 {
 
-                    if (currentCharacter->data->base.magic == 'RCSH')
+                    if (currentCharacter->data->base.magic == HSCR_MAGIC)
                     {
                         currentCharacter->data->character = character;
                         currentCharacter->data->difficulty = difficulty;
@@ -474,7 +474,7 @@ void ResultScreen::WriteScore(ResultScreen *resultScreen)
     clrd = g_GameManager.clrd;
     for (difficulty = 0; difficulty < CLRD_NUM_CHARACTERS; difficulty++, clrd++)
     {
-        clrd->base.magic = 'DRLC';
+        clrd->base.magic = CLRD_MAGIC;
         clrd->base.unkLen = sizeof(Clrd);
         clrd->base.th6kLen = sizeof(Clrd);
         clrd->base.version = TH6K_VERSION;
@@ -485,7 +485,7 @@ void ResultScreen::WriteScore(ResultScreen *resultScreen)
     catk = &g_GameManager.catk[0];
     for (difficulty = 0; difficulty < CATK_NUM_CAPTURES; difficulty++, catk++)
     {
-        if (catk->base.magic == 'KTAC')
+        if (catk->base.magic == CATK_MAGIC)
         {
             catk->idx = difficulty;
             catk->base.unkLen = sizeof(Catk);
@@ -828,14 +828,14 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
         ResultScreen::MoveCursorHorizontally(this, 2);
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU) || WAS_PRESSED(TH_BUTTON_MENU))
         {
-            goto asd;
+            goto EXIT_WITH_SOUND;
         }
         if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
         {
 
             if (this->cursor == 0)
             {
-            YOLO:
+            GO_TO_CHOOSE_REPLAY_FILE:
 
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
                 this->resultScreenState = RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE;
@@ -850,7 +850,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                 goto CHOOSE_REPLAY_FILE;
             }
 
-        asd:
+        EXIT_WITH_SOUND:
 
             this->frameTimer = 0;
             g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
@@ -864,7 +864,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
         break;
     case RESULT_SCREEN_STATE_CANT_SAVE_REPLAY:
 
-        if (this->frameTimer < 0x14)
+        if (this->frameTimer < 20)
         {
             return 0;
         }
@@ -919,10 +919,10 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
             g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
             this->replayNumber = this->cursor;
             this->frameTimer = 0;
-            _strdate(this->defaultReplayMaybe.date);
-            (this->defaultReplayMaybe).score = g_GameManager.score;
-            if (*(i32 *)&this->replays[this->cursor].magic != *(i32 *)&"PR6T" ||
-                this->replays[this->cursor].version != 0x102)
+            _strdate(this->defaultReplay.date);
+            (this->defaultReplay).score = g_GameManager.score;
+            if (*(i32 *)&this->replays[this->cursor].magic != *(i32 *)&"T6RP" ||
+                this->replays[this->cursor].version != GAME_VERSION)
             {
                 sprite = &this->unk_40[0];
                 for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
@@ -1092,7 +1092,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
         }
         if (WAS_PRESSED(TH_BUTTON_MENU))
         {
-            goto YOLO;
+            goto GO_TO_CHOOSE_REPLAY_FILE;
         }
         break;
 
@@ -1117,7 +1117,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
 
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU) || WAS_PRESSED(TH_BUTTON_MENU))
         {
-            goto YOLO;
+            goto GO_TO_CHOOSE_REPLAY_FILE;
         }
 
         if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
@@ -1136,12 +1136,9 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                 this->resultScreenState = RESULT_SCREEN_STATE_WRITING_REPLAY_NAME;
                 break;
             }
-            goto YOLO;
+            goto GO_TO_CHOOSE_REPLAY_FILE;
         }
     }
-
-LAB_0042d095:
-
     return 0;
 }
 #pragma optimize("", on)
@@ -1536,9 +1533,9 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
                 resultScreen->diffSelected = resultScreen->cursor;
 
                 resultScreen->resultScreenState = resultScreen->cursor + RESULT_SCREEN_STATE_BEST_SCORES_EASY;
-                resultScreen->unk_c = resultScreen->resultScreenState;
+                resultScreen->lastResultScreenState = resultScreen->resultScreenState;
                 resultScreen->frameTimer = 0;
-                resultScreen->cursor = resultScreen->unk_14;
+                resultScreen->cursor = resultScreen->lastBestScoresCursor;
                 resultScreen->charUsed = -1;
                 resultScreen->lastSpellcardSelected = -1;
                 break;
@@ -1550,7 +1547,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
                 }
                 resultScreen->diffSelected = resultScreen->cursor;
                 resultScreen->resultScreenState = RESULT_SCREEN_STATE_SPELLCARDS;
-                resultScreen->unk_c = resultScreen->resultScreenState;
+                resultScreen->lastResultScreenState = resultScreen->resultScreenState;
                 resultScreen->frameTimer = 0;
                 resultScreen->charUsed = -1;
                 resultScreen->cursor = resultScreen->previousCursor;
@@ -1678,7 +1675,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
             {
                 vm->pendingInterrupt = 1;
             }
-            resultScreen->unk_14 = resultScreen->cursor;
+            resultScreen->lastBestScoresCursor = resultScreen->cursor;
             resultScreen->cursor = resultScreen->diffSelected;
         }
 
@@ -1808,7 +1805,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
     sprite = &resultScreen->unk_40[14];
     if (sprite->pos.x < 640.0f)
     {
-        if (resultScreen->unk_c != 8)
+        if (resultScreen->lastResultScreenState != 8)
         {
             *spritePos.AsD3dXVec() = sprite->pos;
             resultScreen->unk_28a0->pos = *spritePos.AsD3dXVec();
@@ -1843,7 +1840,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                         }
                         else
                         {
-                            g_AsciiManager.color = COLOR_SET_ALPHA(0x20ffffc0, 0x80);
+                            g_AsciiManager.color = 0x80ffffc0;
                         }
                     }
                     else
@@ -2055,9 +2052,9 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
             if (resultScreen->resultScreenState == RESULT_SCREEN_STATE_WRITING_REPLAY_NAME)
             {
                 g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.%.2d %8s %8s %7s %9d", row + 1,
-                                             &resultScreen->replayName, resultScreen->defaultReplayMaybe.date,
+                                             &resultScreen->replayName, resultScreen->defaultReplay.date,
                                              g_ShortCharacterList2[g_GameManager.CharacterShotType()],
-                                             resultScreen->defaultReplayMaybe.score);
+                                             resultScreen->defaultReplay.score);
                 g_AsciiManager.color = 0xfff0f0ff;
 
                 strcpy(name, "       ");
@@ -2068,7 +2065,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                 g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "      %8s", &name);
             }
             else if (*(i32 *)&resultScreen->replays[row].magic != *(i32 *)"T6RP" ||
-                     resultScreen->replays[row].version != 0x102)
+                     resultScreen->replays[row].version != GAME_VERSION)
             {
                 g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.%.2d -------- --/--/-- -------         0",
                                              row + 1);
@@ -2163,8 +2160,8 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
                 resultScreen->defaultScore[i][characterShot][slot].base.magic = g_DefaultMagic;
                 resultScreen->defaultScore[i][characterShot][slot].difficulty = i;
                 resultScreen->defaultScore[i][characterShot][slot].base.version = TH6K_VERSION;
-                resultScreen->defaultScore[i][characterShot][slot].base.unkLen = 28;
-                resultScreen->defaultScore[i][characterShot][slot].base.th6kLen = 28;
+                resultScreen->defaultScore[i][characterShot][slot].base.unkLen = sizeof(Hscr);
+                resultScreen->defaultScore[i][characterShot][slot].base.th6kLen = sizeof(Hscr);
                 resultScreen->defaultScore[i][characterShot][slot].stage = 1;
                 resultScreen->defaultScore[i][characterShot][slot].base.unk_9 = 0;
 
@@ -2175,7 +2172,7 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
         }
     }
 
-    resultScreen->unk_14 = 0;
+    resultScreen->lastBestScoresCursor = 0;
     resultScreen->scoreDat = ResultScreen::OpenScore("score.dat");
 
     for (i = 0; i < HSCR_NUM_DIFFICULTIES; i++)
