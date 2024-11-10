@@ -40,54 +40,151 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList2) = {"ReimuA ", "Re
 
 #define DEFAULT_HIGH_SCORE_NAME "Nanashi "
 
-#pragma function(memset)
 #pragma optimize("s", on)
-ResultScreen::ResultScreen()
+#pragma var_order(scoreData, bytesShifted, xorValue, checksum, bytes, remainingData, decryptedFilePointer, fileLen,    \
+                  scoreDatSize, scoreListNodeSize)
+ScoreDat *ResultScreen::OpenScore(char *path)
 {
-    i32 unused[12];
-    memset(this, 0, sizeof(ResultScreen));
-    this->cursor = 1;
+    u8 *bytes;
+    i32 bytesShifted;
+    i32 fileLen;
+    Th6k *decryptedFilePointer;
+    i32 remainingData;
+    i32 scoreListNodeSize;
+    u16 checksum;
+    u8 xorValue;
+    i32 scoreDatSize;
+    ScoreDat *scoreData;
+
+    scoreData = (ScoreDat *)FileSystem::OpenPath(path, true);
+    if (scoreData == NULL)
+    {
+    FAILED_TO_READ:
+        scoreDatSize = sizeof(ScoreDat);
+        scoreData = (ScoreDat *)malloc(scoreDatSize);
+        scoreData->dataOffset = sizeof(ScoreDat);
+        scoreData->fileLen = sizeof(ScoreDat);
+    }
+    else
+    {
+        if (g_LastFileSize < sizeof(ScoreDat))
+        {
+            free(scoreData);
+            goto FAILED_TO_READ;
+        }
+
+        remainingData = g_LastFileSize - 2;
+        checksum = 0;
+        xorValue = 0;
+        bytesShifted = 0;
+        bytes = &scoreData->xorseed[1];
+
+        while (0 < remainingData)
+        {
+
+            xorValue += bytes[0];
+            // Invert top 3 bits and bottom 5 bits
+            xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
+            // xor one byte later with the resulting inverted bits
+            bytes[1] ^= xorValue;
+            if (bytesShifted >= 2)
+            {
+                checksum += bytes[1];
+            }
+            bytes++;
+            remainingData--;
+            bytesShifted++;
+        }
+        if (scoreData->csum != checksum)
+        {
+            free(scoreData);
+            goto FAILED_TO_READ;
+        }
+        fileLen = scoreData->fileLen;
+        decryptedFilePointer = scoreData->ShiftBytes(scoreData->dataOffset);
+        fileLen -= scoreData->dataOffset;
+        while (fileLen > 0)
+        {
+            if (decryptedFilePointer->magic == 'K6HT')
+                break;
+
+            decryptedFilePointer = decryptedFilePointer->ShiftBytes(decryptedFilePointer->th6kLen);
+            fileLen = fileLen - decryptedFilePointer->th6kLen;
+        }
+        if (fileLen <= 0)
+        {
+            free(scoreData);
+            goto FAILED_TO_READ;
+        };
+    }
+    scoreListNodeSize = sizeof(ScoreListNode);
+    scoreData->scores = (ScoreListNode *)malloc(scoreListNodeSize);
+    scoreData->scores->next = NULL;
+    scoreData->scores->data = NULL;
+    scoreData->scores->prev = NULL;
+    return scoreData;
 }
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-#pragma var_order(resultScreen, unused)
-ZunResult ResultScreen::RegisterChain(i32 unk)
+#pragma var_order(highScore, remainingSize, scoreData, dataScore, score)
+u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 character, u32 difficulty)
 {
+    u32 score;
+    u32 dataScore;
+    i32 remainingSize;
+    Hscr *highScore;
+    ScoreDat *scoreData;
 
-    i32 unused[16];
-    ResultScreen *resultScreen;
-    resultScreen = new ResultScreen();
+    scoreData = scoreDat;
 
-    utils::DebugPrint(TH_DBG_RESULTSCREEN_COUNAT, g_GameManager.counat);
-
-    resultScreen->calcChain = g_Chain.CreateElem((ChainCallback)ResultScreen::OnUpdate);
-    resultScreen->calcChain->addedCallback = (ChainAddedCallback)ResultScreen::AddedCallback;
-    resultScreen->calcChain->deletedCallback = (ChainDeletedCallback)ResultScreen::DeletedCallback;
-    resultScreen->calcChain->arg = resultScreen;
-
-    if (unk != 0)
+    if (node == NULL)
     {
-        if (!g_GameManager.isInPracticeMode)
+        ResultScreen::FreeAllScores(scoreData->scores);
+        scoreData->scores->next = NULL;
+        scoreData->scores->data = NULL;
+        scoreData->scores->prev = NULL;
+    }
+
+    remainingSize = scoreData->fileLen;
+    highScore = (Hscr *)scoreData->ShiftBytes(scoreData->dataOffset);
+    remainingSize -= scoreData->dataOffset;
+
+    while (remainingSize > 0)
+    {
+        if (highScore->base.magic == 'RCSH' && highScore->base.version == TH6K_VERSION &&
+            highScore->character == character && highScore->difficulty == difficulty)
         {
-            resultScreen->resultScreenState = RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME;
+            if (node != NULL)
+            {
+                ResultScreen::LinkScore(node, highScore);
+            }
+            else
+            {
+                ResultScreen::LinkScore(scoreData->scores, highScore);
+            }
+        }
+
+        remainingSize -= highScore->base.th6kLen;
+        highScore = highScore->ShiftBytes(highScore->base.th6kLen);
+    }
+    if (scoreData->scores->next != NULL)
+    {
+        if (scoreData->scores->next->data->score > 1000000)
+        {
+            dataScore = scoreData->scores->next->data->score;
         }
         else
         {
-            resultScreen->resultScreenState = RESULT_SCREEN_STATE_EXIT;
+            dataScore = 1000000;
         }
+        score = dataScore;
     }
-
-    if (g_Chain.AddToCalcChain(resultScreen->calcChain, TH_CHAIN_PRIO_CALC_RESULTSCREEN))
+    else
     {
-        return ZUN_ERROR;
+        score = 1000000;
     }
-
-    resultScreen->drawChain = g_Chain.CreateElem((ChainCallback)ResultScreen::OnDraw);
-    resultScreen->drawChain->arg = resultScreen;
-    g_Chain.AddToDrawChain(resultScreen->drawChain, TH_CHAIN_PRIO_DRAW_RESULTSCREEN);
-
-    return ZUN_SUCCESS;
+    return score;
 }
 #pragma optimize("", on)
 
@@ -136,6 +233,321 @@ void ResultScreen::FreeAllScores(ScoreListNode *scores)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma var_order(parsedCatk, cursor, sd)
+ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
+{
+
+    i32 cursor;
+    Catk *parsedCatk;
+    ScoreDat *sd;
+    sd = scoreDat;
+
+    if (outCatk == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    parsedCatk = (Catk *)sd->ShiftBytes(sd->dataOffset);
+    cursor = sd->fileLen - sd->dataOffset;
+    while (cursor > 0)
+    {
+        if (parsedCatk->base.magic == 'KTAC' && parsedCatk->base.version == TH6K_VERSION)
+        {
+            if (parsedCatk->idx >= CATK_NUM_CAPTURES)
+                break;
+
+            outCatk[parsedCatk->idx] = *parsedCatk;
+        }
+        cursor -= parsedCatk->base.th6kLen;
+        parsedCatk = (Catk *)&parsedCatk->name[parsedCatk->base.th6kLen - 0x18];
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(parsedClrd, characterShotType, cursor, difficulty, sd)
+#pragma function(memset)
+ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
+{
+    i32 cursor;
+    Clrd *parsedClrd;
+    ScoreDat *sd;
+    i32 characterShotType;
+    i32 difficulty;
+    sd = scoreDat;
+
+    if (outClrd == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    for (characterShotType = 0; characterShotType < CLRD_NUM_CHARACTERS; characterShotType++)
+    {
+        memset(&outClrd[characterShotType], 0, sizeof(Clrd));
+
+        outClrd[characterShotType].base.magic = 'DRLC';
+        outClrd[characterShotType].base.unkLen = sizeof(Clrd);
+        outClrd[characterShotType].base.th6kLen = sizeof(Clrd);
+        outClrd[characterShotType].base.version = TH6K_VERSION;
+        outClrd[characterShotType].characterShotType = characterShotType;
+
+        for (difficulty = 0; difficulty < ARRAY_SIZE_SIGNED(outClrd[0].difficultyClearedWithoutRetries); difficulty++)
+        {
+            outClrd[characterShotType].difficultyClearedWithRetries[difficulty] = 1;
+            outClrd[characterShotType].difficultyClearedWithoutRetries[difficulty] = 1;
+        }
+    }
+
+    parsedClrd = (Clrd *)sd->ShiftBytes(sd->dataOffset);
+    cursor = sd->fileLen - sd->dataOffset;
+    while (cursor > 0)
+    {
+        if (parsedClrd->base.magic == 'DRLC' && parsedClrd->base.version == TH6K_VERSION)
+        {
+            if (parsedClrd->characterShotType >= CLRD_NUM_CHARACTERS)
+                break;
+
+            outClrd[parsedClrd->characterShotType] = *parsedClrd;
+        }
+        cursor -= parsedClrd->base.th6kLen;
+        parsedClrd = (Clrd *)((i32)&parsedClrd->base + parsedClrd->base.th6kLen);
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+#pragma intrinsic(memset)
+
+#pragma optimize("s", on)
+#pragma var_order(pscr, parsedPscr, character, stage, cursor, difficulty, sd)
+#pragma function(memset)
+ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
+{
+    i32 cursor;
+    Pscr *parsedPscr;
+    ScoreDat *sd;
+    i32 stage;
+    i32 character;
+    i32 difficulty;
+    sd = scoreDat;
+    Pscr *pscr;
+
+    if (outClrd == NULL)
+    {
+        return ZUN_ERROR;
+    }
+
+    for (pscr = outClrd, character = 0; character < PSCR_NUM_CHARS_SHOTTYPES; character++)
+    {
+        for (stage = 0; stage < PSCR_NUM_STAGES; stage++)
+        {
+            for (difficulty = 0; difficulty < PSCR_NUM_DIFFICULTIES; difficulty++, pscr++)
+            {
+
+                memset(pscr, 0, sizeof(Pscr));
+
+                pscr->base.magic = 'RCSP';
+                pscr->base.unkLen = sizeof(Pscr);
+                pscr->base.th6kLen = sizeof(Pscr);
+                pscr->base.version = 16;
+                pscr->character = character;
+                pscr->difficulty = difficulty;
+                pscr->stage = stage;
+            }
+        }
+    }
+
+    parsedPscr = (Pscr *)sd->ShiftBytes(sd->dataOffset);
+    cursor = sd->fileLen - sd->dataOffset;
+
+    while (cursor > 0)
+    {
+        if (parsedPscr->base.magic == 'RCSP' && parsedPscr->base.version == TH6K_VERSION)
+        {
+            pscr = parsedPscr;
+            if (pscr->character >= PSCR_NUM_CHARS_SHOTTYPES || pscr->difficulty >= PSCR_NUM_DIFFICULTIES + 1 ||
+                pscr->stage >= PSCR_NUM_STAGES + 1)
+                break;
+
+            outClrd[pscr->character * 6 * 4 + pscr->stage * 4 + pscr->difficulty] = *pscr;
+        }
+        cursor -= parsedPscr->base.th6kLen;
+        parsedPscr = parsedPscr->ShiftBytes(parsedPscr->base.th6kLen);
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+#pragma intrinsic(memset)
+
+#pragma optimize("s", on)
+void ResultScreen::ReleaseScoreDat(ScoreDat *scoreDat)
+{
+    ScoreListNode *scores;
+    ResultScreen::FreeAllScores(scoreDat->scores);
+    scores = scoreDat->scores;
+    free(scores);
+    free(scoreDat);
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma function("memcpy")
+#pragma var_order(difficulty, characterSlot, fileBuffer, sizeOfFile, currentCharacter, character, clrd, catk, pscr,    \
+                  stage, shotType, originalByte, remainingSize, xorValue, bytes, sd, fileBufferSize)
+void ResultScreen::WriteScore(ResultScreen *resultScreen)
+{
+
+    u8 *fileBuffer;
+    u8 originalByte;
+    i32 fileBufferSize;
+    ScoreDat *sd;
+    i32 characterSlot;
+    u8 xorValue;
+    i32 remainingSize;
+    i32 shotType;
+    i32 stage;
+    Pscr *pscr;
+    Catk *catk;
+    Clrd *clrd;
+    i32 character;
+    ScoreListNode *currentCharacter;
+    i32 sizeOfFile;
+    u8 *bytes;
+    i32 difficulty;
+
+    sizeOfFile = 0;
+
+    fileBufferSize = SCORE_DAT_FILE_BUFFER_SIZE;
+    fileBuffer = (u8 *)malloc(fileBufferSize);
+
+    memcpy(fileBuffer + sizeOfFile, resultScreen->scoreDat, sizeof(ScoreDat));
+
+    sizeOfFile += sizeof(ScoreDat);
+    resultScreen->unk_519c.magic = 'K6HT';
+    resultScreen->unk_519c.unkLen = sizeof(Th6k);
+    resultScreen->unk_519c.th6kLen = sizeof(Th6k);
+    resultScreen->unk_519c.version = TH6K_VERSION;
+
+    memcpy(fileBuffer + sizeOfFile, &resultScreen->unk_519c, sizeof(Th6k));
+    sizeOfFile += sizeof(Th6k);
+
+    for (difficulty = 0; difficulty < HSCR_NUM_DIFFICULTIES; difficulty++)
+    {
+
+        for (character = 0; character < HSCR_NUM_CHARS_SHOTTYPES; character++)
+        {
+            currentCharacter = resultScreen->scores[difficulty][character].next;
+            characterSlot = 0;
+            for (;;)
+            {
+                if (currentCharacter != NULL)
+                {
+
+                    if (currentCharacter->data->base.magic == 'RCSH')
+                    {
+                        currentCharacter->data->character = character;
+                        currentCharacter->data->difficulty = difficulty;
+                        currentCharacter->data->base.unkLen = sizeof(Hscr);
+                        currentCharacter->data->base.th6kLen = sizeof(Hscr);
+                        currentCharacter->data->base.version = TH6K_VERSION;
+                        currentCharacter->data->base.unk_9 = 0;
+                        memcpy(fileBuffer + sizeOfFile, currentCharacter->data, sizeof(Hscr));
+                        sizeOfFile += sizeof(Hscr);
+                    }
+                    currentCharacter = currentCharacter->next;
+                    characterSlot++;
+
+                    if (characterSlot >= HSCR_NUM_SCORES_SLOTS)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                };
+                break;
+            };
+        }
+    };
+
+    clrd = g_GameManager.clrd;
+    for (difficulty = 0; difficulty < CLRD_NUM_CHARACTERS; difficulty++, clrd++)
+    {
+        clrd->base.magic = 'DRLC';
+        clrd->base.unkLen = sizeof(Clrd);
+        clrd->base.th6kLen = sizeof(Clrd);
+        clrd->base.version = TH6K_VERSION;
+        memcpy(fileBuffer + sizeOfFile, clrd, sizeof(Clrd));
+
+        sizeOfFile += sizeof(Clrd);
+    }
+    catk = &g_GameManager.catk[0];
+    for (difficulty = 0; difficulty < CATK_NUM_CAPTURES; difficulty++, catk++)
+    {
+        if (catk->base.magic == 'KTAC')
+        {
+            catk->idx = difficulty;
+            catk->base.unkLen = sizeof(Catk);
+            catk->base.th6kLen = sizeof(Catk);
+            catk->base.version = TH6K_VERSION;
+            memcpy(fileBuffer + sizeOfFile, catk, sizeof(Catk));
+            sizeOfFile += sizeof(Catk);
+        }
+    }
+    pscr = &g_GameManager.pscr[0][0][0];
+    for (difficulty = 0; difficulty < PSCR_NUM_DIFFICULTIES; difficulty++)
+    {
+        for (stage = 0; stage < PSCR_NUM_STAGES; stage++)
+        {
+            for (shotType = 0; shotType < PSCR_NUM_CHARS_SHOTTYPES; shotType++, pscr++)
+            {
+                if (pscr->score != 0)
+                {
+                    memcpy(fileBuffer + sizeOfFile, pscr, sizeof(Pscr));
+                    sizeOfFile += sizeof(Pscr);
+                }
+            }
+        }
+    }
+    sd = (ScoreDat *)fileBuffer;
+    sd->dataOffset = sizeof(Pscr);
+    sd->fileLen = sizeOfFile;
+    sd->csum = 0;
+
+    sd->xorseed[1] = g_Rng.GetRandomU16InRange(0x100);
+    sd->unk[0] = g_Rng.GetRandomU16InRange(0x100);
+    sd->unk_8 = 0x10;
+
+    for (remainingSize = 4; remainingSize < sizeOfFile; remainingSize++)
+    {
+        sd->csum += fileBuffer[remainingSize];
+    }
+    xorValue = 0;
+    originalByte = 0;
+
+    bytes = (u8 *)sd->ShiftOneByte();
+    remainingSize = sizeOfFile;
+
+    remainingSize -= 2;
+    xorValue = bytes[0];
+
+    while (remainingSize > 0)
+    {
+        originalByte = bytes[1];
+        xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
+        bytes[1] ^= xorValue;
+        xorValue += originalByte;
+        bytes++;
+        remainingSize--;
+    }
+    FileSystem::WriteDataToFile("score.dat", fileBuffer, sizeOfFile);
+    free(fileBuffer);
+}
+#pragma optimize("", on)
+#pragma intrinsic("memcpy")
+
+#pragma optimize("s", on)
 i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
 {
     return ResultScreen::LinkScore(&this->scores[difficulty][character], out);
@@ -146,341 +558,6 @@ i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
 void ResultScreen::FreeScore(i32 difficulty, i32 character)
 {
     free(&this->scores[difficulty][character]);
-}
-#pragma optimize("", on)
-
-#pragma function("strcpy")
-#pragma optimize("s", on)
-#pragma var_order(i, sprite, character, slot)
-ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
-{
-
-    i32 slot;
-    i32 characterShot;
-    AnmVm *sprite;
-    i32 i;
-
-    if (resultScreen->resultScreenState != RESULT_SCREEN_STATE_EXIT)
-    {
-
-        if (g_AnmManager->LoadSurface(0, "data/result/result.jpg") != ZUN_SUCCESS)
-        {
-            return ZUN_ERROR;
-        }
-
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT00, "data/result00.anm", ANM_OFFSET_RESULT00) != ZUN_SUCCESS)
-        {
-            return ZUN_ERROR;
-        }
-
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT01, "data/result01.anm", ANM_OFFSET_RESULT01) != ZUN_SUCCESS)
-        {
-            return ZUN_ERROR;
-        }
-
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT02, "data/result02.anm", ANM_OFFSET_RESULT02) != ZUN_SUCCESS)
-        {
-            return ZUN_ERROR;
-        }
-
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT03, "data/result03.anm", ANM_OFFSET_RESULT03) != ZUN_SUCCESS)
-        {
-            return ZUN_ERROR;
-        }
-
-        sprite = &resultScreen->unk_40[0];
-        for (i = 0; i < ARRAY_SIZE_SIGNED(resultScreen->unk_40); i++, sprite++)
-        {
-
-            sprite->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-            sprite->posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-            // Execute all the scripts from the start of result00 to the end of result02
-            g_AnmManager->SetAndExecuteScriptIdx(sprite, ANM_SCRIPT_RESULT00_START + i);
-        }
-
-        sprite = &resultScreen->unk_28a0[0];
-        for (i = 0; i < ARRAY_SIZE_SIGNED(resultScreen->unk_28a0); i++, sprite++)
-        {
-            g_AnmManager->InitializeAndSetSprite(sprite, ANM_SCRIPT_TEXT_RESULTSCREEN_CHARACTER_NAME + i);
-
-            sprite->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-
-            sprite->flags.anchor = AnmVmAnchor_TopLeft;
-
-            sprite->fontWidth = 15;
-            sprite->fontHeight = 15;
-        }
-    }
-
-    for (i = 0; i < HSCR_NUM_DIFFICULTIES; i++)
-    {
-        for (characterShot = 0; characterShot < HSCR_NUM_CHARS_SHOTTYPES; characterShot++)
-        {
-            for (slot = 0; slot < HSCR_NUM_SCORES_SLOTS; slot++)
-            {
-                resultScreen->defaultScore[i][characterShot][slot].score = 1000000 - slot * 100000;
-                resultScreen->defaultScore[i][characterShot][slot].base.magic = g_DefaultMagic;
-                resultScreen->defaultScore[i][characterShot][slot].difficulty = i;
-                resultScreen->defaultScore[i][characterShot][slot].base.version = TH6K_VERSION;
-                resultScreen->defaultScore[i][characterShot][slot].base.unkLen = 28;
-                resultScreen->defaultScore[i][characterShot][slot].base.th6kLen = 28;
-                resultScreen->defaultScore[i][characterShot][slot].stage = 1;
-                resultScreen->defaultScore[i][characterShot][slot].base.unk_9 = 0;
-
-                resultScreen->LinkScoreEx(resultScreen->defaultScore[i][characterShot] + slot, i, characterShot);
-
-                strcpy(resultScreen->defaultScore[i][characterShot][slot].name, DEFAULT_HIGH_SCORE_NAME);
-            }
-        }
-    }
-
-    resultScreen->unk_14 = 0;
-    resultScreen->scoreDat = ResultScreen::OpenScore("score.dat");
-
-    for (i = 0; i < HSCR_NUM_DIFFICULTIES; i++)
-    {
-        for (characterShot = 0; characterShot < HSCR_NUM_CHARS_SHOTTYPES; characterShot++)
-        {
-            ResultScreen::GetHighScore(resultScreen->scoreDat, &resultScreen->scores[i][characterShot], characterShot,
-                                       i);
-        }
-    }
-
-    if (resultScreen->resultScreenState != RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME &&
-        resultScreen->resultScreenState != RESULT_SCREEN_STATE_EXIT)
-    {
-        ParseCatk(resultScreen->scoreDat, g_GameManager.catk);
-        ParseClrd(resultScreen->scoreDat, g_GameManager.clrd);
-        ParsePscr(resultScreen->scoreDat, (Pscr *)g_GameManager.pscr);
-    }
-
-    if (resultScreen->resultScreenState == RESULT_SCREEN_STATE_EXIT &&
-        g_GameManager.pscr[g_GameManager.CharacterShotType()][g_GameManager.currentStage - 1][g_GameManager.difficulty]
-                .score < g_GameManager.score)
-    {
-        g_GameManager.pscr[g_GameManager.CharacterShotType()][g_GameManager.currentStage - 1][g_GameManager.difficulty]
-            .score = g_GameManager.score;
-    }
-
-    resultScreen->unk_39a0.activeSpriteIndex = -1;
-
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-#pragma intrinsic("strcpy")
-
-#pragma optimize("s", on)
-void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
-{
-    if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
-    {
-        resultScreen->cursor--;
-        if (resultScreen->cursor < 0)
-        {
-            resultScreen->cursor += length;
-        }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-    }
-    if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
-    {
-        resultScreen->cursor++;
-        if (resultScreen->cursor >= length)
-        {
-            resultScreen->cursor -= length;
-        }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-    }
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 length)
-{
-    if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
-    {
-        resultScreen->cursor--;
-        if (resultScreen->cursor < 0)
-        {
-            resultScreen->cursor += length;
-        }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-        return true;
-    }
-    else if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
-    {
-        resultScreen->cursor++;
-        if (resultScreen->cursor >= length)
-        {
-            resultScreen->cursor -= length;
-        }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-ZunResult ResultScreen::CheckConfirmButton()
-{
-    AnmVm *viewport;
-
-    switch (this->resultScreenState)
-    {
-    case RESULT_SCREEN_STATE_STATS_SCREEN:
-        if (this->frameTimer <= 30)
-        {
-            viewport = &this->unk_40[37];
-            viewport->pendingInterrupt = 16;
-        }
-        if (this->frameTimer >= 90 && WAS_PRESSED(TH_BUTTON_SELECTMENU))
-        {
-            viewport = &this->unk_40[37];
-            viewport->pendingInterrupt = 2;
-            this->frameTimer = 0;
-            this->resultScreenState = RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION;
-        }
-        break;
-
-    case RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION:
-        if (this->frameTimer >= 30)
-        {
-            this->frameTimer = 59;
-            this->resultScreenState = RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION;
-        }
-        break;
-    }
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-#pragma var_order(viewport, strPos, unknownFloat, completion, slowdownRate, color)
-u32 ResultScreen::DrawFinalStats()
-{
-    f32 completion;
-    f32 unknownFloat;
-    D3DXVECTOR3 strPos;
-    AnmVm *viewport;
-    i32 color;
-    f32 slowdownRate;
-
-    switch (this->resultScreenState)
-    {
-    case RESULT_SCREEN_STATE_STATS_SCREEN:
-    case RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION:
-
-        viewport = &this->unk_40[37];
-        color = viewport->color;
-        g_AsciiManager.color = color;
-        unknownFloat = 0.0;
-
-        completion = g_GameManager.difficulty < 4 ? g_GameManager.counat / 39600.0f : g_GameManager.counat / 89500.0f;
-        strPos = viewport->pos;
-        strPos.x += 224.0f;
-        strPos.y += 32.0f;
-        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.score);
-
-        if (g_GameManager.guiScore < 2000000)
-        {
-            unknownFloat -= 20.0f;
-        }
-        else if (g_GameManager.guiScore < 200000000)
-        {
-            unknownFloat += (g_GameManager.guiScore - 2000000) / 198000000.0f * 60.0f - 20.0f;
-        }
-        else
-        {
-            unknownFloat += 40.0f;
-        }
-
-        strPos.y += 22.0f;
-        g_AsciiManager.AddString(&strPos, g_RightAlignedDifficultyList[g_GameManager.difficulty]);
-
-        unknownFloat += g_DifficultyWeightsList[g_GameManager.difficulty];
-        strPos.y += 22.0f;
-        if (g_GameManager.difficulty == EASY || !g_GameManager.isGameCompleted)
-        {
-            g_AsciiManager.AddFormatText(&strPos, "    %3.2f%%", completion * 100.0f);
-            unknownFloat += completion * 70.0f;
-        }
-        else
-        {
-            g_AsciiManager.AddFormatText(&strPos, "      100%%");
-            unknownFloat += 70.0f;
-        }
-        strPos.y += 22.0f;
-        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.numRetries);
-
-        unknownFloat -= g_GameManager.numRetries * 10.0f;
-        strPos.y += 22.0f;
-
-        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.deaths);
-
-        unknownFloat -= g_GameManager.deaths * 5.0f - 10.0f;
-
-        strPos.y += 22.0f;
-
-        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.bombsUsed);
-
-        unknownFloat -= g_GameManager.bombsUsed * 2.0f - 10.0f;
-        strPos.y += 22.0f;
-
-        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.spellcardsCaptured);
-
-        unknownFloat += g_GameManager.spellcardsCaptured * g_SpellcardsWeightsList[g_GameManager.difficulty];
-
-        slowdownRate = (g_Supervisor.unk1b4 / g_Supervisor.unk1b8 - 0.5f) * 2;
-
-        if (slowdownRate < 0.0f)
-        {
-            slowdownRate = 0.0f;
-        }
-        else if (slowdownRate >= 1.0f)
-        {
-            slowdownRate = 1.0f;
-        }
-
-        slowdownRate = (1 - slowdownRate) * 100.0f;
-
-        strPos.y += 22.0f;
-        g_AsciiManager.AddFormatText(&strPos, "    %3.2f%%", slowdownRate);
-
-        if (slowdownRate < 50.0f)
-        {
-            unknownFloat -= 70.0f * slowdownRate / 100.0f;
-        }
-        else
-        {
-            unknownFloat = -999.0f;
-        }
-        // Useless calculations, maybe in earlier versions it showed the point items and graze, but it was later
-        // removed? unknowFloat is also unused, maybe it was some kind of grading system
-        if (g_GameManager.pointItemsCollected < 800)
-        {
-            unknownFloat += 0.01f * g_GameManager.pointItemsCollected;
-        }
-        else
-        {
-            unknownFloat += 8.0f;
-        }
-
-        if (g_GameManager.grazeInTotal < 5000)
-        {
-            unknownFloat += 0.0025f * g_GameManager.grazeInTotal;
-        }
-        else
-        {
-            unknownFloat += 12.5f;
-        }
-
-        g_AsciiManager.color = COLOR_WHITE;
-    }
-    return 0;
 }
 #pragma optimize("", on)
 
@@ -1067,467 +1144,273 @@ LAB_0042d095:
 
     return 0;
 }
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
-
-#pragma optimize("s", on)
-#pragma var_order(highScore, remainingSize, scoreData, dataScore, score)
-u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 character, u32 difficulty)
+void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
 {
-    u32 score;
-    u32 dataScore;
-    i32 remainingSize;
-    Hscr *highScore;
-    ScoreDat *scoreData;
-
-    scoreData = scoreDat;
-
-    if (node == NULL)
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
     {
-        ResultScreen::FreeAllScores(scoreData->scores);
-        scoreData->scores->next = NULL;
-        scoreData->scores->data = NULL;
-        scoreData->scores->prev = NULL;
-    }
-
-    remainingSize = scoreData->fileLen;
-    highScore = (Hscr *)scoreData->ShiftBytes(scoreData->dataOffset);
-    remainingSize -= scoreData->dataOffset;
-
-    while (remainingSize > 0)
-    {
-        if (highScore->base.magic == 'RCSH' && highScore->base.version == TH6K_VERSION &&
-            highScore->character == character && highScore->difficulty == difficulty)
+        resultScreen->cursor--;
+        if (resultScreen->cursor < 0)
         {
-            if (node != NULL)
-            {
-                ResultScreen::LinkScore(node, highScore);
-            }
-            else
-            {
-                ResultScreen::LinkScore(scoreData->scores, highScore);
-            }
+            resultScreen->cursor += length;
         }
-
-        remainingSize -= highScore->base.th6kLen;
-        highScore = highScore->ShiftBytes(highScore->base.th6kLen);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
     }
-    if (scoreData->scores->next != NULL)
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
     {
-        if (scoreData->scores->next->data->score > 1000000)
+        resultScreen->cursor++;
+        if (resultScreen->cursor >= length)
         {
-            dataScore = scoreData->scores->next->data->score;
+            resultScreen->cursor -= length;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 length)
+{
+    if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
+    {
+        resultScreen->cursor--;
+        if (resultScreen->cursor < 0)
+        {
+            resultScreen->cursor += length;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        return true;
+    }
+    else if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
+    {
+        resultScreen->cursor++;
+        if (resultScreen->cursor >= length)
+        {
+            resultScreen->cursor -= length;
+        }
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult ResultScreen::CheckConfirmButton()
+{
+    AnmVm *viewport;
+
+    switch (this->resultScreenState)
+    {
+    case RESULT_SCREEN_STATE_STATS_SCREEN:
+        if (this->frameTimer <= 30)
+        {
+            viewport = &this->unk_40[37];
+            viewport->pendingInterrupt = 16;
+        }
+        if (this->frameTimer >= 90 && WAS_PRESSED(TH_BUTTON_SELECTMENU))
+        {
+            viewport = &this->unk_40[37];
+            viewport->pendingInterrupt = 2;
+            this->frameTimer = 0;
+            this->resultScreenState = RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION;
+        }
+        break;
+
+    case RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION:
+        if (this->frameTimer >= 30)
+        {
+            this->frameTimer = 59;
+            this->resultScreenState = RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION;
+        }
+        break;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(viewport, strPos, unknownFloat, completion, slowdownRate, color)
+u32 ResultScreen::DrawFinalStats()
+{
+    f32 completion;
+    f32 unknownFloat;
+    D3DXVECTOR3 strPos;
+    AnmVm *viewport;
+    i32 color;
+    f32 slowdownRate;
+
+    switch (this->resultScreenState)
+    {
+    case RESULT_SCREEN_STATE_STATS_SCREEN:
+    case RESULT_SCREEN_STATE_STATS_TO_SAVE_TRANSITION:
+
+        viewport = &this->unk_40[37];
+        color = viewport->color;
+        g_AsciiManager.color = color;
+        unknownFloat = 0.0;
+
+        completion = g_GameManager.difficulty < 4 ? g_GameManager.counat / 39600.0f : g_GameManager.counat / 89500.0f;
+        strPos = viewport->pos;
+        strPos.x += 224.0f;
+        strPos.y += 32.0f;
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.score);
+
+        if (g_GameManager.guiScore < 2000000)
+        {
+            unknownFloat -= 20.0f;
+        }
+        else if (g_GameManager.guiScore < 200000000)
+        {
+            unknownFloat += (g_GameManager.guiScore - 2000000) / 198000000.0f * 60.0f - 20.0f;
         }
         else
         {
-            dataScore = 1000000;
+            unknownFloat += 40.0f;
         }
-        score = dataScore;
+
+        strPos.y += 22.0f;
+        g_AsciiManager.AddString(&strPos, g_RightAlignedDifficultyList[g_GameManager.difficulty]);
+
+        unknownFloat += g_DifficultyWeightsList[g_GameManager.difficulty];
+        strPos.y += 22.0f;
+        if (g_GameManager.difficulty == EASY || !g_GameManager.isGameCompleted)
+        {
+            g_AsciiManager.AddFormatText(&strPos, "    %3.2f%%", completion * 100.0f);
+            unknownFloat += completion * 70.0f;
+        }
+        else
+        {
+            g_AsciiManager.AddFormatText(&strPos, "      100%%");
+            unknownFloat += 70.0f;
+        }
+        strPos.y += 22.0f;
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.numRetries);
+
+        unknownFloat -= g_GameManager.numRetries * 10.0f;
+        strPos.y += 22.0f;
+
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.deaths);
+
+        unknownFloat -= g_GameManager.deaths * 5.0f - 10.0f;
+
+        strPos.y += 22.0f;
+
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.bombsUsed);
+
+        unknownFloat -= g_GameManager.bombsUsed * 2.0f - 10.0f;
+        strPos.y += 22.0f;
+
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.spellcardsCaptured);
+
+        unknownFloat += g_GameManager.spellcardsCaptured * g_SpellcardsWeightsList[g_GameManager.difficulty];
+
+        slowdownRate = (g_Supervisor.unk1b4 / g_Supervisor.unk1b8 - 0.5f) * 2;
+
+        if (slowdownRate < 0.0f)
+        {
+            slowdownRate = 0.0f;
+        }
+        else if (slowdownRate >= 1.0f)
+        {
+            slowdownRate = 1.0f;
+        }
+
+        slowdownRate = (1 - slowdownRate) * 100.0f;
+
+        strPos.y += 22.0f;
+        g_AsciiManager.AddFormatText(&strPos, "    %3.2f%%", slowdownRate);
+
+        if (slowdownRate < 50.0f)
+        {
+            unknownFloat -= 70.0f * slowdownRate / 100.0f;
+        }
+        else
+        {
+            unknownFloat = -999.0f;
+        }
+        // Useless calculations, maybe in earlier versions it showed the point items and graze, but it was later
+        // removed? unknowFloat is also unused, maybe it was some kind of grading system
+        if (g_GameManager.pointItemsCollected < 800)
+        {
+            unknownFloat += 0.01f * g_GameManager.pointItemsCollected;
+        }
+        else
+        {
+            unknownFloat += 8.0f;
+        }
+
+        if (g_GameManager.grazeInTotal < 5000)
+        {
+            unknownFloat += 0.0025f * g_GameManager.grazeInTotal;
+        }
+        else
+        {
+            unknownFloat += 12.5f;
+        }
+
+        g_AsciiManager.color = COLOR_WHITE;
     }
-    else
-    {
-        score = 1000000;
-    }
-    return score;
+    return 0;
 }
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-#pragma var_order(scoreData, bytesShifted, xorValue, checksum, bytes, remainingData, decryptedFilePointer, fileLen,    \
-                  scoreDatSize, scoreListNodeSize)
-ScoreDat *ResultScreen::OpenScore(char *path)
-{
-    u8 *bytes;
-    i32 bytesShifted;
-    i32 fileLen;
-    Th6k *decryptedFilePointer;
-    i32 remainingData;
-    i32 scoreListNodeSize;
-    u16 checksum;
-    u8 xorValue;
-    i32 scoreDatSize;
-    ScoreDat *scoreData;
-
-    scoreData = (ScoreDat *)FileSystem::OpenPath(path, true);
-    if (scoreData == NULL)
-    {
-    FAILED_TO_READ:
-        scoreDatSize = sizeof(ScoreDat);
-        scoreData = (ScoreDat *)malloc(scoreDatSize);
-        scoreData->dataOffset = sizeof(ScoreDat);
-        scoreData->fileLen = sizeof(ScoreDat);
-    }
-    else
-    {
-        if (g_LastFileSize < sizeof(ScoreDat))
-        {
-            free(scoreData);
-            goto FAILED_TO_READ;
-        }
-
-        remainingData = g_LastFileSize - 2;
-        checksum = 0;
-        xorValue = 0;
-        bytesShifted = 0;
-        bytes = &scoreData->xorseed[1];
-
-        while (0 < remainingData)
-        {
-
-            xorValue += bytes[0];
-            // Invert top 3 bits and bottom 5 bits
-            xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
-            // xor one byte later with the resulting inverted bits
-            bytes[1] ^= xorValue;
-            if (bytesShifted >= 2)
-            {
-                checksum += bytes[1];
-            }
-            bytes++;
-            remainingData--;
-            bytesShifted++;
-        }
-        if (scoreData->csum != checksum)
-        {
-            free(scoreData);
-            goto FAILED_TO_READ;
-        }
-        fileLen = scoreData->fileLen;
-        decryptedFilePointer = scoreData->ShiftBytes(scoreData->dataOffset);
-        fileLen -= scoreData->dataOffset;
-        while (fileLen > 0)
-        {
-            if (decryptedFilePointer->magic == 'K6HT')
-                break;
-
-            decryptedFilePointer = decryptedFilePointer->ShiftBytes(decryptedFilePointer->th6kLen);
-            fileLen = fileLen - decryptedFilePointer->th6kLen;
-        }
-        if (fileLen <= 0)
-        {
-            free(scoreData);
-            goto FAILED_TO_READ;
-        };
-    }
-    scoreListNodeSize = sizeof(ScoreListNode);
-    scoreData->scores = (ScoreListNode *)malloc(scoreListNodeSize);
-    scoreData->scores->next = NULL;
-    scoreData->scores->data = NULL;
-    scoreData->scores->prev = NULL;
-    return scoreData;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-#pragma var_order(parsedCatk, cursor, sd)
-ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
+#pragma var_order(resultScreen, unused)
+ZunResult ResultScreen::RegisterChain(i32 unk)
 {
 
-    i32 cursor;
-    Catk *parsedCatk;
-    ScoreDat *sd;
-    sd = scoreDat;
+    i32 unused[16];
+    ResultScreen *resultScreen;
+    resultScreen = new ResultScreen();
 
-    if (outCatk == NULL)
+    utils::DebugPrint(TH_DBG_RESULTSCREEN_COUNAT, g_GameManager.counat);
+
+    resultScreen->calcChain = g_Chain.CreateElem((ChainCallback)ResultScreen::OnUpdate);
+    resultScreen->calcChain->addedCallback = (ChainAddedCallback)ResultScreen::AddedCallback;
+    resultScreen->calcChain->deletedCallback = (ChainDeletedCallback)ResultScreen::DeletedCallback;
+    resultScreen->calcChain->arg = resultScreen;
+
+    if (unk != 0)
+    {
+        if (!g_GameManager.isInPracticeMode)
+        {
+            resultScreen->resultScreenState = RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME;
+        }
+        else
+        {
+            resultScreen->resultScreenState = RESULT_SCREEN_STATE_EXIT;
+        }
+    }
+
+    if (g_Chain.AddToCalcChain(resultScreen->calcChain, TH_CHAIN_PRIO_CALC_RESULTSCREEN))
     {
         return ZUN_ERROR;
     }
 
-    parsedCatk = (Catk *)sd->ShiftBytes(sd->dataOffset);
-    cursor = sd->fileLen - sd->dataOffset;
-    while (cursor > 0)
-    {
-        if (parsedCatk->base.magic == 'KTAC' && parsedCatk->base.version == TH6K_VERSION)
-        {
-            if (parsedCatk->idx >= CATK_NUM_CAPTURES)
-                break;
+    resultScreen->drawChain = g_Chain.CreateElem((ChainCallback)ResultScreen::OnDraw);
+    resultScreen->drawChain->arg = resultScreen;
+    g_Chain.AddToDrawChain(resultScreen->drawChain, TH_CHAIN_PRIO_DRAW_RESULTSCREEN);
 
-            outCatk[parsedCatk->idx] = *parsedCatk;
-        }
-        cursor -= parsedCatk->base.th6kLen;
-        parsedCatk = (Catk *)&parsedCatk->name[parsedCatk->base.th6kLen - 0x18];
-    }
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
 
+#pragma function(memset)
 #pragma optimize("s", on)
-#pragma var_order(parsedClrd, characterShotType, cursor, difficulty, sd)
-ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
+ResultScreen::ResultScreen()
 {
-    i32 cursor;
-    Clrd *parsedClrd;
-    ScoreDat *sd;
-    i32 characterShotType;
-    i32 difficulty;
-    sd = scoreDat;
-
-    if (outClrd == NULL)
-    {
-        return ZUN_ERROR;
-    }
-
-    for (characterShotType = 0; characterShotType < CLRD_NUM_CHARACTERS; characterShotType++)
-    {
-        memset(&outClrd[characterShotType], 0, sizeof(Clrd));
-
-        outClrd[characterShotType].base.magic = 'DRLC';
-        outClrd[characterShotType].base.unkLen = sizeof(Clrd);
-        outClrd[characterShotType].base.th6kLen = sizeof(Clrd);
-        outClrd[characterShotType].base.version = TH6K_VERSION;
-        outClrd[characterShotType].characterShotType = characterShotType;
-
-        for (difficulty = 0; difficulty < ARRAY_SIZE_SIGNED(outClrd[0].difficultyClearedWithoutRetries); difficulty++)
-        {
-            outClrd[characterShotType].difficultyClearedWithRetries[difficulty] = 1;
-            outClrd[characterShotType].difficultyClearedWithoutRetries[difficulty] = 1;
-        }
-    }
-
-    parsedClrd = (Clrd *)sd->ShiftBytes(sd->dataOffset);
-    cursor = sd->fileLen - sd->dataOffset;
-    while (cursor > 0)
-    {
-        if (parsedClrd->base.magic == 'DRLC' && parsedClrd->base.version == TH6K_VERSION)
-        {
-            if (parsedClrd->characterShotType >= CLRD_NUM_CHARACTERS)
-                break;
-
-            outClrd[parsedClrd->characterShotType] = *parsedClrd;
-        }
-        cursor -= parsedClrd->base.th6kLen;
-        parsedClrd = (Clrd *)((i32)&parsedClrd->base + parsedClrd->base.th6kLen);
-    }
-    return ZUN_SUCCESS;
+    i32 unused[12];
+    memset(this, 0, sizeof(ResultScreen));
+    this->cursor = 1;
 }
 #pragma optimize("", on)
-
-#pragma optimize("s", on)
-#pragma var_order(pscr, parsedPscr, character, stage, cursor, difficulty, sd)
-ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
-{
-    i32 cursor;
-    Pscr *parsedPscr;
-    ScoreDat *sd;
-    i32 stage;
-    i32 character;
-    i32 difficulty;
-    sd = scoreDat;
-    Pscr *pscr;
-
-    if (outClrd == NULL)
-    {
-        return ZUN_ERROR;
-    }
-
-    for (pscr = outClrd, character = 0; character < PSCR_NUM_CHARS_SHOTTYPES; character++)
-    {
-        for (stage = 0; stage < PSCR_NUM_STAGES; stage++)
-        {
-            for (difficulty = 0; difficulty < PSCR_NUM_DIFFICULTIES; difficulty++, pscr++)
-            {
-
-                memset(pscr, 0, sizeof(Pscr));
-
-                pscr->base.magic = 'RCSP';
-                pscr->base.unkLen = sizeof(Pscr);
-                pscr->base.th6kLen = sizeof(Pscr);
-                pscr->base.version = 16;
-                pscr->character = character;
-                pscr->difficulty = difficulty;
-                pscr->stage = stage;
-            }
-        }
-    }
-
-    parsedPscr = (Pscr *)sd->ShiftBytes(sd->dataOffset);
-    cursor = sd->fileLen - sd->dataOffset;
-
-    while (cursor > 0)
-    {
-        if (parsedPscr->base.magic == 'RCSP' && parsedPscr->base.version == TH6K_VERSION)
-        {
-            pscr = parsedPscr;
-            if (pscr->character >= PSCR_NUM_CHARS_SHOTTYPES || pscr->difficulty >= PSCR_NUM_DIFFICULTIES + 1 ||
-                pscr->stage >= PSCR_NUM_STAGES + 1)
-                break;
-
-            outClrd[pscr->character * 6 * 4 + pscr->stage * 4 + pscr->difficulty] = *pscr;
-        }
-        cursor -= parsedPscr->base.th6kLen;
-        parsedPscr = parsedPscr->ShiftBytes(parsedPscr->base.th6kLen);
-    }
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-void ResultScreen::ReleaseScoreDat(ScoreDat *scoreDat)
-{
-    ScoreListNode *scores;
-    ResultScreen::FreeAllScores(scoreDat->scores);
-    scores = scoreDat->scores;
-    free(scores);
-    free(scoreDat);
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-#pragma function("memcpy")
-#pragma var_order(difficulty, characterSlot, fileBuffer, sizeOfFile, currentCharacter, character, clrd, catk, pscr,    \
-                  stage, shotType, originalByte, remainingSize, xorValue, bytes, sd, fileBufferSize)
-void ResultScreen::WriteScore(ResultScreen *resultScreen)
-{
-
-    u8 *fileBuffer;
-    u8 originalByte;
-    i32 fileBufferSize;
-    ScoreDat *sd;
-    i32 characterSlot;
-    u8 xorValue;
-    i32 remainingSize;
-    i32 shotType;
-    i32 stage;
-    Pscr *pscr;
-    Catk *catk;
-    Clrd *clrd;
-    i32 character;
-    ScoreListNode *currentCharacter;
-    i32 sizeOfFile;
-    u8 *bytes;
-    i32 difficulty;
-
-    sizeOfFile = 0;
-
-    fileBufferSize = SCORE_DAT_FILE_BUFFER_SIZE;
-    fileBuffer = (u8 *)malloc(fileBufferSize);
-
-    memcpy(fileBuffer + sizeOfFile, resultScreen->scoreDat, sizeof(ScoreDat));
-
-    sizeOfFile += sizeof(ScoreDat);
-    resultScreen->unk_519c.magic = 'K6HT';
-    resultScreen->unk_519c.unkLen = sizeof(Th6k);
-    resultScreen->unk_519c.th6kLen = sizeof(Th6k);
-    resultScreen->unk_519c.version = TH6K_VERSION;
-
-    memcpy(fileBuffer + sizeOfFile, &resultScreen->unk_519c, sizeof(Th6k));
-    sizeOfFile += sizeof(Th6k);
-
-    for (difficulty = 0; difficulty < HSCR_NUM_DIFFICULTIES; difficulty++)
-    {
-
-        for (character = 0; character < HSCR_NUM_CHARS_SHOTTYPES; character++)
-        {
-            currentCharacter = resultScreen->scores[difficulty][character].next;
-            characterSlot = 0;
-            for (;;)
-            {
-                if (currentCharacter != NULL)
-                {
-
-                    if (currentCharacter->data->base.magic == 'RCSH')
-                    {
-                        currentCharacter->data->character = character;
-                        currentCharacter->data->difficulty = difficulty;
-                        currentCharacter->data->base.unkLen = sizeof(Hscr);
-                        currentCharacter->data->base.th6kLen = sizeof(Hscr);
-                        currentCharacter->data->base.version = TH6K_VERSION;
-                        currentCharacter->data->base.unk_9 = 0;
-                        memcpy(fileBuffer + sizeOfFile, currentCharacter->data, sizeof(Hscr));
-                        sizeOfFile += sizeof(Hscr);
-                    }
-                    currentCharacter = currentCharacter->next;
-                    characterSlot++;
-
-                    if (characterSlot >= HSCR_NUM_SCORES_SLOTS)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                };
-                break;
-            };
-        }
-    };
-
-    clrd = g_GameManager.clrd;
-    for (difficulty = 0; difficulty < CLRD_NUM_CHARACTERS; difficulty++, clrd++)
-    {
-        clrd->base.magic = 'DRLC';
-        clrd->base.unkLen = sizeof(Clrd);
-        clrd->base.th6kLen = sizeof(Clrd);
-        clrd->base.version = TH6K_VERSION;
-        memcpy(fileBuffer + sizeOfFile, clrd, sizeof(Clrd));
-
-        sizeOfFile += sizeof(Clrd);
-    }
-    catk = &g_GameManager.catk[0];
-    for (difficulty = 0; difficulty < CATK_NUM_CAPTURES; difficulty++, catk++)
-    {
-        if (catk->base.magic == 'KTAC')
-        {
-            catk->idx = difficulty;
-            catk->base.unkLen = sizeof(Catk);
-            catk->base.th6kLen = sizeof(Catk);
-            catk->base.version = TH6K_VERSION;
-            memcpy(fileBuffer + sizeOfFile, catk, sizeof(Catk));
-            sizeOfFile += sizeof(Catk);
-        }
-    }
-    pscr = &g_GameManager.pscr[0][0][0];
-    for (difficulty = 0; difficulty < PSCR_NUM_DIFFICULTIES; difficulty++)
-    {
-        for (stage = 0; stage < PSCR_NUM_STAGES; stage++)
-        {
-            for (shotType = 0; shotType < PSCR_NUM_CHARS_SHOTTYPES; shotType++, pscr++)
-            {
-                if (pscr->score != 0)
-                {
-                    memcpy(fileBuffer + sizeOfFile, pscr, sizeof(Pscr));
-                    sizeOfFile += sizeof(Pscr);
-                }
-            }
-        }
-    }
-    sd = (ScoreDat *)fileBuffer;
-    sd->dataOffset = sizeof(Pscr);
-    sd->fileLen = sizeOfFile;
-    sd->csum = 0;
-
-    sd->xorseed[1] = g_Rng.GetRandomU16InRange(0x100);
-    sd->unk[0] = g_Rng.GetRandomU16InRange(0x100);
-    sd->unk_8 = 0x10;
-
-    for (remainingSize = 4; remainingSize < sizeOfFile; remainingSize++)
-    {
-        sd->csum += fileBuffer[remainingSize];
-    }
-    xorValue = 0;
-    originalByte = 0;
-
-    bytes = (u8 *)sd->ShiftOneByte();
-    remainingSize = sizeOfFile;
-
-    remainingSize -= 2;
-    xorValue = bytes[0];
-
-    while (remainingSize > 0)
-    {
-        originalByte = bytes[1];
-        xorValue = (xorValue & 0xe0) >> 5 | (xorValue & 0x1f) << 3;
-        bytes[1] ^= xorValue;
-        xorValue += originalByte;
-        bytes++;
-        remainingSize--;
-    }
-    FileSystem::WriteDataToFile("score.dat", fileBuffer, sizeOfFile);
-    free(fileBuffer);
-}
-#pragma optimize("", on)
-#pragma intrinsic("memcpy")
+#pragma intrinsic(memset)
 
 #pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
@@ -2205,6 +2088,127 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)
+
+#pragma function("strcpy")
+#pragma optimize("s", on)
+#pragma var_order(i, sprite, character, slot)
+ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
+{
+
+    i32 slot;
+    i32 characterShot;
+    AnmVm *sprite;
+    i32 i;
+
+    if (resultScreen->resultScreenState != RESULT_SCREEN_STATE_EXIT)
+    {
+
+        if (g_AnmManager->LoadSurface(0, "data/result/result.jpg") != ZUN_SUCCESS)
+        {
+            return ZUN_ERROR;
+        }
+
+        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT00, "data/result00.anm", ANM_OFFSET_RESULT00) != ZUN_SUCCESS)
+        {
+            return ZUN_ERROR;
+        }
+
+        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT01, "data/result01.anm", ANM_OFFSET_RESULT01) != ZUN_SUCCESS)
+        {
+            return ZUN_ERROR;
+        }
+
+        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT02, "data/result02.anm", ANM_OFFSET_RESULT02) != ZUN_SUCCESS)
+        {
+            return ZUN_ERROR;
+        }
+
+        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT03, "data/result03.anm", ANM_OFFSET_RESULT03) != ZUN_SUCCESS)
+        {
+            return ZUN_ERROR;
+        }
+
+        sprite = &resultScreen->unk_40[0];
+        for (i = 0; i < ARRAY_SIZE_SIGNED(resultScreen->unk_40); i++, sprite++)
+        {
+
+            sprite->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+            sprite->posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+            // Execute all the scripts from the start of result00 to the end of result02
+            g_AnmManager->SetAndExecuteScriptIdx(sprite, ANM_SCRIPT_RESULT00_START + i);
+        }
+
+        sprite = &resultScreen->unk_28a0[0];
+        for (i = 0; i < ARRAY_SIZE_SIGNED(resultScreen->unk_28a0); i++, sprite++)
+        {
+            g_AnmManager->InitializeAndSetSprite(sprite, ANM_SCRIPT_TEXT_RESULTSCREEN_CHARACTER_NAME + i);
+
+            sprite->pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+
+            sprite->flags.anchor = AnmVmAnchor_TopLeft;
+
+            sprite->fontWidth = 15;
+            sprite->fontHeight = 15;
+        }
+    }
+
+    for (i = 0; i < HSCR_NUM_DIFFICULTIES; i++)
+    {
+        for (characterShot = 0; characterShot < HSCR_NUM_CHARS_SHOTTYPES; characterShot++)
+        {
+            for (slot = 0; slot < HSCR_NUM_SCORES_SLOTS; slot++)
+            {
+                resultScreen->defaultScore[i][characterShot][slot].score = 1000000 - slot * 100000;
+                resultScreen->defaultScore[i][characterShot][slot].base.magic = g_DefaultMagic;
+                resultScreen->defaultScore[i][characterShot][slot].difficulty = i;
+                resultScreen->defaultScore[i][characterShot][slot].base.version = TH6K_VERSION;
+                resultScreen->defaultScore[i][characterShot][slot].base.unkLen = 28;
+                resultScreen->defaultScore[i][characterShot][slot].base.th6kLen = 28;
+                resultScreen->defaultScore[i][characterShot][slot].stage = 1;
+                resultScreen->defaultScore[i][characterShot][slot].base.unk_9 = 0;
+
+                resultScreen->LinkScoreEx(resultScreen->defaultScore[i][characterShot] + slot, i, characterShot);
+
+                strcpy(resultScreen->defaultScore[i][characterShot][slot].name, DEFAULT_HIGH_SCORE_NAME);
+            }
+        }
+    }
+
+    resultScreen->unk_14 = 0;
+    resultScreen->scoreDat = ResultScreen::OpenScore("score.dat");
+
+    for (i = 0; i < HSCR_NUM_DIFFICULTIES; i++)
+    {
+        for (characterShot = 0; characterShot < HSCR_NUM_CHARS_SHOTTYPES; characterShot++)
+        {
+            ResultScreen::GetHighScore(resultScreen->scoreDat, &resultScreen->scores[i][characterShot], characterShot,
+                                       i);
+        }
+    }
+
+    if (resultScreen->resultScreenState != RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME &&
+        resultScreen->resultScreenState != RESULT_SCREEN_STATE_EXIT)
+    {
+        ParseCatk(resultScreen->scoreDat, g_GameManager.catk);
+        ParseClrd(resultScreen->scoreDat, g_GameManager.clrd);
+        ParsePscr(resultScreen->scoreDat, (Pscr *)g_GameManager.pscr);
+    }
+
+    if (resultScreen->resultScreenState == RESULT_SCREEN_STATE_EXIT &&
+        g_GameManager.pscr[g_GameManager.CharacterShotType()][g_GameManager.currentStage - 1][g_GameManager.difficulty]
+                .score < g_GameManager.score)
+    {
+        g_GameManager.pscr[g_GameManager.CharacterShotType()][g_GameManager.currentStage - 1][g_GameManager.difficulty]
+            .score = g_GameManager.score;
+    }
+
+    resultScreen->unk_39a0.activeSpriteIndex = -1;
+
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+#pragma intrinsic("strcpy")
 
 #pragma optimize("s", on)
 #pragma var_order(difficulty, character)
