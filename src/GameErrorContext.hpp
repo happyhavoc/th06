@@ -30,10 +30,11 @@ class GameErrorContext
     {
     }
 
-    void RstContext()
+    void ResetContext()
     {
         m_BufferEnd = m_Buffer;
-        m_Buffer[0] = '\0';
+        m_BufferEnd[0] = '\0';
+        // TODO: check if it should be m_Buffer[0] above.
     }
 
     void Flush();
