@@ -62,7 +62,7 @@ struct GameConfiguration
     u8 playSounds;
     u8 defaultDifficulty;
     u8 windowed;
-    // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/4 speed.
+    // 0 = fullspeed, 1 = 1/2 speed, 2 = 1/3 speed.
     u8 frameskipConfig;
     i16 padXAxis;
     i16 padYAxis;
