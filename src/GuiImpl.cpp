@@ -36,7 +36,8 @@ ZunResult GuiImpl::RunMsg()
             args = &this->msg.currentInstr->args;
             g_AnmManager->SetAndExecuteScriptIdx(
                 &this->msg.portraits[args->portraitAnmScript.portraitIdx],
-                args->portraitAnmScript.anmScriptIdx + (args->portraitAnmScript.portraitIdx == 0 ? ANM_SCRIPT_FACE_START : ANM_SCRIPT_FACE_START + 2));
+                args->portraitAnmScript.anmScriptIdx +
+                    (args->portraitAnmScript.portraitIdx == 0 ? ANM_SCRIPT_FACE_START : ANM_SCRIPT_FACE_START + 2));
             break;
         case MSG_OPCODE_PORTRAITANMSPRITE:
             args = &this->msg.currentInstr->args;
