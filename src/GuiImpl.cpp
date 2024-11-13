@@ -34,15 +34,17 @@ ZunResult GuiImpl::RunMsg()
             return ZUN_ERROR;
         case MSG_OPCODE_PORTRAITANMSCRIPT:
             args = &this->msg.currentInstr->args;
-            g_AnmManager->SetAndExecuteScriptIdx(&this->msg.portraits[args->portraitAnmScript.portraitIdx],
-                                                 ANM_SCRIPT_FACE_START + args->portraitAnmScript.anmScriptIdx +
-                                                     (args->portraitAnmScript.portraitIdx == 0 ? 0 : 2));
+            g_AnmManager->SetAndExecuteScriptIdx(
+                &this->msg.portraits[args->portraitAnmScript.portraitIdx],
+                args->portraitAnmScript.anmScriptIdx +
+                    (args->portraitAnmScript.portraitIdx == 0 ? ANM_SCRIPT_FACE_START : ANM_SCRIPT_FACE_START + 2));
             break;
         case MSG_OPCODE_PORTRAITANMSPRITE:
             args = &this->msg.currentInstr->args;
-            g_AnmManager->SetActiveSprite(&this->msg.portraits[args->portraitAnmScript.portraitIdx],
-                                          ANM_SCRIPT_FACE_START + args->portraitAnmScript.anmScriptIdx +
-                                              (args->portraitAnmScript.portraitIdx == 0 ? 0 : 8));
+            g_AnmManager->SetActiveSprite(
+                &this->msg.portraits[args->portraitAnmScript.portraitIdx],
+                args->portraitAnmScript.anmScriptIdx +
+                    (args->portraitAnmScript.portraitIdx == 0 ? ANM_SCRIPT_FACE_START : ANM_SCRIPT_FACE_START + 8));
             break;
         case MSG_OPCODE_TEXTDIALOGUE:
             args = &this->msg.currentInstr->args;
