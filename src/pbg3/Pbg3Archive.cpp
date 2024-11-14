@@ -76,12 +76,6 @@ i32 Pbg3Archive::Release()
 
 i32 Pbg3Archive::FindEntry(char *path)
 {
-    // Why was this here? It's certainly not present in the assembly.
-    // if (this->numOfEntries == 0)
-    //{
-    //    return -1;
-    //}
-
     for (u32 entryIdx = 0; entryIdx < this->numOfEntries; entryIdx += 1)
     {
         char *entryFilename = this->entries[entryIdx].filename;
