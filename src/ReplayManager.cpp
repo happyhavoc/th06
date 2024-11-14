@@ -60,7 +60,7 @@ ZunResult ReplayManager::ValidateReplayData(ReplayData *data, i32 fileSize)
         return ZUN_ERROR;
     }
 
-    if (decryptedData->version != 0x102)
+    if (decryptedData->version != GAME_VERSION)
     {
         return ZUN_ERROR;
     }
