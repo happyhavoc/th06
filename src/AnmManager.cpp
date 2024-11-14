@@ -619,17 +619,6 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
     return ZUN_SUCCESS;
 }
 
-void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
-{
-    vm->anmFileIndex = anmFileIdx;
-    vm->pos = D3DXVECTOR3(0, 0, 0);
-    vm->posOffset = D3DXVECTOR3(0, 0, 0);
-    vm->fontHeight = 15;
-    vm->fontWidth = 15;
-
-    SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
-}
-
 #pragma var_order(curInstr, local_c, local_10, local_14, local_18, local_1c, local_20, nextInstr, local_28, local_2c,  \
                   local_30, local_34, local_38, local_3c, local_48, local_54, local_60, local_68, local_6a, local_6c,  \
                   local_70, curTime, scaleInterpCurTime, local_b4, local_b8, local_c0, local_c4, local_c8, local_cc,   \

@@ -48,7 +48,7 @@ ZunResult Supervisor::LoadConfig(char *path)
         g_Supervisor.cfg.lifeCount = 2;
         g_Supervisor.cfg.bombCount = 3;
         g_Supervisor.cfg.colorMode16bit = 0xff;
-        g_Supervisor.cfg.version = 0x102;
+        g_Supervisor.cfg.version = GAME_VERSION;
         g_Supervisor.cfg.padXAxis = 600;
         g_Supervisor.cfg.padYAxis = 600;
         wavFile = fopen("bgm/th06_01.wav", "rb");
@@ -76,12 +76,12 @@ ZunResult Supervisor::LoadConfig(char *path)
             (1 < g_Supervisor.cfg.colorMode16bit) || (MIDI < g_Supervisor.cfg.musicMode) ||
             (4 < g_Supervisor.cfg.defaultDifficulty) || (1 < g_Supervisor.cfg.playSounds) ||
             (1 < g_Supervisor.cfg.windowed) || (2 < g_Supervisor.cfg.frameskipConfig) ||
-            (g_Supervisor.cfg.version != 0x102) || (g_LastFileSize != 0x38))
+            (g_Supervisor.cfg.version != GAME_VERSION) || (g_LastFileSize != 0x38))
         {
             g_Supervisor.cfg.lifeCount = 2;
             g_Supervisor.cfg.bombCount = 3;
             g_Supervisor.cfg.colorMode16bit = 0xff;
-            g_Supervisor.cfg.version = 0x102;
+            g_Supervisor.cfg.version = GAME_VERSION;
             g_Supervisor.cfg.padXAxis = 600;
             g_Supervisor.cfg.padYAxis = 600;
             wavFile = fopen("bgm/th06_01.wav", "rb");
@@ -463,6 +463,54 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 }
 
 #pragma optimize("s", on)
+ZunResult Supervisor::DeletedCallback(Supervisor *s)
+{
+    i32 pbg3Idx;
+
+    g_AnmManager->ReleaseVertexBuffer();
+    for (pbg3Idx = 0; pbg3Idx < ARRAY_SIZE_SIGNED(s->pbg3Archives); pbg3Idx += 1)
+    {
+        s->ReleasePbg3(pbg3Idx);
+    }
+    g_AnmManager->ReleaseAnm(0);
+    AsciiManager::CutChain();
+    g_SoundPlayer.StopBGM();
+    if (s->midiOutput != NULL)
+    {
+        s->midiOutput->StopPlayback();
+        delete s->midiOutput;
+        s->midiOutput = NULL;
+    }
+    ReplayManager::SaveReplay(NULL, NULL);
+    TextHelper::ReleaseTextBuffer();
+    if (s->keyboard != NULL)
+    {
+        s->keyboard->Unacquire();
+    }
+    if (s->keyboard != NULL)
+    {
+        s->keyboard->Release();
+        s->keyboard = NULL;
+    }
+    if (s->controller != NULL)
+    {
+        s->controller->Unacquire();
+    }
+    if (s->controller != NULL)
+    {
+        s->controller->Release();
+        s->controller = NULL;
+    }
+    if (s->dinputIface != NULL)
+    {
+        s->dinputIface->Release();
+        s->dinputIface = NULL;
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(curTime, framerate, fps, elapsed, fpsCounterPos)
 void Supervisor::DrawFpsCounter()
 {
@@ -547,7 +595,7 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
             strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
 
             char verPath[128];
-            sprintf(verPath, "ver%.4x.dat", 0x102);
+            sprintf(verPath, "ver%.4x.dat", GAME_VERSION);
             i32 res = this->pbg3Archives[pbg3FileIdx]->FindEntry(verPath);
             if (res < 0)
             {
@@ -936,7 +984,7 @@ u16 Controller::GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP_RIGHT, VK_NUMPAD9);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_LEFT, VK_NUMPAD1);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_RIGHT, VK_NUMPAD3);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK11, VK_HOME);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_HOME, VK_HOME);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SHOOT, 'Z');
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_BOMB, 'X');
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_FOCUS, VK_SHIFT);
@@ -971,7 +1019,7 @@ u16 Controller::GetInput(void)
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UP_RIGHT, DIK_NUMPAD9);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_LEFT, DIK_NUMPAD1);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_DOWN_RIGHT, DIK_NUMPAD3);
-        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_UNK11, DIK_HOME);
+        buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_HOME, DIK_HOME);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_SHOOT, DIK_Z);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_BOMB, DIK_X);
         buttons |= KEYBOARD_KEY_PRESSED(TH_BUTTON_FOCUS, DIK_LSHIFT);

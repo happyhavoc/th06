@@ -1,4 +1,3 @@
-th06::EclManager::Unload
 th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::ParseFile
@@ -14,11 +13,6 @@ th06::MusicRoom::OnDraw
 th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
+th06::MusicRoom::RegisterChain
 th06::MainMenu::SelectRelated
-th06::ItemManager::RemoveAllItems
-th06::ReplayManager::RegisterChain
-th06::ReplayManager::StopRecording
-th06::ReplayManager::SaveReplay
-th06::ReplayManager::ValidateReplayData
-th06::ScreenEffect::DrawSquare
 th06::Pbg3Archive::Pbg3Archive

@@ -181,7 +181,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
         g_GameManager.powerItemCountForScore = 0;
         mgr->rank = 8;
         mgr->grazeInTotal = 0;
-        mgr->unk_1816 = 0;
+        mgr->pointItemsCollected = 0;
         for (catk = mgr->catk, i = 0; i < ARRAY_SIZE_SIGNED(mgr->catk); i++, catk++)
         {
             // Randomize catk content.
@@ -192,22 +192,22 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             catk->base.magic = (u32) "CATK";
             catk->base.unkLen = sizeof(Catk);
             catk->base.th6kLen = sizeof(Catk);
-            catk->base.version = 0x10;
+            catk->base.version = TH6K_VERSION;
             catk->idx = i;
+            catk->numAttempts = 0;
             catk->numSuccess = 0;
-            catk->unk_3e = 0;
         }
         scoredat = ResultScreen::OpenScore("score.dat");
-        g_GameManager.highScore = ResultScreen::GetHighScore(
-            scoredat, NULL, g_GameManager.character * 2 + g_GameManager.shotType, g_GameManager.difficulty);
+        g_GameManager.highScore =
+            ResultScreen::GetHighScore(scoredat, NULL, g_GameManager.CharacterShotType(), g_GameManager.difficulty);
         ResultScreen::ParseCatk(scoredat, mgr->catk);
         ResultScreen::ParseClrd(scoredat, mgr->clrd);
         ResultScreen::ParsePscr(scoredat, (Pscr *)mgr->pscr);
         if (mgr->isInPracticeMode != 0)
         {
-            g_GameManager.highScore = mgr->pscr[g_GameManager.character * 2 + g_GameManager.shotType]
-                                               [g_GameManager.currentStage][g_GameManager.difficulty]
-                                                   .score;
+            g_GameManager.highScore =
+                mgr->pscr[g_GameManager.CharacterShotType()][g_GameManager.currentStage][g_GameManager.difficulty]
+                    .score;
         }
         ResultScreen::ReleaseScoreDat(scoredat);
         mgr->rank = g_DifficultyInfo[g_GameManager.difficulty].rank;
@@ -215,7 +215,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
         mgr->maxRank = g_DifficultyInfo[g_GameManager.difficulty].maxRank;
         mgr->deaths = 0;
         mgr->bombsUsed = 0;
-        mgr->unk_28 = 0;
+        mgr->spellcardsCaptured = 0;
     }
     else
     {
@@ -229,7 +229,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     mgr->currentStage = mgr->currentStage + 1;
     if (g_GameManager.isInReplay == 0)
     {
-        clrdIdx = g_GameManager.character * 2 + g_GameManager.shotType;
+        clrdIdx = g_GameManager.CharacterShotType();
         if (mgr->numRetries == 0 &&
             mgr->clrd[clrdIdx].difficultyClearedWithRetries[g_GameManager.difficulty] < mgr->currentStage - 1)
         {
@@ -443,7 +443,7 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
         gameManager->demoFrames++;
         if (gameManager->demoFrames == DEMO_FADEOUT_FRAMES)
         {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_OUT, 0x78, 0, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_OUT, 120, 0x000000, 0, 0);
         }
         if (gameManager->demoFrames >= DEMO_FRAMES)
         {

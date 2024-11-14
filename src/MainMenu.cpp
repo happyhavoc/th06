@@ -499,22 +499,23 @@ i32 MainMenu::ReplayHandling()
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
                 this->currentReplay = (ReplayData *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
                 ReplayManager::ValidateReplayData(this->currentReplay, g_LastFileSize);
-                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore); cur++)
+                for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData); cur++)
                 {
-                    if (this->currentReplay->stageScore[cur] != NULL)
+                    if (this->currentReplay->stageReplayData[cur] != NULL)
                     {
-                        this->currentReplay->stageScore[cur] =
-                            (StageReplayData *)((u32)this->currentReplay + (u32)this->currentReplay->stageScore[cur]);
+                        this->currentReplay->stageReplayData[cur] =
+                            (StageReplayData *)((u32)this->currentReplay +
+                                                (u32)this->currentReplay->stageReplayData[cur]);
                     }
                 }
 
                 do
                 {
                     // FIXME: there's an additional jump
-                    if (this->replayFileData[this->chosenReplay].stageScore[this->cursor])
+                    if (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor])
                         goto leaveDo;
                     this->cursor = this->cursor + 1;
-                } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageScore));
+                } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData));
                 return ZUN_SUCCESS;
             }
         }
@@ -540,7 +541,7 @@ i32 MainMenu::ReplayHandling()
         cur = MoveCursor(this, 7);
         if (cur < 0)
         {
-            while (this->replayFileData[this->chosenReplay].stageScore[this->cursor] == NULL)
+            while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
             {
                 this->cursor--;
                 if (this->cursor < 0)
@@ -551,7 +552,7 @@ i32 MainMenu::ReplayHandling()
         }
         else if (cur > 0)
         {
-            while (this->replayFileData[this->chosenReplay].stageScore[this->cursor] == NULL)
+            while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
             {
                 this->cursor++;
                 if (this->cursor >= 7)
@@ -560,7 +561,7 @@ i32 MainMenu::ReplayHandling()
                 }
             }
         }
-        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageScore)
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageReplayData)
         {
             g_GameManager.isInReplay = 1;
             g_Supervisor.framerateMultiplier = 1.0;
@@ -569,12 +570,12 @@ i32 MainMenu::ReplayHandling()
             g_GameManager.character = this->currentReplay->shottypeChara / 2;
             g_GameManager.shotType = this->currentReplay->shottypeChara % 2;
             cur = 0;
-            while (this->currentReplay->stageScore[cur] == NULL)
+            while (this->currentReplay->stageReplayData[cur] == NULL)
             {
                 cur++;
             }
-            g_GameManager.livesRemaining = this->currentReplay->stageScore[cur]->livesRemaining;
-            g_GameManager.bombsRemaining = this->currentReplay->stageScore[cur]->bombsRemaining;
+            g_GameManager.livesRemaining = this->currentReplay->stageReplayData[cur]->livesRemaining;
+            g_GameManager.bombsRemaining = this->currentReplay->stageReplayData[cur]->bombsRemaining;
             ReplayData *uh = this->currentReplay;
             free(uh);
             this->currentReplay = NULL;
@@ -679,11 +680,11 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
         if (g_Supervisor.startupTimeBeforeMenuMusic == 0)
         {
             g_Supervisor.PlayAudio("bgm/th06_01.mid");
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_0, 0x78, 0xffffff, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_IN, 120, 0xffffff, 0, 0);
         }
         else
         {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_UNK_0, 200, 0xffffff, 0, 0);
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_IN, 200, 0xffffff, 0, 0);
         }
     }
     g_GameManager.demoMode = 0;
@@ -1474,10 +1475,10 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
             }
             menu->cursor = g_GameManager.menuCursorBackup;
-            local_4c = g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+            local_4c = g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                    .difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6
                            ? 6
-                           : g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+                           : g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                  .difficultyClearedWithoutRetries[g_GameManager.difficulty];
             if (g_GameManager.difficulty == EASY && local_4c == 6)
             {
@@ -1490,10 +1491,10 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         }
         break;
     case STATE_PRACTICE_LVL_SELECT:
-        chosenStage = g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+        chosenStage = g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                   .difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6
                           ? 6
-                          : g_GameManager.clrd[g_GameManager.character * 2 + g_GameManager.shotType]
+                          : g_GameManager.clrd[g_GameManager.CharacterShotType()]
                                 .difficultyClearedWithoutRetries[g_GameManager.difficulty];
         if (g_GameManager.difficulty == EASY && chosenStage == 6)
         {
@@ -1762,39 +1763,26 @@ ZunBool MainMenu::WeirdSecondInputCheck()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-#pragma var_order(stageNum, color, charShotType, selectedStage, textPos, local_28, stage)
+#pragma var_order(stageNum, color, charShotType, selectedStage, textPos)
 ZunResult MainMenu::ChoosePracticeLevel()
 {
     if (this->gameState == STATE_PRACTICE_LVL_SELECT)
     {
-        i32 local_28;
         D3DXVECTOR3 textPos(320.0, 200.0, 0.0);
-        if (this->stateTimer < 30)
-        {
-            local_28 = this->stateTimer * 0xFF / 30;
-        }
-        else
-        {
-            local_28 = 0xff;
-        }
-
-        i32 color = local_28;
+        u32 color = (this->stateTimer < 30) ? this->stateTimer * 0xFF / 30 : 0xff;
         i32 charShotType = (g_GameManager.character << 1) + g_GameManager.shotType;
-        i32 stage;
-        if (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6)
-        {
-            stage = 6;
-        }
-        else
-        {
-            stage = g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty];
-        }
-        i32 selectedStage = stage;
-        if (g_GameManager.difficulty == EASY && stage == 6)
+        i32 selectedStage =
+            (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6)
+                ? 6
+                : g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty];
+
+        if (g_GameManager.difficulty == EASY && selectedStage == 6)
         {
             selectedStage = 5;
         }
-        for (i32 stageNum = 0; stageNum < selectedStage; stageNum++)
+
+        i32 stageNum;
+        for (stageNum = 0; stageNum < selectedStage; stageNum++)
         {
             if (stageNum == this->cursor)
             {
@@ -1802,7 +1790,7 @@ ZunResult MainMenu::ChoosePracticeLevel()
             }
             else
             {
-                g_AsciiManager.color = (color >> 1) << 0x18 | 0x00C0F0F0;
+                g_AsciiManager.color = (color >> 1) << 0x18 | 0x0080C0C0;
             }
             g_AsciiManager.AddFormatText(&textPos, "STAGE %d  %.9d", stageNum + 1,
                                          g_GameManager.pscr[charShotType][stageNum][g_GameManager.difficulty].score);
@@ -2268,10 +2256,10 @@ ZunResult MainMenu::DrawReplayMenu()
                     g_AsciiManager.color = COLOR_GREY;
                 }
             }
-            if (this->currentReplay->stageScore[i])
+            if (this->currentReplay->stageReplayData[i])
             {
                 g_AsciiManager.AddFormatText(&vmRef->pos, "%s %9d", g_StageList[i],
-                                             this->currentReplay->stageScore[i]->score);
+                                             this->currentReplay->stageReplayData[i]->score);
             }
             else
             {

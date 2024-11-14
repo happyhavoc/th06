@@ -223,7 +223,7 @@ void ItemManager::OnUpdate()
                 }
                 g_GameManager.score += itemScore;
                 g_GameManager.pointItemsCollectedInStage++;
-                g_GameManager.unk_1816++;
+                g_GameManager.pointItemsCollected++;
                 g_Gui.flags.flag4 = 2;
                 if (curItem->currentPosition.y < 128.0f)
                 {
@@ -328,6 +328,23 @@ void ItemManager::OnUpdate()
     if (itemAcquired)
     {
         g_SoundPlayer.PlaySoundByIdx(SOUND_15, 0);
+    }
+    return;
+}
+
+#pragma var_order(idx, cursor)
+void ItemManager::RemoveAllItems()
+{
+    Item *cursor;
+    i32 idx;
+
+    for (cursor = &this->items[0], idx = 0; idx < ARRAY_SIZE_SIGNED(this->items); idx += 1, cursor += 1)
+    {
+        if (!cursor->isInUse)
+        {
+            continue;
+        }
+        cursor->state = 1;
     }
     return;
 }

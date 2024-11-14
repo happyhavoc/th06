@@ -14,6 +14,12 @@ struct Rng
     u32 GetRandomU32();
     f32 GetRandomF32ZeroToOne();
 
+    void Initialize(u16 seed)
+    {
+        this->seed = seed;
+        this->generationCount = 0;
+    }
+
     u16 GetRandomU16InRange(u16 range)
     {
         return range != 0 ? this->GetRandomU16() % range : 0;

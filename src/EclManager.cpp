@@ -714,14 +714,14 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                     }
                     if (local_70->nameCsum != (u8)csum)
                     {
-                        local_70->unk_3e = 0;
                         local_70->numSuccess = 0;
+                        local_70->numAttempts = 0;
                         local_70->nameCsum = csum;
                     }
                     local_70->captureScore = g_EnemyManager.spellcardInfo.captureScore;
-                    if (local_70->numSuccess < 9999)
+                    if (local_70->numAttempts < 9999)
                     {
-                        local_70->numSuccess++;
+                        local_70->numAttempts++;
                     }
                 }
                 break;
@@ -745,16 +745,16 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                             g_GameManager.score += scoreIncrease;
                             if (!g_GameManager.isInReplay)
                             {
-                                local_80->unk_3e++;
+                                local_80->numSuccess++;
                                 // What. the. fuck?
                                 // memmove(&local_80->nameCsum, &local_80->characterShotType, 4);
                                 for (local_84 = 4; 0 < local_84; local_84 = local_84 + -1)
                                 {
                                     ((u8 *)&local_80->nameCsum)[local_84 + 1] = ((u8 *)&local_80->nameCsum)[local_84];
                                 }
-                                local_80->characterShotType = g_GameManager.character * 2 + g_GameManager.shotType;
+                                local_80->characterShotType = g_GameManager.CharacterShotType();
                             }
-                            g_GameManager.unk_28++;
+                            g_GameManager.spellcardsCaptured++;
                         }
                     }
                     g_EnemyManager.spellcardInfo.isActive = 0;
@@ -1020,5 +1020,15 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             return ZUN_SUCCESS;
         }
     }
+}
+
+void EclManager::Unload()
+{
+    if (eclFile != NULL)
+    {
+        free(eclFile);
+    }
+    eclFile = NULL;
+    return;
 }
 }; // namespace th06

@@ -6,6 +6,7 @@
 #define TH_JP_CONFIG_FILE "東方紅魔郷.cfg"
 #define TH_JP_WINDOW_TITLE "東方紅魔郷　〜 the Embodiment of Scarlet Devil"
 #define TH_JP_DBG_MAINMENU_VRAM "Debug : title 開始 VRAM = %d\n"
+#define TH_JP_DBG_RESULTSCREEN_COUNAT "counat = %d\n"
 #define TH_JP_ERR_ALREADY_RUNNING "二つは起動できません\n"
 #define TH_JP_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D オブジェクトは何故か作成出来なかった\n"
 #define TH_JP_ERR_LOGGER_START "東方動作記録 --------------------------------------------- \n"
@@ -81,6 +82,15 @@
 #define TH_JP_MARISA_A_BOMB_NAME "魔符「スターダストレヴァリエ」"
 #define TH_JP_MARISA_B_BOMB_NAME "恋符「マスタースパーク」"
 
+#define TH_JP_HAKUREI_REIMU_SPIRIT "博麗 霊夢 (霊)"
+#define TH_JP_HAKUREI_REIMU_DREAM "博麗 霊夢 (夢)"
+#define TH_JP_KIRISAME_MARISA_DEVIL "霧雨 魔理沙 (魔)"
+#define TH_JP_KIRISAME_MARISA_LOVE "霧雨 魔理沙 (恋)"
+#define TH_JP_SATSUKI_RIN_FLOWER "冴月 麟 (花)"
+#define TH_JP_SATSUKI_RIN_WIND "冴月 麟 (風)"
+
+#define TH_JP_UNKNOWN_SPELLCARD "？？？？？"
+
 #define TH_JP_CM_DAT_FILE "紅魔郷CM.dat"
 #define TH_JP_ED_DAT_FILE "紅魔郷ED.DAT"
 #define TH_JP_IN_DAT_FILE "紅魔郷IN.dat"
@@ -92,6 +102,7 @@
 #define TH_EN_CONFIG_FILE "th06.cfg"
 #define TH_EN_WINDOW_TITLE "Touhou Koumakyou ~ the Embodiment of Scarlet Devil"
 #define TH_EN_DBG_MAINMENU_VRAM "Debug : title menu VRAM = %d\n"
+#define TH_EN_DBG_RESULTSCREEN_COUNAT "counat = %d\n"
 #define TH_EN_ERR_ALREADY_RUNNING "Touhou cannot be started\n"
 #define TH_EN_ERR_D3D_COULD_NOT_CREATE_OBJ "Direct3D object could not be created for some reason\n"
 #define TH_EN_ERR_LOGGER_START "Logger started --------------------------------------------- \n"
@@ -166,6 +177,15 @@
 #define TH_EN_MARISA_A_BOMB_NAME "Magic Sign \"Stardust Reverie\""
 #define TH_EN_MARISA_B_BOMB_NAME "Love Sign \"Master Spark\""
 
+#define TH_EN_HAKUREI_REIMU_SPIRIT "Hakurei Reimu (Spirit)"
+#define TH_EN_HAKUREI_REIMU_DREAM "Hakurei Reimu (Dream)"
+#define TH_EN_KIRISAME_MARISA_DEVIL "Kirisame Marisa (Devil)"
+#define TH_EN_KIRISAME_MARISA_LOVE "Kirisame Marisa (Love)"
+#define TH_EN_SATSUKI_RIN_FLOWER "Satsuki Rin (Flower)"
+#define TH_EN_SATSUKI_RIN_WIND "Satsuki Rin (Wind)"
+
+#define TH_EN_UNKNOWN_SPELLCARD "??????"
+
 #define TH_EN_CM_DAT_FILE "KOUMAKYO_CM.dat"
 #define TH_EN_ED_DAT_FILE "KOUMAKYO_ED.dat"
 #define TH_EN_IN_DAT_FILE "KOUMAKYO_IN.dat"
@@ -179,6 +199,7 @@
 #define TH_CONFIG_FILE TH_MAKE_LANG_STR(TH_LANG, _CONFIG_FILE)
 #define TH_WINDOW_TITLE TH_MAKE_LANG_STR(TH_LANG, _WINDOW_TITLE)
 #define TH_DBG_MAINMENU_VRAM TH_MAKE_LANG_STR(TH_LANG, _DBG_MAINMENU_VRAM)
+#define TH_DBG_RESULTSCREEN_COUNAT TH_MAKE_LANG_STR(TH_LANG, _DBG_RESULTSCREEN_COUNAT)
 #define TH_ERR_ALREADY_RUNNING TH_MAKE_LANG_STR(TH_LANG, _ERR_ALREADY_RUNNING)
 #define TH_ERR_D3D_ERR_COULD_NOT_CREATE_OBJ TH_MAKE_LANG_STR(TH_LANG, _ERR_D3D_COULD_NOT_CREATE_OBJ)
 #define TH_ERR_LOGGER_START TH_MAKE_LANG_STR(TH_LANG, _ERR_LOGGER_START)
@@ -250,6 +271,13 @@
 #define TH_REIMU_B_BOMB_NAME TH_MAKE_LANG_STR(TH_LANG, _REIMU_B_BOMB_NAME)
 #define TH_MARISA_A_BOMB_NAME TH_MAKE_LANG_STR(TH_LANG, _MARISA_A_BOMB_NAME)
 #define TH_MARISA_B_BOMB_NAME TH_MAKE_LANG_STR(TH_LANG, _MARISA_B_BOMB_NAME)
+#define TH_HAKUREI_REIMU_SPIRIT TH_MAKE_LANG_STR(TH_LANG, _HAKUREI_REIMU_SPIRIT)
+#define TH_HAKUREI_REIMU_DREAM TH_MAKE_LANG_STR(TH_LANG, _HAKUREI_REIMU_DREAM)
+#define TH_KIRISAME_MARISA_DEVIL TH_MAKE_LANG_STR(TH_LANG, _KIRISAME_MARISA_DEVIL)
+#define TH_KIRISAME_MARISA_LOVE TH_MAKE_LANG_STR(TH_LANG, _KIRISAME_MARISA_LOVE)
+#define TH_SATSUKI_RIN_FLOWER TH_MAKE_LANG_STR(TH_LANG, _SATSUKI_RIN_FLOWER)
+#define TH_SATSUKI_RIN_WIND TH_MAKE_LANG_STR(TH_LANG, _SATSUKI_RIN_WIND)
+#define TH_UNKNOWN_SPELLCARD TH_MAKE_LANG_STR(TH_LANG, _UNKNOWN_SPELLCARD)
 #define TH_CM_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _CM_DAT_FILE)
 #define TH_ED_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _ED_DAT_FILE)
 #define TH_IN_DAT_FILE TH_MAKE_LANG_STR(TH_LANG, _IN_DAT_FILE)

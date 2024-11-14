@@ -32,6 +32,14 @@
       "name": "AsciiManager",
       "target_path": "build/objdiff/orig/AsciiManager.obj",
       "base_path": "build/objdiff/reimpl/AsciiManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "BombData",
+
+            "target_path": "build/objdiff/orig/BombData.obj",
+            "base_path": "build/objdiff/reimpl/BombData.obj",
       "reverse_fn_order": false
     },
     {
@@ -170,6 +178,22 @@
       "name": "Player",
       "target_path": "build/objdiff/orig/Player.obj",
       "base_path": "build/objdiff/reimpl/Player.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "ReplayManager",
+
+            "target_path": "build/objdiff/orig/ReplayManager.obj",
+            "base_path": "build/objdiff/reimpl/ReplayManager.obj",
+
+            "reverse_fn_order": false
+        },
+        {
+            "name": "ResultScreen",
+
+            "target_path": "build/objdiff/orig/ResultScreen.obj",
+            "base_path": "build/objdiff/reimpl/ResultScreen.obj",
       "reverse_fn_order": false
     },
     {
