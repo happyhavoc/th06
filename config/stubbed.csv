@@ -13,6 +13,5 @@ th06::MusicRoom::OnDraw
 th06::ResultScreen::RegisterChain
 th06::ResultScreen::ReleaseScoreDat
 th06::ScreenEffect::RegisterChain
-th06::MusicRoom::RegisterChain
 th06::MainMenu::SelectRelated
 th06::Pbg3Archive::Pbg3Archive

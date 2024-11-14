@@ -16,13 +16,14 @@ struct MusicRoom
         memset(this, 0, sizeof(MusicRoom));
     }
 
+    static ZunResult RegisterChain();
     static ZunResult AddedCallback(MusicRoom* musicRoom);
     static ZunResult DeletedCallback(MusicRoom* musicRoom);
     u32 DrawMusicList();
     ZunResult FUN_00424e8f();
     static ChainCallbackResult OnDraw(MusicRoom* musicRoom);
     static ChainCallbackResult OnUpdate(MusicRoom* musicRoom);
-    static ZunResult RegisterChain();
+
 
     ChainElem* calc_chain;
     ChainElem* draw_chain;
