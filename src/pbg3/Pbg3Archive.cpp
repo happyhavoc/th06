@@ -154,8 +154,13 @@ Pbg3Archive::~Pbg3Archive()
 
 i32 Pbg3Archive::Load(char *path)
 {
+    if (this->Release() == NULL)
+    {
+        return FALSE;
+    }
+
     this->parser = new Pbg3Parser();
-    if (this->parser == NULL)
+    if ( this->parser == NULL )
     {
         return FALSE;
     }
@@ -163,6 +168,12 @@ i32 Pbg3Archive::Load(char *path)
     if (this->parser->OpenArchive(path) == FALSE)
     {
         delete this->parser;
+        // TODO: There should be an instruction here:
+        //     mov dword ptr [esi], 0x0
+        // This corresponds directly to this C++ code:
+        //     this->parser = NULL;
+        // But inserting this line of code causes a branch in the ASM wrapper code for the scalar deleting destructor
+        // call to point to the wrong place!
         return FALSE;
     }
 
