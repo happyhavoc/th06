@@ -48,21 +48,27 @@ ZunResult MusicRoom::DeletedCallback(MusicRoom *musicRoom)
 
 ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom)
 {
-    int shouldDraw;
-    int shouldDraw2 = musicRoom->shouldDrawMusicList;
-    do
+    i32 shouldDraw2 = musicRoom->shouldDrawMusicList;
+    for (;;)
     {
-        shouldDraw = musicRoom->shouldDrawMusicList;
-        if (shouldDraw != 0)
+        switch (musicRoom->shouldDrawMusicList)
         {
-            if (shouldDraw != 1)
+        case false:
+            if (!musicRoom->FUN_00424e8f())
             {
-                musicRoom->DrawMusicList();
+                break;
+            }
+
+            continue;
+
+        case true:
+            if (musicRoom->DrawMusicList())
+            {
                 return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
             }
-            break;
         }
-    } while (musicRoom->FUN_00424e8f() != ZUN_SUCCESS);
+        break;
+    }
 
     if (shouldDraw2 != musicRoom->shouldDrawMusicList)
     {
@@ -70,7 +76,7 @@ ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom)
     }
     else
     {
-        musicRoom->unk_0x8 += 1;
+        musicRoom->unk_0x8++;
     }
     g_AnmManager->ExecuteScript(musicRoom->mainVM);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
