@@ -77,7 +77,7 @@ i32 Pbg3Archive::Release()
 i32 Pbg3Archive::FindEntry(char *path)
 {
     // Why was this here? It's certainly not present in the assembly.
-    //if (this->numOfEntries == 0)
+    // if (this->numOfEntries == 0)
     //{
     //    return -1;
     //}
@@ -161,7 +161,7 @@ i32 Pbg3Archive::Load(char *path)
     }
 
     this->parser = new Pbg3Parser();
-    if ( this->parser == NULL )
+    if (this->parser == NULL)
     {
         return FALSE;
     }
