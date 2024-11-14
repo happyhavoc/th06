@@ -76,15 +76,16 @@ i32 Pbg3Archive::Release()
 
 i32 Pbg3Archive::FindEntry(char *path)
 {
-    if (this->numOfEntries == 0)
-    {
-        return -1;
-    }
+    // Why was this here? It's certainly not present in the assembly.
+    //if (this->numOfEntries == 0)
+    //{
+    //    return -1;
+    //}
 
     for (u32 entryIdx = 0; entryIdx < this->numOfEntries; entryIdx += 1)
     {
         char *entryFilename = this->entries[entryIdx].filename;
-        i32 res = strcmp(entryFilename, path);
+        i32 res = strcmp(path, entryFilename);
         if (res == 0)
         {
             return entryIdx;
