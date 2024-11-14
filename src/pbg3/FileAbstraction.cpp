@@ -110,7 +110,7 @@ i32 FileAbstraction::WriteByte(u32 b)
 {
     u8 outByte;
     u32 outBytesWritten;
-    
+
     outByte = b;
     if (this->Write(&outByte, 1, &outBytesWritten) == FALSE)
     {

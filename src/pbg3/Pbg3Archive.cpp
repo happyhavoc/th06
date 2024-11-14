@@ -182,7 +182,8 @@ i32 Pbg3Archive::Load(char *path)
     }
 
     if (this->parser->OpenArchive(path) == FALSE)
-    {   if (this->parser != NULL)
+    {
+        if (this->parser != NULL)
         {
             delete this->parser;
             this->parser = NULL;
@@ -197,39 +198,40 @@ i32 Pbg3Archive::Load(char *path)
 #define LZSS_DICTSIZE_MASK 0x1fff
 #define LZSS_MIN_MATCH 3
 
-#define BITFIELD_NEW_BYTE(byte, currDataPtr, baseDataPtr, size, checksum) \
-    byte = *dataCursor; \
-    if ((i32) (currDataPtr - baseDataPtr) >= (i32) size) \
-    { \
-        currByte = 0; \
-    } \
-    else \
-    { \
-        dataCursor++; \
-    } \
+#define BITFIELD_NEW_BYTE(byte, currDataPtr, baseDataPtr, size, checksum)                                              \
+    byte = *dataCursor;                                                                                                \
+    if ((i32)(currDataPtr - baseDataPtr) >= (i32)size)                                                                 \
+    {                                                                                                                  \
+        currByte = 0;                                                                                                  \
+    }                                                                                                                  \
+    else                                                                                                               \
+    {                                                                                                                  \
+        dataCursor++;                                                                                                  \
+    }                                                                                                                  \
     checksum += byte;
 
-#define BITFIELD_READ_BITS(bitsCount, outBitMask, bitfieldReturn, inBitMask, byte, currDataPtr, baseDataPtr, size, checksum) \
-    outBitMask = 0x01 << (bitsCount - 1); \
-    bitfieldReturn = 0; \
-    while (outBitMask != 0) \
-    { \
-        if (inBitMask == 0x80) \
-        { \
-            BITFIELD_NEW_BYTE(byte, currDataPtr, baseDataPtr, size, checksum) \
-        } \
-        if ((byte & inBitMask) != 0) \
-        { \
-            bitfieldReturn |= outBitMask; \
-        } \
-     \
-        outBitMask >>= 1; \
-        inBitMask >>= 1; \
-        if (inBitMask == 0) \
-        { \
-            inBitMask = 0x80; \
-        } \
-    } \
+#define BITFIELD_READ_BITS(bitsCount, outBitMask, bitfieldReturn, inBitMask, byte, currDataPtr, baseDataPtr, size,     \
+                           checksum)                                                                                   \
+    outBitMask = 0x01 << (bitsCount - 1);                                                                              \
+    bitfieldReturn = 0;                                                                                                \
+    while (outBitMask != 0)                                                                                            \
+    {                                                                                                                  \
+        if (inBitMask == 0x80)                                                                                         \
+        {                                                                                                              \
+            BITFIELD_NEW_BYTE(byte, currDataPtr, baseDataPtr, size, checksum)                                          \
+        }                                                                                                              \
+        if ((byte & inBitMask) != 0)                                                                                   \
+        {                                                                                                              \
+            bitfieldReturn |= outBitMask;                                                                              \
+        }                                                                                                              \
+                                                                                                                       \
+        outBitMask >>= 1;                                                                                              \
+        inBitMask >>= 1;                                                                                               \
+        if (inBitMask == 0)                                                                                            \
+        {                                                                                                              \
+            inBitMask = 0x80;                                                                                          \
+        }                                                                                                              \
+    }
 
 u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
 {
@@ -257,7 +259,6 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
     u32 checksum = 0;
     u32 dictHead = 1;
 
-    
     u8 dict[LZSS_DICTSIZE];
 
     // Memset doesn't produce matching assembly
@@ -305,7 +306,7 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
 
             BITFIELD_READ_BITS(4, outBitMask, bitfieldReturn, inBitMask, currByte, dataCursor, rawData, size, checksum)
 
-            for (i32 i = 0; i <= (i32) bitfieldReturn + 2; i++)
+            for (i32 i = 0; i <= (i32)bitfieldReturn + 2; i++)
             {
                 u32 c = dict[(matchOffset + i) & LZSS_DICTSIZE_MASK];
                 *outCursor = c;
@@ -318,7 +319,7 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
     // ???? No clue what this was supposed to be
     while (inBitMask != 0x80)
     {
-        if (inBitMask == 0x80 && (i32) (dataCursor - rawData) < (i32) size)
+        if (inBitMask == 0x80 && (i32)(dataCursor - rawData) < (i32)size)
         {
             dataCursor++;
         }

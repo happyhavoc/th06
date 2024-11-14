@@ -53,7 +53,7 @@ class FileAbstraction : public IFileAbstraction
 
   protected:
     HANDLE handle;
-  
+
   private:
     DWORD access;
 };
