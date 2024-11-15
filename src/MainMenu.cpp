@@ -2364,45 +2364,46 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-void th06::MainMenu::SelectRelated(MainMenu *menu, i16 btn_pressed, i16 old_mapping, ZunBool param_4)
+void th06::MainMenu::SelectRelated(MainMenu *menu, i16 buttonPressed, i16 oldMapping, ZunBool unknownBool)
 {
     // I'm pretty sure this function handles going to the bottom when you press the
     // bomb button or escape
-    if ((param_4 == 0) && (menu->controlMapping[0] == btn_pressed))
+    // TODO: rename arguments after cleaning up MainMenu::OnUpdate.
+    if ((unknownBool == 0) && (menu->controlMapping[0] == buttonPressed))
     {
-        menu->controlMapping[0] = old_mapping;
+        menu->controlMapping[0] = oldMapping;
     }
-    if (menu->controlMapping[1] == btn_pressed)
+    if (menu->controlMapping[1] == buttonPressed)
     {
-        menu->controlMapping[1] = old_mapping;
+        menu->controlMapping[1] = oldMapping;
     }
-    if ((param_4 == 0) && (menu->controlMapping[2] == btn_pressed))
+    if ((unknownBool == 0) && (menu->controlMapping[2] == buttonPressed))
     {
-        menu->controlMapping[2] = old_mapping;
+        menu->controlMapping[2] = oldMapping;
     }
-    if (menu->controlMapping[4] == btn_pressed)
+    if (menu->controlMapping[4] == buttonPressed)
     {
-        menu->controlMapping[4] = old_mapping;
+        menu->controlMapping[4] = oldMapping;
     }
-    if (menu->controlMapping[5] == btn_pressed)
+    if (menu->controlMapping[5] == buttonPressed)
     {
-        menu->controlMapping[5] = old_mapping;
+        menu->controlMapping[5] = oldMapping;
     }
-    if (menu->controlMapping[6] == btn_pressed)
+    if (menu->controlMapping[6] == buttonPressed)
     {
-        menu->controlMapping[6] = old_mapping;
+        menu->controlMapping[6] = oldMapping;
     }
-    if (menu->controlMapping[7] == btn_pressed)
+    if (menu->controlMapping[7] == buttonPressed)
     {
-        menu->controlMapping[7] = old_mapping;
+        menu->controlMapping[7] = oldMapping;
     }
-    if (menu->controlMapping[3] == btn_pressed)
+    if (menu->controlMapping[3] == buttonPressed)
     {
-        menu->controlMapping[3] = old_mapping;
+        menu->controlMapping[3] = oldMapping;
     }
-    if (menu->controlMapping[8] == btn_pressed)
+    if (menu->controlMapping[8] == buttonPressed)
     {
-        menu->controlMapping[8] = old_mapping;
+        menu->controlMapping[8] = oldMapping;
     }
     return;
 }
