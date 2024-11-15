@@ -1,4 +1,5 @@
 _g_BulletTypeInfos,                     0x0046a6e8
+_g_DifficultyWeightsList,               0x0046bca4
 _g_DefaultMagic,                        0x0046bdf4
 _g_TextureFormatD3D8Mapping,            0x0046c220
 _g_StageFiles,                          0x004760e0
@@ -63,7 +64,11 @@ _g_CharacterPowerBulletDataMarisaBRank7,0x004781f8
 _g_CharacterPowerBulletDataMarisaBRank8,0x004782b0
 _g_CharacterPowerBulletDataMarisaBRank9,0x00478368
 _g_CharacterPowerDataMarisaB,           0x00478468
+_g_AlphabetList,                        0x004784d4
 _g_CharacterList,                       0x004784d8
+_g_SpellcardsWeightsList,               0x004784f0
+_g_RightAlignedDifficultyList,          0x00478504
+_g_ShortCharacterList2,                 0x00478518
 _g_SoundBufferIdxVol,                   0x00478528
 _g_SFXList,                             0x00478628
 _g_LastJoystickInput,                   0x00478690

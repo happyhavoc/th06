@@ -1,15 +1,32 @@
 #pragma once
 
 #include "AnmVm.hpp"
+#include "ReplayData.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06
 {
 
+#define TH6K_MAGIC 'K6HT'
+#define HSCR_MAGIC 'RCSH'
+#define CLRD_MAGIC 'DRLC'
+#define PSCR_MAGIC 'RCSP'
+#define CATK_MAGIC 'KTAC'
+
 #define HSCR_NUM_CHARS_SHOTTYPES 4
 #define HSCR_NUM_DIFFICULTIES 5
 #define HSCR_NUM_SCORES_SLOTS 10
+
+#define TH6K_VERSION 16
+
+#define RESULT_KEYBOARD_COLUMNS 16
+#define RESULT_KEYBOARD_ROWS 6
+#define RESULT_KEYBOARD_CHARACTERS RESULT_KEYBOARD_COLUMNS *RESULT_KEYBOARD_ROWS
+#define RESULT_KEYBOARD_SPACE 94
+#define RESULT_KEYBOARD_END 95
+
+#define SCORE_DAT_FILE_BUFFER_SIZE 0xa0000
 
 enum ResultScreenState
 {
@@ -24,7 +41,7 @@ enum ResultScreenState
     RESULT_SCREEN_STATE_SPELLCARDS,
     RESULT_SCREEN_STATE_WRITING_HIGHSCORE_NAME,
     RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION,
-    RESULT_SCREEN_STATE_UNK_11,
+    RESULT_SCREEN_STATE_CANT_SAVE_REPLAY,
     RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE,
     RESULT_SCREEN_STATE_WRITING_REPLAY_NAME,
     RESULT_SCREEN_STATE_OVERWRITE_REPLAY_FILE,
@@ -73,9 +90,9 @@ struct Catk
     u8 characterShotType;
     u32 unk_14;
     char name[32];
-    u32 numAttempts;
+    u32 unk_38;
+    u16 numAttempts;
     u16 numSuccess;
-    u16 unk_3e;
 };
 C_ASSERT(sizeof(Catk) == 0x40);
 
@@ -110,6 +127,11 @@ C_ASSERT(sizeof(Pscr) == 0x14);
 
 struct Hscr
 {
+    Hscr *ShiftBytes(i32 value)
+    {
+        return (Hscr *)(((u8 *)this) + value);
+    };
+
     Th6k base;
     u32 score;
     u8 character;
@@ -148,7 +170,8 @@ struct ScoreDat
 
     u8 xorseed[2];
     u16 csum;
-    u8 unk[4];
+    u16 unk_8;
+    u8 unk[2];
     u32 dataOffset;
     ScoreListNode *scores;
     u32 fileLen;
@@ -158,6 +181,11 @@ C_ASSERT(sizeof(ScoreDat) == 0x14);
 struct ResultScreen
 {
     ResultScreen();
+    ~ResultScreen()
+    {
+        ScoreDat *sd = this->scoreDat;
+        free(sd);
+    };
 
     static ZunResult RegisterChain(i32 unk);
     static ChainCallbackResult OnUpdate(ResultScreen *r);
@@ -169,46 +197,51 @@ struct ResultScreen
     static ZunResult ParseCatk(ScoreDat *s, Catk *catk);
     static ZunResult ParseClrd(ScoreDat *s, Clrd *out);
     static ZunResult ParsePscr(ScoreDat *s, Pscr *out);
-    static u32 GetHighScore(ScoreDat *score_dat, ScoreListNode *node, u32 character, u32 difficulty);
+
+    static void WriteScore(ResultScreen *r);
+    void FreeScore(i32 difficulty, i32 character);
+    static u32 GetHighScore(ScoreDat *s, ScoreListNode *node, u32 character, u32 difficulty);
     static void ReleaseScoreDat(ScoreDat *s);
 
     static void MoveCursor(ResultScreen *r, i32 len);
     static ZunBool MoveCursorHorizontally(ResultScreen *r, i32 len);
 
-    void HandleResultKeyboard();
-    void HandleReplaySaveKeyboard();
+    static void FreeAllScores(ScoreListNode *scores);
+
+    i32 HandleResultKeyboard();
+    i32 HandleReplaySaveKeyboard();
     ZunResult CheckConfirmButton();
 
-    void LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
+    static i32 LinkScore(ScoreListNode *, Hscr *);
+    i32 LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
+    u32 DrawFinalStats();
 
     ScoreDat *scoreDat;
     i32 frameTimer;
     i32 resultScreenState;
-    i32 unk_c;
+    i32 lastResultScreenState;
     i32 cursor;
-    i32 unk_14;
+    i32 lastBestScoresCursor;
     i32 previousCursor;
-    i32 unk_1c;
+    i32 replayNumber;
     i32 selectedCharacter;
     i32 charUsed;
     i32 lastSpellcardSelected;
     i32 diffSelected;
     i32 cheatCodeStep;
-    i32 unk_34[3];
+    char replayName[8];
+    i32 unk_3c;
     AnmVm unk_40[38];
     AnmVm unk_28a0[16];
     AnmVm unk_39a0;
     ScoreListNode scores[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES];
     Hscr defaultScore[HSCR_NUM_DIFFICULTIES][HSCR_NUM_CHARS_SHOTTYPES][HSCR_NUM_SCORES_SLOTS];
     Hscr hscr;
-    u8 unk_519c[12];
+    Th6k fileHeader;
     ChainElem *calcChain;
     ChainElem *drawChain;
-    u8 unk_51b0[1216];
-    char date[9];
-    u8 unk_5679[11];
-    u32 score;
-    u8 unk_5688[40];
+    ReplayData replays[15];
+    ReplayData defaultReplay;
 };
 C_ASSERT(sizeof(ResultScreen) == 0x56b0);
 }; // namespace th06

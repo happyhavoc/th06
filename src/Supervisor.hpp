@@ -14,6 +14,8 @@
 
 namespace th06
 {
+#define GAME_VERSION 0x102
+
 enum GameConfigOptsShifts
 {
     GCOS_USE_D3D_HW_TEXTURE_BLENDING = 0x0,
@@ -74,11 +76,6 @@ struct GameConfiguration
     {
         return this->opts >> GCOS_NO_COLOR_COMP & 1 | this->opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1;
     }
-
-    u32 IsUnknown()
-    {
-        return this->opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH & 1 | this->opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1;
-    }
 };
 
 #define IN_PBG3_INDEX 0
@@ -132,6 +129,12 @@ struct Supervisor
     f32 FramerateMultiplier()
     {
         return this->effectiveFramerateMultiplier;
+    }
+
+    u32 IsUnknown()
+    {
+        return this->cfg.opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH & 1 |
+               this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1;
     }
 
     HINSTANCE hInstance;
