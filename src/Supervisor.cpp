@@ -50,7 +50,7 @@ ZunResult Supervisor::LoadConfig(char *path)
         g_Supervisor.cfg.lifeCount = 2;
         g_Supervisor.cfg.bombCount = 3;
         g_Supervisor.cfg.colorMode16bit = 0xff;
-        g_Supervisor.cfg.version = 0x102;
+        g_Supervisor.cfg.version = GAME_VERSION;
         g_Supervisor.cfg.padXAxis = 600;
         g_Supervisor.cfg.padYAxis = 600;
         wavFile = fopen("bgm/th06_01.wav", "rb");
@@ -78,12 +78,12 @@ ZunResult Supervisor::LoadConfig(char *path)
             (g_Supervisor.cfg.colorMode16bit >= 2) || (g_Supervisor.cfg.musicMode >= 3) ||
             (g_Supervisor.cfg.defaultDifficulty >= 5) || (g_Supervisor.cfg.playSounds >= 2) ||
             (g_Supervisor.cfg.windowed >= 2) || (g_Supervisor.cfg.frameskipConfig >= 3) ||
-            (g_Supervisor.cfg.version != 0x102) || (g_LastFileSize != 0x38))
+            (g_Supervisor.cfg.version != GAME_VERSION) || (g_LastFileSize != 0x38))
         {
             g_Supervisor.cfg.lifeCount = 2;
             g_Supervisor.cfg.bombCount = 3;
             g_Supervisor.cfg.colorMode16bit = 0xff;
-            g_Supervisor.cfg.version = 0x102;
+            g_Supervisor.cfg.version = GAME_VERSION;
             g_Supervisor.cfg.padXAxis = 600;
             g_Supervisor.cfg.padYAxis = 600;
             wavFile2 = fopen("bgm/th06_01.wav", "rb");
@@ -605,7 +605,7 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
             strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
 
             char verPath[128];
-            sprintf(verPath, "ver%.4x.dat", 0x102);
+            sprintf(verPath, "ver%.4x.dat", GAME_VERSION);
             i32 res = this->pbg3Archives[pbg3FileIdx]->FindEntry(verPath);
             if (res < 0)
             {

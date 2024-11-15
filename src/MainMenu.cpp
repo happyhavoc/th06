@@ -1763,39 +1763,26 @@ ZunBool MainMenu::WeirdSecondInputCheck()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-#pragma var_order(stageNum, color, charShotType, selectedStage, textPos, local_28, stage)
+#pragma var_order(stageNum, color, charShotType, selectedStage, textPos)
 ZunResult MainMenu::ChoosePracticeLevel()
 {
     if (this->gameState == STATE_PRACTICE_LVL_SELECT)
     {
-        i32 local_28;
         D3DXVECTOR3 textPos(320.0, 200.0, 0.0);
-        if (this->stateTimer < 30)
-        {
-            local_28 = this->stateTimer * 0xFF / 30;
-        }
-        else
-        {
-            local_28 = 0xff;
-        }
-
-        i32 color = local_28;
+        u32 color = (this->stateTimer < 30) ? this->stateTimer * 0xFF / 30 : 0xff;
         i32 charShotType = (g_GameManager.character << 1) + g_GameManager.shotType;
-        i32 stage;
-        if (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6)
-        {
-            stage = 6;
-        }
-        else
-        {
-            stage = g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty];
-        }
-        i32 selectedStage = stage;
-        if (g_GameManager.difficulty == EASY && stage == 6)
+        i32 selectedStage =
+            (g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty] > 6)
+                ? 6
+                : g_GameManager.clrd[charShotType].difficultyClearedWithoutRetries[g_GameManager.difficulty];
+
+        if (g_GameManager.difficulty == EASY && selectedStage == 6)
         {
             selectedStage = 5;
         }
-        for (i32 stageNum = 0; stageNum < selectedStage; stageNum++)
+
+        i32 stageNum;
+        for (stageNum = 0; stageNum < selectedStage; stageNum++)
         {
             if (stageNum == this->cursor)
             {
@@ -1803,7 +1790,7 @@ ZunResult MainMenu::ChoosePracticeLevel()
             }
             else
             {
-                g_AsciiManager.color = (color >> 1) << 0x18 | 0x00C0F0F0;
+                g_AsciiManager.color = (color >> 1) << 0x18 | 0x0080C0C0;
             }
             g_AsciiManager.AddFormatText(&textPos, "STAGE %d  %.9d", stageNum + 1,
                                          g_GameManager.pscr[charShotType][stageNum][g_GameManager.difficulty].score);
