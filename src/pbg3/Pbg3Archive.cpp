@@ -76,15 +76,10 @@ i32 Pbg3Archive::Release()
 
 i32 Pbg3Archive::FindEntry(char *path)
 {
-    if (this->numOfEntries == 0)
-    {
-        return -1;
-    }
-
     for (u32 entryIdx = 0; entryIdx < this->numOfEntries; entryIdx += 1)
     {
         char *entryFilename = this->entries[entryIdx].filename;
-        i32 res = strcmp(entryFilename, path);
+        i32 res = strcmp(path, entryFilename);
         if (res == 0)
         {
             return entryIdx;
@@ -95,7 +90,7 @@ i32 Pbg3Archive::FindEntry(char *path)
 
 u32 Pbg3Archive::GetEntrySize(u32 entryIdx)
 {
-    if (this->numOfEntries <= entryIdx)
+    if (entryIdx >= this->numOfEntries)
     {
         return 0;
     }
@@ -154,6 +149,11 @@ Pbg3Archive::~Pbg3Archive()
 
 i32 Pbg3Archive::Load(char *path)
 {
+    if (this->Release() == NULL)
+    {
+        return FALSE;
+    }
+
     this->parser = new Pbg3Parser();
     if (this->parser == NULL)
     {
@@ -163,6 +163,12 @@ i32 Pbg3Archive::Load(char *path)
     if (this->parser->OpenArchive(path) == FALSE)
     {
         delete this->parser;
+        // TODO: There should be an instruction here:
+        //     mov dword ptr [esi], 0x0
+        // This corresponds directly to this C++ code:
+        //     this->parser = NULL;
+        // But inserting this line of code causes a branch in the ASM wrapper code for the scalar deleting destructor
+        // call to point to the wrong place!
         return FALSE;
     }
 
