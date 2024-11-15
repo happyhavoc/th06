@@ -30,8 +30,6 @@ D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
 #define TEX_FMT_R8G8B8 4
 #define TEX_FMT_A4R4G4B4 5
 
-// Stack layout here doesn't match because of extra unused stack slot.
-// This might mean that some empty constructors are called and inlined here.
 AnmManager::AnmManager()
 {
     this->maybeLoadedSpriteCount = 0;
