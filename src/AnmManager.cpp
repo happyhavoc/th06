@@ -1680,8 +1680,8 @@ void AnmManager::DrawEndingRect(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLe
             D3D_Surface->Release();
             return;
         }
-        if (D3DXLoadSurfaceFromSurface(surfaces[surfaceIdx], NULL, NULL, surfacesBis[surfaceIdx], NULL, NULL, D3DX_FILTER_NONE, 0) !=
-            D3D_OK)
+        if (D3DXLoadSurfaceFromSurface(surfaces[surfaceIdx], NULL, NULL, surfacesBis[surfaceIdx], NULL, NULL,
+                                       D3DX_FILTER_NONE, 0) != D3D_OK)
         {
             D3D_Surface->Release();
             return;
