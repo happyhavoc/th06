@@ -11,11 +11,11 @@ i32 Pbg3Parser::OpenArchive(char *path)
 {
     this->Close();
     this->Reset();
-    if (this->Open(path, "r") == FALSE)
+    if (FileAbstraction::Open(path, "r") == FALSE)
     {
         return FALSE;
     }
-    this->fileSize = this->GetSize();
+    this->fileSize = GetFileSize(this->handle, NULL);
     return TRUE;
 }
 
@@ -34,7 +34,7 @@ i32 Pbg3Parser::ReadBit()
 
     if (this->bitIdxInCurByte == 0x80)
     {
-        this->curByte = this->ReadByte();
+        this->curByte = FileAbstraction::ReadByte();
         if (this->curByte == -1)
         {
             return FALSE;
@@ -66,7 +66,7 @@ u32 Pbg3Parser::ReadInt(u32 numBitsAsPowersOf2)
     {
         if (this->bitIdxInCurByte == 0x80)
         {
-            this->curByte = this->ReadByte();
+            this->curByte = FileAbstraction::ReadByte();
             if (this->curByte == -1)
             {
                 return FALSE;
@@ -90,7 +90,7 @@ u32 Pbg3Parser::ReadInt(u32 numBitsAsPowersOf2)
     return result;
 }
 
-u8 Pbg3Parser::ReadByteAssumeAligned()
+i32 Pbg3Parser::ReadByteAssumeAligned()
 {
     if (this->offsetInFile < this->fileSize)
     {
@@ -112,7 +112,7 @@ i32 Pbg3Parser::SeekToOffset(u32 fileOffset)
         return FALSE;
     }
 
-    if (this->Seek(fileOffset, FILE_BEGIN) == FALSE)
+    if (FileAbstraction::Seek(fileOffset, FILE_BEGIN) == FALSE)
     {
         return FALSE;
     }
@@ -141,7 +141,7 @@ i32 Pbg3Parser::ReadByteAlignedData(u8 *data, u32 bytesToRead)
     u32 numBytesRead;
 
     this->SeekToNextByte();
-    return this->Read(data, bytesToRead, &numBytesRead);
+    return FileAbstraction::Read(data, bytesToRead, &numBytesRead);
 }
 
 i32 Pbg3Parser::GetLastWriteTime(LPFILETIME lastWriteTime)
@@ -154,13 +154,17 @@ i32 Pbg3Parser::GetLastWriteTime(LPFILETIME lastWriteTime)
     }
 
     // EWWWW abstraction violation much? (Maybe this is an inlined function?)
-    return this->GetLastWriteTime(lastWriteTime);
+    return FileAbstraction::GetLastWriteTime(lastWriteTime);
 }
 
+// Optimizing for size here needed to prevent the inlining of ReadByteAssumeAligned
+#pragma optimize("s", on)
 i32 Pbg3Parser::ReadByte()
 {
-    return this->ReadByteAssumeAligned();
+    // MSVC generates an add -0x18 instruction to get the caller base here, while the original binary uses a sub 0x18?
+    return Pbg3Parser::ReadByteAssumeAligned();
 }
+#pragma optimize("", on)
 
 Pbg3Parser::~Pbg3Parser()
 {
