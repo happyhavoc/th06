@@ -192,10 +192,10 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             catk->base.magic = (u32) "CATK";
             catk->base.unkLen = sizeof(Catk);
             catk->base.th6kLen = sizeof(Catk);
-            catk->base.version = 0x10;
+            catk->base.version = TH6K_VERSION;
             catk->idx = i;
+            catk->numAttempts = 0;
             catk->numSuccess = 0;
-            catk->unk_3e = 0;
         }
         scoredat = ResultScreen::OpenScore("score.dat");
         g_GameManager.highScore =
@@ -215,7 +215,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
         mgr->maxRank = g_DifficultyInfo[g_GameManager.difficulty].maxRank;
         mgr->deaths = 0;
         mgr->bombsUsed = 0;
-        mgr->unk_28 = 0;
+        mgr->spellcardsCaptured = 0;
     }
     else
     {

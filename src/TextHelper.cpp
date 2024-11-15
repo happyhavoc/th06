@@ -337,4 +337,16 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     return;
 }
 #pragma optimize("", on)
+
+#pragma optimize("s", on)
+void th06::TextHelper::ReleaseTextBuffer()
+{
+    if (g_TextBufferSurface != NULL)
+    {
+        g_TextBufferSurface->Release();
+        g_TextBufferSurface = NULL;
+    }
+    return;
+}
+#pragma optimize("", on)
 }; // namespace th06

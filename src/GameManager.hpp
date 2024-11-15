@@ -87,9 +87,9 @@ struct GameManager
     i32 grazeInStage;
     i32 grazeInTotal;
     u32 isInReplay;
-    u32 deaths;
-    u32 bombsUsed;
-    u32 unk_28;
+    i32 deaths;
+    i32 bombsUsed;
+    i32 spellcardsCaptured;
     i8 isTimeStopped;
     Catk catk[CATK_NUM_CAPTURES];
     Clrd clrd[CLRD_NUM_CHARACTERS];
@@ -98,7 +98,7 @@ struct GameManager
     i8 unk_1812;
     i8 unk_1813;
     u16 pointItemsCollectedInStage;
-    i16 pointItemsCollected;
+    u16 pointItemsCollected;
     u8 numRetries;
     i8 powerItemCountForScore;
     i8 livesRemaining;
@@ -109,7 +109,7 @@ struct GameManager
     u8 isInGameMenu;
     u8 isInRetryMenu;
     u8 isInMenu;
-    i8 isGameCompleted;
+    u8 isGameCompleted;
     u8 isInPracticeMode;
     u8 demoMode;
     i8 unk_1825;
@@ -128,7 +128,7 @@ struct GameManager
     D3DXVECTOR2 playerMovementAreaSize;
     f32 cameraDistance;
     D3DXVECTOR3 stageCameraFacingDir;
-    u32 counat;
+    i32 counat;
     i32 rank;
     i32 maxRank;
     i32 minRank;
