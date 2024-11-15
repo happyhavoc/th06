@@ -166,7 +166,16 @@ struct AnmManager
 
     void ReleaseAnm(i32 anmIdx);
     ZunResult LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset);
-    void ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx);
+    void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
+    {
+        vm->anmFileIndex = anmFileIdx;
+        vm->pos = D3DXVECTOR3(0, 0, 0);
+        vm->posOffset = D3DXVECTOR3(0, 0, 0);
+        vm->fontHeight = 15;
+        vm->fontWidth = 15;
+
+        this->SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
+    }
 
     void SetRenderStateForVm(AnmVm *vm);
 

@@ -682,16 +682,4 @@ ZunResult Stage::RenderObjects(i32 zLevel)
     }
     return ZUN_SUCCESS;
 }
-
-void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
-{
-    vm->anmFileIndex = anmFileIdx;
-    vm->pos = D3DXVECTOR3(0, 0, 0);
-    vm->posOffset = D3DXVECTOR3(0, 0, 0);
-    vm->fontHeight = 15;
-    vm->fontWidth = 15;
-
-    this->SetAndExecuteScript(vm, this->scripts[anmFileIdx]);
-}
-
 }; // namespace th06
