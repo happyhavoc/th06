@@ -117,6 +117,7 @@ def configure(build_type):
             "main",
             "GameWindow",
             "MidiOutput",
+            "MusicRoom",
             "Supervisor",
             # MusicRoom
             "Player",

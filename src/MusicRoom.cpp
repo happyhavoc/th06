@@ -5,7 +5,7 @@
 
 namespace th06 {
     #pragma optimize("s", on)
-    static ZunResult MusicRoom::RegisterChain() {
+    ZunResult MusicRoom::RegisterChain() {
         static MusicRoom g_MusicRoom;
         MusicRoom *musicRoom;
 
