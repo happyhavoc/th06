@@ -16,14 +16,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BombData, 4, g_BombData) = {
     /* MarisaB */ {BombData::BombMarisaBCalc, BombData::BombMarisaBDraw},
 };
 
-// MSVC allocates stack space for unused inlined variables and one of Zun's inlined bomb functions has an unused
-// variable This keeps the stack where it should be for when that happens, since it isn't clear what the original
-// function was
-void inline WasteStackSpace()
-{
-    D3DXVECTOR3 waste;
-}
-
 #pragma var_order(angle, i, bombSprite, vecLength, bombPivot, bombIdx)
 void BombData::BombReimuACalc(Player *player)
 {
@@ -64,9 +56,6 @@ void BombData::BombReimuACalc(Player *player)
 
         if (player->bombInfo.timer.AsFrames() % 16 == 0 && (i = (player->bombInfo.timer.AsFrames() - 60) / 16))
         {
-            WasteStackSpace();
-            WasteStackSpace();
-
             player->bombInfo.reimuABombProjectilesState[i] = 1;
             player->bombInfo.reimuABombProjectilesRelated[i] = 4.0f;
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
@@ -253,9 +242,6 @@ void BombData::BombReimuBCalc(Player *player)
         player->invulnerabilityTimer.SetCurrent(200);
         bombSprite = player->bombInfo.sprites[0];
 
-        WasteStackSpace();
-        WasteStackSpace();
-
         for (i = 0; i < 4; i++, bombSprite++)
         {
             g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_REIMU_B_BOMB_ARRAY + i);
@@ -358,9 +344,6 @@ void BombData::BombMarisaACalc(Player *player)
         starSprite = player->bombInfo.sprites[0];
         for (i = 0; i < ARRAY_SIZE_SIGNED(player->bombInfo.sprites); i++, starSprite++)
         {
-            WasteStackSpace();
-            WasteStackSpace();
-
             g_AnmManager->ExecuteAnmIdx(starSprite, ANM_SCRIPT_PLAYER_MARISA_A_BLUE_STAR + i % 3);
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
 
@@ -480,9 +463,6 @@ void BombData::BombMarisaBCalc(Player *player)
     }
     else
     {
-        WasteStackSpace();
-        WasteStackSpace();
-
         if (player->bombInfo.timer == 60)
         {
             ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 60, 1, 7, 0);
