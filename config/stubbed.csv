@@ -2,5 +2,4 @@ th06::AnmManager::DrawEndingRect
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::ParseFile
 th06::MusicRoom::RegisterChain
-th06::MainMenu::SelectRelated
 th06::Pbg3Archive::Pbg3Archive

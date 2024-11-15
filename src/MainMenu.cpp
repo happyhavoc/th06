@@ -2350,5 +2350,51 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+void th06::MainMenu::SelectRelated(MainMenu *menu, i16 buttonPressed, i16 oldMapping, ZunBool unknownBool)
+{
+    // I'm pretty sure this function handles going to the bottom when you press the
+    // bomb button or escape
+    // TODO: rename arguments after cleaning up MainMenu::OnUpdate.
+    if ((unknownBool == 0) && (menu->controlMapping[0] == buttonPressed))
+    {
+        menu->controlMapping[0] = oldMapping;
+    }
+    if (menu->controlMapping[1] == buttonPressed)
+    {
+        menu->controlMapping[1] = oldMapping;
+    }
+    if ((unknownBool == 0) && (menu->controlMapping[2] == buttonPressed))
+    {
+        menu->controlMapping[2] = oldMapping;
+    }
+    if (menu->controlMapping[4] == buttonPressed)
+    {
+        menu->controlMapping[4] = oldMapping;
+    }
+    if (menu->controlMapping[5] == buttonPressed)
+    {
+        menu->controlMapping[5] = oldMapping;
+    }
+    if (menu->controlMapping[6] == buttonPressed)
+    {
+        menu->controlMapping[6] = oldMapping;
+    }
+    if (menu->controlMapping[7] == buttonPressed)
+    {
+        menu->controlMapping[7] = oldMapping;
+    }
+    if (menu->controlMapping[3] == buttonPressed)
+    {
+        menu->controlMapping[3] = oldMapping;
+    }
+    if (menu->controlMapping[8] == buttonPressed)
+    {
+        menu->controlMapping[8] = oldMapping;
+    }
+    return;
+}
+#pragma optimize("", on)
+
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
 }; // namespace th06
