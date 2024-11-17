@@ -38,6 +38,11 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(EffectInfo, 20, g_Effects) = {
     {ANM_SCRIPT_BULLET4_SCRIPT_19, EffectManager::EffectCallbackStill},
 };
 
+EffectManager::EffectManager()
+{
+    this->Reset();
+}
+
 ZunResult EffectManager::RegisterChain()
 {
     EffectManager *mgr = &g_EffectManager;
@@ -141,7 +146,7 @@ ChainCallbackResult EffectManager::OnUpdate(EffectManager *mgr)
 
     effect = &mgr->effects[0];
     mgr->activeEffects = 0;
-    for (effectIdx = 0; effectIdx < ARRAY_SIZE_SIGNED(mgr->effects); effectIdx++, effect++)
+    for (effectIdx = 0; effectIdx < ARRAY_SIZE_SIGNED(mgr->effects) - 1; effectIdx++, effect++)
     {
         if (effect->inUseFlag == 0)
         {
@@ -171,7 +176,7 @@ ChainCallbackResult EffectManager::OnDraw(EffectManager *mgr)
     Effect *effect;
 
     effect = &mgr->effects[0];
-    for (effectIdx = 0; effectIdx < ARRAY_SIZE_SIGNED(mgr->effects); effectIdx++, effect++)
+    for (effectIdx = 0; effectIdx < ARRAY_SIZE_SIGNED(mgr->effects) - 1; effectIdx++, effect++)
     {
         if (effect->inUseFlag == 0)
         {
@@ -192,10 +197,10 @@ Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count
     Effect *effect;
 
     effect = &this->effects[this->nextIndex];
-    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->effects); idx++)
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->effects) - 1; idx++)
     {
         this->nextIndex++;
-        if (this->nextIndex >= ARRAY_SIZE_SIGNED(this->effects))
+        if (this->nextIndex >= ARRAY_SIZE_SIGNED(this->effects) - 1)
         {
             this->nextIndex = 0;
         }
@@ -238,7 +243,7 @@ Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count
         }
     }
 
-    return idx >= ARRAY_SIZE_SIGNED(this->effects) ? &this->dummyEffect : effect;
+    return idx >= ARRAY_SIZE_SIGNED(this->effects) - 1 ? &this->effects[512] : effect;
 }
 
 i32 EffectManager::EffectCallbackRandomSplash(Effect *effect)

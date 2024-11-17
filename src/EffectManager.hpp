@@ -36,8 +36,9 @@ struct EffectManager
 {
     i32 nextIndex;
     i32 activeEffects;
-    Effect effects[512];
-    Effect dummyEffect;
+    Effect effects[513];
+
+    EffectManager();
 
     static ZunResult RegisterChain();
     static void CutChain();
