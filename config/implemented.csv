@@ -117,6 +117,7 @@ th06::EffectManager::EffectUpdateCallback4
 th06::EffectManager::EffectCallbackAttract
 th06::EffectManager::EffectCallbackAttractSlow
 th06::EnemyManager::Initialize
+th06::EnemyManager::EnemyManager
 th06::EnemyManager::RegisterChain
 th06::EnemyManager::CutChain
 th06::EnemyManager::AddedCallback

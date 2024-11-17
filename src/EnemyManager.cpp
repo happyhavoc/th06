@@ -83,6 +83,11 @@ void EnemyManager::Initialize()
     enemy->bulletRankSpeedHigh = 0.5f;
 }
 
+EnemyManager::EnemyManager()
+{
+    this->Initialize();
+}
+
 Enemy *EnemyManager::SpawnEnemy(i32 eclSubId, D3DXVECTOR3 *pos, i16 life, i16 itemDrop, i32 score)
 {
     Enemy *newEnemy;
@@ -90,7 +95,7 @@ Enemy *EnemyManager::SpawnEnemy(i32 eclSubId, D3DXVECTOR3 *pos, i16 life, i16 it
 
     newEnemy = this->enemies;
     idx = 0;
-    for (; idx < ARRAY_SIZE_SIGNED(this->enemies); idx++, newEnemy++)
+    for (; idx < ARRAY_SIZE_SIGNED(this->enemies) - 1; idx++, newEnemy++)
     {
         if (newEnemy->flags.unk5)
             continue;
@@ -352,7 +357,7 @@ ZunBool Enemy::HandleLifeCallback()
         this->stackDepth = 0;
 
         curEnemy = g_EnemyManager.enemies;
-        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies); i++, curEnemy++)
+        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies) - 1; i++, curEnemy++)
         {
             if (!curEnemy->flags.unk5)
             {
@@ -410,7 +415,7 @@ ZunBool Enemy::HandleTimerCallback()
         }
 
         curEnemy = g_EnemyManager.enemies;
-        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies); i++, curEnemy++)
+        for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies) - 1; i++, curEnemy++)
         {
             if (!curEnemy->flags.unk5)
             {
@@ -524,7 +529,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
 
     local_8 = 0;
     mgr->RunEclTimeline();
-    for (curEnemy = &mgr->enemies[0], mgr->enemyCount = 0, enemyIdx = 0; enemyIdx < ARRAY_SIZE_SIGNED(mgr->enemies);
+    for (curEnemy = &mgr->enemies[0], mgr->enemyCount = 0, enemyIdx = 0; enemyIdx < ARRAY_SIZE_SIGNED(mgr->enemies) - 1;
          enemyIdx++, curEnemy++)
     {
         if (!curEnemy->flags.unk5)
@@ -768,7 +773,7 @@ ChainCallbackResult EnemyManager::OnDraw(EnemyManager *mgr)
     i32 curEnemyVmIdx;
     i32 curEnemyIdx;
 
-    for (curEnemy = &mgr->enemies[0], curEnemyIdx = 0; curEnemyIdx < ARRAY_SIZE_SIGNED(mgr->enemies);
+    for (curEnemy = &mgr->enemies[0], curEnemyIdx = 0; curEnemyIdx < ARRAY_SIZE_SIGNED(mgr->enemies) - 1;
          curEnemyIdx++, curEnemy++)
     {
         if (!curEnemy->flags.unk5)
