@@ -125,6 +125,7 @@ th06::EnemyManager::OnUpdate
 th06::EnemyManager::OnDraw
 th06::EnemyManager::RunEclTimeline
 th06::EnemyManager::SpawnEnemy
+th06::Enemy::Enemy
 th06::Enemy::GetVar
 th06::Enemy::GetVarFloat
 th06::Enemy::SetVar

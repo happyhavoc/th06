@@ -21,6 +21,10 @@ struct Enemy;
 
 struct EnemyBulletShooter
 {
+    EnemyBulletShooter()
+    {
+        memset(this, 0, sizeof(EnemyBulletShooter));
+    }
     i16 sprite;
     i16 spriteOffset;
     D3DXVECTOR3 position;
@@ -42,6 +46,10 @@ C_ASSERT(sizeof(EnemyBulletShooter) == 0x54);
 
 struct EnemyLaserShooter
 {
+    EnemyLaserShooter()
+    {
+        memset(this, 0, sizeof(EnemyLaserShooter));
+    }
     i16 sprite;
     i16 spriteOffset;
     D3DXVECTOR3 position;
@@ -124,6 +132,10 @@ enum EclValueType
 
 struct Enemy
 {
+    Enemy()
+    {
+    }
+
     void Move();
     void ClampPos();
     ZunBool HandleLifeCallback();
