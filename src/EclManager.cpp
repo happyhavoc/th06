@@ -56,11 +56,14 @@ ZunResult EclManager::Load(char *eclPath)
 
 void EclManager::Unload()
 {
-    if (eclFile != NULL)
+    EclRawHeader *file;
+
+    if (this->eclFile != NULL)
     {
-        free(eclFile);
+        file = this->eclFile;
+        free(file);
     }
-    eclFile = NULL;
+    this->eclFile = NULL;
     return;
 }
 
