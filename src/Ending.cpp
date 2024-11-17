@@ -474,8 +474,6 @@ ZunResult Ending::RegisterChain()
 
 Ending::Ending()
 {
-    i32 unused[4];
-
     memset(this, 0, sizeof(Ending));
     this->line2Delay = 8;
     this->timer2.InitializeForPopup();
