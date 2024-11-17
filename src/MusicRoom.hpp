@@ -24,23 +24,21 @@ struct MusicRoom
 {
     MusicRoom()
     {
-        i32 unused[12];
-
         memset(this, 0, sizeof(MusicRoom));
     }
 
     static ZunResult AddedCallback(MusicRoom *musicRoom);
     static ZunResult DeletedCallback(MusicRoom *musicRoom);
-    u32 DrawMusicList();
-    ZunResult FUN_00424e8f();
+    ZunBool ProcessInput();
+    ZunResult CheckInputEnable();
     static ChainCallbackResult OnDraw(MusicRoom *musicRoom);
     static ChainCallbackResult OnUpdate(MusicRoom *musicRoom);
     static ZunResult RegisterChain();
 
     ChainElem *calc_chain;
     ChainElem *draw_chain;
-    i32 unk_0x8;
-    i32 shouldDrawMusicList;
+    i32 waitFramesCount;
+    i32 enableInput;
     i32 cursor;
     i32 selectedSongIndex;
     i32 listingOffset;

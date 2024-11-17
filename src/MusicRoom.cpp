@@ -51,13 +51,13 @@ ZunResult MusicRoom::DeletedCallback(MusicRoom *musicRoom)
 
 ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom)
 {
-    i32 shouldDraw2 = musicRoom->shouldDrawMusicList;
+    i32 oldInputSetting = musicRoom->enableInput;
     for (;;)
     {
-        switch (musicRoom->shouldDrawMusicList)
+        switch (musicRoom->enableInput)
         {
         case false:
-            if (!musicRoom->FUN_00424e8f())
+            if (!musicRoom->CheckInputEnable())
             {
                 break;
             }
@@ -65,7 +65,7 @@ ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom)
             continue;
 
         case true:
-            if (musicRoom->DrawMusicList())
+            if (musicRoom->ProcessInput())
             {
                 return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
             }
@@ -73,13 +73,13 @@ ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom)
         break;
     }
 
-    if (shouldDraw2 != musicRoom->shouldDrawMusicList)
+    if (oldInputSetting != musicRoom->enableInput)
     {
-        musicRoom->unk_0x8 = 0;
+        musicRoom->waitFramesCount = 0;
     }
     else
     {
-        musicRoom->unk_0x8++;
+        musicRoom->waitFramesCount++;
     }
     g_AnmManager->ExecuteScript(musicRoom->mainVm);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
@@ -116,7 +116,7 @@ ZunResult MusicRoom::AddedCallback(MusicRoom *musicRoom)
     }
 
     g_AnmManager->SetAndExecuteScriptIdx(musicRoom->mainVm, ANM_OFFSET_MUSIC00);
-    musicRoom->unk_0x8 = 0;
+    musicRoom->waitFramesCount = 0;
     currChar = (char *)FileSystem::OpenPath("data/musiccmt.txt", 0);
     fileBase = currChar;
 
@@ -262,11 +262,11 @@ finishMusiccmtRead:
     return ZUN_SUCCESS;
 }
 
-ZunResult MusicRoom::FUN_00424e8f()
+ZunResult MusicRoom::CheckInputEnable()
 {
-    if (0x8 <= this->unk_0x8)
+    if (this->waitFramesCount >= 8)
     {
-        this->shouldDrawMusicList = 1;
+        this->enableInput = 1;
     }
 
     return ZUN_SUCCESS;
