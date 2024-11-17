@@ -35,6 +35,65 @@ DIFFABLE_STATIC_ARRAY(f32, 6, g_StarAngleTable);
 DIFFABLE_STATIC(D3DXVECTOR3, g_EnemyPosVector);
 DIFFABLE_STATIC(D3DXVECTOR3, g_PlayerPosVector);
 
+void Enemy::MoveDirTime(Enemy *enemy, EclRawInstr *instr)
+{
+    EclRawInstrAluArgs *alu;
+    f32 angle;
+
+    alu = &instr->args.alu;
+    angle = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
+
+    enemy->moveInterp.x = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.y = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.z = 0.0f;
+
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+}
+
+void Enemy::MovePosTime(Enemy *enemy, EclRawInstr *instr)
+{
+    D3DXVECTOR3 newPos;
+    EclRawInstrAluArgs *alu = &instr->args.alu;
+
+    newPos.x = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
+    newPos.y = *Enemy::GetVarFloat(enemy, &alu->arg2.f32, NULL);
+    newPos.z = *Enemy::GetVarFloat(enemy, &alu->arg3.f32, NULL);
+
+    enemy->moveInterp = newPos - enemy->position;
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+}
+
+void Enemy::MoveTime(Enemy *enemy, EclRawInstr *instr)
+{
+    EclRawInstrAluArgs *alu;
+    f32 angle;
+
+    alu = &instr->args.alu;
+    angle = *Enemy::GetVarFloat(enemy, &enemy->angle, NULL);
+
+    enemy->moveInterp.x = sinf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.y = cosf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.z = 0.0f;
+
+    enemy->moveInterpStartPos = enemy->position;
+    enemy->moveInterpStartTime = alu->res;
+
+    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
+
+    enemy->flags.unk1 = 2;
+}
+
 i32 *Enemy::GetVar(Enemy *enemy, EclVarId *eclVarId, EclValueType *valueType)
 {
     if (valueType != NULL)
@@ -347,65 +406,6 @@ void Enemy::MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2
         *outPtr = atan2f(*x2Ptr - *x1Ptr, *y2Ptr - *y1Ptr);
     }
     return;
-}
-
-void Enemy::MoveTime(Enemy *enemy, EclRawInstr *instr)
-{
-    EclRawInstrAluArgs *alu;
-    f32 angle;
-
-    alu = &instr->args.alu;
-    angle = *Enemy::GetVarFloat(enemy, &enemy->angle, NULL);
-
-    enemy->moveInterp.x = sinf(angle) * enemy->speed * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * enemy->speed * alu->res / 2.0f;
-    enemy->moveInterp.z = 0.0f;
-
-    enemy->moveInterpStartPos = enemy->position;
-    enemy->moveInterpStartTime = alu->res;
-
-    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
-
-    enemy->flags.unk1 = 2;
-}
-
-void Enemy::MovePosTime(Enemy *enemy, EclRawInstr *instr)
-{
-    D3DXVECTOR3 newPos;
-    EclRawInstrAluArgs *alu = &instr->args.alu;
-
-    newPos.x = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
-    newPos.y = *Enemy::GetVarFloat(enemy, &alu->arg2.f32, NULL);
-    newPos.z = *Enemy::GetVarFloat(enemy, &alu->arg3.f32, NULL);
-
-    enemy->moveInterp = newPos - enemy->position;
-    enemy->moveInterpStartPos = enemy->position;
-    enemy->moveInterpStartTime = alu->res;
-
-    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
-
-    enemy->flags.unk1 = 2;
-    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-}
-
-void Enemy::MoveDirTime(Enemy *enemy, EclRawInstr *instr)
-{
-    EclRawInstrAluArgs *alu;
-    f32 angle;
-
-    alu = &instr->args.alu;
-    angle = *Enemy::GetVarFloat(enemy, &alu->arg1.f32, NULL);
-
-    enemy->moveInterp.x = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
-    enemy->moveInterp.z = 0.0f;
-
-    enemy->moveInterpStartPos = enemy->position;
-    enemy->moveInterpStartTime = alu->res;
-
-    enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
-
-    enemy->flags.unk1 = 2;
 }
 
 void Enemy::Move()
