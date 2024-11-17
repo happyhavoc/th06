@@ -68,6 +68,11 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BulletTypeInfo, 10, g_BulletTypeInfos) = {
      ASB4(SPAWN_BUBBLE_NORMAL)},
 };
 
+BulletManager::BulletManager()
+{
+    this->InitializeToZero();
+}
+
 void BulletManager::InitializeToZero()
 {
     memset(this, 0, sizeof(BulletManager));
