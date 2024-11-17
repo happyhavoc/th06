@@ -54,6 +54,16 @@ ZunResult EclManager::Load(char *eclPath)
     return ZUN_SUCCESS;
 }
 
+void EclManager::Unload()
+{
+    if (eclFile != NULL)
+    {
+        free(eclFile);
+    }
+    eclFile = NULL;
+    return;
+}
+
 ZunResult EclManager::CallEclSub(EnemyEclContext *ctx, i16 subId)
 {
     ctx->currentInstr = this->subTable[subId];
@@ -1020,15 +1030,5 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             return ZUN_SUCCESS;
         }
     }
-}
-
-void EclManager::Unload()
-{
-    if (eclFile != NULL)
-    {
-        free(eclFile);
-    }
-    eclFile = NULL;
-    return;
 }
 }; // namespace th06
