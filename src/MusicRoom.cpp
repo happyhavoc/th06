@@ -230,6 +230,7 @@ finishMusiccmtRead:
         musicRoom->titleSprites[i].flags.anchor = AnmVmAnchor_TopLeft;
     }
 
+    // Two sprites are used for each line, with a split at the 32nd byte
     for (i = 0; i < ARRAY_SIZE_SIGNED(musicRoom->descriptionSprites); i++)
     {
         g_AnmManager->InitializeAndSetSprite(&musicRoom->descriptionSprites[i], ANM_SCRIPT_TEXT_MUSIC_ROOM_DESC + i);
@@ -270,7 +271,95 @@ ZunResult MusicRoom::CheckInputEnable()
     }
 
     return ZUN_SUCCESS;
-};
+}
+
+#pragma var_order(listPos, i, lineCharBuffer)
+ZunBool MusicRoom::ProcessInput()
+{
+    i32 i;
+    char lineCharBuffer[64];
+    i32 listPos;
+
+    // This variable is never used after this?
+    listPos = this->listingOffset;
+
+    if (WAS_PRESSED(TH_BUTTON_UP))
+    {
+        this->cursor--;
+        // Vertical wrap-around
+        if (this->cursor < 0)
+        {
+            this->cursor = this->numDescriptors - 1;
+            this->listingOffset = this->numDescriptors - 10;
+        }
+        // Scroll list up
+        else if (this->listingOffset > this->cursor)
+        {
+            this->listingOffset = this->cursor;
+        }
+    }
+
+    if (WAS_PRESSED(TH_BUTTON_DOWN))
+    {
+        this->cursor++;
+        // Vertical wrap-around
+        if (this->cursor >= this->numDescriptors)
+        {
+            this->cursor = 0;
+            this->listingOffset = 0;
+        }
+        else
+        {
+            // Scroll list down
+            if (this->listingOffset <= this->cursor - 10)
+            {
+                this->listingOffset = this->cursor - 9;
+            }
+        }
+    }
+
+    if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
+    {
+        this->selectedSongIndex = this->cursor;
+        g_Supervisor.PlayAudio(this->trackDescriptors[this->selectedSongIndex].path);
+
+        // Update description to match newly selected song
+        for (i = 0; i < ARRAY_SIZE_SIGNED(this->descriptionSprites); i++)
+        {
+            memset(lineCharBuffer, 0, sizeof(lineCharBuffer));
+
+            if (i % 2 == 0 || strlen(this->trackDescriptors[this->selectedSongIndex].description[i / 2]) > 32)
+            {
+                memcpy(lineCharBuffer,
+                       &this->trackDescriptors[this->selectedSongIndex].description[i / 2][(i % 2) * 32], 32);
+            }
+
+            if (lineCharBuffer[0] != '\0')
+            {
+                this->descriptionSprites[i].flags.flag1 = 1;
+                AnmManager::DrawVmTextFmt(g_AnmManager, &this->descriptionSprites[i], COLOR_MUSIC_ROOM_SONG_DESC_TEXT,
+                                          COLOR_MUSIC_ROOM_SONG_DESC_SHADOW, lineCharBuffer);
+            }
+            else
+            {
+                this->descriptionSprites[i].flags.flag1 = 0;
+            }
+
+            this->descriptionSprites[i].pos.x = ((f32)(i % 2)) * 248.0f + 96.0f;
+            this->descriptionSprites[i].pos.y = 320.0f + ((i / 2) << 4);
+            this->descriptionSprites[i].pos.z = 0.0f;
+            this->descriptionSprites[i].flags.anchor = AnmVmAnchor_TopLeft;
+        }
+    }
+
+    if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
+    {
+        g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU;
+        return true;
+    }
+
+    return false;
+}
 
 #pragma optimize("", on)
 } // namespace th06
