@@ -52,7 +52,7 @@ ZunResult EffectManager::RegisterChain()
     g_EffectManagerCalcChain.addedCallback = NULL;
     g_EffectManagerCalcChain.deletedCallback = NULL;
     g_EffectManagerCalcChain.addedCallback = (ChainAddedCallback)mgr->AddedCallback;
-    g_EffectManagerCalcChain.deletedCallback = (ChainAddedCallback)mgr->AddedCallback;
+    g_EffectManagerCalcChain.deletedCallback = (ChainAddedCallback)mgr->DeletedCallback;
     g_EffectManagerCalcChain.arg = mgr;
 
     if (g_Chain.AddToCalcChain(&g_EffectManagerCalcChain, TH_CHAIN_PRIO_CALC_EFFECTMANAGER))
