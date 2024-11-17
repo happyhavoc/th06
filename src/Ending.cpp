@@ -14,206 +14,20 @@
 
 namespace th06
 {
-
-Ending::Ending()
+i32 Ending::ReadEndFileParameter()
 {
-    i32 unused[4];
+    i32 readResult;
 
-    memset(this, 0, sizeof(Ending));
-    this->line2Delay = 8;
-    this->timer2.InitializeForPopup();
-    this->timer1.InitializeForPopup();
-    this->backgroundPos.x = 0.0f;
-    this->backgroundPos.y = 0.0f;
-    this->backgroundScrollSpeed = 0.0f;
-}
-
-ZunResult Ending::RegisterChain()
-{
-    Ending *ending;
-
-    ending = new Ending();
-    ending->calcChain = g_Chain.CreateElem((ChainCallback)Ending::OnUpdate);
-    ending->calcChain->arg = ending;
-    ending->calcChain->addedCallback = (ChainAddedCallback)Ending::AddedCallback;
-    ending->calcChain->deletedCallback = (ChainDeletedCallback)Ending::DeletedCallback;
-    if (g_Chain.AddToCalcChain(ending->calcChain, TH_CHAIN_PRIO_CALC_ENDING))
+    readResult = atol(this->endFileDataPtr);
+    while (this->endFileDataPtr[0] != '\0')
     {
-        return ZUN_ERROR;
+        this->endFileDataPtr++;
     }
-
-    ending->drawChain = g_Chain.CreateElem((ChainCallback)Ending::OnDraw);
-    ending->drawChain->arg = ending;
-    g_Chain.AddToDrawChain(ending->drawChain, TH_CHAIN_PRIO_DRAW_ENDING);
-
-    return ZUN_SUCCESS;
-}
-
-#pragma var_order(unused, shotTypeAndCharacter)
-ZunResult Ending::AddedCallback(Ending *ending)
-{
-    i32 shotTypeAndCharacter;
-    i32 unused;
-
-    unused = g_GameManager.character * 2 + g_GameManager.shotType;
-
-    g_GameManager.isGameCompleted = true;
-    g_Supervisor.isInEnding = true;
-    g_Supervisor.LoadPbg3(ED_PBG3_INDEX, TH_ED_DAT_FILE);
-    g_AnmManager->LoadAnm(ANM_FILE_STAFF01, "data/staff01.anm", ANM_OFFSET_STAFF01);
-    g_AnmManager->LoadAnm(ANM_FILE_STAFF02, "data/staff02.anm", ANM_OFFSET_STAFF02);
-    g_AnmManager->LoadAnm(ANM_FILE_STAFF03, "data/staff03.anm", ANM_OFFSET_STAFF03);
-
-    g_AnmManager->SetCurrentTexture(NULL);
-    g_AnmManager->SetCurrentSprite(NULL);
-    g_AnmManager->SetCurrentBlendMode(0xff);
-    g_AnmManager->SetCurrentVertexShader(0xff);
-
-    shotTypeAndCharacter = g_GameManager.character * 2 + g_GameManager.shotType;
-    ending->hasSeenEnding = false;
-    if (g_GameManager.numRetries == 0)
+    while (this->endFileDataPtr[0] == '\0')
     {
-        if (g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithRetries[g_GameManager.difficulty] == 99)
-        {
-            ending->hasSeenEnding = true;
-        }
-
-        g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithRetries[g_GameManager.difficulty] = 99;
+        this->endFileDataPtr++;
     }
-    else
-    {
-        if (g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithoutRetries[g_GameManager.difficulty] == 99)
-        {
-            ending->hasSeenEnding = true;
-        }
-    }
-    g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithoutRetries[g_GameManager.difficulty] = 99;
-    if (g_GameManager.difficulty == EASY || g_GameManager.numRetries != 0)
-    {
-        switch (g_GameManager.character)
-        {
-        case CHARA_REIMU:
-            if (ending->LoadEnding("data/end00b.end") != ZUN_SUCCESS)
-            {
-                return ZUN_ERROR;
-            }
-            break;
-        case CHARA_MARISA:
-            if (ending->LoadEnding("data/end10b.end") != ZUN_SUCCESS)
-            {
-                return ZUN_ERROR;
-            }
-            break;
-        }
-    }
-    else
-    {
-        switch (g_GameManager.character)
-        {
-        case CHARA_REIMU:
-            if (g_GameManager.shotType == SHOT_TYPE_A)
-            {
-                if (ending->LoadEnding("data/end00.end") != ZUN_SUCCESS)
-                {
-                    return ZUN_ERROR;
-                }
-            }
-            else
-            {
-                if (ending->LoadEnding("data/end01.end") != ZUN_SUCCESS)
-                {
-                    return ZUN_ERROR;
-                }
-            }
-            break;
-        case CHARA_MARISA:
-            if (g_GameManager.shotType == SHOT_TYPE_A)
-            {
-                if (ending->LoadEnding("data/end10.end") != ZUN_SUCCESS)
-                {
-                    return ZUN_ERROR;
-                }
-            }
-            else
-            {
-                if (ending->LoadEnding("data/end11.end") != ZUN_SUCCESS)
-                {
-                    return ZUN_ERROR;
-                }
-            }
-            break;
-        }
-    }
-    return ZUN_SUCCESS;
-}
-
-ZunResult Ending::DeletedCallback(Ending *ending)
-{
-    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF01);
-    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF02);
-    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF03);
-
-    g_Supervisor.curState = SUPERVISOR_STATE_RESULTSCREEN_FROMGAME;
-
-    g_AnmManager->ReleaseSurface(0);
-
-    // This has the same effect as doing "delete ending->endFileData" since delete just calls free, but for some reason,
-    // in both ways, the stack doesn't match with the other variable used in delete ending, in theory this should should
-    // be correct since ending->endFileData was allocated with malloc. One way to solve it, would be to do the same with
-    // ending, and align both variables with var_order, but that would be "incorrect", weird...
-    char *endfiledata = ending->endFileData;
-    free(endfiledata);
-
-    g_Chain.Cut(ending->drawChain);
-    ending->drawChain = NULL;
-
-    delete ending;
-    ending = NULL;
-
-    g_Supervisor.isInEnding = false;
-    g_Supervisor.ReleasePbg3(ED_PBG3_INDEX);
-    return ZUN_SUCCESS;
-}
-
-ZunResult Ending::LoadEnding(char *endFilePath)
-{
-    char *endFileDat;
-
-    endFileDat = this->endFileData;
-    this->endFileData = (char *)FileSystem::OpenPath(endFilePath, false);
-    if (this->endFileData == NULL)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ENDING_END_FILE_CORRUPTED);
-        return ZUN_ERROR;
-    }
-    else
-    {
-        this->endFileDataPtr = this->endFileData;
-        this->line2Delay = 8;
-        this->timer2.InitializeForPopup();
-        this->timer1.InitializeForPopup();
-        if (endFileDat != NULL)
-        {
-            free(endFileDat);
-        }
-        return ZUN_SUCCESS;
-    }
-}
-
-ChainCallbackResult Ending::OnDraw(Ending *ending)
-{
-    i32 idx;
-
-    g_AnmManager->DrawEndingRect(0, 0, 0, ending->backgroundPos.x, ending->backgroundPos.y, 640, 480);
-    for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
-    {
-        if (ending->sprites[idx].anmFileIndex != 0)
-        {
-            g_AnmManager->DrawNoRotation(&ending->sprites[idx]);
-        }
-    }
-    ending->FadingEffect();
-    return CHAIN_CALLBACK_RESULT_CONTINUE;
+    return readResult;
 }
 
 #pragma var_order(endingRect, color)
@@ -291,51 +105,6 @@ void Ending::FadingEffect()
     {
         ScreenEffect::DrawSquare(&endingRect, this->endingFadeColor);
     }
-}
-
-#pragma var_order(framesPressed, idx)
-ChainCallbackResult Ending::OnUpdate(Ending *ending)
-{
-    i32 idx;
-    i32 framesPressed;
-
-    for (framesPressed = 0;;)
-    {
-        if (ending->ParseEndFile() != ZUN_SUCCESS)
-        {
-            return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
-        }
-        for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
-        {
-            if (ending->sprites[idx].anmFileIndex != 0)
-            {
-                g_AnmManager->ExecuteScript(&ending->sprites[idx]);
-            }
-        }
-        if (ending->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP) && framesPressed < 4)
-        {
-            framesPressed++;
-            continue;
-        }
-        break;
-    };
-    return CHAIN_CALLBACK_RESULT_CONTINUE;
-}
-
-i32 Ending::ReadEndFileParameter()
-{
-    i32 readResult;
-
-    readResult = atol(this->endFileDataPtr);
-    while (this->endFileDataPtr[0] != '\0')
-    {
-        this->endFileDataPtr++;
-    }
-    while (this->endFileDataPtr[0] == '\0')
-    {
-        this->endFileDataPtr++;
-    }
-    return readResult;
 }
 
 #pragma var_order(lineDisplayed, textBuffer, charactersReaded, anmScriptIdx, vmIndex, anmSpriteIdx, scrollBGDistance,  \
@@ -657,4 +426,233 @@ endParsing:
     return ZUN_SUCCESS;
 }
 
+ZunResult Ending::LoadEnding(char *endFilePath)
+{
+    char *endFileDat;
+
+    endFileDat = this->endFileData;
+    this->endFileData = (char *)FileSystem::OpenPath(endFilePath, false);
+    if (this->endFileData == NULL)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ENDING_END_FILE_CORRUPTED);
+        return ZUN_ERROR;
+    }
+    else
+    {
+        this->endFileDataPtr = this->endFileData;
+        this->line2Delay = 8;
+        this->timer2.InitializeForPopup();
+        this->timer1.InitializeForPopup();
+        if (endFileDat != NULL)
+        {
+            free(endFileDat);
+        }
+        return ZUN_SUCCESS;
+    }
+}
+
+ZunResult Ending::RegisterChain()
+{
+    Ending *ending;
+
+    ending = new Ending();
+    ending->calcChain = g_Chain.CreateElem((ChainCallback)Ending::OnUpdate);
+    ending->calcChain->arg = ending;
+    ending->calcChain->addedCallback = (ChainAddedCallback)Ending::AddedCallback;
+    ending->calcChain->deletedCallback = (ChainDeletedCallback)Ending::DeletedCallback;
+    if (g_Chain.AddToCalcChain(ending->calcChain, TH_CHAIN_PRIO_CALC_ENDING))
+    {
+        return ZUN_ERROR;
+    }
+
+    ending->drawChain = g_Chain.CreateElem((ChainCallback)Ending::OnDraw);
+    ending->drawChain->arg = ending;
+    g_Chain.AddToDrawChain(ending->drawChain, TH_CHAIN_PRIO_DRAW_ENDING);
+
+    return ZUN_SUCCESS;
+}
+
+Ending::Ending()
+{
+    i32 unused[4];
+
+    memset(this, 0, sizeof(Ending));
+    this->line2Delay = 8;
+    this->timer2.InitializeForPopup();
+    this->timer1.InitializeForPopup();
+    this->backgroundPos.x = 0.0f;
+    this->backgroundPos.y = 0.0f;
+    this->backgroundScrollSpeed = 0.0f;
+}
+
+#pragma var_order(framesPressed, idx)
+ChainCallbackResult Ending::OnUpdate(Ending *ending)
+{
+    i32 idx;
+    i32 framesPressed;
+
+    for (framesPressed = 0;;)
+    {
+        if (ending->ParseEndFile() != ZUN_SUCCESS)
+        {
+            return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
+        }
+        for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
+        {
+            if (ending->sprites[idx].anmFileIndex != 0)
+            {
+                g_AnmManager->ExecuteScript(&ending->sprites[idx]);
+            }
+        }
+        if (ending->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP) && framesPressed < 4)
+        {
+            framesPressed++;
+            continue;
+        }
+        break;
+    };
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult Ending::OnDraw(Ending *ending)
+{
+    i32 idx;
+
+    g_AnmManager->DrawEndingRect(0, 0, 0, ending->backgroundPos.x, ending->backgroundPos.y, 640, 480);
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
+    {
+        if (ending->sprites[idx].anmFileIndex != 0)
+        {
+            g_AnmManager->DrawNoRotation(&ending->sprites[idx]);
+        }
+    }
+    ending->FadingEffect();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+#pragma var_order(unused, shotTypeAndCharacter)
+ZunResult Ending::AddedCallback(Ending *ending)
+{
+    i32 shotTypeAndCharacter;
+    i32 unused;
+
+    unused = g_GameManager.character * 2 + g_GameManager.shotType;
+
+    g_GameManager.isGameCompleted = true;
+    g_Supervisor.isInEnding = true;
+    g_Supervisor.LoadPbg3(ED_PBG3_INDEX, TH_ED_DAT_FILE);
+    g_AnmManager->LoadAnm(ANM_FILE_STAFF01, "data/staff01.anm", ANM_OFFSET_STAFF01);
+    g_AnmManager->LoadAnm(ANM_FILE_STAFF02, "data/staff02.anm", ANM_OFFSET_STAFF02);
+    g_AnmManager->LoadAnm(ANM_FILE_STAFF03, "data/staff03.anm", ANM_OFFSET_STAFF03);
+
+    g_AnmManager->SetCurrentTexture(NULL);
+    g_AnmManager->SetCurrentSprite(NULL);
+    g_AnmManager->SetCurrentBlendMode(0xff);
+    g_AnmManager->SetCurrentVertexShader(0xff);
+
+    shotTypeAndCharacter = g_GameManager.character * 2 + g_GameManager.shotType;
+    ending->hasSeenEnding = false;
+    if (g_GameManager.numRetries == 0)
+    {
+        if (g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithRetries[g_GameManager.difficulty] == 99)
+        {
+            ending->hasSeenEnding = true;
+        }
+
+        g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithRetries[g_GameManager.difficulty] = 99;
+    }
+    else
+    {
+        if (g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithoutRetries[g_GameManager.difficulty] == 99)
+        {
+            ending->hasSeenEnding = true;
+        }
+    }
+    g_GameManager.clrd[shotTypeAndCharacter].difficultyClearedWithoutRetries[g_GameManager.difficulty] = 99;
+    if (g_GameManager.difficulty == EASY || g_GameManager.numRetries != 0)
+    {
+        switch (g_GameManager.character)
+        {
+        case CHARA_REIMU:
+            if (ending->LoadEnding("data/end00b.end") != ZUN_SUCCESS)
+            {
+                return ZUN_ERROR;
+            }
+            break;
+        case CHARA_MARISA:
+            if (ending->LoadEnding("data/end10b.end") != ZUN_SUCCESS)
+            {
+                return ZUN_ERROR;
+            }
+            break;
+        }
+    }
+    else
+    {
+        switch (g_GameManager.character)
+        {
+        case CHARA_REIMU:
+            if (g_GameManager.shotType == SHOT_TYPE_A)
+            {
+                if (ending->LoadEnding("data/end00.end") != ZUN_SUCCESS)
+                {
+                    return ZUN_ERROR;
+                }
+            }
+            else
+            {
+                if (ending->LoadEnding("data/end01.end") != ZUN_SUCCESS)
+                {
+                    return ZUN_ERROR;
+                }
+            }
+            break;
+        case CHARA_MARISA:
+            if (g_GameManager.shotType == SHOT_TYPE_A)
+            {
+                if (ending->LoadEnding("data/end10.end") != ZUN_SUCCESS)
+                {
+                    return ZUN_ERROR;
+                }
+            }
+            else
+            {
+                if (ending->LoadEnding("data/end11.end") != ZUN_SUCCESS)
+                {
+                    return ZUN_ERROR;
+                }
+            }
+            break;
+        }
+    }
+    return ZUN_SUCCESS;
+}
+
+ZunResult Ending::DeletedCallback(Ending *ending)
+{
+    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF01);
+    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF02);
+    g_AnmManager->ReleaseAnm(ANM_FILE_STAFF03);
+
+    g_Supervisor.curState = SUPERVISOR_STATE_RESULTSCREEN_FROMGAME;
+
+    g_AnmManager->ReleaseSurface(0);
+
+    // This has the same effect as doing "delete ending->endFileData" since delete just calls free, but for some reason,
+    // in both ways, the stack doesn't match with the other variable used in delete ending, in theory this should should
+    // be correct since ending->endFileData was allocated with malloc. One way to solve it, would be to do the same with
+    // ending, and align both variables with var_order, but that would be "incorrect", weird...
+    char *endfiledata = ending->endFileData;
+    free(endfiledata);
+
+    g_Chain.Cut(ending->drawChain);
+    ending->drawChain = NULL;
+
+    delete ending;
+    ending = NULL;
+
+    g_Supervisor.isInEnding = false;
+    g_Supervisor.ReleasePbg3(ED_PBG3_INDEX);
+    return ZUN_SUCCESS;
+}
 }; // namespace th06
