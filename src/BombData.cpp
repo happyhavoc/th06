@@ -220,6 +220,36 @@ void BombData::BombReimuADraw(Player *player)
     return;
 }
 
+#pragma var_order(local8, viewport, darkeningTimeLeft)
+void BombData::DarkenViewport(Player *player)
+{
+    ZunRect viewport;
+    f32 darkeningTimeLeft;
+    i32 darknessLevel; // Controls alpha level of black rectangle drawn over view
+
+    viewport.left = 32.0f;
+    viewport.top = 16.0f;
+    viewport.right = 416.0f;
+    viewport.bottom = 464.0f;
+
+    if (player->bombInfo.timer < 60)
+    {
+        darkeningTimeLeft = (player->bombInfo.timer.AsFramesFloat() * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32)darkeningTimeLeft;
+    }
+    else if (player->bombInfo.timer >= player->bombInfo.duration + -60)
+    {
+        darkeningTimeLeft = ((player->bombInfo.duration - player->bombInfo.timer.AsFramesFloat()) * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32)darkeningTimeLeft;
+    }
+    else
+    {
+        darknessLevel = 176;
+    }
+
+    ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
+}
+
 #pragma var_order(i, bombSprite, unusedVector)
 void BombData::BombReimuBCalc(Player *player)
 {
@@ -518,35 +548,5 @@ void BombData::BombMarisaBDraw(Player *player)
         g_AnmManager->Draw(bombSprite);
         bombSprite++;
     }
-}
-
-#pragma var_order(local8, viewport, darkeningTimeLeft)
-void BombData::DarkenViewport(Player *player)
-{
-    ZunRect viewport;
-    f32 darkeningTimeLeft;
-    i32 darknessLevel; // Controls alpha level of black rectangle drawn over view
-
-    viewport.left = 32.0f;
-    viewport.top = 16.0f;
-    viewport.right = 416.0f;
-    viewport.bottom = 464.0f;
-
-    if (player->bombInfo.timer < 60)
-    {
-        darkeningTimeLeft = (player->bombInfo.timer.AsFramesFloat() * 176.0f) / 60.0f;
-        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32)darkeningTimeLeft;
-    }
-    else if (player->bombInfo.timer >= player->bombInfo.duration + -60)
-    {
-        darkeningTimeLeft = ((player->bombInfo.duration - player->bombInfo.timer.AsFramesFloat()) * 176.0f) / 60.0f;
-        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32)darkeningTimeLeft;
-    }
-    else
-    {
-        darknessLevel = 176;
-    }
-
-    ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
 }
 }; // namespace th06
