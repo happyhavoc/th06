@@ -1,5 +1,4 @@
-AnmManager,th06::AnmManager
-AnmVm,th06::AnmVm
+AnmManager,th06::AnmVm,th06::AnmManager
 AsciiManager,th06::AsciiManager,th06::StageMenu
 BombData,th06::BombData
 BulletManager,th06::BulletManager
