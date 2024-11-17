@@ -7,6 +7,19 @@
 
 namespace th06
 {
+struct TrackDescriptor
+{
+    TrackDescriptor()
+    {
+        memset(this, 0, sizeof(TrackDescriptor));
+    }
+
+    char path[64];
+    char title[34];
+    char description[8][66];
+};
+C_ASSERT(sizeof(TrackDescriptor) == 0x272);
+
 struct MusicRoom
 {
     MusicRoom()
@@ -26,15 +39,16 @@ struct MusicRoom
 
     ChainElem *calc_chain;
     ChainElem *draw_chain;
-    int unk_0x8;
-    int shouldDrawMusicList;
-    int cursor;
-    int musicPtr;
-    int listingOffset;
-    int currOffset;
-    MusicRoom *musicRoomPtr;
-    AnmVm mainVM[1];
-    AnmVm anmArray[32];
-    AnmVm anmArray2[16];
+    i32 unk_0x8;
+    i32 shouldDrawMusicList;
+    i32 cursor;
+    i32 selectedSongIndex;
+    i32 listingOffset;
+    i32 numDescriptors;
+    TrackDescriptor *trackDescriptors;
+    AnmVm mainVm[1];
+    AnmVm titleSprites[32];
+    AnmVm descriptionSprites[16];
 };
+C_ASSERT(sizeof(MusicRoom) == 0x3434);
 }; // namespace th06
