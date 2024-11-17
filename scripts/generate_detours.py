@@ -42,8 +42,9 @@ def get_path_of_mangled_symbol(symbol):
 
 
 IGNORE_OVERLOAD_LIST = [
+    "th06::AnmVm::AnmVm",
     # This is supposed to be inlined but is inserted right before the first caller.
-    "D3DXMatrixIdentity"
+    "D3DXMatrixIdentity",
 ]
 
 fun_to_mangled_map = {}

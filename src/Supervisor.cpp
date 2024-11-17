@@ -34,15 +34,17 @@ DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
 DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
 DIFFABLE_STATIC(u16, g_FocusButtonConflictState)
 
-// TODO: Not a perfect match.
+#pragma optimize("s", on)
+#pragma var_order(data, wavFile, wavFile2)
 ZunResult Supervisor::LoadConfig(char *path)
 {
-    u8 *data;
+    GameConfiguration *data;
     FILE *wavFile;
+    FILE *wavFile2;
 
     memset(&g_Supervisor.cfg, 0, sizeof(GameConfiguration));
     g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
-    data = FileSystem::OpenPath(path, 1);
+    data = (GameConfiguration *)FileSystem::OpenPath(path, 1);
     if (data == NULL)
     {
         g_Supervisor.cfg.lifeCount = 2;
@@ -52,15 +54,15 @@ ZunResult Supervisor::LoadConfig(char *path)
         g_Supervisor.cfg.padXAxis = 600;
         g_Supervisor.cfg.padYAxis = 600;
         wavFile = fopen("bgm/th06_01.wav", "rb");
-        if (wavFile == NULL)
-        {
-            g_Supervisor.cfg.musicMode = MIDI;
-            utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
-        }
-        else
+        if (wavFile != NULL)
         {
             g_Supervisor.cfg.musicMode = WAV;
             fclose(wavFile);
+        }
+        else
+        {
+            g_Supervisor.cfg.musicMode = MIDI;
+            utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
         }
         g_Supervisor.cfg.playSounds = 1;
         g_Supervisor.cfg.defaultDifficulty = 1;
@@ -71,11 +73,11 @@ ZunResult Supervisor::LoadConfig(char *path)
     }
     else
     {
-        memcpy(&g_Supervisor.cfg, data, sizeof(GameConfiguration));
-        if ((4 < g_Supervisor.cfg.lifeCount) || (3 < g_Supervisor.cfg.bombCount) ||
-            (1 < g_Supervisor.cfg.colorMode16bit) || (MIDI < g_Supervisor.cfg.musicMode) ||
-            (4 < g_Supervisor.cfg.defaultDifficulty) || (1 < g_Supervisor.cfg.playSounds) ||
-            (1 < g_Supervisor.cfg.windowed) || (2 < g_Supervisor.cfg.frameskipConfig) ||
+        g_Supervisor.cfg = *data;
+        if ((g_Supervisor.cfg.lifeCount >= 5) || (g_Supervisor.cfg.bombCount >= 4) ||
+            (g_Supervisor.cfg.colorMode16bit >= 2) || (g_Supervisor.cfg.musicMode >= 3) ||
+            (g_Supervisor.cfg.defaultDifficulty >= 5) || (g_Supervisor.cfg.playSounds >= 2) ||
+            (g_Supervisor.cfg.windowed >= 2) || (g_Supervisor.cfg.frameskipConfig >= 3) ||
             (g_Supervisor.cfg.version != GAME_VERSION) || (g_LastFileSize != 0x38))
         {
             g_Supervisor.cfg.lifeCount = 2;
@@ -84,23 +86,24 @@ ZunResult Supervisor::LoadConfig(char *path)
             g_Supervisor.cfg.version = GAME_VERSION;
             g_Supervisor.cfg.padXAxis = 600;
             g_Supervisor.cfg.padYAxis = 600;
-            wavFile = fopen("bgm/th06_01.wav", "rb");
-            if (wavFile == NULL)
+            wavFile2 = fopen("bgm/th06_01.wav", "rb");
+            if (wavFile2 != NULL)
             {
-                g_Supervisor.cfg.musicMode = MIDI;
-                utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
+                g_Supervisor.cfg.musicMode = WAV;
+                fclose(wavFile2);
             }
             else
             {
-                g_Supervisor.cfg.musicMode = WAV;
-                fclose(wavFile);
+                g_Supervisor.cfg.musicMode = MIDI;
+                utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
             }
             g_Supervisor.cfg.playSounds = 1;
             g_Supervisor.cfg.defaultDifficulty = 1;
             g_Supervisor.cfg.windowed = false;
             g_Supervisor.cfg.frameskipConfig = 0;
             g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
-            g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
+            memset(&g_Supervisor.cfg.opts, 0, sizeof(GameConfigOptsShifts));
+            g_Supervisor.cfg.opts |= (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
             GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CONFIG_CORRUPTED);
         }
         g_ControllerMapping = g_Supervisor.cfg.controllerMapping;
@@ -118,8 +121,7 @@ ZunResult Supervisor::LoadConfig(char *path)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_USE_16BIT_TEXTURES);
     }
-    if (((this->cfg.opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH) & 1 != 0 ||
-         (this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) != 0)
+    if (this->IsUnknown())
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_BACKBUFFER_CLEAR);
     }
@@ -156,39 +158,44 @@ ZunResult Supervisor::LoadConfig(char *path)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DO_NOT_USE_DIRECTINPUT);
     }
-    if (FileSystem::WriteDataToFile(path, &g_Supervisor.cfg, sizeof(GameConfiguration)) == 0)
-    {
-        return ZUN_SUCCESS;
-    }
-    else
+    if (FileSystem::WriteDataToFile(path, &g_Supervisor.cfg, sizeof(GameConfiguration)) != 0)
     {
         GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FILE_CANNOT_BE_EXPORTED, path);
         GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL);
         return ZUN_ERROR;
     }
-}
 
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(chain, supervisor)
 ZunResult Supervisor::RegisterChain()
 {
-    g_Supervisor.wantedState = 0;
-    g_Supervisor.curState = -1;
-    g_Supervisor.calcCount = 0;
+    ChainElem *chain;
+    Supervisor *supervisor = &g_Supervisor;
 
-    ChainElem *calcElem = g_Chain.CreateElem((ChainCallback)Supervisor::OnUpdate);
-    calcElem->arg = &g_Supervisor;
-    calcElem->addedCallback = (ChainAddedCallback)Supervisor::AddedCallback;
-    calcElem->deletedCallback = (ChainDeletedCallback)Supervisor::DeletedCallback;
-    if (g_Chain.AddToCalcChain(calcElem, TH_CHAIN_PRIO_CALC_SUPERVISOR) != 0)
+    supervisor->wantedState = 0;
+    supervisor->curState = -1;
+    supervisor->calcCount = 0;
+
+    chain = g_Chain.CreateElem((ChainCallback)Supervisor::OnUpdate);
+    chain->arg = supervisor;
+    chain->addedCallback = (ChainAddedCallback)Supervisor::AddedCallback;
+    chain->deletedCallback = (ChainDeletedCallback)Supervisor::DeletedCallback;
+    if (g_Chain.AddToCalcChain(chain, TH_CHAIN_PRIO_CALC_SUPERVISOR) != 0)
     {
         return ZUN_ERROR;
     }
 
-    ChainElem *drawElem = g_Chain.CreateElem((ChainCallback)Supervisor::OnDraw);
-    drawElem->arg = &g_Supervisor;
-    g_Chain.AddToDrawChain(drawElem, TH_CHAIN_PRIO_DRAW_SUPERVISOR);
+    chain = g_Chain.CreateElem((ChainCallback)Supervisor::OnDraw);
+    chain->arg = supervisor;
+    g_Chain.AddToDrawChain(chain, TH_CHAIN_PRIO_DRAW_SUPERVISOR);
 
     return ZUN_SUCCESS;
 }
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
@@ -408,9 +415,13 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+#pragma var_order(i)
 ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
-    for (i32 i = 0; i < (i32)(sizeof(s->pbg3Archives) / sizeof(s->pbg3Archives[0])); i++)
+    i32 i;
+
+    for (i = 0; i < (i32)(sizeof(s->pbg3Archives) / sizeof(s->pbg3Archives[0])); i++)
     {
         s->pbg3Archives[i] = NULL;
     }
@@ -436,9 +447,7 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     s->midiOutput = new MidiOutput();
 
-    u16 randomSeed = timeGetTime();
-    g_Rng.seed = randomSeed;
-    g_Rng.generationCount = 0;
+    g_Rng.Initialize(timeGetTime());
 
     g_SoundPlayer.InitSoundBuffers();
     if (g_AnmManager->LoadAnm(ANM_FILE_TEXT, "data/text.anm", ANM_OFFSET_TEXT) != 0)
@@ -461,6 +470,7 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     return ZUN_SUCCESS;
 }
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 ZunResult Supervisor::DeletedCallback(Supervisor *s)

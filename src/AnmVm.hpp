@@ -130,7 +130,10 @@ union AnmVmFlags {
 
 struct AnmVm
 {
-    AnmVm();
+    AnmVm()
+    {
+        this->activeSpriteIndex = -1;
+    }
 
     void Initialize();
     void SetInvisible()

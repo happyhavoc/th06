@@ -27,8 +27,4 @@ void AnmVm::Initialize()
     this->currentTimeInScript.Initialize();
 }
 
-AnmVm::AnmVm()
-{
-    this->activeSpriteIndex = -1;
-}
 }; // namespace th06

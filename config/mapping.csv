@@ -292,8 +292,8 @@ th06::Supervisor::PlayAudio,0x424b5d,0x1db,__thiscall,,ZunResult,Supervisor*,cha
 th06::Supervisor::StopAudio,0x424d38,0x4a,__thiscall,,ZunResult,Supervisor*
 th06::Supervisor::FadeOutMusic,0x424d82,0xbf,__thiscall,,ZunResult,Supervisor*,f32
 th06::SoundPlayer::FadeOut,0x424e41,0x4e,__thiscall,,void,SoundPlayer*,f32
-th06::MusicRoom::FUN_00424e8f,0x424e8f,0x1e,__thiscall,,ZunResult,MusicRoom*
-th06::MusicRoom::DrawMusicList,0x424ead,0x38d,__thiscall,,u32,MusicRoom*
+th06::MusicRoom::CheckInputEnable,0x424e8f,0x1e,__thiscall,,ZunResult,MusicRoom*
+th06::MusicRoom::ProcessInput,0x424ead,0x38d,__thiscall,,i32,MusicRoom*
 th06::MusicRoom::RegisterChain,0x42523a,0xde,default,,ZunResult
 th06::MusicRoom::MusicRoom,0x425318,0xc5,__thiscall,,MusicRoom*,MusicRoom*
 th06::MusicRoom::OnUpdate,0x4253dd,0x7d,__cdecl,,ChainCallbackResult,MusicRoom*
