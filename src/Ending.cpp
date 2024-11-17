@@ -472,17 +472,6 @@ ZunResult Ending::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-Ending::Ending()
-{
-    memset(this, 0, sizeof(Ending));
-    this->line2Delay = 8;
-    this->timer2.InitializeForPopup();
-    this->timer1.InitializeForPopup();
-    this->backgroundPos.x = 0.0f;
-    this->backgroundPos.y = 0.0f;
-    this->backgroundScrollSpeed = 0.0f;
-}
-
 #pragma var_order(framesPressed, idx)
 ChainCallbackResult Ending::OnUpdate(Ending *ending)
 {
