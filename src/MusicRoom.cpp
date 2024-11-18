@@ -1,5 +1,6 @@
 #include "MusicRoom.hpp"
 #include "AnmManager.hpp"
+#include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
@@ -82,6 +83,62 @@ ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom)
         musicRoom->waitFramesCount++;
     }
     g_AnmManager->ExecuteScript(musicRoom->mainVm);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult MusicRoom::OnDraw(MusicRoom *musicRoom)
+{
+    i32 i;
+    D3DXVECTOR3 textPos;
+    char rightArrowStr[4];
+
+    rightArrowStr[0] = TEXT_RIGHT_ARROW;
+    rightArrowStr[1] = '\0';
+
+    g_AnmManager->SetCurrentTexture(NULL);
+    g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
+    g_AnmManager->DrawNoRotation(musicRoom->mainVm);
+
+    // Draw the 10 songs in the song select window, and list indices
+    for (i = musicRoom->listingOffset; i < musicRoom->listingOffset + 10; i++)
+    {
+        if (musicRoom->cursor != i)
+        {
+            musicRoom->titleSprites[i].color = COLOR_SET_ALPHA(COLOR_GREY, 0xe0);
+            g_AsciiManager.color = COLOR_SET_ALPHA(COLOR_GREY, 0xe0);
+        }
+        else
+        {
+            musicRoom->titleSprites[i].color = COLOR_WHITE;
+            g_AsciiManager.color = COLOR_WHITE;
+        }
+
+        musicRoom->titleSprites[i].pos.x = 93.0f;
+        musicRoom->titleSprites[i].pos.y = 104.0f + (((i + 1) - musicRoom->listingOffset) * 18) - 20.0f;
+        musicRoom->titleSprites[i].pos.z = 0.0f;
+        g_AnmManager->DrawNoRotation(&musicRoom->titleSprites[i]);
+
+        textPos = musicRoom->titleSprites[i].pos;
+        textPos.x -= 60.0f;
+
+        if (musicRoom->cursor == i)
+        {
+            g_AsciiManager.AddString(&textPos, rightArrowStr);
+        }
+
+        textPos.x += 15.0f;
+        g_AsciiManager.AddFormatText(&textPos, "%2d.", i + 1);
+    }
+
+    i++; // ???
+
+    for (i = 0; i < ARRAY_SIZE_SIGNED(musicRoom->descriptionSprites); i++)
+    {
+        g_AnmManager->DrawNoRotation(&musicRoom->descriptionSprites[i]);
+    }
+
+    g_AsciiManager.color = COLOR_WHITE;
+
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 

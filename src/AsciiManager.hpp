@@ -11,6 +11,8 @@
 
 namespace th06
 {
+#define TEXT_RIGHT_ARROW 0x7f
+
 struct AsciiManagerString
 {
     char text[64];

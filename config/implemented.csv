@@ -361,6 +361,7 @@ th06::MusicRoom::OnUpdate
 th06::MusicRoom::AddedCallback
 th06::MusicRoom::CheckInputEnable
 th06::MusicRoom::ProcessInput
+th06::MusicRoom::OnDraw
 th06::ReplayManager::ValidateReplayData
 th06::ReplayManager::RegisterChain
 th06::ReplayManager::OnUpdate
