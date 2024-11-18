@@ -28,7 +28,7 @@ struct MusicRoom
     {
         memset(this, 0, sizeof(MusicRoom));
     }
- 
+
     static ZunResult AddedCallback(MusicRoom *musicRoom);
     static ZunResult DeletedCallback(MusicRoom *musicRoom);
     ZunBool ProcessInput();
