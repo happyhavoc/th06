@@ -95,7 +95,7 @@ def configure(build_type):
             "Stage",
             "BombData",
             "EclManager",
-            "Enemy",  # ECL instructions.
+            "EnemyEclInstr",
             "EffectManager",
             "Ending",
             "EnemyManager",

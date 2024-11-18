@@ -145,39 +145,6 @@ struct Enemy
     static void ResetEffectArray(Enemy *enemy);
     static void UpdateEffects(Enemy *enemy);
 
-    static i32 *GetVar(Enemy *enemy, EclVarId *varId, EclValueType *valueType);
-    static f32 *GetVarFloat(Enemy *enemy, f32 *varId, EclValueType *valueType);
-    static void SetVar(Enemy *enemy, EclVarId lhs, void *rhs);
-
-    static void MathAdd(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
-    static void MathSub(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
-    static void MathMul(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
-    static void MathDiv(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
-    static void MathMod(Enemy *enemy, EclVarId out, EclVarId *lhs, EclVarId *rhs);
-    static void MathAtan2(Enemy *enemy, EclVarId out, f32 *a1, f32 *a2, f32 *b1, f32 *b2);
-
-    static void MoveDirTime(Enemy *enemy, EclRawInstr *instr);
-    static void MovePosTime(Enemy *enemy, EclRawInstr *instr);
-    static void MoveTime(Enemy *enemy, EclRawInstr *instr);
-
-    static void ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsShootAtRandomArea(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage6XFunc10(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStageXFunc14(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr);
-    static void ExInsStageXFunc16(Enemy *enemy, EclRawInstr *instr);
-
     f32 LifePercent()
     {
         return (f32)this->life / (f32)this->maxLife;
