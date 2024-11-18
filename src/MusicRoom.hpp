@@ -20,13 +20,15 @@ struct TrackDescriptor
 };
 C_ASSERT(sizeof(TrackDescriptor) == 0x272);
 
+// Force constructor to generate size optimized code when it's placed in the binary
+#pragma optimize("s", on)
 struct MusicRoom
 {
     MusicRoom()
     {
         memset(this, 0, sizeof(MusicRoom));
     }
-
+ 
     static ZunResult AddedCallback(MusicRoom *musicRoom);
     static ZunResult DeletedCallback(MusicRoom *musicRoom);
     ZunBool ProcessInput();
@@ -49,4 +51,5 @@ struct MusicRoom
     AnmVm descriptionSprites[16];
 };
 C_ASSERT(sizeof(MusicRoom) == 0x3434);
+#pragma optimize("", on)
 }; // namespace th06
