@@ -198,7 +198,7 @@
             "name": "MusicRoom",
 
             "target_path": "build/objdiff/orig/MusicRoom.obj",
-            "base_path": "build/objdiff/orig/MusicRoom.obj",
+            "base_path": "build/objdiff/reimpl/MusicRoom.obj",
 
             "reverse_fn_order": false
         },
