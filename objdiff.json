@@ -27,6 +27,14 @@
             "reverse_fn_order": false
         },
         {
+            "name": "AnmVm",
+
+            "target_path": "build/objdiff/orig/AnmVm.obj",
+            "base_path": "build/objdiff/reimpl/AnmVm.obj",
+
+            "reverse_fn_order": false
+        },
+        {
             "name": "AsciiManager",
 
             "target_path": "build/objdiff/orig/AsciiManager.obj",
