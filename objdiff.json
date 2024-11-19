@@ -83,10 +83,10 @@
             "reverse_fn_order": false
         },
         {
-            "name": "Enemy",
+            "name": "EnemyEclInstr",
 
-            "target_path": "build/objdiff/orig/Enemy.obj",
-            "base_path": "build/objdiff/reimpl/Enemy.obj",
+            "target_path": "build/objdiff/orig/EnemyEclInstr.obj",
+            "base_path": "build/objdiff/reimpl/EnemyEclInstr.obj",
 
             "reverse_fn_order": false
         },
