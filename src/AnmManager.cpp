@@ -764,17 +764,13 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case AnmOpcode_SetTranslation:
             if (vm->flags.flag5 == 0)
             {
-                local_48.z = *(f32 *)&curInstr->args[2];
-                local_48.y = *(f32 *)&curInstr->args[1];
-                local_48.x = *(f32 *)&curInstr->args[0];
-                memcpy(vm->pos, local_48, sizeof(D3DXVECTOR3));
+                vm->pos =
+                    D3DXVECTOR3(*(f32 *)&curInstr->args[0], *(f32 *)&curInstr->args[1], *(f32 *)&curInstr->args[2]);
             }
             else
             {
-                local_54.z = *(f32 *)&curInstr->args[2];
-                local_54.y = *(f32 *)&curInstr->args[1];
-                local_54.x = *(f32 *)&curInstr->args[0];
-                memcpy(vm->posOffset, local_54, sizeof(D3DXVECTOR3));
+                vm->posOffset =
+                    D3DXVECTOR3(*(f32 *)&curInstr->args[0], *(f32 *)&curInstr->args[1], *(f32 *)&curInstr->args[2]);
             }
             break;
         case AnmOpcode_PosTimeAccel:
@@ -794,10 +790,8 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             {
                 memcpy(vm->posInterpInitial, vm->posOffset, sizeof(D3DXVECTOR3));
             }
-            local_60.z = *(f32 *)&curInstr->args[2];
-            local_60.y = *(f32 *)&curInstr->args[1];
-            local_60.x = *(f32 *)&curInstr->args[0];
-            memcpy(vm->posInterpFinal, local_60, sizeof(D3DXVECTOR3));
+            vm->posInterpFinal =
+                D3DXVECTOR3(*(f32 *)&curInstr->args[0], *(f32 *)&curInstr->args[1], *(f32 *)&curInstr->args[2]);
             vm->posInterpEndTime = curInstr->args[3];
             vm->posInterpTime.InitializeForPopup();
             break;
@@ -941,15 +935,15 @@ stop:
         local_2c = vm->alphaInterpInitial;
         local_28 = vm->alphaInterpFinal;
         local_c0 = &vm->alphaInterpTime;
-        local_30 = ((f32)local_c0->current + local_c0->subFrame) / (f32)vm->alphaInterpEndTime;
+        local_30 = local_c0->AsFramesFloat() / (f32)vm->alphaInterpEndTime;
         if (local_30 >= 1.0f)
         {
             local_30 = 1.0;
         }
         for (local_38 = 0; local_38 < 4; local_38++)
         {
-            local_34 = (f32)COLOR_GET_COMPONENT(local_28, local_38) -
-                       (f32)COLOR_GET_COMPONENT(local_2c, local_38) * local_30 +
+            local_34 = ((f32)COLOR_GET_COMPONENT(local_28, local_38) - (f32)COLOR_GET_COMPONENT(local_2c, local_38)) *
+                           local_30 +
                        COLOR_GET_COMPONENT(local_2c, local_38);
             if (local_34 < 0)
             {
@@ -967,7 +961,7 @@ stop:
     if (vm->posInterpEndTime != 0)
     {
         local_c8 = &vm->posInterpTime;
-        local_3c = ((f32)local_c8->current + local_c8->subFrame) / (f32)vm->posInterpEndTime;
+        local_3c = local_c8->AsFramesFloat() / (f32)vm->posInterpEndTime;
         if (local_3c >= 1.0f)
         {
             local_3c = 1.0;
