@@ -620,7 +620,7 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
 
 #pragma var_order(curInstr, local_c, local_10, local_14, local_18, local_1c, local_20, nextInstr, local_28, local_2c,  \
                   local_30, local_34, local_38, local_3c, local_68, local_6a, local_70, curTime, scaleInterpCurTime,   \
-                  local_b4, local_b8, local_c0, local_c4, local_c8, local_cc, randValue)
+                  local_c4, local_cc, randValue)
 i32 AnmManager::ExecuteScript(AnmVm *vm)
 {
     AnmRawInstr *curInstr;
@@ -642,11 +642,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
     u32 local_70;
     i32 curTime;
     i32 scaleInterpCurTime;
-    ZunTimer *local_b4;
-    ZunTimer *local_b8;
-    ZunTimer *local_c0;
     i32 local_c4;
-    ZunTimer *local_c8;
     i32 local_cc;
     u32 randValue;
 
@@ -901,12 +897,10 @@ stop:
         }
         else
         {
-            local_b4 = &vm->scaleInterpTime;
-            vm->scaleX = (vm->scaleInterpFinalX - vm->scaleInterpInitialX) * (local_b4->current + local_b4->subFrame) /
+            vm->scaleX = (vm->scaleInterpFinalX - vm->scaleInterpInitialX) * vm->scaleInterpTime.AsFramesFloat() /
                              vm->scaleInterpEndTime +
                          vm->scaleInterpInitialX;
-            local_b8 = &vm->scaleInterpTime;
-            vm->scaleY = (vm->scaleInterpFinalY - vm->scaleInterpInitialY) * (local_b8->current + local_b8->subFrame) /
+            vm->scaleY = (vm->scaleInterpFinalY - vm->scaleInterpInitialY) * vm->scaleInterpTime.AsFramesFloat() /
                              vm->scaleInterpEndTime +
                          vm->scaleInterpInitialY;
         }
@@ -929,8 +923,7 @@ stop:
         vm->alphaInterpTime.Tick();
         local_2c = vm->alphaInterpInitial;
         local_28 = vm->alphaInterpFinal;
-        local_c0 = &vm->alphaInterpTime;
-        local_30 = local_c0->AsFramesFloat() / (f32)vm->alphaInterpEndTime;
+        local_30 = vm->alphaInterpTime.AsFramesFloat() / (f32)vm->alphaInterpEndTime;
         if (local_30 >= 1.0f)
         {
             local_30 = 1.0;
@@ -955,8 +948,7 @@ stop:
     }
     if (vm->posInterpEndTime != 0)
     {
-        local_c8 = &vm->posInterpTime;
-        local_3c = local_c8->AsFramesFloat() / (f32)vm->posInterpEndTime;
+        local_3c = vm->posInterpTime.AsFramesFloat() / (f32)vm->posInterpEndTime;
         if (local_3c >= 1.0f)
         {
             local_3c = 1.0;
