@@ -81,8 +81,8 @@ struct MidiOutput : MidiTimer
     u8 *midiFileData[32];
     i32 numTracks;
     u32 format;
-    u32 division;
-    u32 unk120;
+    u32 divisions;
+    u32 tempo;
     u32 unk124;
     f64 unk128;
     f64 unk130;
