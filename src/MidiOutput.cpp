@@ -191,7 +191,7 @@ void MidiOutput::LoadTracks()
     this->fadeOutVolumeMultiplier = 1.0;
     this->unk2dc = 0;
     this->fadeOutFlag = 0;
-    this->unk128 = 0;
+    this->volume = 0;
     this->unk130 = 0;
 
     for (trackIndex = 0; trackIndex < this->numTracks; trackIndex++, track++)
@@ -430,6 +430,59 @@ u32 MidiOutput::SetFadeOut(u32 ms)
     this->fadeOutFlag = 1;
 
     return 0;
+}
+
+#pragma var_order(trackIndex, local_14, trackLoaded)
+void MidiOutput::OnTimerElapsed()
+{
+    unsigned __int64 local_14;
+    i32 trackIndex;
+    BOOL trackLoaded;
+
+    trackLoaded = false;
+    // longlong multiplication. Oh god.
+    local_14 = this->unk130 + (this->volume * this->divisions * 1000) / this->tempo;
+    if (this->fadeOutFlag != 0)
+    {
+        if (this->fadeOutElapsedMS < this->fadeOutInterval)
+        {
+            this->fadeOutVolumeMultiplier = 1.0f - (f32)this->fadeOutElapsedMS / (f32)this->fadeOutInterval;
+            if ((u32)(this->fadeOutVolumeMultiplier * 128.0f) != this->fadeOutLastSetVolume)
+            {
+                this->FadeOutSetVolume(0);
+            }
+            this->fadeOutLastSetVolume = this->fadeOutVolumeMultiplier * 128.0f;
+            this->fadeOutElapsedMS = this->fadeOutElapsedMS + 1;
+        }
+        else
+        {
+            this->fadeOutVolumeMultiplier = 0.0;
+            return;
+        }
+    }
+    for (trackIndex = 0; trackIndex < this->numTracks; trackIndex += 1)
+    {
+        if (this->tracks[trackIndex].trackPlaying)
+        {
+            trackLoaded = true;
+            while (this->tracks[trackIndex].trackPlaying)
+            {
+                if (this->tracks[trackIndex].trackLengthOther <= local_14)
+                {
+                    this->ProcessMsg(&this->tracks[trackIndex]);
+                    local_14 = this->unk130 + (this->volume * this->divisions * 1000 / this->tempo);
+                    continue;
+                }
+                break;
+            }
+        }
+    }
+    this->volume += 1;
+    if (!trackLoaded)
+    {
+        this->LoadTracks();
+    }
+    return;
 }
 
 u16 MidiOutput::Ntohs(u16 val)

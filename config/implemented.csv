@@ -250,6 +250,7 @@ th06::MidiOutput::LoadTracks
 th06::MidiOutput::ClearTracks
 th06::MidiOutput::ParseFile
 th06::MidiOutput::LoadFile
+th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::Play
 th06::MidiOutput::UnprepareHeader
 th06::MidiOutput::ReadFileData

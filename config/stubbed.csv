@@ -1,3 +1,4 @@
 th06::AnmManager::DrawEndingRect
-th06::MidiOutput::OnTimerElapsed
 th06::MainMenu::SelectRelated
+th06::MidiOutput::ProcessMsg
+th06::MidiOutput::FadeOutSetVolume

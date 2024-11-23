@@ -27,7 +27,7 @@ C_ASSERT(sizeof(MidiTimer) == 0x10);
 struct MidiTrack
 {
     u32 trackPlaying;
-    u32 trackLengthOther;
+    i32 trackLengthOther;
     u32 trackLength;
     u32 unk3;
     u8 *trackData;
@@ -67,12 +67,15 @@ struct MidiOutput : MidiTimer
     ZunResult ReadFileData(u32 idx, char *path);
     void ReleaseFileData(u32 idx);
     void ParseFile(u32 idx);
+    void ProcessMsg(MidiTrack *track);
 
     ZunResult ParseFile(i32 idx);
     ZunResult LoadFile(char *midiPath);
     ZunResult Play();
 
     u32 SetFadeOut(u32 ms);
+    void FadeOutSetVolume(i32 volume);
+
     static u16 Ntohs(u16 val);
     static u32 SkipVariableLength(u8 **curTrackDataCursor);
 
@@ -81,11 +84,11 @@ struct MidiOutput : MidiTimer
     u8 *midiFileData[32];
     i32 numTracks;
     u32 format;
-    u32 divisions;
-    u32 tempo;
+    i32 divisions;
+    i32 tempo;
     u32 unk124;
-    f64 unk128;
-    f64 unk130;
+    unsigned __int64 volume;
+    __int64 unk130;
     MidiTrack *tracks;
     MidiDevice midiOutDev;
     u8 unk144[384];
@@ -97,8 +100,8 @@ struct MidiOutput : MidiTimer
     u32 unk2d8;
     u32 unk2dc;
     u32 fadeOutFlag;
-    u32 fadeOutInterval;
-    u32 fadeOutElapsedMS;
+    i32 fadeOutInterval;
+    i32 fadeOutElapsedMS;
     u32 unk2ec;
     u32 unk2f0;
     u32 unk2f4;
