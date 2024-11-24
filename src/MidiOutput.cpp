@@ -716,4 +716,36 @@ void MidiOutput::ProcessMsg(MidiTrack *track)
     return;
 }
 
+#pragma var_order(arg1, idx, volumeByte, midiStatus, volumeClamped)
+void MidiOutput::FadeOutSetVolume(i32 volume)
+{
+    i32 volumeClamped;
+    u32 volumeByte;
+    i32 idx;
+    i32 arg1;
+    u32 midiStatus;
+
+    if (this->unk2d4 != 0)
+    {
+        return;
+    }
+    arg1 = 7;
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->channels); idx += 1)
+    {
+        midiStatus = (idx + 0xb0) & 0xff;
+        volumeClamped = (i32)(this->channels[idx].channelVolume * this->fadeOutVolumeMultiplier) + volume;
+        if (volumeClamped < 0)
+        {
+            volumeClamped = 0;
+        }
+        else if (volumeClamped > 127)
+        {
+            volumeClamped = 127;
+        }
+        volumeByte = volumeClamped & 0xff;
+        this->midiOutDev.SendShortMsg(midiStatus, arg1, volumeByte);
+    }
+    return;
+}
+
 }; // namespace th06
