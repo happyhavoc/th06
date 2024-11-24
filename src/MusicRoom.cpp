@@ -2,6 +2,7 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "FileSystem.hpp"
 
 namespace th06
 {
@@ -29,6 +30,42 @@ ZunResult MusicRoom::RegisterChain()
     g_Chain.AddToDrawChain(musicRoom->draw_chain, TH_CHAIN_PRIO_DRAW_MAINMENU);
 
     return ZUN_SUCCESS;
+};
+
+ZunResult MusicRoom::AddedCallback(MusicRoom *musicRoom)
+{
+
+    AnmManager* anmMgr;
+    u8* filePtr;
+    MusicRoom* musicRoomObj;
+    char* currChar;
+
+    if (g_AnmManager->LoadSurface(0, "data/result/music.jpg"))
+    {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(0x29, "data/music00.anm", ANM_OFFSET_MUSICROOM_00) != ZUN_SUCCESS) {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(0x2a, "data/music01.anm", ANM_OFFSET_MUSICROOM_01) != ZUN_SUCCESS) {
+        return ZUN_ERROR;
+    }
+    if (g_AnmManager->LoadAnm(0x2b, "data/music02.anm", ANM_OFFSET_MUSICROOM_02) != ZUN_SUCCESS) {
+        return ZUN_ERROR;
+    }
+
+    musicRoom->mainVM[0].anmFileIndex = ANM_OFFSET_MUSICROOM_00;
+    g_AnmManager->SetAndExecuteScript(&musicRoom->mainVM[0], anmMgr->scripts[ANM_OFFSET_MUSICROOM_00]);
+    musicRoom->unk_0x8 = 0;
+
+    filePtr = FileSystem::OpenPath("data/musiccmt.txt", 0);
+
+    if (filePtr == NULL)
+    {
+        return ZUN_ERROR;
+    } else {
+        musicRoomObj = new MusicRoom();
+    }
 };
 
 ZunResult MusicRoom::DeletedCallback(MusicRoom *musicRoom)
