@@ -216,6 +216,7 @@ th06::utils::DebugPrint
 th06::utils::DebugPrint2
 th06::FileSystem::OpenPath
 th06::FileSystem::WriteDataToFile
+th06::ItemManager::ItemManager
 th06::ItemManager::SpawnItem
 th06::ItemManager::OnUpdate
 th06::ItemManager::OnDraw

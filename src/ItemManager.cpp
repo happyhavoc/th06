@@ -20,12 +20,12 @@ void ItemManager::SpawnItem(D3DXVECTOR3 *position, ItemType itemType, int state)
     i32 idx;
 
     item = &this->items[this->nextIndex];
-    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->items); idx++)
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->items) - 1; idx++)
     {
         this->nextIndex++;
         if (item->isInUse)
         {
-            if (this->nextIndex >= ARRAY_SIZE_SIGNED(this->items))
+            if (this->nextIndex >= ARRAY_SIZE_SIGNED(this->items) - 1)
             {
                 this->nextIndex = 0;
                 item = &this->items[0];
@@ -36,7 +36,7 @@ void ItemManager::SpawnItem(D3DXVECTOR3 *position, ItemType itemType, int state)
             }
             continue;
         }
-        if (this->nextIndex >= ARRAY_SIZE_SIGNED(this->items))
+        if (this->nextIndex >= ARRAY_SIZE_SIGNED(this->items) - 1)
         {
             this->nextIndex = 0;
         }
@@ -96,7 +96,7 @@ void ItemManager::OnUpdate()
     static D3DXVECTOR3 g_ItemSize(16.0f, 16.0f, 16.0f);
     itemAcquired = false;
     this->itemCount = 0;
-    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->items); idx++, curItem++)
+    for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->items) - 1; idx++, curItem++)
     {
         if (!curItem->isInUse)
         {
@@ -338,7 +338,7 @@ void ItemManager::RemoveAllItems()
     Item *cursor;
     i32 idx;
 
-    for (cursor = &this->items[0], idx = 0; idx < ARRAY_SIZE_SIGNED(this->items); idx += 1, cursor += 1)
+    for (cursor = &this->items[0], idx = 0; idx < ARRAY_SIZE_SIGNED(this->items) - 1; idx += 1, cursor += 1)
     {
         if (!cursor->isInUse)
         {
@@ -358,7 +358,7 @@ void ItemManager::OnDraw()
 
     curItem = &this->items[0];
     idx = 0;
-    for (; idx < ARRAY_SIZE_SIGNED(this->items); idx++, curItem++)
+    for (; idx < ARRAY_SIZE_SIGNED(this->items) - 1; idx++, curItem++)
     {
         if (curItem->isInUse == 0)
         {
