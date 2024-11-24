@@ -521,4 +521,199 @@ MidiOutput::~MidiOutput()
     }
 }
 
+#pragma var_order(nextTrackLength, idx, arg2, lVar5, opcodeLow, opcodeHigh, opcode, arg1, curTrackLength, midiHdr,     \
+                  cVar1, unk24, local_2c, local_30, midiHeaderSize, lpdata)
+void MidiOutput::ProcessMsg(MidiTrack *track)
+{
+    i32 lVar5;
+    i32 curTrackLength, nextTrackLength;
+    MidiTrack *local_30;
+    MidiTrack *local_2c;
+    u8 arg1, arg2;
+    u8 opcode, opcodeHigh, opcodeLow;
+    u8 cVar1;
+    size_t midiHeaderSize;
+    MIDIHDR *midiHdr;
+    i32 idx;
+    LPSTR lpdata;
+    i32 unk24;
+
+    opcode = *track->curTrackDataCursor;
+    if (opcode < MIDI_OPCODE_NOTE_OFF)
+    {
+        opcode = track->opcode;
+    }
+    else
+    {
+        track->curTrackDataCursor += 1;
+    }
+    // we AND the opcode to filter out the channel
+    opcodeHigh = opcode & 0xf0;
+    opcodeLow = opcode & 0x0f;
+    switch (opcodeHigh)
+    {
+    case MIDI_OPCODE_SYSTEM_EXCLUSIVE:
+        if (opcode == MIDI_OPCODE_SYSTEM_EXCLUSIVE)
+        {
+            if (this->midiHeaders[this->midiHeadersCursor] != NULL)
+            {
+                this->UnprepareHeader(this->midiHeaders[this->midiHeadersCursor]);
+            }
+            midiHeaderSize = sizeof(MIDIHDR);
+            midiHdr = this->midiHeaders[this->midiHeadersCursor] = (MIDIHDR *)malloc(midiHeaderSize);
+            curTrackLength = MidiOutput::SkipVariableLength(&track->curTrackDataCursor);
+            memset(midiHdr, 0, sizeof(MIDIHDR));
+            midiHdr->lpData = (LPSTR)malloc(curTrackLength + 1);
+            midiHdr->lpData[0] = -0x10;
+            midiHdr->dwFlags = 0;
+            midiHdr->dwBufferLength = curTrackLength + 1;
+            for (idx = 0; idx < curTrackLength; idx += 1)
+            {
+                midiHdr->lpData[idx + 1] = *track->curTrackDataCursor;
+                track->curTrackDataCursor += 1;
+            }
+            if (this->midiOutDev.SendLongMsg(midiHdr))
+            {
+                lpdata = midiHdr->lpData;
+                free(lpdata);
+                free(midiHdr);
+                this->midiHeaders[this->midiHeadersCursor] = NULL;
+            }
+            this->midiHeadersCursor += 1;
+            this->midiHeadersCursor = this->midiHeadersCursor % 32;
+        }
+        else if (opcode == MIDI_OPCODE_SYSTEM_RESET)
+        {
+            // Meta-Event. In a MIDI file, SYSTEM_RESET gets reused as a
+            // sort of escape code to introducde its own meta-events system,
+            // which are events that make sense in the context of a MIDI
+            // file, but not in the context of the MIDI protocol itself.
+            cVar1 = *track->curTrackDataCursor;
+            track->curTrackDataCursor += 1;
+            curTrackLength = MidiOutput::SkipVariableLength(&track->curTrackDataCursor);
+            // End of Track meta-event.
+            if (cVar1 == 0x2f)
+            {
+                track->trackPlaying = 0;
+                return;
+            }
+            // Set Tempo meta-event.
+            if (cVar1 == 0x51)
+            {
+                this->unk130 += (this->volume * this->divisions * 1000 / this->tempo);
+                this->volume = 0;
+                this->tempo = 0;
+                for (idx = 0; idx < curTrackLength; idx += 1)
+                {
+                    this->tempo += this->tempo * 0x100 + *track->curTrackDataCursor;
+                    track->curTrackDataCursor += 1;
+                }
+                unk24 = 60000000 / this->tempo;
+                break;
+            }
+            track->curTrackDataCursor = track->curTrackDataCursor + curTrackLength;
+        }
+        break;
+    case MIDI_OPCODE_NOTE_OFF:
+    case MIDI_OPCODE_NOTE_ON:
+    case MIDI_OPCODE_POLYPHONIC_AFTERTOUCH:
+    case MIDI_OPCODE_MODE_CHANGE:
+    case MIDI_OPCODE_PITCH_BEND_CHANGE:
+        arg1 = *track->curTrackDataCursor;
+        track->curTrackDataCursor += 1;
+        arg2 = *track->curTrackDataCursor;
+        track->curTrackDataCursor += 1;
+        break;
+    case MIDI_OPCODE_PROGRAM_CHANGE:
+    case MIDI_OPCODE_CHANNEL_AFTERTOUCH:
+        arg1 = *track->curTrackDataCursor;
+        track->curTrackDataCursor += 1;
+        arg2 = 0;
+        break;
+    }
+    switch (opcodeHigh)
+    {
+    case MIDI_OPCODE_NOTE_ON:
+        if (arg2 != 0)
+        {
+            arg1 += this->unk2c4;
+            this->channels[opcodeLow].keyPressedFlags[arg1 >> 3] |= (1 << (arg1 & 7)) & 0xff;
+            break;
+        }
+    case MIDI_OPCODE_NOTE_OFF:
+        arg1 += this->unk2c4;
+        this->channels[opcodeLow].keyPressedFlags[arg1 >> 3] &= (~(1 << (arg1 & 7))) & 0xff;
+        break;
+    case MIDI_OPCODE_PROGRAM_CHANGE:
+        // Program Change
+        this->channels[opcodeLow].instrument = arg1;
+        break;
+    case MIDI_OPCODE_MODE_CHANGE:
+        switch (arg1)
+        {
+        case 0:
+            // Bank Select
+            this->channels[opcodeLow].instrumentBank = arg2;
+            break;
+        case 7:
+            // Channel Volume
+            this->channels[opcodeLow].channelVolume = arg2;
+            lVar5 = (f32)arg2 * this->fadeOutVolumeMultiplier;
+            if (lVar5 < 0)
+            {
+                lVar5 = 0;
+            }
+            else if (0x7f < lVar5)
+            {
+                lVar5 = 0x7f;
+            }
+            arg2 = this->channels[opcodeLow].modifiedVolume = lVar5;
+            break;
+        case 91:
+            // Effects 1 Depth
+            this->channels[opcodeLow].effectOneDepth = arg2;
+            break;
+        case 93:
+            // Effects 3 Depth
+            this->channels[opcodeLow].effectThreeDepth = arg2;
+            break;
+        case 10:
+            // Pan
+            this->channels[opcodeLow].pan = arg2;
+            break;
+        case 2:
+            // Breath control
+            for (local_2c = &this->tracks[0], idx = 0; idx < this->numTracks; idx += 1, local_2c += 1)
+            {
+                local_2c->startTrackDataMaybe = local_2c->curTrackDataCursor;
+                local_2c->unk1c = local_2c->trackLengthOther;
+            }
+            this->unk2ec = this->tempo;
+            this->unk2f0 = this->volume;
+            this->unk2f8 = this->unk130;
+            break;
+        case 4:
+            // Foot controller
+            for (local_30 = &this->tracks[0], idx = 0; idx < this->numTracks; idx += 1, local_30 += 1)
+            {
+                local_30->curTrackDataCursor = (byte *)local_30->startTrackDataMaybe;
+                local_30->trackLengthOther = local_30->unk1c;
+            }
+            this->tempo = this->unk2ec;
+            this->volume = this->unk2f0;
+            this->unk130 = this->unk2f8;
+            break;
+        }
+        break;
+    }
+    if (opcode < MIDI_OPCODE_SYSTEM_EXCLUSIVE)
+    {
+        this->midiOutDev.SendShortMsg(opcode, arg1, arg2);
+    }
+    track->opcode = opcode;
+    nextTrackLength = MidiOutput::SkipVariableLength(&track->curTrackDataCursor);
+    track->trackLengthOther = track->trackLengthOther + nextTrackLength;
+    return;
+}
+
 }; // namespace th06
