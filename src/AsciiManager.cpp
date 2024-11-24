@@ -18,12 +18,10 @@ DIFFABLE_STATIC(ChainElem, g_AsciiManagerOnDrawPopupsChain)
 
 AsciiManager::AsciiManager()
 {
-    i32 pad01, pad02, pad03, pad04, pad05, pad06, pad07, pad08;
 }
 
 StageMenu::StageMenu()
 {
-    i32 pad01, pad02, pad03, pad04;
 }
 
 ChainCallbackResult AsciiManager::OnUpdate(AsciiManager *mgr)

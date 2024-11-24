@@ -1,5 +1,4 @@
-AnmManager,th06::AnmManager
-AnmVm,th06::AnmVm
+AnmManager,th06::AnmVm,th06::AnmManager
 AsciiManager,th06::AsciiManager,th06::StageMenu
 BombData,th06::BombData
 BulletManager,th06::BulletManager
@@ -7,8 +6,8 @@ Chain,th06::Chain,th06::ChainElem
 EclManager,th06::EclManager
 EffectManager,th06::EffectManager
 Ending,th06::Ending
-Enemy,th06::Enemy
-EnemyManager,th06::EnemyManager
+EnemyEclInstr,th06::EnemyEclInstr
+EnemyManager,th06::EnemyManager,th06::Enemy
 FileAbstraction,th06::FileAbstraction
 FileSystem,th06::FileSystem
 GameErrorContext,th06::GameErrorContext

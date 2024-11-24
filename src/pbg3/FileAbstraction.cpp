@@ -96,19 +96,34 @@ i32 FileAbstraction::ReadByte()
     {
         return -1;
     }
-    return outBytesRead != 0 ? data : -1;
+    else
+    {
+        if (outBytesRead == 0)
+        {
+            return -1;
+        }
+        return data;
+    }
 }
 
-i32 FileAbstraction::WriteByte(u8 b)
+i32 FileAbstraction::WriteByte(u32 b)
 {
-    u8 res;
+    u8 outByte;
     u32 outBytesWritten;
 
-    if (this->Write(&b, 1, &outBytesWritten) == FALSE)
+    outByte = b;
+    if (this->Write(&outByte, 1, &outBytesWritten) == FALSE)
     {
         return -1;
     }
-    return outBytesWritten != 0 ? b : -1;
+    else
+    {
+        if (outBytesWritten == 0)
+        {
+            return -1;
+        }
+        return b;
+    }
 }
 
 i32 FileAbstraction::Seek(u32 amount, u32 seekFrom)
@@ -150,6 +165,7 @@ u8 *FileAbstraction::ReadWholeFile(u32 maxSize)
     }
 
     u32 dataLen = this->GetSize();
+    u32 outDataLen;
     if (dataLen <= maxSize)
     {
         u8 *data = reinterpret_cast<u8 *>(LocalAlloc(LPTR, dataLen));
@@ -160,13 +176,13 @@ u8 *FileAbstraction::ReadWholeFile(u32 maxSize)
             // is buggy.
             if (this->Seek(oldLocation, FILE_BEGIN) != 0)
             {
-                u32 outDataLen;
-                if (this->Read(data, dataLen, &outDataLen) != 0)
+                if (this->Read(data, dataLen, &outDataLen) == 0)
                 {
-                    this->Seek(oldLocation, FILE_BEGIN);
-                    return data;
+                    LocalFree(data);
+                    return NULL;
                 }
-                LocalFree(data);
+                this->Seek(oldLocation, FILE_BEGIN);
+                return data;
             }
             // Yes, this case leaks the data. Amazing, I know.
         }

@@ -16,14 +16,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BombData, 4, g_BombData) = {
     /* MarisaB */ {BombData::BombMarisaBCalc, BombData::BombMarisaBDraw},
 };
 
-// MSVC allocates stack space for unused inlined variables and one of Zun's inlined bomb functions has an unused
-// variable This keeps the stack where it should be for when that happens, since it isn't clear what the original
-// function was
-void inline WasteStackSpace()
-{
-    D3DXVECTOR3 waste;
-}
-
 #pragma var_order(angle, i, bombSprite, vecLength, bombPivot, bombIdx)
 void BombData::BombReimuACalc(Player *player)
 {
@@ -64,9 +56,6 @@ void BombData::BombReimuACalc(Player *player)
 
         if (player->bombInfo.timer.AsFrames() % 16 == 0 && (i = (player->bombInfo.timer.AsFrames() - 60) / 16))
         {
-            WasteStackSpace();
-            WasteStackSpace();
-
             player->bombInfo.reimuABombProjectilesState[i] = 1;
             player->bombInfo.reimuABombProjectilesRelated[i] = 4.0f;
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
@@ -231,6 +220,36 @@ void BombData::BombReimuADraw(Player *player)
     return;
 }
 
+#pragma var_order(local8, viewport, darkeningTimeLeft)
+void BombData::DarkenViewport(Player *player)
+{
+    ZunRect viewport;
+    f32 darkeningTimeLeft;
+    i32 darknessLevel; // Controls alpha level of black rectangle drawn over view
+
+    viewport.left = 32.0f;
+    viewport.top = 16.0f;
+    viewport.right = 416.0f;
+    viewport.bottom = 464.0f;
+
+    if (player->bombInfo.timer < 60)
+    {
+        darkeningTimeLeft = (player->bombInfo.timer.AsFramesFloat() * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32)darkeningTimeLeft;
+    }
+    else if (player->bombInfo.timer >= player->bombInfo.duration + -60)
+    {
+        darkeningTimeLeft = ((player->bombInfo.duration - player->bombInfo.timer.AsFramesFloat()) * 176.0f) / 60.0f;
+        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32)darkeningTimeLeft;
+    }
+    else
+    {
+        darknessLevel = 176;
+    }
+
+    ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
+}
+
 #pragma var_order(i, bombSprite, unusedVector)
 void BombData::BombReimuBCalc(Player *player)
 {
@@ -252,9 +271,6 @@ void BombData::BombReimuBCalc(Player *player)
         player->bombInfo.duration = 140;
         player->invulnerabilityTimer.SetCurrent(200);
         bombSprite = player->bombInfo.sprites[0];
-
-        WasteStackSpace();
-        WasteStackSpace();
 
         for (i = 0; i < 4; i++, bombSprite++)
         {
@@ -358,9 +374,6 @@ void BombData::BombMarisaACalc(Player *player)
         starSprite = player->bombInfo.sprites[0];
         for (i = 0; i < ARRAY_SIZE_SIGNED(player->bombInfo.sprites); i++, starSprite++)
         {
-            WasteStackSpace();
-            WasteStackSpace();
-
             g_AnmManager->ExecuteAnmIdx(starSprite, ANM_SCRIPT_PLAYER_MARISA_A_BLUE_STAR + i % 3);
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
 
@@ -480,9 +493,6 @@ void BombData::BombMarisaBCalc(Player *player)
     }
     else
     {
-        WasteStackSpace();
-        WasteStackSpace();
-
         if (player->bombInfo.timer == 60)
         {
             ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 60, 1, 7, 0);
@@ -538,35 +548,5 @@ void BombData::BombMarisaBDraw(Player *player)
         g_AnmManager->Draw(bombSprite);
         bombSprite++;
     }
-}
-
-#pragma var_order(local8, viewport, darkeningTimeLeft)
-void BombData::DarkenViewport(Player *player)
-{
-    ZunRect viewport;
-    f32 darkeningTimeLeft;
-    i32 darknessLevel; // Controls alpha level of black rectangle drawn over view
-
-    viewport.left = 32.0f;
-    viewport.top = 16.0f;
-    viewport.right = 416.0f;
-    viewport.bottom = 464.0f;
-
-    if (player->bombInfo.timer < 60)
-    {
-        darkeningTimeLeft = (player->bombInfo.timer.AsFramesFloat() * 176.0f) / 60.0f;
-        darknessLevel = darkeningTimeLeft >= 176.0f ? 176 : (i32)darkeningTimeLeft;
-    }
-    else if (player->bombInfo.timer >= player->bombInfo.duration + -60)
-    {
-        darkeningTimeLeft = ((player->bombInfo.duration - player->bombInfo.timer.AsFramesFloat()) * 176.0f) / 60.0f;
-        darknessLevel = darkeningTimeLeft < 0.0f ? 0 : (i32)darkeningTimeLeft;
-    }
-    else
-    {
-        darknessLevel = 176;
-    }
-
-    ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
 }
 }; // namespace th06

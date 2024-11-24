@@ -2,16 +2,12 @@
 
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
+#include "inttypes.hpp"
 
 #include <Windows.h>
 
 namespace th06
 {
-enum ChainElemFlag
-{
-    CHAIN_ELEM_FLAG_HEAP_ALLOCATED = (unsigned char)1,
-    CHAIN_ELEM_FLAG_MASK = ~(unsigned char)CHAIN_ELEM_FLAG_HEAP_ALLOCATED,
-};
 
 enum ChainCallbackResult
 {
@@ -33,7 +29,7 @@ class ChainElem
 {
   public:
     short priority;
-    unsigned short flags;
+    u16 isHeapAllocated : 1;
     ChainCallback callback;
     ChainAddedCallback addedCallback;
     ChainDeletedCallback deletedCallback;

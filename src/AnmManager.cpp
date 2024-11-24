@@ -30,8 +30,6 @@ D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
 #define TEX_FMT_R8G8B8 4
 #define TEX_FMT_A4R4G4B4 5
 
-// Stack layout here doesn't match because of extra unused stack slot.
-// This might mean that some empty constructors are called and inlined here.
 AnmManager::AnmManager()
 {
     this->maybeLoadedSpriteCount = 0;
@@ -514,17 +512,18 @@ void AnmManager::CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 
     destSurface->Release();
 }
 
-#pragma var_order(entry, spriteIdxOffset, anmFilePtr, i, byteOffset, anmIdx, )
+#pragma var_order(entry, spriteIdx, spriteIdxOffset, i, byteOffset, anmFilePtr, anmIdx, )
 void AnmManager::ReleaseAnm(i32 anmIdx)
 {
     if (this->anmFiles[anmIdx] != NULL)
     {
+        i32 *spriteIdx;
         i32 i;
         i32 spriteIdxOffset = this->anmFilesSpriteIndexOffsets[anmIdx];
         u32 *byteOffset = this->anmFiles[anmIdx]->spriteOffsets;
         for (i = 0; i < this->anmFiles[anmIdx]->numSprites; i++, byteOffset++)
         {
-            i32 *spriteIdx = (i32 *)((u8 *)this->anmFiles[anmIdx] + *byteOffset);
+            spriteIdx = (i32 *)((u8 *)this->anmFiles[anmIdx] + *byteOffset);
             memset(&this->sprites[*spriteIdx + spriteIdxOffset], 0,
                    sizeof(this->sprites[*spriteIdx + spriteIdxOffset]));
             this->sprites[*spriteIdx + spriteIdxOffset].sourceFileIndex = -1;
@@ -620,9 +619,8 @@ ZunResult AnmManager::LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset)
 }
 
 #pragma var_order(curInstr, local_c, local_10, local_14, local_18, local_1c, local_20, nextInstr, local_28, local_2c,  \
-                  local_30, local_34, local_38, local_3c, local_48, local_54, local_60, local_68, local_6a, local_6c,  \
-                  local_70, curTime, scaleInterpCurTime, local_b4, local_b8, local_c0, local_c4, local_c8, local_cc,   \
-                  randValue)
+                  local_30, local_34, local_38, local_3c, local_68, local_6a, local_70, curTime, scaleInterpCurTime,   \
+                  local_c4, local_cc, randValue)
 i32 AnmManager::ExecuteScript(AnmVm *vm)
 {
     AnmRawInstr *curInstr;
@@ -639,20 +637,12 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
     i32 local_34;
     i32 local_38;
     f32 local_3c;
-    D3DXVECTOR3 local_48;
-    D3DXVECTOR3 local_54;
-    D3DXVECTOR3 local_60;
     u32 local_68;
     u16 local_6a;
-    u16 local_6c;
     u32 local_70;
     i32 curTime;
     i32 scaleInterpCurTime;
-    ZunTimer *local_b4;
-    ZunTimer *local_b8;
-    ZunTimer *local_c0;
     i32 local_c4;
-    ZunTimer *local_c8;
     i32 local_cc;
     u32 randValue;
 
@@ -765,17 +755,13 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case AnmOpcode_SetTranslation:
             if (vm->flags.flag5 == 0)
             {
-                local_48.z = *(f32 *)&curInstr->args[2];
-                local_48.y = *(f32 *)&curInstr->args[1];
-                local_48.x = *(f32 *)&curInstr->args[0];
-                memcpy(vm->pos, local_48, sizeof(D3DXVECTOR3));
+                vm->pos =
+                    D3DXVECTOR3(*(f32 *)&curInstr->args[0], *(f32 *)&curInstr->args[1], *(f32 *)&curInstr->args[2]);
             }
             else
             {
-                local_54.z = *(f32 *)&curInstr->args[2];
-                local_54.y = *(f32 *)&curInstr->args[1];
-                local_54.x = *(f32 *)&curInstr->args[0];
-                memcpy(vm->posOffset, local_54, sizeof(D3DXVECTOR3));
+                vm->posOffset =
+                    D3DXVECTOR3(*(f32 *)&curInstr->args[0], *(f32 *)&curInstr->args[1], *(f32 *)&curInstr->args[2]);
             }
             break;
         case AnmOpcode_PosTimeAccel:
@@ -795,10 +781,8 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             {
                 memcpy(vm->posInterpInitial, vm->posOffset, sizeof(D3DXVECTOR3));
             }
-            local_60.z = *(f32 *)&curInstr->args[2];
-            local_60.y = *(f32 *)&curInstr->args[1];
-            local_60.x = *(f32 *)&curInstr->args[0];
-            memcpy(vm->posInterpFinal, local_60, sizeof(D3DXVECTOR3));
+            vm->posInterpFinal =
+                D3DXVECTOR3(*(f32 *)&curInstr->args[0], *(f32 *)&curInstr->args[1], *(f32 *)&curInstr->args[2]);
             vm->posInterpEndTime = curInstr->args[3];
             vm->posInterpTime.InitializeForPopup();
             break;
@@ -913,12 +897,10 @@ stop:
         }
         else
         {
-            local_b4 = &vm->scaleInterpTime;
-            vm->scaleX = (vm->scaleInterpFinalX - vm->scaleInterpInitialX) * (local_b4->current + local_b4->subFrame) /
+            vm->scaleX = (vm->scaleInterpFinalX - vm->scaleInterpInitialX) * vm->scaleInterpTime.AsFramesFloat() /
                              vm->scaleInterpEndTime +
                          vm->scaleInterpInitialX;
-            local_b8 = &vm->scaleInterpTime;
-            vm->scaleY = (vm->scaleInterpFinalY - vm->scaleInterpInitialY) * (local_b8->current + local_b8->subFrame) /
+            vm->scaleY = (vm->scaleInterpFinalY - vm->scaleInterpInitialY) * vm->scaleInterpTime.AsFramesFloat() /
                              vm->scaleInterpEndTime +
                          vm->scaleInterpInitialY;
         }
@@ -941,16 +923,15 @@ stop:
         vm->alphaInterpTime.Tick();
         local_2c = vm->alphaInterpInitial;
         local_28 = vm->alphaInterpFinal;
-        local_c0 = &vm->alphaInterpTime;
-        local_30 = ((f32)local_c0->current + local_c0->subFrame) / (f32)vm->alphaInterpEndTime;
+        local_30 = vm->alphaInterpTime.AsFramesFloat() / (f32)vm->alphaInterpEndTime;
         if (local_30 >= 1.0f)
         {
             local_30 = 1.0;
         }
         for (local_38 = 0; local_38 < 4; local_38++)
         {
-            local_34 = (f32)COLOR_GET_COMPONENT(local_28, local_38) -
-                       (f32)COLOR_GET_COMPONENT(local_2c, local_38) * local_30 +
+            local_34 = ((f32)COLOR_GET_COMPONENT(local_28, local_38) - (f32)COLOR_GET_COMPONENT(local_2c, local_38)) *
+                           local_30 +
                        COLOR_GET_COMPONENT(local_2c, local_38);
             if (local_34 < 0)
             {
@@ -967,8 +948,7 @@ stop:
     }
     if (vm->posInterpEndTime != 0)
     {
-        local_c8 = &vm->posInterpTime;
-        local_3c = ((f32)local_c8->current + local_c8->subFrame) / (f32)vm->posInterpEndTime;
+        local_3c = vm->posInterpTime.AsFramesFloat() / (f32)vm->posInterpEndTime;
         if (local_3c >= 1.0f)
         {
             local_3c = 1.0;

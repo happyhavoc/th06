@@ -7,34 +7,49 @@
 
 namespace th06
 {
+struct TrackDescriptor
+{
+    TrackDescriptor()
+    {
+        memset(this, 0, sizeof(TrackDescriptor));
+    }
+
+    char path[64];
+    char title[34];
+    char description[8][66];
+};
+C_ASSERT(sizeof(TrackDescriptor) == 0x272);
+
+// Force constructor to generate size optimized code when it's placed in the binary
+#pragma optimize("s", on)
 struct MusicRoom
 {
     MusicRoom()
     {
-        i32 unused[12];
-
         memset(this, 0, sizeof(MusicRoom));
     }
 
     static ZunResult AddedCallback(MusicRoom *musicRoom);
     static ZunResult DeletedCallback(MusicRoom *musicRoom);
-    u32 DrawMusicList();
-    ZunResult FUN_00424e8f();
+    ZunBool ProcessInput();
+    ZunResult CheckInputEnable();
     static ChainCallbackResult OnDraw(MusicRoom *musicRoom);
     static ChainCallbackResult OnUpdate(MusicRoom *musicRoom);
     static ZunResult RegisterChain();
 
     ChainElem *calc_chain;
     ChainElem *draw_chain;
-    int unk_0x8;
-    int shouldDrawMusicList;
-    int cursor;
-    int musicPtr;
-    int listingOffset;
-    int currOffset;
-    MusicRoom *musicRoomPtr;
-    AnmVm mainVM[1];
-    AnmVm anmArray[32];
-    AnmVm anmArray2[16];
+    i32 waitFramesCount;
+    i32 enableInput;
+    i32 cursor;
+    i32 selectedSongIndex;
+    i32 listingOffset;
+    i32 numDescriptors;
+    TrackDescriptor *trackDescriptors;
+    AnmVm mainVm[1];
+    AnmVm titleSprites[32];
+    AnmVm descriptionSprites[16];
 };
+C_ASSERT(sizeof(MusicRoom) == 0x3434);
+#pragma optimize("", on)
 }; // namespace th06

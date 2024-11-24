@@ -17,12 +17,7 @@ ChainElem::ChainElem()
     deletedCallback = NULL;
     priority = 0;
 
-    // MISMATCH: An extra XOR is present for no apparent reason (TODO figure this out)
-    //          xor eax, eax
-    //          mov ax, word ptr [edx + 2]
-    //          and al, 0xfe
-    //          mov ecx, dword ptr [ebp - 4]
-    flags &= CHAIN_ELEM_FLAG_MASK;
+    isHeapAllocated = false;
 }
 
 ChainElem::~ChainElem()
@@ -49,12 +44,7 @@ ChainElem *Chain::CreateElem(ChainCallback callback)
     elem->addedCallback = NULL;
     elem->deletedCallback = NULL;
 
-    // MISMATCH: An extra XOR is present for no apparent reason and ecx is used instead of cl (TODO figure this out)
-    //           xor ecx, ecx
-    //           mov cx, word ptr [eax + 2]
-    //           or ecx, 1
-    //           mov edx, dword ptr [ebp - 0x10]
-    elem->flags |= CHAIN_ELEM_FLAG_HEAP_ALLOCATED;
+    elem->isHeapAllocated = true;
 
     return elem;
 }
@@ -170,13 +160,7 @@ destroy_elem:
         to_remove->prev = NULL;
         to_remove->next = NULL;
 
-        // MISMATCH: An extra XOR is present for no apparent reason and edx is used instead of dx (TODO figure this out)
-        // xor edx, edx
-        // mov dx, word ptr [ecx + 2]
-        // and edx, 1
-        // and edx, 0xffff
-        // test edx, edx
-        if ((to_remove->flags & CHAIN_ELEM_FLAG_HEAP_ALLOCATED & 0xffff) != 0)
+        if (to_remove->isHeapAllocated)
         {
             delete to_remove;
             to_remove = NULL;

@@ -22,6 +22,7 @@ C_ASSERT(sizeof(RunningSpellcardInfo) == 0x14);
 struct EnemyManager
 {
     void Initialize();
+    EnemyManager();
     static ZunResult RegisterChain(char *stgEnm1, char *stgEnm2);
     static void CutChain();
     static ChainCallbackResult OnUpdate(EnemyManager *enemyManager);
@@ -35,8 +36,7 @@ struct EnemyManager
     char *stgEnmAnmFilename;
     char *stgEnm2AnmFilename;
     Enemy enemyTemplate;
-    Enemy enemies[256];
-    Enemy dummyEnemyForFailedSpawns;
+    Enemy enemies[257];
     Enemy *bosses[8];
     u16 randomItemSpawnIndex;
     u16 randomItemTableIndex;

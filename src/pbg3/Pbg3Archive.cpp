@@ -19,7 +19,11 @@ i32 Pbg3Archive::ParseHeader()
 {
     if (this->parser->ReadMagic() != 0x33474250)
     {
-        delete this->parser;
+        if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
@@ -27,14 +31,22 @@ i32 Pbg3Archive::ParseHeader()
     this->fileTableOffset = this->parser->ReadVarInt();
     if (this->parser->SeekToOffset(this->fileTableOffset) == FALSE)
     {
-        delete this->parser;
+        if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
     this->entries = new Pbg3Entry[this->numOfEntries];
     if (this->entries == NULL)
     {
-        delete this->parser;
+        if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
@@ -47,8 +59,17 @@ i32 Pbg3Archive::ParseHeader()
         this->entries[idx].uncompressedSize = this->parser->ReadVarInt();
         if (this->parser->ReadString(this->entries[idx].filename, sizeof(this->entries[idx].filename)) == FALSE)
         {
-            delete this->parser;
-            delete[] this->entries;
+            if (this->parser != NULL)
+            {
+                delete this->parser;
+                this->parser = NULL;
+            }
+            if (this->entries != NULL)
+            {
+                delete[] this->entries;
+                this->entries = NULL;
+            }
+
             return FALSE;
         }
     }
@@ -71,20 +92,15 @@ i32 Pbg3Archive::Release()
         this->entries = NULL;
     }
     delete this->unk;
-    return 1;
+    return TRUE;
 }
 
 i32 Pbg3Archive::FindEntry(char *path)
 {
-    if (this->numOfEntries == 0)
-    {
-        return -1;
-    }
-
     for (u32 entryIdx = 0; entryIdx < this->numOfEntries; entryIdx += 1)
     {
         char *entryFilename = this->entries[entryIdx].filename;
-        i32 res = strcmp(entryFilename, path);
+        i32 res = strcmp(path, entryFilename);
         if (res == 0)
         {
             return entryIdx;
@@ -95,7 +111,7 @@ i32 Pbg3Archive::FindEntry(char *path)
 
 u32 Pbg3Archive::GetEntrySize(u32 entryIdx)
 {
-    if (this->numOfEntries <= entryIdx)
+    if (entryIdx >= this->numOfEntries)
     {
         return 0;
     }
@@ -154,6 +170,11 @@ Pbg3Archive::~Pbg3Archive()
 
 i32 Pbg3Archive::Load(char *path)
 {
+    if (this->Release() == FALSE)
+    {
+        return FALSE;
+    }
+
     this->parser = new Pbg3Parser();
     if (this->parser == NULL)
     {
@@ -162,7 +183,11 @@ i32 Pbg3Archive::Load(char *path)
 
     if (this->parser->OpenArchive(path) == FALSE)
     {
-        delete this->parser;
+        if (this->parser != NULL)
+        {
+            delete this->parser;
+            this->parser = NULL;
+        }
         return FALSE;
     }
 
@@ -173,71 +198,52 @@ i32 Pbg3Archive::Load(char *path)
 #define LZSS_DICTSIZE_MASK 0x1fff
 #define LZSS_MIN_MATCH 3
 
-class BitStream
-{
-  public:
-    BitStream(u8 *data, u32 size) : data(data), size(size), curByte(0), curByteIdx(0), curBitIdx(0x80), m_checksum(0)
-    {
-    }
-    u32 Read(u32 numBits)
-    {
-        u32 ret = 0;
-        while (numBits != 0)
-        {
-            if (this->curBitIdx == 0x80)
-            {
-                this->curByte = *this->data;
-                if (this->curByteIdx < this->size)
-                {
-                    this->data += 1;
-                    this->curByteIdx += 1;
-                }
-                else
-                {
-                    this->curByte = 0;
-                }
-                this->m_checksum += this->curByte;
-            }
-            if ((this->curByte & this->curBitIdx) != 0)
-            {
-                ret |= (1 << (numBits - 1));
-            }
-            numBits--;
-            this->curBitIdx >>= 1;
-            if (this->curBitIdx == 0)
-            {
-                this->curBitIdx = 0x80;
-            }
-        }
-        return ret;
-    }
+#define BITFIELD_NEW_BYTE(byte, currDataPtr, baseDataPtr, size, checksum)                                              \
+    byte = *dataCursor;                                                                                                \
+    if ((i32)(currDataPtr - baseDataPtr) >= (i32)size)                                                                 \
+    {                                                                                                                  \
+        currByte = 0;                                                                                                  \
+    }                                                                                                                  \
+    else                                                                                                               \
+    {                                                                                                                  \
+        dataCursor++;                                                                                                  \
+    }                                                                                                                  \
+    checksum += byte;
 
-    u32 checksum()
-    {
-        return this->m_checksum;
+#define BITFIELD_READ_BITS(bitsCount, outBitMask, bitfieldReturn, inBitMask, byte, currDataPtr, baseDataPtr, size,     \
+                           checksum)                                                                                   \
+    outBitMask = 0x01 << (bitsCount - 1);                                                                              \
+    bitfieldReturn = 0;                                                                                                \
+    while (outBitMask != 0)                                                                                            \
+    {                                                                                                                  \
+        if (inBitMask == 0x80)                                                                                         \
+        {                                                                                                              \
+            BITFIELD_NEW_BYTE(byte, currDataPtr, baseDataPtr, size, checksum)                                          \
+        }                                                                                                              \
+        if ((byte & inBitMask) != 0)                                                                                   \
+        {                                                                                                              \
+            bitfieldReturn |= outBitMask;                                                                              \
+        }                                                                                                              \
+                                                                                                                       \
+        outBitMask >>= 1;                                                                                              \
+        inBitMask >>= 1;                                                                                               \
+        if (inBitMask == 0)                                                                                            \
+        {                                                                                                              \
+            inBitMask = 0x80;                                                                                          \
+        }                                                                                                              \
     }
-
-  private:
-    u8 *data;
-    u8 curByte;
-    u32 curByteIdx;
-    u32 curBitIdx;
-    u32 size;
-    u32 m_checksum;
-};
 
 u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
 {
-    if (entryIdx >= this->numOfEntries)
+    if (entryIdx >= this->numOfEntries || this->parser == NULL)
         return NULL;
 
-    if (this->parser == NULL)
-        return NULL;
-
-    u32 size = this->entries[entryIdx].uncompressedSize;
+    u32 size = this->GetEntrySize(entryIdx);
     u8 *out = (u8 *)malloc(size);
     if (out == NULL)
         return NULL;
+
+    u8 *outCursor = out;
 
     u32 expectedCsum;
     u8 *rawData = this->ReadEntryRaw(&size, &expectedCsum, entryIdx);
@@ -248,49 +254,91 @@ u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
         return NULL;
     }
 
-    u8 dict[LZSS_DICTSIZE];
-    memset(dict, 0, sizeof(dict));
+    u8 *dataCursor = rawData;
+    u8 inBitMask = 0x80;
+    u32 checksum = 0;
     u32 dictHead = 1;
 
-    u32 bytesWritten = 0;
+    u8 dict[LZSS_DICTSIZE];
 
-    BitStream bs = BitStream(rawData, size);
+    // Memset doesn't produce matching assembly
+    for (i32 i = 0; i < LZSS_DICTSIZE; i++)
+    {
+        dict[i] = 0;
+    }
+
+    u32 currByte;
+    u32 bitfieldReturn;
+    u32 outBitMask;
+    u32 matchOffset;
+
     while (TRUE)
     {
-        if (bs.Read(1) != 0)
+        if (inBitMask == 0x80)
         {
-            u8 c = bs.Read(8);
-            out[bytesWritten] = c;
-            bytesWritten += 1;
-            dict[dictHead] = c;
+            BITFIELD_NEW_BYTE(currByte, dataCursor, rawData, size, checksum)
+        }
+
+        u32 opcode = currByte & inBitMask;
+        inBitMask >>= 1;
+        if (inBitMask == 0x00)
+        {
+            inBitMask = 0x80;
+        }
+
+        // Read literal byte from next 8 bits
+        if (opcode != 0)
+        {
+            BITFIELD_READ_BITS(8, outBitMask, bitfieldReturn, inBitMask, currByte, dataCursor, rawData, size, checksum)
+            *outCursor = bitfieldReturn;
+            outCursor++;
+            dict[dictHead] = bitfieldReturn;
             dictHead = (dictHead + 1) & LZSS_DICTSIZE_MASK;
         }
+        // Copy from dictionary, 13 bit offset, then 4 bit length
         else
         {
-            u32 matchOffset = bs.Read(13);
-            if (!matchOffset)
+            BITFIELD_READ_BITS(13, outBitMask, bitfieldReturn, inBitMask, currByte, dataCursor, rawData, size, checksum)
+            matchOffset = bitfieldReturn;
+
+            if (matchOffset == 0)
                 break;
 
-            u32 matchLen = bs.Read(4) + LZSS_MIN_MATCH;
+            BITFIELD_READ_BITS(4, outBitMask, bitfieldReturn, inBitMask, currByte, dataCursor, rawData, size, checksum)
 
-            for (u32 i = 0; i < matchLen; ++i)
+            for (i32 i = 0; i <= (i32)bitfieldReturn + 2; i++)
             {
-                u8 c = dict[(matchOffset + i) & LZSS_DICTSIZE_MASK];
-                out[bytesWritten] = c;
-                bytesWritten += 1;
+                u32 c = dict[(matchOffset + i) & LZSS_DICTSIZE_MASK];
+                *outCursor = c;
+                outCursor++;
                 dict[dictHead] = c;
                 dictHead = (dictHead + 1) & LZSS_DICTSIZE_MASK;
             }
         }
     }
-
-    if (this->entries[entryIdx].checksum != bs.checksum())
+    // ???? No clue what this was supposed to be
+    while (inBitMask != 0x80)
     {
-        free(out);
-        out = NULL;
+        if (inBitMask == 0x80 && (i32)(dataCursor - rawData) < (i32)size)
+        {
+            dataCursor++;
+        }
+
+        inBitMask >>= 1;
+        if (inBitMask == 0)
+        {
+            inBitMask = 0x80;
+        }
     }
 
     free(rawData);
+
+    if (expectedCsum != checksum)
+    {
+        free(out);
+        return NULL;
+    }
+
     return out;
 }
 }; // namespace th06
