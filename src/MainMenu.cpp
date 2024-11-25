@@ -1305,8 +1305,7 @@ i32 MainMenu::ReplayHandling()
                     }
                     if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                     {
-                        // FIXME: wrong assembly
-                        memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
+                        this->replayFileData[replayFileIdx] = *replayData;
                         strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
                         sprintf(this->replayFileName[replayFileIdx], "No.%.2d", cur + 1);
                         replayFileIdx++;
@@ -1327,8 +1326,7 @@ i32 MainMenu::ReplayHandling()
                         }
                         if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                         {
-                            // FIXME: wrong assembly
-                            memcpy(&this->replayFileData[replayFileIdx], replayData, 0x50);
+                            this->replayFileData[replayFileIdx] = *replayData;
                             sprintf(this->replayFilePaths[replayFileIdx], "./replay/%s", replayFileInfo.cFileName);
                             sprintf(this->replayFileName[replayFileIdx], "User ");
                             replayFileIdx++;
@@ -1396,17 +1394,17 @@ i32 MainMenu::ReplayHandling()
                     }
                 }
 
-                do
+                while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
                 {
-                    // FIXME: there's an additional jump
-                    if (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor])
-                        goto leaveDo;
                     this->cursor = this->cursor + 1;
-                } while ((int)this->cursor < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData));
-                return ZUN_SUCCESS;
+
+                    if ((int)this->cursor >= ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData))
+                    {
+                        return ZUN_SUCCESS;
+                    }
+                }
             }
         }
-    leaveDo:
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
             this->gameState = STATE_REPLAY_UNLOAD;
