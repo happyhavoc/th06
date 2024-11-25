@@ -1719,6 +1719,48 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+void MainMenu::SelectRelated(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk)
+{
+    if (unk == 0 && menu->controlMapping[0] == btnPressed)
+    {
+        menu->controlMapping[0] = oldMapping;
+    }
+    if (menu->controlMapping[1] == btnPressed)
+    {
+        menu->controlMapping[1] = oldMapping;
+    }
+    if (unk == 0 && menu->controlMapping[2] == btnPressed)
+    {
+        menu->controlMapping[2] = oldMapping;
+    }
+    if (menu->controlMapping[4] == btnPressed)
+    {
+        menu->controlMapping[4] = oldMapping;
+    }
+    if (menu->controlMapping[5] == btnPressed)
+    {
+        menu->controlMapping[5] = oldMapping;
+    }
+    if (menu->controlMapping[6] == btnPressed)
+    {
+        menu->controlMapping[6] = oldMapping;
+    }
+    if (menu->controlMapping[7] == btnPressed)
+    {
+        menu->controlMapping[7] = oldMapping;
+    }
+    if (menu->controlMapping[3] == btnPressed)
+    {
+        menu->controlMapping[3] = oldMapping;
+    }
+    if (menu->controlMapping[8] == btnPressed)
+    {
+        menu->controlMapping[8] = oldMapping;
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(vm, d3dVec)
 ZunBool MainMenu::WeirdSecondInputCheck()
 {
