@@ -556,7 +556,7 @@ void AnmManager::DrawEndingRect(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLe
     rect.bottom = rectTop + height;
     point.x = rectX;
     point.y = rectY;
-    IDirect3DDevice8_CopyRects(g_Supervisor.d3dDevice, this->surfaces[surfaceIdx], &rect, 1, D3D_Surface, &point);
+    g_Supervisor.d3dDevice->CopyRects(this->surfaces[surfaceIdx], &rect, 1, D3D_Surface, &point);
     D3D_Surface->Release();
 }
 
