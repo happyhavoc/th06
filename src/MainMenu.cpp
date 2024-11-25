@@ -2098,14 +2098,11 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 }
 #pragma optimize("", on)
 
-#pragma var_order(i, vm, pos, padding)
 #pragma optimize("s", on)
 ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 {
     AnmVm *vm;
     i32 i;
-    D3DXVECTOR3 pos;
-    i32 padding[6];
 
     for (i = ANM_FILE_TITLE01; i <= ANM_FILE_TITLE04; i++)
     {
@@ -2151,23 +2148,20 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
     {
         return ZUN_ERROR;
     }
-    for (vm = &menu->vm[0x50], i = ANM_OFFSET_SELECT01; i <= 0x15f; i++, vm++)
+    for (vm = &menu->vm[0x50], i = ANM_SCRIPT_SELECT01_START; i <= ANM_SCRIPT_SELECT01_END; i++, vm++)
     {
         g_AnmManager->ExecuteAnmIdx(vm, i);
         vm->flags.isVisible = 0;
         vm->flags.colorOp = AnmVmColorOp_Add;
         if (((g_Supervisor.cfg.opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING) & 1) == 0)
         {
-            vm->color = 0xff000000;
+            vm->color = COLOR_BLACK;
         }
         else
         {
-            vm->color = 0xffffffff;
+            vm->color = COLOR_WHITE;
         }
-        pos.x = 0;
-        pos.y = 0;
-        pos.z = 0;
-        memcpy(&vm->posOffset, pos, sizeof(D3DXVECTOR3));
+        vm->posOffset = D3DXVECTOR3(0, 0, 0);
         vm->baseSpriteIndex = vm->activeSpriteIndex;
         vm->flags.zWriteDisable = 1;
     }
