@@ -2047,17 +2047,9 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-#pragma var_order(i, loadedTitle01, loadedTitle02, loadedTitle03, loadedTitle04, loadedTitle01s, loadedTitle04s)
 ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 {
     i32 i;
-    // a bunch of ZunResults so the stack size is right
-    ZunResult loadedTitle01;
-    ZunResult loadedTitle02;
-    ZunResult loadedTitle03;
-    ZunResult loadedTitle04;
-    ZunResult loadedTitle01s;
-    ZunResult loadedTitle04s;
 
     g_Supervisor.LoadPbg3(3, TH_TL_DAT_FILE);
     for (i = ANM_FILE_SELECT01; i <= ANM_FILE_REPLAY; i++)
