@@ -2169,16 +2169,14 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 }
 #pragma optimize("", on)
 
-#pragma var_order(fileIdx, vm, posOffset, unused)
+#pragma var_order(fileIdx, vm)
 #pragma optimize("s", on)
 ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
 {
     AnmVm *vm;
     i32 fileIdx;
-    D3DXVECTOR3 posOffset;
-    i32 unused[6];
 
-    for (fileIdx = 0x15; fileIdx <= 0x1a; fileIdx++)
+    for (fileIdx = ANM_FILE_TITLE01; fileIdx <= ANM_FILE_TITLE04; fileIdx++)
     {
         g_AnmManager->ReleaseAnm(fileIdx);
     }
@@ -2208,10 +2206,7 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
         {
             vm->color = COLOR_WHITE;
         }
-        posOffset.x = 0.0;
-        posOffset.y = 0.0;
-        posOffset.z = 0.0;
-        vm->posOffset = posOffset;
+        vm->posOffset = D3DXVECTOR3(0, 0, 0);
         vm->baseSpriteIndex = vm->activeSpriteIndex;
         vm->flags.zWriteDisable = 1;
     }
