@@ -36,8 +36,7 @@ RenderResult GameWindow::Render()
     LOOP_USING_GOTO_BECAUSE_WHY_NOT:
         if (g_Supervisor.cfg.frameskipConfig <= this->curFrame)
         {
-            if ((((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) |
-                 ((g_Supervisor.cfg.opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH) & 1)) != 0)
+            if (g_Supervisor.IsUnknown())
             {
                 viewport.X = 0;
                 viewport.Y = 0;
@@ -73,111 +72,89 @@ RenderResult GameWindow::Render()
         this->curFrame++;
     }
 
-    if (g_Supervisor.cfg.windowed == false)
+    if (g_Supervisor.cfg.windowed != false || g_Supervisor.ShouldRunAt60Fps())
     {
-        i32 bVar1;
-        if (!(((g_Supervisor.cfg.opts >> GCOS_FORCE_60FPS & 1) == 0) || (g_Supervisor.vsyncEnabled == 0)))
+        if (this->curFrame != 0)
         {
-            bVar1 = true;
-        }
-        else
-        {
-            bVar1 = false;
-        }
-        if (!bVar1)
-            goto BREAK_BUT_WITHOUT_BREAK_BECAUSE_IM_USING_A_GOTO_BASED_LOOP;
-    }
-    if (this->curFrame != 0)
-    {
-        g_Supervisor.framerateMultiplier = 1.0;
-        timeBeginPeriod(1);
-        slowdown = timeGetTime();
-        if (slowdown < g_LastFrameTime)
-        {
-            g_LastFrameTime = slowdown;
-        }
-        local_34 = fabs(slowdown - g_LastFrameTime);
-        timeEndPeriod(1);
-        if (local_34 >= FRAME_TIME)
-        {
-            do
+            g_Supervisor.framerateMultiplier = 1.0;
+            timeBeginPeriod(1);
+            slowdown = timeGetTime();
+            if (slowdown < g_LastFrameTime)
             {
-                g_LastFrameTime += FRAME_TIME;
-                local_34 -= FRAME_TIME;
-            } while (local_34 >= FRAME_TIME);
-
-            if (g_Supervisor.cfg.frameskipConfig < this->curFrame)
-                goto I_HAVE_NO_CLUE_WHY_BUT_I_MUST_JUMP_HERE;
-            goto LOOP_USING_GOTO_BECAUSE_WHY_NOT;
-        }
-    }
-
-BREAK_BUT_WITHOUT_BREAK_BECAUSE_IM_USING_A_GOTO_BASED_LOOP:
-    if (g_Supervisor.cfg.windowed == false)
-    {
-        i32 bVar2;
-        if (!(((g_Supervisor.cfg.opts >> GCOS_FORCE_60FPS & 1) == 0) || (g_Supervisor.vsyncEnabled == 0)))
-        {
-            bVar2 = true;
-        }
-        else
-        {
-            bVar2 = false;
-        }
-        if (!bVar2)
-        {
-            if (g_Supervisor.cfg.frameskipConfig >= this->curFrame)
+                g_LastFrameTime = slowdown;
+            }
+            local_34 = fabs(slowdown - g_LastFrameTime);
+            timeEndPeriod(1);
+            if (local_34 >= FRAME_TIME)
             {
-                Present();
+                do
+                {
+                    g_LastFrameTime += FRAME_TIME;
+                    local_34 -= FRAME_TIME;
+                } while (local_34 >= FRAME_TIME);
+
+                if (g_Supervisor.cfg.frameskipConfig < this->curFrame)
+                    goto I_HAVE_NO_CLUE_WHY_BUT_I_MUST_JUMP_HERE;
                 goto LOOP_USING_GOTO_BECAUSE_WHY_NOT;
             }
-
-        I_HAVE_NO_CLUE_WHY_BUT_I_MUST_JUMP_HERE:
-            Present();
-            if (g_Supervisor.framerateMultiplier == 0.f)
-            {
-                if (2 <= g_TickCountToEffectiveFramerate)
-                {
-                    timeBeginPeriod(1);
-                    curtime = timeGetTime();
-                    if (curtime < g_Supervisor.lastFrameTime)
-                    {
-                        g_Supervisor.lastFrameTime = curtime;
-                    }
-                    delta = curtime - g_Supervisor.lastFrameTime;
-                    delta = (delta * 60.) / 2. / 1000.;
-                    delta /= (g_Supervisor.cfg.frameskipConfig + 1);
-                    if (delta >= .865)
-                    {
-                        delta = 1.0;
-                    }
-                    else if (delta >= .6)
-                    {
-                        delta = 0.8;
-                    }
-                    else
-                    {
-                        delta = 0.5;
-                    }
-                    g_Supervisor.effectiveFramerateMultiplier = delta;
-                    g_Supervisor.lastFrameTime = curtime;
-                    timeEndPeriod(1);
-                    g_TickCountToEffectiveFramerate = 0;
-                }
-            }
-            else
-            {
-                g_Supervisor.effectiveFramerateMultiplier = g_Supervisor.framerateMultiplier;
-            }
-            this->curFrame = 0;
-            g_TickCountToEffectiveFramerate = g_TickCountToEffectiveFramerate + 1;
         }
+    }
+
+    if (g_Supervisor.cfg.windowed == false && !g_Supervisor.ShouldRunAt60Fps())
+    {
+
+        if (g_Supervisor.cfg.frameskipConfig >= this->curFrame)
+        {
+            Present();
+            goto LOOP_USING_GOTO_BECAUSE_WHY_NOT;
+        }
+
+    I_HAVE_NO_CLUE_WHY_BUT_I_MUST_JUMP_HERE:
+        Present();
+        if (g_Supervisor.framerateMultiplier == 0.f)
+        {
+            if (2 <= g_TickCountToEffectiveFramerate)
+            {
+                timeBeginPeriod(1);
+                curtime = timeGetTime();
+                if (curtime < g_Supervisor.lastFrameTime)
+                {
+                    g_Supervisor.lastFrameTime = curtime;
+                }
+                delta = curtime - g_Supervisor.lastFrameTime;
+                delta = (delta * 60.) / 2. / 1000.;
+                delta /= (g_Supervisor.cfg.frameskipConfig + 1);
+                if (delta >= .865)
+                {
+                    delta = 1.0;
+                }
+                else if (delta >= .6)
+                {
+                    delta = 0.8;
+                }
+                else
+                {
+                    delta = 0.5;
+                }
+                g_Supervisor.effectiveFramerateMultiplier = delta;
+                g_Supervisor.lastFrameTime = curtime;
+                timeEndPeriod(1);
+                g_TickCountToEffectiveFramerate = 0;
+            }
+        }
+        else
+        {
+            g_Supervisor.effectiveFramerateMultiplier = g_Supervisor.framerateMultiplier;
+        }
+        this->curFrame = 0;
+        g_TickCountToEffectiveFramerate = g_TickCountToEffectiveFramerate + 1;
     }
     return RENDER_RESULT_KEEP_RUNNING;
 }
 
-void GameWindow::Present(void)
+void GameWindow::Present()
 {
+    i32 unused;
     if (g_Supervisor.d3dDevice->Present(NULL, NULL, NULL, NULL) < 0)
     {
         g_AnmManager->ReleaseSurfaces();
@@ -468,16 +445,8 @@ i32 GameWindow::InitD3dRendering(void)
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_SUPPORT_FOR_D3DTEXOPCAPS_ADD);
         g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
     }
-    u32 should_run_at_60_fps;
-    if ((((g_Supervisor.cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0) && (g_Supervisor.vsyncEnabled != 0))
-    {
-        should_run_at_60_fps = true;
-    }
-    else
-    {
-        should_run_at_60_fps = false;
-    }
-    if (should_run_at_60_fps && ((g_Supervisor.d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) == 0))
+    if (g_Supervisor.ShouldRunAt60Fps() &&
+        ((g_Supervisor.d3dCaps.PresentationIntervals & D3DPRESENT_INTERVAL_IMMEDIATE) == 0))
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CANT_FORCE_60FPS_NO_ASYNC_FLIP);
         g_Supervisor.cfg.opts = g_Supervisor.cfg.opts & ~(1 << GCOS_FORCE_60FPS);
