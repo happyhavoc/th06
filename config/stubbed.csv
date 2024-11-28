@@ -1,3 +1,2 @@
 th06::MidiOutput::OnTimerElapsed
 th06::MidiOutput::ParseFile
-th06::MainMenu::SelectRelated
