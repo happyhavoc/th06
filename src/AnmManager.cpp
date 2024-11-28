@@ -512,6 +512,54 @@ void AnmManager::CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 
     destSurface->Release();
 }
 
+void AnmManager::DrawEndingRect(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLeft, i32 rectTop, i32 width, i32 height)
+{
+    if (this->surfacesBis[surfaceIdx] == NULL)
+    {
+        return;
+    }
+
+    IDirect3DSurface8 *D3D_Surface;
+    if (g_Supervisor.d3dDevice->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &D3D_Surface) != D3D_OK)
+    {
+        return;
+    }
+
+    if (this->surfaces[surfaceIdx] == NULL)
+    {
+        if (g_Supervisor.d3dDevice->CreateRenderTarget(
+                this->surfaceSourceInfo[surfaceIdx].Width, this->surfaceSourceInfo[surfaceIdx].Height,
+                g_Supervisor.presentParameters.BackBufferFormat, D3DMULTISAMPLE_NONE, TRUE,
+                &this->surfaces[surfaceIdx]) != D3D_OK)
+        {
+            if (g_Supervisor.d3dDevice->CreateImageSurface(
+                    this->surfaceSourceInfo[surfaceIdx].Width, this->surfaceSourceInfo[surfaceIdx].Height,
+                    g_Supervisor.presentParameters.BackBufferFormat, &this->surfaces[surfaceIdx]) != D3D_OK)
+            {
+                D3D_Surface->Release();
+                return;
+            }
+        }
+        if (D3DXLoadSurfaceFromSurface(this->surfaces[surfaceIdx], NULL, NULL, this->surfacesBis[surfaceIdx], NULL,
+                                       NULL, D3DX_FILTER_NONE, 0) != D3D_OK)
+        {
+            D3D_Surface->Release();
+            return;
+        }
+    }
+
+    RECT rect;
+    POINT point;
+    rect.left = rectLeft;
+    rect.top = rectTop;
+    rect.right = rectLeft + width;
+    rect.bottom = rectTop + height;
+    point.x = rectX;
+    point.y = rectY;
+    g_Supervisor.d3dDevice->CopyRects(this->surfaces[surfaceIdx], &rect, 1, D3D_Surface, &point);
+    D3D_Surface->Release();
+}
+
 #pragma var_order(entry, spriteIdx, spriteIdxOffset, i, byteOffset, anmFilePtr, anmIdx, )
 void AnmManager::ReleaseAnm(i32 anmIdx)
 {
