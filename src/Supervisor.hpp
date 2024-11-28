@@ -137,6 +137,11 @@ struct Supervisor
                this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1;
     }
 
+    u32 ShouldRunAt60Fps()
+    {
+        return (this->cfg.opts >> GCOS_FORCE_60FPS & 1) && this->vsyncEnabled;
+    }
+
     HINSTANCE hInstance;
     PDIRECT3D8 d3dIface;
     PDIRECT3DDEVICE8 d3dDevice;
