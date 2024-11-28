@@ -22,6 +22,7 @@ th06::AnmVm::AnmVm
 th06::AnmVm::Initialize
 th06::AnmManager::AnmManager
 th06::AnmManager::CopySurfaceToBackBuffer
+th06::AnmManager::DrawEndingRect
 th06::AnmManager::CreateEmptyTexture
 th06::AnmManager::ExecuteScript
 th06::AnmManager::DrawTextToSprite
@@ -239,6 +240,7 @@ th06::MainMenu::WeirdSecondInputCheck
 th06::MainMenu::OnUpdateOptionsMenu
 th06::MainMenu::ColorMenuItem
 th06::MainMenu::LoadReplayMenu
+th06::MainMenu::SelectRelated
 th06::MidiDevice::MidiDevice
 th06::MidiDevice::Close
 th06::MidiDevice::OpenDevice

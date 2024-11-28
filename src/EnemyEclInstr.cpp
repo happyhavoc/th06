@@ -653,21 +653,20 @@ void ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
                   cosOut, matrixInSeed, matrixOut)
 void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
 {
-    D3DXVECTOR3 bpPositionOffset;
-    f32 bulletAngle;
-    EnemyBulletShooter bulletProps;
-    f32 cosOut;
-    i32 i;
-    D3DXVECTOR3 matrixIn;
-    f32 matrixInSeed;
-    D3DXVECTOR3 matrixOut;
-    f32 matrixOutSeed; // Later reused to store angles for trig function calls
-    i32 patternPosition;
-    f32 sinOut;
 
     if (enemy->currentContext.var2 % 9 == 0)
     {
-        memset(&bulletProps, 0, sizeof(bulletProps));
+        D3DXVECTOR3 bpPositionOffset;
+        f32 bulletAngle;
+        f32 cosOut;
+        i32 i;
+        D3DXVECTOR3 matrixIn;
+        f32 matrixInSeed;
+        D3DXVECTOR3 matrixOut;
+        f32 matrixOutSeed; // Later reused to store angles for trig function calls
+        i32 patternPosition;
+        f32 sinOut;
+        EnemyBulletShooter bulletProps;
 
         patternPosition = enemy->currentContext.var2 / 9;
         bulletProps.sprite = 8;
@@ -804,8 +803,6 @@ void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
     i32 outerLoopCount;
     f32 randomAngleModifier;
 
-    memset(&laserProps, 0, sizeof(laserProps));
-
     D3DXVECTOR3 positionVectors[8];
 
     attackType = instr->args.exInstr.i32Param;
@@ -913,14 +910,14 @@ void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
 #pragma var_order(bulletProps, changedBullets, i, currentBullet)
 void ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr)
 {
-    EnemyBulletShooter bulletProps;
     i32 changedBullets;
     Bullet *currentBullet;
     i32 i;
 
     changedBullets = 0;
     currentBullet = g_BulletManager.bullets;
-    memset(&bulletProps, 0, sizeof(bulletProps));
+
+    EnemyBulletShooter bulletProps;
 
     for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
     {
@@ -956,10 +953,10 @@ void ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr)
     f32 distance;
     i32 i;
     f32 randomAngleModifier;
-    EnemyBulletShooter unusedBulletProps;
 
     currentBullet = g_BulletManager.bullets;
-    memset(&unusedBulletProps, 0, sizeof(unusedBulletProps));
+    EnemyBulletShooter unusedBulletProps;
+
     randomAngleModifier = g_Rng.GetRandomF32InRange(ZUN_PI * 2) - ZUN_PI;
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
 
@@ -1002,11 +999,11 @@ void ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr)
 {
     Bullet *currentBullet;
     i32 i;
-    EnemyBulletShooter unusedBulletProps;
     f32 unusedRandomNumber;
 
     currentBullet = g_BulletManager.bullets;
-    memset(&unusedBulletProps, 0, sizeof(unusedBulletProps));
+    EnemyBulletShooter unusedBulletProps;
+
     unusedRandomNumber = g_Rng.GetRandomF32InRange(ZUN_PI * 2) - ZUN_PI;
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
 
@@ -1088,11 +1085,10 @@ void ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
 void ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr)
 {
     f32 basePatternAngle;
-    EnemyBulletShooter bulletProps;
+    EnemyBulletShooter bulletProps = enemy->bulletProps;
     i32 i;
     i32 numPatterns;
 
-    memcpy(&bulletProps, &enemy->bulletProps, sizeof(bulletProps));
     numPatterns = instr->args.exInstr.i32Param;
     basePatternAngle = enemy->currentContext.float2;
     if (enemy->currentContext.var3 % 6 == 0)
@@ -1155,11 +1151,10 @@ void ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr)
     Bullet *innerBullet;
     i32 j;
     i32 totalIterations;
-    EnemyBulletShooter unusedBulletProps;
 
     totalIterations = 0;
     currentBullet = g_BulletManager.bullets;
-    memset(&unusedBulletProps, 0, sizeof(unusedBulletProps));
+    EnemyBulletShooter unusedBulletProps;
 
     for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)
     {

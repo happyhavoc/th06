@@ -1,2 +1,1 @@
-th06::AnmManager::DrawEndingRect
-th06::MainMenu::SelectRelated
+th06::MidiOutput::OnTimerElapsed
