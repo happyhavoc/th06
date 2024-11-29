@@ -29,6 +29,11 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 7, g_StageList) = {"Stage1", "Stage2", "Sta
                                                         "Stage5", "Stage6", "Extra "};
 
 DIFFABLE_STATIC(i16, g_LastJoystickInput)
+#pragma optimize("s", on)
+MainMenu::MainMenu() {
+
+}
+#pragma optimize("", on)
 
 #pragma function(strcpy)
 #pragma optimize("s", on)

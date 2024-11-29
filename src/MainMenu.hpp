@@ -55,6 +55,7 @@ enum OptionsCursorPosition
 
 struct MainMenu
 {
+    MainMenu();
     ZunResult BeginStartup();
     ZunResult DrawStartMenu();
     u32 OnUpdateOptionsMenu();
