@@ -7,6 +7,16 @@ namespace th06
 {
 DIFFABLE_STATIC(Chain, g_Chain)
 
+Chain::Chain()
+{
+    midiOutputDeviceCount = midiOutGetNumDevs();
+    unk = 0;
+}
+
+Chain::~Chain()
+{
+}
+
 ChainElem::ChainElem()
 {
     prev = NULL;

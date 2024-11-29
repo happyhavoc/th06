@@ -298,6 +298,7 @@ th06::ResultScreen::ParsePscr
 th06::ResultScreen::AddedCallback
 th06::ResultScreen::DeletedCallback
 th06::ResultScreen::GetHighScore
+th06::Stage::Stage
 th06::Stage::RegisterChain
 th06::Stage::CutChain
 th06::Stage::AddedCallback

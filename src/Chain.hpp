@@ -54,15 +54,8 @@ class Chain
     void ReleaseSingleChain(ChainElem *root);
 
   public:
-    Chain()
-    {
-        midiOutputDeviceCount = midiOutGetNumDevs();
-        unk = 0;
-    }
-
-    ~Chain()
-    {
-    }
+    Chain();
+    ~Chain();
 
     void Cut(ChainElem *to_remove);
     void Release(void);
