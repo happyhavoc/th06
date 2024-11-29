@@ -186,6 +186,7 @@ th06::GameManager::OnUpdate
 th06::GameManager::OnDraw
 th06::GameManager::SetupCameraStageBackground
 th06::GameManager::SetupCamera
+th06::GuiMsgVm::GuiMsgVm
 th06::Gui::RegisterChain
 th06::Gui::CutChain
 th06::Gui::AddedCallback
@@ -455,6 +456,7 @@ th06::CWaveFile::GetSize
 th06::CWaveFile::ResetFile
 th06::CWaveFile::Read
 th06::CWaveFile::Close
+th06::CWaveFile::~CWaveFile
 th06::IPbg3Parser::Reset
 th06::IPbg3Parser::ReadVarInt
 th06::IPbg3Parser::ReadMagic
