@@ -423,6 +423,8 @@ th06::Player::UpdateFireBulletsTimer
 th06::Player::UpdatePlayerBullets
 th06::Player::OnUpdate
 th06::Player::Player
+th06::Player::OnDrawHighPrio
+th06::Player::OnDrawLowPrio
 th06::CSoundManager::CSoundManager
 th06::CSoundManager::~CSoundManager
 th06::CSoundManager::Initialize
