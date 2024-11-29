@@ -71,6 +71,8 @@ th06::BulletManager::SpawnLaserPattern
 th06::BulletManager::BulletManager
 th06::ChainElem::ChainElem
 th06::ChainElem::~ChainElem
+th06::Chain::Chain
+th06::Chain::~Chain
 th06::Chain::CreateElem
 th06::Chain::ReleaseSingleChain
 th06::Chain::Release
