@@ -94,6 +94,7 @@ C_ASSERT(sizeof(GuiFormattedText) == 0x20);
 
 struct GuiImpl
 {
+    GuiImpl();
     ZunResult RunMsg();
     ZunResult DrawDialogue();
     void MsgRead(i32 msgIdx);
