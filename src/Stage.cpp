@@ -30,8 +30,8 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(StageFile, 8, g_StageFiles) = {
 };
 DIFFABLE_STATIC(Stage, g_Stage)
 
-Stage::Stage() {
-    
+Stage::Stage()
+{
 }
 
 #pragma var_order(posInterpRatio, curInsn, pos, facingDirInterpRatio, skyFogInterpRatio, idx)

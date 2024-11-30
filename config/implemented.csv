@@ -21,6 +21,7 @@ th06::ZunTimer::NextTick
 th06::AnmVm::AnmVm
 th06::AnmVm::Initialize
 th06::AnmManager::AnmManager
+th06::AnmManager::~AnmManager
 th06::AnmManager::CopySurfaceToBackBuffer
 th06::AnmManager::DrawEndingRect
 th06::AnmManager::CreateEmptyTexture
@@ -412,6 +413,8 @@ th06::Player::SpawnBullets
 th06::Player::StartFireBulletTimer
 th06::Player::FireSingleBullet
 th06::Player::FireBulletReimuA
+th06::Player::OnDrawHighPrio
+th06::Player::OnDrawLowPrio
 th06::BombData::BombReimuACalc
 th06::BombData::BombReimuADraw
 th06::BombData::BombReimuBCalc
