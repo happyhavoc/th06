@@ -15,7 +15,7 @@ namespace th06
 DIFFABLE_STATIC(ItemManager, g_ItemManager);
 
 ItemManager::ItemManager() {
-    
+
 };
 
 void ItemManager::SpawnItem(D3DXVECTOR3 *position, ItemType itemType, int state)

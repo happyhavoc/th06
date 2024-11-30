@@ -36,7 +36,6 @@ def create_status_profile():
         if f_name + "\n" in impl:
             impl_bytes += int(size.removeprefix("0x"), 16)
 
-
     raw_func_percentage = len(impl) / num_funcs * 100
     byte_impl_percentage = impl_bytes / total_func_bytes * 100
 
@@ -67,6 +66,7 @@ def update_svg():
     with open(script_path / "resources" / "progress.svg", "w") as f:
         f.write(new_svg.replace("{TEXT_COLOR}", "black"))
 
+
 def get_unimplemented():
     impl = get_file(script_path / "config" / "implemented.csv")
     maps = get_file(script_path / "config" / "mapping.csv")
@@ -83,9 +83,9 @@ def get_unimplemented():
 
     for f in unimplemented:
         print(f)
-    
+
     return unimplemented
-    
+
 
 def main():
     if "gen_svg" in sys.argv:
@@ -94,7 +94,6 @@ def main():
     if "get_unimplemented" in sys.argv:
         unimplemented = get_unimplemented()
         print("\n" + str(len(unimplemented)), "Unimplemented functions!")
-
 
     raw_func_percentage, byte_impl_percentage = create_status_profile()
 
