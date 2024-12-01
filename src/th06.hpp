@@ -15,7 +15,6 @@
 #include "GameManager.hpp"
 #include "GameWindow.hpp"
 #include "Gui.hpp"
-#include "GuiImpl.hpp"
 #include "ItemManager.hpp"
 #include "MainMenu.hpp"
 #include "MidiOutput.hpp"

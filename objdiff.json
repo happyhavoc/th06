@@ -155,14 +155,6 @@
             "reverse_fn_order": false
         },
         {
-            "name": "GuiImpl",
-
-            "target_path": "build/objdiff/orig/GuiImpl.obj",
-            "base_path": "build/objdiff/reimpl/GuiImpl.obj",
-
-            "reverse_fn_order": false
-        },
-        {
             "name": "IPbg3Parser",
 
             "target_path": "build/objdiff/orig/IPbg3Parser.obj",
