@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "Controller.hpp"
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"

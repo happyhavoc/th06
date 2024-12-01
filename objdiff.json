@@ -59,6 +59,14 @@
             "reverse_fn_order": false
         },
         {
+            "name": "Controller",
+
+            "target_path": "build/objdiff/orig/Controller.obj",
+            "base_path": "build/objdiff/reimpl/Controller.obj",
+
+            "reverse_fn_order": false
+        },
+        {
             "name": "EclManager",
 
             "target_path": "build/objdiff/orig/EclManager.obj",

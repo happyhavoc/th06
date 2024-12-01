@@ -3,6 +3,7 @@
 
 #include "AnmManager.hpp"
 #include "ChainPriorities.hpp"
+#include "Controller.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"
 #include "Supervisor.hpp"

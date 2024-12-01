@@ -104,7 +104,7 @@ def configure(build_type):
             "GuiImpl",
             "GameManager",
             "Chain",
-            # Controller
+            "Controller",
             "FileSystem",
             "GameErrorContext",
             "Rng",

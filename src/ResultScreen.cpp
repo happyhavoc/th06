@@ -4,6 +4,7 @@
 #include "BulletManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "Controller.hpp"
 #include "FileSystem.hpp"
 #include "GameManager.hpp"
 #include "Player.hpp"

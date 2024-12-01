@@ -3,6 +3,7 @@
 #include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
+#include "Controller.hpp"
 #include "FileSystem.hpp"
 #include "utils.hpp"
 #include <string.h>
