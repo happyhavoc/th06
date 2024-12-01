@@ -323,7 +323,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             {
                 ((u16 *)catk)[catkCursor] = g_Rng.GetRandomU16();
             }
-            catk->base.magic = (u32) "CATK";
+            catk->base.magic = CATK_MAGIC;
             catk->base.unkLen = sizeof(Catk);
             catk->base.th6kLen = sizeof(Catk);
             catk->base.version = TH6K_VERSION;
