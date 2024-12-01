@@ -109,7 +109,7 @@ jobs:
       id: ghidra-obj-cache
       with:
         path: build/objdiff/orig
-        key: ghidra-objs-${{ hashFiles('config/mapping.csv') }}
+        key: ghidra-objs-${{ hashFiles('config/mapping.csv', 'config/ghidra_ns_to_obj.csv') }}
     - name: Generate objs using ghidra-delinker
       if: steps.ghidra-obj-cache.outputs.cache-hit != 'true'
       run: python scripts/export_ghidra_objs.py --import-csv
