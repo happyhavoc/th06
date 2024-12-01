@@ -11,9 +11,8 @@ namespace th06
 #pragma optimize("s", on)
 
 GuiImpl::GuiImpl() {
-    
-};
 
+};
 
 ZunResult GuiImpl::RunMsg()
 {
