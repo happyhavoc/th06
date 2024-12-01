@@ -101,7 +101,6 @@ def configure(build_type):
             "EnemyManager",
             "BulletManager",
             "Gui",
-            "GuiImpl",
             "GameManager",
             "Chain",
             "Controller",
