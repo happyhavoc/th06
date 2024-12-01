@@ -68,7 +68,7 @@ struct MainMenu
     static CursorMovement MoveCursor(MainMenu *menu, i32 menuLength);
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
                              D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
-    static void SelectRelated(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk);
+    static void SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk);
 
     i32 ReplayHandling();
     static ZunResult LoadReplayMenu(MainMenu *menu);
