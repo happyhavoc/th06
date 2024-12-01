@@ -599,20 +599,20 @@ ZunResult BulletManager::DeletedCallback(BulletManager *arg)
     return ZUN_SUCCESS;
 }
 
-#pragma var_order(local_8, idx, local_10, local_14, local_20, curBullet, local_28, curLaser, local_38, res)
+#pragma var_order(grazeState, idx, bulletSpeed, local_14, laserSize, curBullet, laserColor, curLaser, laserCenter, res)
 ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 {
     i32 res;
-    D3DXVECTOR3 local_20;
-    i32 local_28;
-    D3DXVECTOR3 local_38;
+    D3DXVECTOR3 laserSize;
+    i32 laserColor;
+    D3DXVECTOR3 laserCenter;
     f32 local_14;
 
     Bullet *curBullet;
     Laser *curLaser;
-    f32 local_10;
+    f32 bulletSpeed;
     i32 idx;
-    i32 local_8;
+    i32 grazeState;
 
     curBullet = &mgr->bullets[0];
 
@@ -632,7 +632,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
         switch (curBullet->state)
         {
         case 2:
-            curBullet->pos += invertf(2.f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            curBullet->pos += curBullet->velocity / 2.0f * g_Supervisor.effectiveFramerateMultiplier;
 
             if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectFast) == 0)
             {
@@ -640,7 +640,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
             }
             goto HELL;
         case 3:
-            curBullet->pos += invertf(2.5f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            curBullet->pos += curBullet->velocity / 2.5f * g_Supervisor.effectiveFramerateMultiplier;
 
             if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectNormal) == 0)
             {
@@ -648,7 +648,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
             }
             goto HELL;
         case 4:
-            curBullet->pos += invertf(3.f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            curBullet->pos += curBullet->velocity / 3.0f * g_Supervisor.effectiveFramerateMultiplier;
 
             if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectSlow) == 0)
             {
@@ -664,8 +664,8 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                 {
                     if ((ZunBool)(curBullet->timer.current <= 16))
                     {
-                        local_10 = 5.0f - curBullet->timer.AsFramesFloat() * 5.0f / 16.0f;
-                        sincosmul(&curBullet->velocity, curBullet->angle, local_10 + curBullet->speed);
+                        bulletSpeed = 5.0f - curBullet->timer.AsFramesFloat() * 5.0f / 16.0f;
+                        sincosmul(&curBullet->velocity, curBullet->angle, bulletSpeed + curBullet->speed);
                     }
                     else
                     {
@@ -713,17 +713,18 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 
                         curBullet->angle = curBullet->angle + curBullet->dirChangeRotation;
                         curBullet->speed = curBullet->dirChangeSpeed;
-                        local_10 = curBullet->speed;
+                        bulletSpeed = curBullet->speed;
                     }
                     else
                     {
-                        local_10 = curBullet->speed - ((curBullet->timer.AsFramesFloat() -
-                                                        (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
-                                                       curBullet->speed) /
-                                                          curBullet->dirChangeInterval;
+                        bulletSpeed =
+                            curBullet->speed - ((curBullet->timer.AsFramesFloat() -
+                                                 (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
+                                                curBullet->speed) /
+                                                   curBullet->dirChangeInterval;
                     }
 
-                    sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                    sincosmul(&curBullet->velocity, curBullet->angle, bulletSpeed);
                 }
                 else if (curBullet->exFlags & 0x100)
                 {
@@ -739,17 +740,18 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 
                         curBullet->angle = curBullet->dirChangeRotation;
                         curBullet->speed = curBullet->dirChangeSpeed;
-                        local_10 = curBullet->speed;
+                        bulletSpeed = curBullet->speed;
                     }
                     else
                     {
-                        local_10 = curBullet->speed - ((curBullet->timer.AsFramesFloat() -
-                                                        (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
-                                                       curBullet->speed) /
-                                                          curBullet->dirChangeInterval;
+                        bulletSpeed =
+                            curBullet->speed - ((curBullet->timer.AsFramesFloat() -
+                                                 (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
+                                                curBullet->speed) /
+                                                   curBullet->dirChangeInterval;
                     }
 
-                    sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                    sincosmul(&curBullet->velocity, curBullet->angle, bulletSpeed);
                 }
                 else if (curBullet->exFlags & 0x80)
                 {
@@ -765,16 +767,17 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 
                         curBullet->angle = g_Player.AngleToPlayer(&curBullet->pos) + curBullet->dirChangeRotation;
                         curBullet->speed = curBullet->dirChangeSpeed;
-                        local_10 = curBullet->speed;
+                        bulletSpeed = curBullet->speed;
                     }
                     else
                     {
-                        local_10 = curBullet->speed - ((curBullet->timer.AsFramesFloat() -
-                                                        (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
-                                                       curBullet->speed) /
-                                                          curBullet->dirChangeInterval;
+                        bulletSpeed =
+                            curBullet->speed - ((curBullet->timer.AsFramesFloat() -
+                                                 (curBullet->dirChangeInterval * curBullet->dirChangeNumTimes)) *
+                                                curBullet->speed) /
+                                                   curBullet->dirChangeInterval;
                     }
-                    sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                    sincosmul(&curBullet->velocity, curBullet->angle, bulletSpeed);
                 }
                 else if (curBullet->exFlags & 0x400)
                 {
@@ -794,8 +797,8 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                         }
 
                         curBullet->speed = curBullet->dirChangeSpeed;
-                        local_10 = curBullet->speed;
-                        sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                        bulletSpeed = curBullet->speed;
+                        sincosmul(&curBullet->velocity, curBullet->angle, bulletSpeed);
                         curBullet->dirChangeNumTimes++;
 
                         if (curBullet->dirChangeNumTimes >= curBullet->dirChangeMaxTimes)
@@ -822,8 +825,8 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                         }
 
                         curBullet->speed = curBullet->dirChangeSpeed;
-                        local_10 = curBullet->speed;
-                        sincosmul(&curBullet->velocity, curBullet->angle, local_10);
+                        bulletSpeed = curBullet->speed;
+                        sincosmul(&curBullet->velocity, curBullet->angle, bulletSpeed);
                         curBullet->dirChangeNumTimes++;
 
                         if (curBullet->dirChangeNumTimes >= curBullet->dirChangeMaxTimes)
@@ -833,7 +836,8 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                     }
                 }
             }
-            curBullet->pos += g_Supervisor.FramerateMultiplier() * curBullet->velocity;
+
+            curBullet->pos += curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
             if (g_GameManager.IsInBounds(curBullet->pos.x, curBullet->pos.y,
                                          curBullet->sprites.spriteBullet.sprite->widthPx,
                                          curBullet->sprites.spriteBullet.sprite->heightPx) == 0)
@@ -863,14 +867,14 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 
             if (curBullet->isGrazed == 0)
             {
-                local_8 = g_Player.CheckGraze(&curBullet->pos, &curBullet->sprites.grazeSize);
+                grazeState = g_Player.CheckGraze(&curBullet->pos, &curBullet->sprites.grazeSize);
 
-                if (local_8 == 1)
+                if (grazeState == 1)
                 {
                     curBullet->isGrazed = 1;
                     goto bulletGrazed;
                 }
-                else if (local_8 == 2)
+                else if (grazeState == 2)
                 {
                     curBullet->state = 5;
                     g_ItemManager.SpawnItem(&curBullet->pos, ITEM_POINT_BULLET, 1);
@@ -879,11 +883,11 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
             else if (curBullet->isGrazed == 1)
             {
             bulletGrazed:
-                local_8 = g_Player.CalcKillBoxCollision(&curBullet->pos, &curBullet->sprites.grazeSize);
-                if (local_8 != 0)
+                grazeState = g_Player.CalcKillBoxCollision(&curBullet->pos, &curBullet->sprites.grazeSize);
+                if (grazeState != 0)
                 {
                     curBullet->state = 5;
-                    if (local_8 == 2)
+                    if (grazeState == 2)
                     {
                         g_ItemManager.SpawnItem(&curBullet->pos, ITEM_POINT_BULLET, 1);
                     }
@@ -892,7 +896,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
             g_AnmManager->ExecuteScript(&curBullet->sprites.spriteBullet);
             break;
         case 5:
-            curBullet->pos += invertf(2.0f) * curBullet->velocity * g_Supervisor.effectiveFramerateMultiplier;
+            curBullet->pos += curBullet->velocity / 2.0f * g_Supervisor.effectiveFramerateMultiplier;
             if (g_AnmManager->ExecuteScript(&curBullet->sprites.spriteSpawnEffectDonut) != 0)
             {
                 memset(curBullet, 0, sizeof(Bullet));
@@ -923,10 +927,10 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
             curLaser->startOffset = 0.0f;
         }
 
-        local_20.y = curLaser->width / 2.0f;
-        local_20.x = curLaser->endOffset - curLaser->startOffset;
-        local_38.x = (curLaser->endOffset - curLaser->startOffset) / 2.0f + curLaser->startOffset + curLaser->pos.x;
-        local_38.y = curLaser->pos.y;
+        laserSize.y = curLaser->width / 2.0f;
+        laserSize.x = curLaser->endOffset - curLaser->startOffset;
+        laserCenter.x = (curLaser->endOffset - curLaser->startOffset) / 2.0f + curLaser->startOffset + curLaser->pos.x;
+        laserCenter.y = curLaser->pos.y;
         curLaser->vm0.scaleX = curLaser->width / curLaser->vm0.sprite->widthPx;
         local_14 = curLaser->endOffset - curLaser->startOffset;
         curLaser->vm0.scaleY = local_14 / curLaser->vm0.sprite->heightPx;
@@ -937,14 +941,14 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
         case 0:
             if (curLaser->flags & 1)
             {
-                local_28 = curLaser->timer.AsFramesFloat() * 255.0f / curLaser->startTime;
+                laserColor = curLaser->timer.AsFramesFloat() * 255.0f / curLaser->startTime;
 
-                if (255 < local_28)
+                if (255 < laserColor)
                 {
-                    local_28 = 255;
+                    laserColor = 255;
                 }
 
-                curLaser->vm0.color = local_28 << 24;
+                curLaser->vm0.color = laserColor << 24;
             }
             else
             {
@@ -959,12 +963,12 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                 }
 
                 curLaser->vm0.scaleX = local_14 / 16.0f;
-                local_20.x = local_14 / 2.0f;
+                laserSize.x = local_14 / 2.0f;
             }
 
             if ((ZunBool)(curLaser->timer.current >= curLaser->grazeDelay))
             {
-                g_Player.CalcLaserHitbox(&local_38, &local_20, &curLaser->pos, curLaser->angle,
+                g_Player.CalcLaserHitbox(&laserCenter, &laserSize, &curLaser->pos, curLaser->angle,
                                          curLaser->timer.AsFrames() % 12 == 0);
             }
 
@@ -976,7 +980,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
             curLaser->timer.InitializeForPopup();
             curLaser->state++;
         case 1:
-            g_Player.CalcLaserHitbox(&local_38, &local_20, &curLaser->pos, curLaser->angle,
+            g_Player.CalcLaserHitbox(&laserCenter, &laserSize, &curLaser->pos, curLaser->angle,
                                      curLaser->timer.AsFrames() % 12 == 0);
 
             if ((ZunBool)(curLaser->timer.current < curLaser->duration))
@@ -995,14 +999,14 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
         case 2:
             if (curLaser->flags & 1)
             {
-                local_28 = curLaser->timer.AsFramesFloat() * 255.0f / curLaser->startTime;
+                laserColor = curLaser->timer.AsFramesFloat() * 255.0f / curLaser->startTime;
 
-                if (255 < local_28)
+                if (255 < laserColor)
                 {
-                    local_28 = 255;
+                    laserColor = 255;
                 }
 
-                curLaser->vm0.color = local_28 << 24;
+                curLaser->vm0.color = laserColor << 24;
             }
             else
             {
@@ -1011,13 +1015,13 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                     local_14 =
                         curLaser->width - (curLaser->timer.AsFramesFloat() * curLaser->width) / curLaser->endTime;
                     curLaser->vm0.scaleX = local_14 / 16.0f;
-                    local_20.x = local_14 / 2.0f;
+                    laserSize.x = local_14 / 2.0f;
                 }
             }
 
             if ((ZunBool)(curLaser->timer.current < curLaser->grazeInterval))
             {
-                g_Player.CalcLaserHitbox(&local_38, &local_20, &curLaser->pos, curLaser->angle,
+                g_Player.CalcLaserHitbox(&laserCenter, &laserSize, &curLaser->pos, curLaser->angle,
                                          curLaser->timer.AsFrames() % 12 == 0);
             }
 
