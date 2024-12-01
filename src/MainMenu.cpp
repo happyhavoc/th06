@@ -205,39 +205,39 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 switch (menu->cursor)
                 {
                 case 0:
-                    SelectRelated(menu, sVar1, menu->controlMapping[0], 1);
+                    SwapMapping(menu, sVar1, menu->controlMapping[0], 1);
                     menu->controlMapping[0] = sVar1;
                     break;
                 case 1:
-                    SelectRelated(menu, sVar1, menu->controlMapping[1], 0);
+                    SwapMapping(menu, sVar1, menu->controlMapping[1], 0);
                     menu->controlMapping[1] = sVar1;
                     break;
                 case 2:
-                    SelectRelated(menu, sVar1, menu->controlMapping[2], 1);
+                    SwapMapping(menu, sVar1, menu->controlMapping[2], 1);
                     menu->controlMapping[2] = sVar1;
                     break;
                 case 3:
-                    SelectRelated(menu, sVar1, menu->controlMapping[3], 0);
+                    SwapMapping(menu, sVar1, menu->controlMapping[3], 0);
                     menu->controlMapping[3] = sVar1;
                     break;
                 case 4:
-                    SelectRelated(menu, sVar1, menu->controlMapping[4], 0);
+                    SwapMapping(menu, sVar1, menu->controlMapping[4], 0);
                     menu->controlMapping[4] = sVar1;
                     break;
                 case 5:
-                    SelectRelated(menu, sVar1, menu->controlMapping[5], 0);
+                    SwapMapping(menu, sVar1, menu->controlMapping[5], 0);
                     menu->controlMapping[5] = sVar1;
                     break;
                 case 6:
-                    SelectRelated(menu, sVar1, menu->controlMapping[6], 0);
+                    SwapMapping(menu, sVar1, menu->controlMapping[6], 0);
                     menu->controlMapping[6] = sVar1;
                     break;
                 case 7:
-                    SelectRelated(menu, sVar1, menu->controlMapping[7], 0);
+                    SwapMapping(menu, sVar1, menu->controlMapping[7], 0);
                     menu->controlMapping[7] = sVar1;
                     break;
                 case 8:
-                    SelectRelated(menu, sVar1, menu->controlMapping[8], 0);
+                    SwapMapping(menu, sVar1, menu->controlMapping[8], 0);
                     menu->controlMapping[8] = sVar1;
                 }
             }
@@ -925,7 +925,7 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-void MainMenu::SelectRelated(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk)
+void MainMenu::SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk)
 {
     if (unk == 0 && menu->controlMapping[0] == btnPressed)
     {

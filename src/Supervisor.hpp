@@ -118,6 +118,8 @@ struct Supervisor
     ZunResult FadeOutMusic(f32 fadeOutSeconds);
 
     static ZunResult SetupDInput(Supervisor *s);
+    static BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef);
+    static BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext);
 
     i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
     void ReleasePbg3(i32 pbg3FileIdx);
@@ -228,8 +230,6 @@ unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerBut
 u16 GetControllerInput(u16 buttons);
 u8 *GetControllerState();
 u16 GetInput(void);
-BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef);
-BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext);
 void ResetKeyboard(void);
 }; // namespace Controller
 

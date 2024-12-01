@@ -270,11 +270,11 @@ th06::MidiOutput::FadeOutSetVolume,0x423260,0xce,__thiscall,,void,MidiOutput*,i3
 th06::AnmManager::~AnmManager,0x423330,0xb,__thiscall,,void,AnmManager*
 th06::Supervisor::OnUpdate,0x42333b,0x44a,__stdcall,,ChainCallbackResult,Supervisor*
 th06::Supervisor::OnDraw,0x423785,0x7c,__stdcall,,ChainCallbackResult,Supervisor*
-th06::Controller::ControllerCallback,0x423801,0x6a,__stdcall,,u8,DIDEVICEOBJECTINSTANCEA*
+th06::Supervisor::ControllerCallback,0x423801,0x6a,__stdcall,,u8,DIDEVICEOBJECTINSTANCEA*
 th06::Supervisor::RegisterChain,0x42386b,0x9f,__stdcall,,ZunResult
 th06::Supervisor::AddedCallback,0x42390a,0x20a,__stdcall,,ZunResult,Supervisor*
 th06::Supervisor::SetupDInput,0x423b14,0x28c,__stdcall,,ZunResult,Supervisor*
-th06::Controller::EnumGameControllersCb,0x423da0,0x3f,__stdcall,,u32,i32
+th06::Supervisor::EnumGameControllersCb,0x423da0,0x3f,__stdcall,,u32,i32
 th06::Supervisor::DeletedCallback,0x423ddf,0x160,default,,ZunResult,Supervisor*
 th06::Supervisor::DrawFpsCounter,0x423f3f,0x1b1,__stdcall,,void
 th06::AnmManager::ReleaseVertexBuffer,0x4240f0,0x37,__thiscall,,void,AnmManager*
@@ -301,7 +301,7 @@ th06::MusicRoom::OnDraw,0x42545a,0x1f2,__cdecl,,ChainCallbackResult,MusicRoom*
 th06::MusicRoom::AddedCallback,0x42564c,0x74b,__cdecl,,ZunResult,MusicRoom*
 th06::MusicRoom::DeletedCallback,0x425d97,0x6c,__cdecl,,ZunResult,MusicRoom*
 th06::Player::Player,0x425e10,0x1e8,__thiscall,,Player*,Player*
-th06::PlayerInner::PlayerInner,0x426000,0xc2,__thiscall,,PlayerBombInfo*,PlayerInner*
+th06::PlayerBombInfo::PlayerBombInfo,0x426000,0xc2,__thiscall,,PlayerBombInfo*,PlayerBombInfo*
 th06::Player::FireBulletReimuA,0x4260d0,0x22,default,,FireBulletResult,Player*,PlayerBullet*,u32,u32
 th06::Player::FireSingleBullet,0x426100,0x31b,default,,FireBulletResult,Player*,PlayerBullet*,i32,i32,CharacterPowerData*
 th06::Player::FireBulletReimuB,0x426420,0x22,default,,FireBulletResult,Player*,PlayerBullet*,u32,u32
@@ -421,7 +421,7 @@ th06::AnmManager::TakeScreenshot,0x435670,0xed,__thiscall,,void,AnmManager*,i32,
 th06::MainMenu::MainMenu,0x43575d,0x42,__thiscall,,void,MainMenu*
 th06::MainMenu::OnUpdate,0x43579f,0x1d31,__stdcall,,ChainCallbackResult,MainMenu*
 th06::MainMenu::MoveCursor,0x43753c,0x136,default,,i32,MainMenu*,i32
-th06::MainMenu::SelectRelated,0x437672,0x131,default,,void,MainMenu*,u16,u16,i32
+th06::MainMenu::SwapMapping,0x437672,0x131,default,,void,MainMenu*,u16,u16,i32
 th06::MainMenu::DrawMenuItem,0x4377a3,0xff,__stdcall,,void,AnmVm*,i32,i32,unsigned long,unsigned long,i32
 th06::MainMenu::BeginStartup,0x4378a2,0x142,__thiscall,,ZunResult,MainMenu*
 th06::MainMenu::WeirdSecondInputCheck,0x4379e4,0x15d,__thiscall,,i32,MainMenu*

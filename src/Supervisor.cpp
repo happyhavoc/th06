@@ -698,7 +698,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
     supervisor->keyboard->Acquire();
     GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
 
-    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Controller::EnumGameControllersCb, NULL,
+    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Supervisor::EnumGameControllersCb, NULL,
                                          DIEDFL_ATTACHEDONLY);
     if (supervisor->controller)
     {
@@ -708,7 +708,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
         g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
 
         supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
-        supervisor->controller->EnumObjects(Controller::ControllerCallback, NULL, DIDFT_ALL);
+        supervisor->controller->EnumObjects(Supervisor::ControllerCallback, NULL, DIDFT_ALL);
 
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_PAD_FOUND);
     }
@@ -1047,7 +1047,7 @@ u16 Controller::GetInput(void)
 
 #pragma optimize("s", on)
 #pragma var_order(diprange, pvRefBackup)
-BOOL CALLBACK Controller::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
+BOOL CALLBACK Supervisor::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
 {
     LPVOID pvRefBackup;
     DIPROPRANGE diprange;
@@ -1072,7 +1072,7 @@ BOOL CALLBACK Controller::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, 
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-BOOL CALLBACK Controller::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
+BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
 {
     HRESULT result;
 
