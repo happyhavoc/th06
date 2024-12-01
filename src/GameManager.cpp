@@ -21,36 +21,9 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(GameManager, g_GameManager);
 
-DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
-DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
-
-struct DifficultyInfo
-{
-    u32 rank;
-    u32 minRank;
-    u32 maxRank;
-};
-C_ASSERT(sizeof(DifficultyInfo) == 0xc);
-
-DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfo) = {
-    // rank, minRank, maxRank
-    /* EASY    */ {16, 12, 20},
-    /* NORMAL  */ {16, 10, 32},
-    /* HARD    */ {16, 10, 32},
-    /* LUNATIC */ {16, 10, 32},
-    /* EXTRA   */ {16, 14, 18},
-};
-DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfoForReplay) = {
-    // rank, minRank, maxRank
-    /* EASY    */ {16, 12, 20},
-    /* NORMAL  */ {16, 10, 32},
-    /* HARD    */ {16, 10, 32},
-    /* LUNATIC */ {16, 10, 32},
-    /* EXTRA   */ {16, 14, 18},
-};
 DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 5, g_ExtraLivesScores) = {10000000, 20000000, 40000000, 60000000, 1900000000};
+
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 9, g_EclFiles) = {"dummy",
                                                        "data/ecldata1.ecl",
                                                        "data/ecldata2.ecl",
@@ -66,6 +39,7 @@ struct AnmStageFiles
     char *file1;
     char *file2;
 };
+
 DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
     {"dummy", "dummy"},
     {"data/stg1enm.anm", "data/stg1enm2.anm"},
@@ -76,6 +50,37 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
     {"data/stg6enm.anm", "data/stg6enm2.anm"},
     {"data/stg7enm.anm", "data/stg7enm2.anm"},
 };
+struct DifficultyInfo
+{
+    u32 rank;
+    u32 minRank;
+    u32 maxRank;
+};
+C_ASSERT(sizeof(DifficultyInfo) == 0xc);
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfoForReplay) = {
+    // rank, minRank, maxRank
+    /* EASY    */ {16, 12, 20},
+    /* NORMAL  */ {16, 10, 32},
+    /* HARD    */ {16, 10, 32},
+    /* LUNATIC */ {16, 10, 32},
+    /* EXTRA   */ {16, 14, 18},
+};
+
+DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfo) = {
+    // rank, minRank, maxRank
+    /* EASY    */ {16, 12, 20},
+    /* NORMAL  */ {16, 10, 32},
+    /* HARD    */ {16, 10, 32},
+    /* LUNATIC */ {16, 10, 32},
+    /* EXTRA   */ {16, 14, 18},
+};
+
+// These are either on Supervisor.cpp or somewhere else
+DIFFABLE_STATIC(GameManager, g_GameManager);
+
+DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
+DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 
 #define MAX_SCORE 999999999
 #define MAX_CLEARS 99
@@ -88,19 +93,156 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
 #define MAX_LIVES 8
 
 #pragma optimize("s", on)
-GameManager::GameManager()
+i32 GameManager::IsInBounds(f32 x, f32 y, f32 width, f32 height)
 {
+    if (width / 2.0f + x < 0.0f)
+    {
+        return false;
+    }
+    if ((x - width / 2.0f) > g_GameManager.arcadeRegionSize.x)
+    {
+        return false;
+    }
+    if (height / 2.0f + y < 0.0f)
+    {
+        return false;
+    }
+    if (y - height / 2.0f > g_GameManager.arcadeRegionSize.y)
+    {
+        return false;
+    }
 
-    memset(this, 0, sizeof(GameManager));
-
-    (this->arcadeRegionTopLeftPos).x = GAME_REGION_LEFT;
-    (this->arcadeRegionTopLeftPos).y = GAME_REGION_TOP;
-    (this->arcadeRegionSize).x = GAME_REGION_WIDTH;
-    (this->arcadeRegionSize).y = GAME_REGION_HEIGHT;
+    return true;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+#pragma var_order(score_increment, is_in_menu)
+ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
+{
+    u32 isInMenu;
+    u32 scoreIncrement;
+
+    if (gameManager->demoMode)
+    {
+        if (WAS_PRESSED(TH_BUTTON_ANY))
+        {
+            g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU;
+        }
+        gameManager->demoFrames++;
+        if (gameManager->demoFrames == DEMO_FADEOUT_FRAMES)
+        {
+            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_OUT, 120, 0x000000, 0, 0);
+        }
+        if (gameManager->demoFrames >= DEMO_FRAMES)
+        {
+            g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU;
+        }
+    }
+    if (!gameManager->isInRetryMenu && !gameManager->isInGameMenu && !gameManager->demoMode &&
+        WAS_PRESSED(TH_BUTTON_MENU))
+    {
+        gameManager->isInGameMenu = 1;
+        g_GameManager.arcadeRegionTopLeftPos.x = GAME_REGION_LEFT;
+        g_GameManager.arcadeRegionTopLeftPos.y = GAME_REGION_TOP;
+        g_GameManager.arcadeRegionSize.x = GAME_REGION_WIDTH;
+        g_GameManager.arcadeRegionSize.y = GAME_REGION_HEIGHT;
+        g_Supervisor.unk198 = 3;
+    }
+
+    if (!gameManager->isInRetryMenu && !gameManager->isInGameMenu)
+    {
+        isInMenu = 1;
+    }
+    else
+    {
+        isInMenu = 0;
+    }
+
+    gameManager->isInMenu = isInMenu;
+
+    g_Supervisor.viewport.X = gameManager->arcadeRegionTopLeftPos.x;
+    g_Supervisor.viewport.Y = gameManager->arcadeRegionTopLeftPos.y;
+    g_Supervisor.viewport.Width = gameManager->arcadeRegionSize.x;
+    g_Supervisor.viewport.Height = gameManager->arcadeRegionSize.y;
+    g_Supervisor.viewport.MinZ = 0.5;
+    g_Supervisor.viewport.MaxZ = 1.0;
+
+    SetupCamera(0);
+
+    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, g_Stage.skyFog.color, 1.0, 0);
+
+    // Seems like gameManager->isInGameMenu was supposed to have 3 states, but all the times it ends up checking both
+    if (gameManager->isInGameMenu == 1 || gameManager->isInGameMenu == 2 || gameManager->isInRetryMenu)
+    {
+        return CHAIN_CALLBACK_RESULT_BREAK;
+    }
+
+    if (gameManager->score >= MAX_SCORE + 1)
+    {
+        gameManager->score = MAX_SCORE - 9;
+    }
+    if (gameManager->guiScore != gameManager->score)
+    {
+        if (gameManager->score < gameManager->guiScore)
+        {
+            gameManager->score = gameManager->guiScore;
+        }
+
+        scoreIncrement = (gameManager->score - gameManager->guiScore) >> 5;
+        if (scoreIncrement >= GUI_SCORE_STEP)
+        {
+            scoreIncrement = GUI_SCORE_STEP;
+        }
+        else if (scoreIncrement < 10)
+        {
+            scoreIncrement = 10;
+        }
+        scoreIncrement = scoreIncrement - scoreIncrement % 10;
+
+        if (gameManager->nextScoreIncrement < scoreIncrement)
+        {
+            gameManager->nextScoreIncrement = scoreIncrement;
+        }
+        if (gameManager->guiScore + gameManager->nextScoreIncrement > gameManager->score)
+        {
+            gameManager->nextScoreIncrement = gameManager->score - gameManager->guiScore;
+        }
+
+        gameManager->guiScore += gameManager->nextScoreIncrement;
+        if (gameManager->guiScore >= gameManager->score)
+        {
+            gameManager->nextScoreIncrement = 0;
+            gameManager->guiScore = gameManager->score;
+        }
+        if (gameManager->extraLives >= 0 && g_ExtraLivesScores[gameManager->extraLives] <= gameManager->guiScore)
+        {
+            if (gameManager->livesRemaining < MAX_LIVES)
+            {
+                gameManager->livesRemaining++;
+                g_SoundPlayer.PlaySoundByIdx(SOUND_1UP, 0);
+            }
+            g_Gui.flags.flag0 = 2;
+            gameManager->extraLives++;
+            g_GameManager.IncreaseSubrank(200);
+        }
+        if (gameManager->highScore < gameManager->guiScore)
+        {
+            gameManager->highScore = gameManager->guiScore;
+        }
+    }
+    gameManager->gameFrames++;
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
+ChainCallbackResult GameManager::OnDraw(GameManager *gameManager)
+{
+    if (gameManager->isInGameMenu)
+    {
+        gameManager->isInGameMenu = 2;
+    }
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+
 ZunResult GameManager::RegisterChain()
 {
     GameManager *mgr = &g_GameManager;
@@ -125,15 +267,7 @@ ZunResult GameManager::RegisterChain()
     g_Chain.AddToDrawChain(&g_GameManagerDrawChain, TH_CHAIN_PRIO_DRAW_GAMEMANAGER);
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-void GameManager::CutChain()
-{
-    g_Chain.Cut(&g_GameManagerCalcChain);
-    g_Chain.Cut(&g_GameManagerDrawChain);
-}
-
-#pragma optimize("s", on)
 #pragma var_order(failedToLoadReplay, catk, i, catkCursor, scoredat, clrdIdx, unk1, unk2, padding)
 ZunResult GameManager::AddedCallback(GameManager *mgr)
 {
@@ -189,7 +323,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             {
                 ((u16 *)catk)[catkCursor] = g_Rng.GetRandomU16();
             }
-            catk->base.magic = (u32) "CATK";
+            catk->base.magic = CATK_MAGIC;
             catk->base.unkLen = sizeof(Catk);
             catk->base.th6kLen = sizeof(Catk);
             catk->base.version = TH6K_VERSION;
@@ -336,9 +470,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     g_Supervisor.unk198 = 3;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult GameManager::DeletedCallback(GameManager *mgr)
 {
     i32 padding1, padding2, padding3;
@@ -360,206 +492,13 @@ ZunResult GameManager::DeletedCallback(GameManager *mgr)
     g_AsciiManager.InitializeVms();
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
+void GameManager::CutChain()
 {
-    return (this->clrd[shottype + character * 2].difficultyClearedWithRetries[1] == MAX_CLEARS ||
-            this->clrd[shottype + character * 2].difficultyClearedWithRetries[2] == MAX_CLEARS ||
-            this->clrd[shottype + character * 2].difficultyClearedWithRetries[3] == MAX_CLEARS);
+    g_Chain.Cut(&g_GameManagerCalcChain);
+    g_Chain.Cut(&g_GameManagerDrawChain);
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-void GameManager::IncreaseSubrank(i32 amount)
-{
-    this->subRank = this->subRank + amount;
-    while (this->subRank >= 100)
-    {
-        this->rank++;
-        this->subRank -= 100;
-    }
-    if (this->rank > this->maxRank)
-    {
-        this->rank = this->maxRank;
-    }
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-void GameManager::DecreaseSubrank(i32 amount)
-{
-    this->subRank = this->subRank - amount;
-    while (this->subRank < 0)
-    {
-        this->rank--;
-        this->subRank += 100;
-    }
-    if (this->rank < this->minRank)
-    {
-        this->rank = this->minRank;
-    }
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-i32 GameManager::IsInBounds(f32 x, f32 y, f32 width, f32 height)
-{
-    if (width / 2.0f + x < 0.0f)
-    {
-        return false;
-    }
-    if ((x - width / 2.0f) > g_GameManager.arcadeRegionSize.x)
-    {
-        return false;
-    }
-    if (height / 2.0f + y < 0.0f)
-    {
-        return false;
-    }
-    if (y - height / 2.0f > g_GameManager.arcadeRegionSize.y)
-    {
-        return false;
-    }
-
-    return true;
-}
-#pragma optimize("", on)
-
-#pragma var_order(score_increment, is_in_menu)
-#pragma optimize("s", on)
-ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
-{
-    u32 isInMenu;
-    u32 scoreIncrement;
-
-    if (gameManager->demoMode)
-    {
-        if (WAS_PRESSED(TH_BUTTON_ANY))
-        {
-            g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU;
-        }
-        gameManager->demoFrames++;
-        if (gameManager->demoFrames == DEMO_FADEOUT_FRAMES)
-        {
-            ScreenEffect::RegisterChain(SCREEN_EFFECT_FADE_OUT, 120, 0x000000, 0, 0);
-        }
-        if (gameManager->demoFrames >= DEMO_FRAMES)
-        {
-            g_Supervisor.curState = SUPERVISOR_STATE_MAINMENU;
-        }
-    }
-    if (!gameManager->isInRetryMenu && !gameManager->isInGameMenu && !gameManager->demoMode &&
-        WAS_PRESSED(TH_BUTTON_MENU))
-    {
-        gameManager->isInGameMenu = 1;
-        g_GameManager.arcadeRegionTopLeftPos.x = GAME_REGION_LEFT;
-        g_GameManager.arcadeRegionTopLeftPos.y = GAME_REGION_TOP;
-        g_GameManager.arcadeRegionSize.x = GAME_REGION_WIDTH;
-        g_GameManager.arcadeRegionSize.y = GAME_REGION_HEIGHT;
-        g_Supervisor.unk198 = 3;
-    }
-
-    if (!gameManager->isInRetryMenu && !gameManager->isInGameMenu)
-    {
-        isInMenu = 1;
-    }
-    else
-    {
-        isInMenu = 0;
-    }
-
-    gameManager->isInMenu = isInMenu;
-
-    g_Supervisor.viewport.X = gameManager->arcadeRegionTopLeftPos.x;
-    g_Supervisor.viewport.Y = gameManager->arcadeRegionTopLeftPos.y;
-    g_Supervisor.viewport.Width = gameManager->arcadeRegionSize.x;
-    g_Supervisor.viewport.Height = gameManager->arcadeRegionSize.y;
-    g_Supervisor.viewport.MinZ = 0.5;
-    g_Supervisor.viewport.MaxZ = 1.0;
-
-    SetupCamera(0);
-
-    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
-    g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, g_Stage.skyFog.color, 1.0, 0);
-
-    // Seems like gameManager->isInGameMenu was supposed to have 3 states, but all the times it ends up checking both
-    if (gameManager->isInGameMenu == 1 || gameManager->isInGameMenu == 2 || gameManager->isInRetryMenu)
-    {
-        return CHAIN_CALLBACK_RESULT_BREAK;
-    }
-
-    if (gameManager->score >= MAX_SCORE + 1)
-    {
-        gameManager->score = MAX_SCORE - 9;
-    }
-    if (gameManager->guiScore != gameManager->score)
-    {
-        if (gameManager->score < gameManager->guiScore)
-        {
-            gameManager->score = gameManager->guiScore;
-        }
-
-        scoreIncrement = (gameManager->score - gameManager->guiScore) >> 5;
-        if (scoreIncrement >= GUI_SCORE_STEP)
-        {
-            scoreIncrement = GUI_SCORE_STEP;
-        }
-        else if (scoreIncrement < 10)
-        {
-            scoreIncrement = 10;
-        }
-        scoreIncrement = scoreIncrement - scoreIncrement % 10;
-
-        if (gameManager->nextScoreIncrement < scoreIncrement)
-        {
-            gameManager->nextScoreIncrement = scoreIncrement;
-        }
-        if (gameManager->guiScore + gameManager->nextScoreIncrement > gameManager->score)
-        {
-            gameManager->nextScoreIncrement = gameManager->score - gameManager->guiScore;
-        }
-
-        gameManager->guiScore += gameManager->nextScoreIncrement;
-        if (gameManager->guiScore >= gameManager->score)
-        {
-            gameManager->nextScoreIncrement = 0;
-            gameManager->guiScore = gameManager->score;
-        }
-        if (gameManager->extraLives >= 0 && g_ExtraLivesScores[gameManager->extraLives] <= gameManager->guiScore)
-        {
-            if (gameManager->livesRemaining < MAX_LIVES)
-            {
-                gameManager->livesRemaining++;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_1UP, 0);
-            }
-            g_Gui.flags.flag0 = 2;
-            gameManager->extraLives++;
-            g_GameManager.IncreaseSubrank(200);
-        }
-        if (gameManager->highScore < gameManager->guiScore)
-        {
-            gameManager->highScore = gameManager->guiScore;
-        }
-    }
-    gameManager->gameFrames++;
-    return CHAIN_CALLBACK_RESULT_CONTINUE;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-ChainCallbackResult GameManager::OnDraw(GameManager *gameManager)
-{
-    if (gameManager->isInGameMenu)
-    {
-        gameManager->isInGameMenu = 2;
-    }
-    return CHAIN_CALLBACK_RESULT_CONTINUE;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
 #pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec)
 void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
 {
@@ -594,9 +533,7 @@ void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
     g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec,   \
                   atVecY, atVecX, eyeVecZ)
 void GameManager::SetupCamera(f32 extraRenderDistance)
@@ -638,6 +575,52 @@ void GameManager::SetupCamera(f32 extraRenderDistance)
     g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
     g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
     return;
+}
+
+void GameManager::IncreaseSubrank(i32 amount)
+{
+    this->subRank = this->subRank + amount;
+    while (this->subRank >= 100)
+    {
+        this->rank++;
+        this->subRank -= 100;
+    }
+    if (this->rank > this->maxRank)
+    {
+        this->rank = this->maxRank;
+    }
+}
+
+void GameManager::DecreaseSubrank(i32 amount)
+{
+    this->subRank = this->subRank - amount;
+    while (this->subRank < 0)
+    {
+        this->rank--;
+        this->subRank += 100;
+    }
+    if (this->rank < this->minRank)
+    {
+        this->rank = this->minRank;
+    }
+}
+
+GameManager::GameManager()
+{
+
+    memset(this, 0, sizeof(GameManager));
+
+    (this->arcadeRegionTopLeftPos).x = GAME_REGION_LEFT;
+    (this->arcadeRegionTopLeftPos).y = GAME_REGION_TOP;
+    (this->arcadeRegionSize).x = GAME_REGION_WIDTH;
+    (this->arcadeRegionSize).y = GAME_REGION_HEIGHT;
+}
+
+i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
+{
+    return (this->clrd[shottype + character * 2].difficultyClearedWithRetries[1] == MAX_CLEARS ||
+            this->clrd[shottype + character * 2].difficultyClearedWithRetries[2] == MAX_CLEARS ||
+            this->clrd[shottype + character * 2].difficultyClearedWithRetries[3] == MAX_CLEARS);
 }
 #pragma optimize("", on)
 }; // namespace th06
