@@ -68,14 +68,14 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BulletTypeInfo, 10, g_BulletTypeInfos) = {
      ASB4(SPAWN_BUBBLE_NORMAL)},
 };
 
-BulletManager::BulletManager()
-{
-    this->InitializeToZero();
-}
-
 void BulletManager::InitializeToZero()
 {
     memset(this, 0, sizeof(BulletManager));
+}
+
+BulletManager::BulletManager()
+{
+    this->InitializeToZero();
 }
 
 #pragma var_order(bulletSpeed, local_c, bullet, bulletAngle)
@@ -377,6 +377,185 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
     return 0;
 }
 
+#pragma var_order(itemPos, i, sine, bullet, laser, cosine, offset)
+void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
+{
+    f32 cosine;
+    f32 sine;
+    f32 offset;
+    Laser *laser;
+    Bullet *bullet;
+    i32 i;
+    D3DXVECTOR3 itemPos;
+
+    for (bullet = &g_BulletManager.bullets[0], i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullet++)
+    {
+        if (bullet->state == 0 || bullet->state == 5)
+        {
+            continue;
+        }
+
+        if (turnIntoItem)
+        {
+            g_ItemManager.SpawnItem(&bullet->pos, ITEM_POINT_BULLET, 1);
+            memset(bullet, 0, sizeof(Bullet));
+        }
+        else
+        {
+            bullet->state = 5;
+        }
+    }
+
+    for (laser = this->lasers, i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
+    {
+        if (!laser->inUse)
+        {
+            continue;
+        }
+
+        if (laser->state < 2)
+        {
+            laser->state = 2;
+            laser->timer.InitializeForPopup();
+
+            if (turnIntoItem)
+            {
+                offset = laser->startOffset;
+                fsincos_wrapper(&sine, &cosine, laser->angle);
+
+                while (laser->endOffset > offset)
+                {
+                    itemPos.x = cosine * offset + laser->pos.x;
+                    itemPos.y = sine * offset + laser->pos.y;
+                    itemPos.z = 0.0f;
+                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
+                    offset += 32.0f;
+                }
+            }
+        }
+
+        laser->grazeInterval = 0;
+    }
+}
+
+void BulletManager::TurnAllBulletsIntoPoints()
+{
+    this->RemoveAllBullets(true);
+}
+
+#pragma var_order(bulletScore, totalBonusScore, awardedBullets, i, sine, bullets, itemPos, laser, cosine, offset)
+i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
+{
+    i32 bulletScore;
+    i32 totalBonusScore;
+    i32 awardedBullets;
+    i32 i;
+    f32 sine;
+    f32 cosine;
+    f32 offset;
+    Laser *laser;
+    Bullet *bullets;
+    D3DXVECTOR3 itemPos;
+
+    totalBonusScore = 0;
+    bulletScore = 2000;
+    awardedBullets = 0;
+    bullets = &g_BulletManager.bullets[0];
+    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullets++)
+    {
+        if (bullets->state == 0)
+        {
+            continue;
+        }
+
+        if (awardPoints)
+        {
+            g_ItemManager.SpawnItem(&bullets->pos, ITEM_POINT_BULLET, 1);
+        }
+
+        g_AsciiManager.CreatePopup1(&bullets->pos, bulletScore,
+                                    bulletScore >= maxBonusScore ? COLOR_YELLOW : COLOR_WHITE);
+
+        totalBonusScore += bulletScore;
+        awardedBullets++;
+        bulletScore += 10;
+
+        if (bulletScore > maxBonusScore)
+        {
+            bulletScore = maxBonusScore;
+        }
+
+        bullets->state = 5;
+    }
+
+    laser = &this->lasers[0];
+    for (i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
+    {
+        if (!laser->inUse)
+        {
+            continue;
+        }
+
+        if (laser->state < 2)
+        {
+            laser->state = 2;
+            laser->timer.InitializeForPopup();
+
+            if (awardPoints != 0)
+            {
+                g_ItemManager.SpawnItem(&laser->pos, ITEM_POINT_BULLET, 1);
+                offset = laser->startOffset;
+                fsincos_wrapper(&sine, &cosine, laser->angle);
+
+                while (laser->endOffset > offset)
+                {
+                    itemPos.x = cosine * offset + laser->pos.x;
+                    itemPos.y = sine * offset + laser->pos.y;
+                    itemPos.z = 0.0f;
+                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
+                    offset += 32.0f;
+                }
+            }
+        }
+
+        laser->grazeInterval = 0;
+    }
+
+    g_GameManager.score += totalBonusScore;
+
+    if (totalBonusScore != 0)
+    {
+        g_Gui.ShowBonusScore(totalBonusScore);
+    }
+
+    return totalBonusScore;
+}
+
+ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
+{
+    i32 idx1, idx2;
+    f32 angle;
+
+    angle = g_Player.AngleToPlayer(&bulletProps->position);
+    for (idx1 = 0; idx1 < bulletProps->count2; idx1++)
+    {
+        for (idx2 = 0; idx2 < bulletProps->count1; idx2++)
+        {
+            if (this->SpawnSingleBullet(bulletProps, idx2, idx1, angle) != 0)
+            {
+                goto out;
+            }
+        }
+    }
+
+out:
+    if ((bulletProps->flags & 0x200) != 0)
+    {
+        g_SoundPlayer.PlaySoundByIdx(bulletProps->sfx, 0);
+    }
+    return ZUN_SUCCESS;
+}
+
 #pragma var_order(idx, laser)
 Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
 {
@@ -434,31 +613,6 @@ Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
     return laser;
 }
 
-ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
-{
-    i32 idx1, idx2;
-    f32 angle;
-
-    angle = g_Player.AngleToPlayer(&bulletProps->position);
-    for (idx1 = 0; idx1 < bulletProps->count2; idx1++)
-    {
-        for (idx2 = 0; idx2 < bulletProps->count1; idx2++)
-        {
-            if (this->SpawnSingleBullet(bulletProps, idx2, idx1, angle) != 0)
-            {
-                goto out;
-            }
-        }
-    }
-
-out:
-    if ((bulletProps->flags & 0x200) != 0)
-    {
-        g_SoundPlayer.PlaySoundByIdx(bulletProps->sfx, 0);
-    }
-    return ZUN_SUCCESS;
-}
-
 ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
 {
     BulletManager *mgr = &g_BulletManager;
@@ -491,111 +645,6 @@ ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
     g_BulletManagerDrawChain.deletedCallback = NULL;
     g_BulletManagerDrawChain.arg = mgr;
     g_Chain.AddToDrawChain(&g_BulletManagerDrawChain, TH_CHAIN_PRIO_DRAW_BULLETMANAGER);
-    return ZUN_SUCCESS;
-}
-
-void BulletManager::CutChain()
-{
-    g_Chain.Cut(&g_BulletManagerCalcChain);
-    g_Chain.Cut(&g_BulletManagerDrawChain);
-}
-
-ZunResult BulletManager::AddedCallback(BulletManager *mgr)
-{
-    u32 idx;
-
-    if ((ZunBool)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
-    {
-        if (g_AnmManager->LoadAnm(ANM_FILE_BULLET3, "data/etama3.anm", ANM_OFFSET_BULLET3) != ZUN_SUCCESS)
-        {
-            return ZUN_ERROR;
-        }
-
-        if (g_AnmManager->LoadAnm(ANM_FILE_BULLET4, "data/etama4.anm", ANM_OFFSET_BULLET4) != ZUN_SUCCESS)
-        {
-            return ZUN_ERROR;
-        }
-    }
-
-    for (idx = 0; idx < 10; idx++)
-    {
-        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteBullet,
-                                             g_BulletTypeInfos[idx].bulletAnmScriptIdx);
-        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectFast,
-                                             g_BulletTypeInfos[idx].bulletSpawnEffectFastAnmScriptIdx);
-        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectNormal,
-                                             g_BulletTypeInfos[idx].bulletSpawnEffectNormalAnmScriptIdx);
-        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectSlow,
-                                             g_BulletTypeInfos[idx].bulletSpawnEffectSlowAnmScriptIdx);
-        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectDonut,
-                                             g_BulletTypeInfos[idx].bulletSpawnEffectDonutAnmScriptIdx);
-        mgr->bulletTypeTemplates[idx].spriteBullet.baseSpriteIndex =
-            mgr->bulletTypeTemplates[idx].spriteBullet.activeSpriteIndex;
-        mgr->bulletTypeTemplates[idx].bulletHeight = mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx;
-
-        if (mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx <= 8.0f)
-        {
-            mgr->bulletTypeTemplates[idx].grazeSize.x = 4.0f;
-            mgr->bulletTypeTemplates[idx].grazeSize.y = 4.0f;
-        }
-        else if (mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx <= 16.0f)
-        {
-            switch (g_BulletTypeInfos[idx].bulletAnmScriptIdx)
-            {
-            case ANM_SCRIPT_BULLET3_RICE:
-                mgr->bulletTypeTemplates[idx].grazeSize.x = 4.0f;
-                mgr->bulletTypeTemplates[idx].grazeSize.y = 4.0f;
-                break;
-            case ANM_SCRIPT_BULLET3_KUNAI:
-                mgr->bulletTypeTemplates[idx].grazeSize.x = 5.0f;
-                mgr->bulletTypeTemplates[idx].grazeSize.y = 5.0f;
-                break;
-            case ANM_SCRIPT_BULLET3_SHARD:
-                mgr->bulletTypeTemplates[idx].grazeSize.x = 4.0f;
-                mgr->bulletTypeTemplates[idx].grazeSize.y = 4.0f;
-                break;
-            default:
-                mgr->bulletTypeTemplates[idx].grazeSize.x = 6.0f;
-                mgr->bulletTypeTemplates[idx].grazeSize.y = 6.0f;
-                break;
-            }
-        }
-        else if (mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx <= 32.0f)
-        {
-            switch (g_BulletTypeInfos[idx].bulletAnmScriptIdx)
-            {
-            case ANM_SCRIPT_BULLET3_FIREBALL:
-                mgr->bulletTypeTemplates[idx].grazeSize.x = 11.0f;
-                mgr->bulletTypeTemplates[idx].grazeSize.y = 11.0f;
-                break;
-            case ANM_SCRIPT_BULLET3_DAGGER:
-                mgr->bulletTypeTemplates[idx].grazeSize.x = 9.0f;
-                mgr->bulletTypeTemplates[idx].grazeSize.y = 9.0f;
-                break;
-            default:
-                mgr->bulletTypeTemplates[idx].grazeSize.x = 16.0f;
-                mgr->bulletTypeTemplates[idx].grazeSize.y = 16.0f;
-            }
-        }
-        else
-        {
-            mgr->bulletTypeTemplates[idx].grazeSize.x = 32.0f;
-            mgr->bulletTypeTemplates[idx].grazeSize.y = 32.0f;
-        }
-    }
-
-    memset(&g_ItemManager, 0, sizeof(ItemManager));
-    return ZUN_SUCCESS;
-}
-
-ZunResult BulletManager::DeletedCallback(BulletManager *arg)
-{
-    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
-    {
-        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET3);
-        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET4);
-    }
-
     return ZUN_SUCCESS;
 }
 
@@ -1291,157 +1340,108 @@ void BulletManager::DrawBulletNoHwVertex(Bullet *bullet)
     g_AnmManager->Draw(anmVm);
 }
 
-#pragma var_order(itemPos, i, sine, bullet, laser, cosine, offset)
-void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
+ZunResult BulletManager::AddedCallback(BulletManager *mgr)
 {
-    f32 cosine;
-    f32 sine;
-    f32 offset;
-    Laser *laser;
-    Bullet *bullet;
-    i32 i;
-    D3DXVECTOR3 itemPos;
+    u32 idx;
 
-    for (bullet = &g_BulletManager.bullets[0], i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullet++)
+    if ((ZunBool)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
     {
-        if (bullet->state == 0 || bullet->state == 5)
+        if (g_AnmManager->LoadAnm(ANM_FILE_BULLET3, "data/etama3.anm", ANM_OFFSET_BULLET3) != ZUN_SUCCESS)
         {
-            continue;
+            return ZUN_ERROR;
         }
 
-        if (turnIntoItem)
+        if (g_AnmManager->LoadAnm(ANM_FILE_BULLET4, "data/etama4.anm", ANM_OFFSET_BULLET4) != ZUN_SUCCESS)
         {
-            g_ItemManager.SpawnItem(&bullet->pos, ITEM_POINT_BULLET, 1);
-            memset(bullet, 0, sizeof(Bullet));
+            return ZUN_ERROR;
+        }
+    }
+
+    for (idx = 0; idx < 10; idx++)
+    {
+        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteBullet,
+                                             g_BulletTypeInfos[idx].bulletAnmScriptIdx);
+        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectFast,
+                                             g_BulletTypeInfos[idx].bulletSpawnEffectFastAnmScriptIdx);
+        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectNormal,
+                                             g_BulletTypeInfos[idx].bulletSpawnEffectNormalAnmScriptIdx);
+        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectSlow,
+                                             g_BulletTypeInfos[idx].bulletSpawnEffectSlowAnmScriptIdx);
+        g_AnmManager->SetAndExecuteScriptIdx(&mgr->bulletTypeTemplates[idx].spriteSpawnEffectDonut,
+                                             g_BulletTypeInfos[idx].bulletSpawnEffectDonutAnmScriptIdx);
+        mgr->bulletTypeTemplates[idx].spriteBullet.baseSpriteIndex =
+            mgr->bulletTypeTemplates[idx].spriteBullet.activeSpriteIndex;
+        mgr->bulletTypeTemplates[idx].bulletHeight = mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx;
+
+        if (mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx <= 8.0f)
+        {
+            mgr->bulletTypeTemplates[idx].grazeSize.x = 4.0f;
+            mgr->bulletTypeTemplates[idx].grazeSize.y = 4.0f;
+        }
+        else if (mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx <= 16.0f)
+        {
+            switch (g_BulletTypeInfos[idx].bulletAnmScriptIdx)
+            {
+            case ANM_SCRIPT_BULLET3_RICE:
+                mgr->bulletTypeTemplates[idx].grazeSize.x = 4.0f;
+                mgr->bulletTypeTemplates[idx].grazeSize.y = 4.0f;
+                break;
+            case ANM_SCRIPT_BULLET3_KUNAI:
+                mgr->bulletTypeTemplates[idx].grazeSize.x = 5.0f;
+                mgr->bulletTypeTemplates[idx].grazeSize.y = 5.0f;
+                break;
+            case ANM_SCRIPT_BULLET3_SHARD:
+                mgr->bulletTypeTemplates[idx].grazeSize.x = 4.0f;
+                mgr->bulletTypeTemplates[idx].grazeSize.y = 4.0f;
+                break;
+            default:
+                mgr->bulletTypeTemplates[idx].grazeSize.x = 6.0f;
+                mgr->bulletTypeTemplates[idx].grazeSize.y = 6.0f;
+                break;
+            }
+        }
+        else if (mgr->bulletTypeTemplates[idx].spriteBullet.sprite->heightPx <= 32.0f)
+        {
+            switch (g_BulletTypeInfos[idx].bulletAnmScriptIdx)
+            {
+            case ANM_SCRIPT_BULLET3_FIREBALL:
+                mgr->bulletTypeTemplates[idx].grazeSize.x = 11.0f;
+                mgr->bulletTypeTemplates[idx].grazeSize.y = 11.0f;
+                break;
+            case ANM_SCRIPT_BULLET3_DAGGER:
+                mgr->bulletTypeTemplates[idx].grazeSize.x = 9.0f;
+                mgr->bulletTypeTemplates[idx].grazeSize.y = 9.0f;
+                break;
+            default:
+                mgr->bulletTypeTemplates[idx].grazeSize.x = 16.0f;
+                mgr->bulletTypeTemplates[idx].grazeSize.y = 16.0f;
+            }
         }
         else
         {
-            bullet->state = 5;
+            mgr->bulletTypeTemplates[idx].grazeSize.x = 32.0f;
+            mgr->bulletTypeTemplates[idx].grazeSize.y = 32.0f;
         }
     }
 
-    for (laser = this->lasers, i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
-    {
-        if (!laser->inUse)
-        {
-            continue;
-        }
-
-        if (laser->state < 2)
-        {
-            laser->state = 2;
-            laser->timer.InitializeForPopup();
-
-            if (turnIntoItem)
-            {
-                offset = laser->startOffset;
-                fsincos_wrapper(&sine, &cosine, laser->angle);
-
-                while (laser->endOffset > offset)
-                {
-                    itemPos.x = cosine * offset + laser->pos.x;
-                    itemPos.y = sine * offset + laser->pos.y;
-                    itemPos.z = 0.0f;
-                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
-                    offset += 32.0f;
-                }
-            }
-        }
-
-        laser->grazeInterval = 0;
-    }
+    memset(&g_ItemManager, 0, sizeof(ItemManager));
+    return ZUN_SUCCESS;
 }
 
-#pragma var_order(bulletScore, totalBonusScore, awardedBullets, i, sine, bullets, itemPos, laser, cosine, offset)
-i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
+ZunResult BulletManager::DeletedCallback(BulletManager *arg)
 {
-    i32 bulletScore;
-    i32 totalBonusScore;
-    i32 awardedBullets;
-    i32 i;
-    f32 sine;
-    f32 cosine;
-    f32 offset;
-    Laser *laser;
-    Bullet *bullets;
-    D3DXVECTOR3 itemPos;
-
-    totalBonusScore = 0;
-    bulletScore = 2000;
-    awardedBullets = 0;
-    bullets = &g_BulletManager.bullets[0];
-    for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullets++)
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
     {
-        if (bullets->state == 0)
-        {
-            continue;
-        }
-
-        if (awardPoints)
-        {
-            g_ItemManager.SpawnItem(&bullets->pos, ITEM_POINT_BULLET, 1);
-        }
-
-        g_AsciiManager.CreatePopup1(&bullets->pos, bulletScore,
-                                    bulletScore >= maxBonusScore ? COLOR_YELLOW : COLOR_WHITE);
-
-        totalBonusScore += bulletScore;
-        awardedBullets++;
-        bulletScore += 10;
-
-        if (bulletScore > maxBonusScore)
-        {
-            bulletScore = maxBonusScore;
-        }
-
-        bullets->state = 5;
+        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET3);
+        g_AnmManager->ReleaseAnm(ANM_FILE_BULLET4);
     }
 
-    laser = &this->lasers[0];
-    for (i = 0; i < ARRAY_SIZE_SIGNED(this->lasers); i++, laser++)
-    {
-        if (!laser->inUse)
-        {
-            continue;
-        }
-
-        if (laser->state < 2)
-        {
-            laser->state = 2;
-            laser->timer.InitializeForPopup();
-
-            if (awardPoints != 0)
-            {
-                g_ItemManager.SpawnItem(&laser->pos, ITEM_POINT_BULLET, 1);
-                offset = laser->startOffset;
-                fsincos_wrapper(&sine, &cosine, laser->angle);
-
-                while (laser->endOffset > offset)
-                {
-                    itemPos.x = cosine * offset + laser->pos.x;
-                    itemPos.y = sine * offset + laser->pos.y;
-                    itemPos.z = 0.0f;
-                    g_ItemManager.SpawnItem(&itemPos, ITEM_POINT_BULLET, 1);
-                    offset += 32.0f;
-                }
-            }
-        }
-
-        laser->grazeInterval = 0;
-    }
-
-    g_GameManager.score += totalBonusScore;
-
-    if (totalBonusScore != 0)
-    {
-        g_Gui.ShowBonusScore(totalBonusScore);
-    }
-
-    return totalBonusScore;
+    return ZUN_SUCCESS;
 }
 
-void BulletManager::TurnAllBulletsIntoPoints()
+void BulletManager::CutChain()
 {
-    this->RemoveAllBullets(true);
+    g_Chain.Cut(&g_BulletManagerCalcChain);
+    g_Chain.Cut(&g_BulletManagerDrawChain);
 }
 }; // namespace th06
