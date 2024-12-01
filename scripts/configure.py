@@ -107,8 +107,6 @@ def configure(build_type):
             "FileSystem",
             "GameErrorContext",
             "Rng",
-            "ReplayManager",
-            "ResultScreen",
             "utils",
             "TextHelper",
             "ItemManager",
@@ -118,8 +116,8 @@ def configure(build_type):
             "Supervisor",
             "MusicRoom",
             "Player",
-            # ReplayManager
-            # ResultScreen
+            "ReplayManager",
+            "ResultScreen",
             "ScreenEffect",
             "SoundPlayer",
             "AnmManager",
