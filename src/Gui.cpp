@@ -21,6 +21,20 @@ DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
 
 #pragma optimize("s", on)
+ZunBool Gui::IsStageFinished()
+{
+    return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void Gui::EndPlayerSpellcard()
+{
+    (this->impl->bombSpellcardName).pendingInterrupt = 1;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 void Gui::EndEnemySpellcard()
 {
     this->impl->enemySpellcardName.pendingInterrupt = 1;
@@ -29,44 +43,209 @@ void Gui::EndEnemySpellcard()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-ZunResult Gui::RegisterChain()
+ZunBool Gui::IsDialogueSkippable()
 {
-    Gui *gui = &g_Gui;
-    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
-    {
-        memset(gui, 0, sizeof(Gui));
-        gui->impl = new GuiImpl();
-    }
-    g_GuiCalcChain.callback = (ChainCallback)Gui::OnUpdate;
-    g_GuiCalcChain.addedCallback = NULL;
-    g_GuiCalcChain.deletedCallback = NULL;
-    g_GuiCalcChain.addedCallback = (ChainAddedCallback)Gui::AddedCallback;
-    g_GuiCalcChain.deletedCallback = (ChainDeletedCallback)Gui::DeletedCallback;
-    g_GuiCalcChain.arg = gui;
-    if (g_Chain.AddToCalcChain(&g_GuiCalcChain, TH_CHAIN_PRIO_CALC_GUI) != ZUN_SUCCESS)
-    {
-        return ZUN_ERROR;
-    }
-    g_GuiDrawChain.callback = (ChainCallback)Gui::OnDraw;
-    g_GuiDrawChain.addedCallback = NULL;
-    g_GuiDrawChain.deletedCallback = NULL;
-    g_GuiDrawChain.arg = gui;
-    g_Chain.AddToDrawChain(&g_GuiDrawChain, TH_CHAIN_PRIO_DRAW_GUI);
-    return ZUN_SUCCESS;
+    return (this->impl->msg).dialogueSkippable;
 }
 #pragma optimize("", on)
 
-void Gui::CutChain()
+#pragma optimize("s", on)
+void Gui::ShowBonusScore(u32 bonusScore)
 {
-    g_Chain.Cut(&g_GuiCalcChain);
-    g_Chain.Cut(&g_GuiDrawChain);
+    this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 32.0f, 0.0f);
+    this->impl->bonusScore.isShown = 1;
+    this->impl->bonusScore.timer.InitializeForPopup();
+    this->impl->bonusScore.fmtArg = bonusScore;
     return;
 }
+#pragma optimize("", on)
 
-ZunResult Gui::AddedCallback(Gui *gui)
+#pragma optimize("s", on)
+void Gui::ShowFullPowerMode(i32 fmtArg)
 {
-    return gui->ActualAddedCallback();
+    this->impl->fullPowerMode.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
+    this->impl->fullPowerMode.isShown = 1;
+    this->impl->fullPowerMode.timer.InitializeForPopup();
+    this->impl->fullPowerMode.fmtArg = fmtArg;
+    return;
 }
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void Gui::ShowSpellcardBonus(u32 spellcardScore)
+{
+    this->impl->spellCardBonus.pos = D3DXVECTOR3(224.0f, 16.0f, 0.0f);
+    this->impl->spellCardBonus.isShown = 1;
+    this->impl->spellCardBonus.timer.InitializeForPopup();
+    this->impl->spellCardBonus.fmtArg = spellcardScore;
+    return;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ChainCallbackResult Gui::OnUpdate(Gui *gui)
+{
+    if (g_GameManager.isTimeStopped)
+    {
+        return CHAIN_CALLBACK_RESULT_CONTINUE;
+    }
+    gui->UpdateStageElements();
+    gui->impl->RunMsg();
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ChainCallbackResult Gui::OnDraw(Gui *gui)
+{
+    char spellCardBonusStr[32];
+    D3DXVECTOR3 stringPos;
+
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+    if (gui->impl->finishedStage)
+    {
+        stringPos.x = GAME_REGION_LEFT + 42.0f;
+        stringPos.y = GAME_REGION_TOP + 112.0f;
+        stringPos.z = 0.0;
+        g_AsciiManager.color = COLOR_SUNSHINEYELLOW;
+        if (g_GameManager.currentStage < EXTRA_STAGE)
+        {
+            g_AsciiManager.AddFormatText(&stringPos, "Stage Clear\n\n");
+        }
+        else
+        {
+            g_AsciiManager.AddFormatText(&stringPos, "All Clear!\n\n");
+        }
+
+        stringPos.y += 32.0f;
+        g_AsciiManager.color = COLOR_WHITE;
+        g_AsciiManager.AddFormatText(&stringPos, "Stage * 1000 = %5d\n", g_GameManager.currentStage * 1000);
+
+        stringPos.y += 16.0f;
+        g_AsciiManager.color = COLOR_LAVENDER;
+        g_AsciiManager.AddFormatText(&stringPos, "Power *  100 = %5d\n", g_GameManager.currentPower * 100);
+
+        stringPos.y += 16.0f;
+        g_AsciiManager.color = COLOR_LIGHTBLUE;
+        g_AsciiManager.AddFormatText(&stringPos, "Graze *   10 = %5d\n", g_GameManager.grazeInStage * 10);
+
+        stringPos.y += 16.0f;
+        g_AsciiManager.color = COLOR_LIGHT_RED;
+        g_AsciiManager.AddFormatText(&stringPos, "    * Point Item %3d\n", g_GameManager.pointItemsCollectedInStage);
+
+        if (EXTRA_STAGE <= g_GameManager.currentStage)
+        {
+            stringPos.y += 16.0f;
+            g_AsciiManager.color = COLOR_LIGHTYELLOW;
+            g_AsciiManager.AddFormatText(&stringPos, "Player    = %8d\n", g_GameManager.livesRemaining * 3000000);
+            stringPos.y += 16.0f;
+            g_AsciiManager.AddFormatText(&stringPos, "Bomb      = %8d\n", g_GameManager.bombsRemaining * 1000000);
+        }
+
+        stringPos.y += 32.0f;
+        switch (g_GameManager.difficulty)
+        {
+        case EASY:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Easy Rank      * 0.5\n");
+            break;
+        case NORMAL:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Normal Rank    * 1.0\n");
+            break;
+        case HARD:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Hard Rank      * 1.2\n");
+            break;
+        case LUNATIC:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Lunatic Rank   * 1.5\n");
+            break;
+        case EXTRA:
+            g_AsciiManager.color = COLOR_LIGHT_RED;
+            g_AsciiManager.AddFormatText(&stringPos, "Extra Rank     * 2.0\n");
+            break;
+        }
+
+        stringPos.y += 16.0f;
+        if (g_GameManager.difficulty < EXTRA && !g_GameManager.isInPracticeMode)
+        {
+            switch (g_Supervisor.defaultConfig.lifeCount)
+            {
+            case 3:
+                g_AsciiManager.color = COLOR_LIGHT_RED;
+                g_AsciiManager.AddFormatText(&stringPos, "Player Penalty * 0.5\n");
+                stringPos.y += 16.0f;
+                break;
+            case 4:
+                g_AsciiManager.color = COLOR_LIGHT_RED;
+                g_AsciiManager.AddFormatText(&stringPos, "Player Penalty * 0.2\n");
+                stringPos.y += 16.0f;
+                break;
+            }
+        }
+        g_AsciiManager.color = COLOR_WHITE;
+        g_AsciiManager.AddFormatText(&stringPos, "Total     = %8d", gui->impl->stageScore);
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+
+    gui->impl->DrawDialogue();
+    gui->DrawStageElements();
+    gui->DrawGameScene();
+    g_AsciiManager.isGui = 1;
+    if (gui->impl->bonusScore.isShown)
+    {
+        g_AsciiManager.color = COLOR_LIGHTYELLOW;
+        g_AsciiManager.AddFormatText(&gui->impl->bonusScore.pos, "BONUS %8d", gui->impl->bonusScore.fmtArg);
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+    if (gui->impl->fullPowerMode.isShown)
+    {
+        g_AsciiManager.color = COLOR_PALEBLUE;
+        g_AsciiManager.AddFormatText(&gui->impl->fullPowerMode.pos, "Full Power Mode!!",
+                                     gui->impl->fullPowerMode.fmtArg);
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+    if (gui->impl->spellCardBonus.isShown)
+    {
+        g_AsciiManager.color = COLOR_RED;
+
+        gui->impl->spellCardBonus.pos.x =
+            ((f32)GAME_REGION_WIDTH - (f32)strlen("Spell Card Bonus!") * 16.0f) / 2.0f + (f32)GAME_REGION_LEFT;
+        gui->impl->spellCardBonus.pos.y = GAME_REGION_TOP + 64.0f;
+        g_AsciiManager.AddFormatText(&gui->impl->spellCardBonus.pos, "Spell Card Bonus!");
+
+        gui->impl->spellCardBonus.pos.y += 16.0f;
+        sprintf(spellCardBonusStr, "+%d", gui->impl->spellCardBonus.fmtArg);
+        gui->impl->spellCardBonus.pos.x =
+            ((f32)GAME_REGION_WIDTH - (f32)strlen(spellCardBonusStr) * 32.0f) / 2.0f + (f32)GAME_REGION_LEFT;
+        g_AsciiManager.scale.x = 2.0f;
+        g_AsciiManager.scale.y = 2.0f;
+        g_AsciiManager.color = COLOR_LIGHT_RED;
+        g_AsciiManager.AddString(&gui->impl->spellCardBonus.pos, spellCardBonusStr);
+
+        g_AsciiManager.scale.x = 1.0;
+        g_AsciiManager.scale.y = 1.0;
+        g_AsciiManager.color = COLOR_WHITE;
+    }
+    g_AsciiManager.isGui = 0;
+    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+    return CHAIN_CALLBACK_RESULT_CONTINUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
+{
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->playerSpellcardPortrait, 0x4a1);
+    g_AnmManager->SetActiveSprite(&this->impl->playerSpellcardPortrait, sprite);
+    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->bombSpellcardName, 0x706);
+    g_AnmManager->DrawVmTextFmt(g_AnmManager, &this->impl->bombSpellcardName, 0xf0f0ff, 0x0, bombName);
+    this->bombSpellcardBarLength = strlen(bombName) * 0xf / 2.0f + 16;
+    g_Supervisor.unk198 = 3;
+    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
+}
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
@@ -300,27 +479,6 @@ ZunResult Gui::ActualAddedCallback()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-ZunResult Gui::DeletedCallback(Gui *gui)
-{
-    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_A);
-    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_B);
-    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_C);
-    gui->FreeMsgFile();
-    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
-    {
-        g_AnmManager->ReleaseAnm(ANM_FILE_FRONT);
-        g_AnmManager->ReleaseAnm(ANM_FILE_LOADING);
-        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_A);
-        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_B);
-        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_C);
-        delete gui->impl;
-        gui->impl = NULL;
-    }
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
 ZunResult Gui::LoadMsg(char *path)
 {
     i32 idx;
@@ -340,6 +498,19 @@ ZunResult Gui::LoadMsg(char *path)
             (MsgRawInstr *)((i32)this->impl->msg.msgFile->instrs[idx] + (i32)this->impl->msg.msgFile);
     }
     return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+void Gui::FreeMsgFile()
+{
+    MsgRawHeader *msg;
+    if ((this->impl->msg).msgFile != NULL)
+    {
+        msg = (this->impl->msg).msgFile;
+        free(msg);
+        (this->impl->msg).msgFile = NULL;
+    }
 }
 #pragma optimize("", on)
 
@@ -367,158 +538,6 @@ BOOL Gui::MsgWait()
 BOOL Gui::HasCurrentMsgIdx()
 {
     return 0 <= this->impl->msg.currentMsgIdx;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-ChainCallbackResult Gui::OnUpdate(Gui *gui)
-{
-    if (g_GameManager.isTimeStopped)
-    {
-        return CHAIN_CALLBACK_RESULT_CONTINUE;
-    }
-    gui->UpdateStageElements();
-    gui->impl->RunMsg();
-    return CHAIN_CALLBACK_RESULT_CONTINUE;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-ChainCallbackResult Gui::OnDraw(Gui *gui)
-{
-    char spellCardBonusStr[32];
-    D3DXVECTOR3 stringPos;
-
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-    if (gui->impl->finishedStage)
-    {
-        stringPos.x = GAME_REGION_LEFT + 42.0f;
-        stringPos.y = GAME_REGION_TOP + 112.0f;
-        stringPos.z = 0.0;
-        g_AsciiManager.color = COLOR_SUNSHINEYELLOW;
-        if (g_GameManager.currentStage < EXTRA_STAGE)
-        {
-            g_AsciiManager.AddFormatText(&stringPos, "Stage Clear\n\n");
-        }
-        else
-        {
-            g_AsciiManager.AddFormatText(&stringPos, "All Clear!\n\n");
-        }
-
-        stringPos.y += 32.0f;
-        g_AsciiManager.color = COLOR_WHITE;
-        g_AsciiManager.AddFormatText(&stringPos, "Stage * 1000 = %5d\n", g_GameManager.currentStage * 1000);
-
-        stringPos.y += 16.0f;
-        g_AsciiManager.color = COLOR_LAVENDER;
-        g_AsciiManager.AddFormatText(&stringPos, "Power *  100 = %5d\n", g_GameManager.currentPower * 100);
-
-        stringPos.y += 16.0f;
-        g_AsciiManager.color = COLOR_LIGHTBLUE;
-        g_AsciiManager.AddFormatText(&stringPos, "Graze *   10 = %5d\n", g_GameManager.grazeInStage * 10);
-
-        stringPos.y += 16.0f;
-        g_AsciiManager.color = COLOR_LIGHT_RED;
-        g_AsciiManager.AddFormatText(&stringPos, "    * Point Item %3d\n", g_GameManager.pointItemsCollectedInStage);
-
-        if (EXTRA_STAGE <= g_GameManager.currentStage)
-        {
-            stringPos.y += 16.0f;
-            g_AsciiManager.color = COLOR_LIGHTYELLOW;
-            g_AsciiManager.AddFormatText(&stringPos, "Player    = %8d\n", g_GameManager.livesRemaining * 3000000);
-            stringPos.y += 16.0f;
-            g_AsciiManager.AddFormatText(&stringPos, "Bomb      = %8d\n", g_GameManager.bombsRemaining * 1000000);
-        }
-
-        stringPos.y += 32.0f;
-        switch (g_GameManager.difficulty)
-        {
-        case EASY:
-            g_AsciiManager.color = COLOR_LIGHT_RED;
-            g_AsciiManager.AddFormatText(&stringPos, "Easy Rank      * 0.5\n");
-            break;
-        case NORMAL:
-            g_AsciiManager.color = COLOR_LIGHT_RED;
-            g_AsciiManager.AddFormatText(&stringPos, "Normal Rank    * 1.0\n");
-            break;
-        case HARD:
-            g_AsciiManager.color = COLOR_LIGHT_RED;
-            g_AsciiManager.AddFormatText(&stringPos, "Hard Rank      * 1.2\n");
-            break;
-        case LUNATIC:
-            g_AsciiManager.color = COLOR_LIGHT_RED;
-            g_AsciiManager.AddFormatText(&stringPos, "Lunatic Rank   * 1.5\n");
-            break;
-        case EXTRA:
-            g_AsciiManager.color = COLOR_LIGHT_RED;
-            g_AsciiManager.AddFormatText(&stringPos, "Extra Rank     * 2.0\n");
-            break;
-        }
-
-        stringPos.y += 16.0f;
-        if (g_GameManager.difficulty < EXTRA && !g_GameManager.isInPracticeMode)
-        {
-            switch (g_Supervisor.defaultConfig.lifeCount)
-            {
-            case 3:
-                g_AsciiManager.color = COLOR_LIGHT_RED;
-                g_AsciiManager.AddFormatText(&stringPos, "Player Penalty * 0.5\n");
-                stringPos.y += 16.0f;
-                break;
-            case 4:
-                g_AsciiManager.color = COLOR_LIGHT_RED;
-                g_AsciiManager.AddFormatText(&stringPos, "Player Penalty * 0.2\n");
-                stringPos.y += 16.0f;
-                break;
-            }
-        }
-        g_AsciiManager.color = COLOR_WHITE;
-        g_AsciiManager.AddFormatText(&stringPos, "Total     = %8d", gui->impl->stageScore);
-        g_AsciiManager.color = COLOR_WHITE;
-    }
-
-    gui->impl->DrawDialogue();
-    gui->DrawStageElements();
-    gui->DrawGameScene();
-    g_AsciiManager.isGui = 1;
-    if (gui->impl->bonusScore.isShown)
-    {
-        g_AsciiManager.color = COLOR_LIGHTYELLOW;
-        g_AsciiManager.AddFormatText(&gui->impl->bonusScore.pos, "BONUS %8d", gui->impl->bonusScore.fmtArg);
-        g_AsciiManager.color = COLOR_WHITE;
-    }
-    if (gui->impl->fullPowerMode.isShown)
-    {
-        g_AsciiManager.color = COLOR_PALEBLUE;
-        g_AsciiManager.AddFormatText(&gui->impl->fullPowerMode.pos, "Full Power Mode!!",
-                                     gui->impl->fullPowerMode.fmtArg);
-        g_AsciiManager.color = COLOR_WHITE;
-    }
-    if (gui->impl->spellCardBonus.isShown)
-    {
-        g_AsciiManager.color = COLOR_RED;
-
-        gui->impl->spellCardBonus.pos.x =
-            ((f32)GAME_REGION_WIDTH - (f32)strlen("Spell Card Bonus!") * 16.0f) / 2.0f + (f32)GAME_REGION_LEFT;
-        gui->impl->spellCardBonus.pos.y = GAME_REGION_TOP + 64.0f;
-        g_AsciiManager.AddFormatText(&gui->impl->spellCardBonus.pos, "Spell Card Bonus!");
-
-        gui->impl->spellCardBonus.pos.y += 16.0f;
-        sprintf(spellCardBonusStr, "+%d", gui->impl->spellCardBonus.fmtArg);
-        gui->impl->spellCardBonus.pos.x =
-            ((f32)GAME_REGION_WIDTH - (f32)strlen(spellCardBonusStr) * 32.0f) / 2.0f + (f32)GAME_REGION_LEFT;
-        g_AsciiManager.scale.x = 2.0f;
-        g_AsciiManager.scale.y = 2.0f;
-        g_AsciiManager.color = COLOR_LIGHT_RED;
-        g_AsciiManager.AddString(&gui->impl->spellCardBonus.pos, spellCardBonusStr);
-
-        g_AsciiManager.scale.x = 1.0;
-        g_AsciiManager.scale.y = 1.0;
-        g_AsciiManager.color = COLOR_WHITE;
-    }
-    g_AsciiManager.isGui = 0;
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
-    return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 #pragma optimize("", on)
 
@@ -1065,71 +1084,64 @@ void Gui::DrawStageElements()
 }
 #pragma optimize("", on)
 
+ZunResult Gui::AddedCallback(Gui *gui)
+{
+    return gui->ActualAddedCallback();
+}
+
 #pragma optimize("s", on)
-void Gui::ShowFullPowerMode(i32 fmtArg)
+ZunResult Gui::DeletedCallback(Gui *gui)
 {
-    this->impl->fullPowerMode.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
-    this->impl->fullPowerMode.isShown = 1;
-    this->impl->fullPowerMode.timer.InitializeForPopup();
-    this->impl->fullPowerMode.fmtArg = fmtArg;
-    return;
-}
-
-void Gui::ShowBonusScore(u32 bonusScore)
-{
-    this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 32.0f, 0.0f);
-    this->impl->bonusScore.isShown = 1;
-    this->impl->bonusScore.timer.InitializeForPopup();
-    this->impl->bonusScore.fmtArg = bonusScore;
-    return;
-}
-
-void Gui::ShowSpellcardBonus(u32 spellcardScore)
-{
-    this->impl->spellCardBonus.pos = D3DXVECTOR3(224.0f, 16.0f, 0.0f);
-    this->impl->spellCardBonus.isShown = 1;
-    this->impl->spellCardBonus.timer.InitializeForPopup();
-    this->impl->spellCardBonus.fmtArg = spellcardScore;
-    return;
-}
-
-ZunBool Gui::IsStageFinished()
-{
-    return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
-}
-
-void Gui::FreeMsgFile()
-{
-    MsgRawHeader *msg;
-    if ((this->impl->msg).msgFile != NULL)
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_A);
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_B);
+    g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_C);
+    gui->FreeMsgFile();
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
     {
-        msg = (this->impl->msg).msgFile;
-        free(msg);
-        (this->impl->msg).msgFile = NULL;
+        g_AnmManager->ReleaseAnm(ANM_FILE_FRONT);
+        g_AnmManager->ReleaseAnm(ANM_FILE_LOADING);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_A);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_B);
+        g_AnmManager->ReleaseAnm(ANM_FILE_FACE_CHARA_C);
+        delete gui->impl;
+        gui->impl = NULL;
     }
+    return ZUN_SUCCESS;
 }
-
-void Gui::EndPlayerSpellcard()
-{
-    (this->impl->bombSpellcardName).pendingInterrupt = 1;
-}
-
-ZunBool Gui::IsDialogueSkippable()
-{
-    return (this->impl->msg).dialogueSkippable;
-}
-
-void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
-{
-    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->playerSpellcardPortrait, 0x4a1);
-    g_AnmManager->SetActiveSprite(&this->impl->playerSpellcardPortrait, sprite);
-    g_AnmManager->SetAndExecuteScriptIdx(&this->impl->bombSpellcardName, 0x706);
-    g_AnmManager->DrawVmTextFmt(g_AnmManager, &this->impl->bombSpellcardName, 0xf0f0ff, 0x0, bombName);
-    this->bombSpellcardBarLength = strlen(bombName) * 0xf / 2.0f + 16;
-    g_Supervisor.unk198 = 3;
-    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
-}
-
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
+ZunResult Gui::RegisterChain()
+{
+    Gui *gui = &g_Gui;
+    if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
+    {
+        memset(gui, 0, sizeof(Gui));
+        gui->impl = new GuiImpl();
+    }
+    g_GuiCalcChain.callback = (ChainCallback)Gui::OnUpdate;
+    g_GuiCalcChain.addedCallback = NULL;
+    g_GuiCalcChain.deletedCallback = NULL;
+    g_GuiCalcChain.addedCallback = (ChainAddedCallback)Gui::AddedCallback;
+    g_GuiCalcChain.deletedCallback = (ChainDeletedCallback)Gui::DeletedCallback;
+    g_GuiCalcChain.arg = gui;
+    if (g_Chain.AddToCalcChain(&g_GuiCalcChain, TH_CHAIN_PRIO_CALC_GUI) != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    g_GuiDrawChain.callback = (ChainCallback)Gui::OnDraw;
+    g_GuiDrawChain.addedCallback = NULL;
+    g_GuiDrawChain.deletedCallback = NULL;
+    g_GuiDrawChain.arg = gui;
+    g_Chain.AddToDrawChain(&g_GuiDrawChain, TH_CHAIN_PRIO_DRAW_GUI);
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+void Gui::CutChain()
+{
+    g_Chain.Cut(&g_GuiCalcChain);
+    g_Chain.Cut(&g_GuiDrawChain);
+    return;
+}
 }; // namespace th06
