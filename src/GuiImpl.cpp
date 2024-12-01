@@ -1,6 +1,7 @@
 #include "GuiImpl.hpp"
 
 #include "AnmManager.hpp"
+#include "Controller.hpp"
 #include "Stage.hpp"
 #include "ZunColor.hpp"
 #include "utils.hpp"

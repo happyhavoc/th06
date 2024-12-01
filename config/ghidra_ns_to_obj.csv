@@ -3,6 +3,7 @@ AsciiManager,th06::AsciiManager,th06::StageMenu
 BombData,th06::BombData
 BulletManager,th06::BulletManager
 Chain,th06::Chain,th06::ChainElem
+Controller,th06::Controller
 EclManager,th06::EclManager
 EffectManager,th06::EffectManager
 Ending,th06::Ending
@@ -29,7 +30,7 @@ Rng,th06::Rng
 ScreenEffect,th06::ScreenEffect
 SoundPlayer,th06::SoundPlayer
 Stage,th06::Stage,th06::AnmManager::ExecuteAnmIdx
-Supervisor,th06::Supervisor,th06::Controller
+Supervisor,th06::Supervisor
 TextHelper,th06::TextHelper
 utils,th06::utils
 ZunTimer,th06::ZunTimer
