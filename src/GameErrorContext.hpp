@@ -15,7 +15,7 @@ class GameErrorContext
   public:
     char m_Buffer[0x800];
     char *m_BufferEnd;
-    u8 m_ShowMessageBox;
+    i8 m_ShowMessageBox;
 
     GameErrorContext()
     {
