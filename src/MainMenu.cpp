@@ -32,6 +32,8 @@ DIFFABLE_STATIC(i16, g_LastJoystickInput)
 #pragma optimize("s", on)
 MainMenu::MainMenu()
 {
+    // what?
+    int waste1, waste2, waste3, waste4;
 }
 #pragma optimize("", on)
 
