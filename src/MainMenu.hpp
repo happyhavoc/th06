@@ -118,7 +118,7 @@ struct MainMenu
     i32 frameCountForRefreshRateCalc;
     u32 lastFrameTime;
 };
-C_ASSERT(sizeof(MainMenu) == 0x10f34);
+ZUN_ASSERT_SIZE(MainMenu, 0x10f34);
 
 DIFFABLE_EXTERN(MainMenu, g_MainMenu);
 }; // namespace th06

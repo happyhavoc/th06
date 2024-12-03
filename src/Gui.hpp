@@ -65,7 +65,7 @@ struct MsgRawHeader
     i32 numInstrs;
     MsgRawInstr *instrs[1];
 };
-C_ASSERT(sizeof(MsgRawHeader) == 0x8);
+ZUN_ASSERT_SIZE(MsgRawHeader, 0x8);
 
 struct GuiMsgVm
 {
@@ -83,7 +83,7 @@ struct GuiMsgVm
     u32 ignoreWaitCounter;
     u8 dialogueSkippable;
 };
-C_ASSERT(sizeof(GuiMsgVm) == 0x6a8);
+ZUN_ASSERT_SIZE(GuiMsgVm, 0x6a8);
 
 struct GuiFormattedText
 {
@@ -92,7 +92,7 @@ struct GuiFormattedText
     i32 isShown;
     ZunTimer timer;
 };
-C_ASSERT(sizeof(GuiFormattedText) == 0x20);
+ZUN_ASSERT_SIZE(GuiFormattedText, 0x20);
 
 struct GuiImpl
 {
@@ -119,7 +119,7 @@ struct GuiImpl
     GuiFormattedText fullPowerMode;
     GuiFormattedText spellCardBonus;
 };
-C_ASSERT(sizeof(GuiImpl) == 0x2c44);
+ZUN_ASSERT_SIZE(GuiImpl, 0x2c44);
 struct GuiFlags
 {
     u32 flag0 : 2;
@@ -200,7 +200,7 @@ struct Gui
     f32 bossHealthBar1;
     f32 bossHealthBar2;
 };
-C_ASSERT(sizeof(Gui) == 0x2c);
+ZUN_ASSERT_SIZE(Gui, 0x2c);
 
 DIFFABLE_EXTERN(Gui, g_Gui);
 }; // namespace th06

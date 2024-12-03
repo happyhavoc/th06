@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Windows.h>
-
+#include "diffbuild.hpp"
 #include "inttypes.hpp"
+#include <Windows.h>
 
 namespace th06
 {
@@ -57,5 +57,5 @@ class FileAbstraction : public IFileAbstraction
   private:
     DWORD access;
 };
-C_ASSERT(sizeof(FileAbstraction) == 0xc);
+ZUN_ASSERT_SIZE(FileAbstraction, 0xc);
 }; // namespace th06

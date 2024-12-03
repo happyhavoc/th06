@@ -79,7 +79,7 @@ struct Th6k
     u8 version;
     u8 unk_9;
 };
-C_ASSERT(sizeof(Th6k) == 0xc);
+ZUN_ASSERT_SIZE(Th6k, 0xc);
 
 struct Catk
 {
@@ -94,7 +94,7 @@ struct Catk
     u16 numAttempts;
     u16 numSuccess;
 };
-C_ASSERT(sizeof(Catk) == 0x40);
+ZUN_ASSERT_SIZE(Catk, 0x40);
 
 struct Clrd
 {
@@ -103,7 +103,7 @@ struct Clrd
     u8 difficultyClearedWithoutRetries[5];
     u8 characterShotType;
 };
-C_ASSERT(sizeof(Clrd) == 0x18);
+ZUN_ASSERT_SIZE(Clrd, 0x18);
 
 struct Pscr
 {
@@ -123,7 +123,7 @@ struct Pscr
     u8 difficulty;
     u8 stage;
 };
-C_ASSERT(sizeof(Pscr) == 0x14);
+ZUN_ASSERT_SIZE(Pscr, 0x14);
 
 struct Hscr
 {
@@ -139,7 +139,7 @@ struct Hscr
     u8 stage;
     char name[9];
 };
-C_ASSERT(sizeof(Hscr) == 0x1c);
+ZUN_ASSERT_SIZE(Hscr, 0x1c);
 
 struct ScoreListNode
 {
@@ -154,7 +154,7 @@ struct ScoreListNode
     ScoreListNode *next;
     Hscr *data;
 };
-C_ASSERT(sizeof(ScoreListNode) == 0xc);
+ZUN_ASSERT_SIZE(ScoreListNode, 0xc);
 
 struct ScoreDat
 {
@@ -176,7 +176,7 @@ struct ScoreDat
     ScoreListNode *scores;
     u32 fileLen;
 };
-C_ASSERT(sizeof(ScoreDat) == 0x14);
+ZUN_ASSERT_SIZE(ScoreDat, 0x14);
 
 struct ResultScreen
 {
@@ -243,5 +243,5 @@ struct ResultScreen
     ReplayData replays[15];
     ReplayData defaultReplay;
 };
-C_ASSERT(sizeof(ResultScreen) == 0x56b0);
+ZUN_ASSERT_SIZE(ResultScreen, 0x56b0);
 }; // namespace th06

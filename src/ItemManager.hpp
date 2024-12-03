@@ -33,7 +33,7 @@ struct Item
     i8 unk_142;
     i8 state;
 };
-C_ASSERT(sizeof(Item) == 0x144);
+ZUN_ASSERT_SIZE(Item, 0x144);
 
 struct ItemManager
 {
@@ -47,7 +47,7 @@ struct ItemManager
     i32 nextIndex;
     u32 itemCount;
 };
-C_ASSERT(sizeof(ItemManager) == 0x2894c);
+ZUN_ASSERT_SIZE(ItemManager, 0x2894c);
 
 DIFFABLE_EXTERN(ItemManager, g_ItemManager);
 }; // namespace th06

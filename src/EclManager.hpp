@@ -257,7 +257,7 @@ struct EclRawInstrEnemyCreateArgs
     i16 itemDrop;
     i32 score;
 };
-C_ASSERT(sizeof(EclRawInstrEnemyCreateArgs) == 0x18);
+ZUN_ASSERT_SIZE(EclRawInstrEnemyCreateArgs, 0x18);
 
 struct EclRawInstrAnmInterruptSlotArgs
 {
@@ -344,7 +344,7 @@ struct EclRawHeader
     EclTimelineInstr *timelineOffsets[3];
     EclRawInstr *subOffsets[0];
 };
-C_ASSERT(sizeof(EclRawHeader) == 0x10);
+ZUN_ASSERT_SIZE(EclRawHeader, 0x10);
 
 enum EclRawInstrOpcode
 {
@@ -497,7 +497,7 @@ struct EclManager
     EclRawInstr **subTable;
     EclTimelineInstr *timeline;
 };
-C_ASSERT(sizeof(EclManager) == 0xc);
+ZUN_ASSERT_SIZE(EclManager, 0xc);
 
 DIFFABLE_EXTERN(EclManager, g_EclManager);
 }; // namespace th06

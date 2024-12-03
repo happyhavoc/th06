@@ -52,7 +52,7 @@ struct SoundBufferIdxVolume
     i16 volume;
     i16 unk;
 };
-C_ASSERT(sizeof(SoundBufferIdxVolume) == 0x8);
+ZUN_ASSERT_SIZE(SoundBufferIdxVolume, 0x8);
 
 struct SoundPlayer
 {
@@ -92,7 +92,7 @@ struct SoundPlayer
     HANDLE backgroundMusicUpdateEvent;
     BOOL isLooping;
 };
-C_ASSERT(sizeof(SoundPlayer) == 0x638);
+ZUN_ASSERT_SIZE(SoundPlayer, 0x638);
 
 DIFFABLE_EXTERN(SoundBufferIdxVolume, g_SoundBufferIdxVol[32]);
 DIFFABLE_EXTERN(char, *g_SFXList[26]);
