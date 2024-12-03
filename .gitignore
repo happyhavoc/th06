@@ -2,6 +2,7 @@ build
 diff
 *.obj
 *.exe
+resources/original.ico
 log.txt
 scripts/dls
 scripts/prefix
