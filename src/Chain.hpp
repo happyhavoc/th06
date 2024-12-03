@@ -41,7 +41,7 @@ class ChainElem
     ChainElem();
     ~ChainElem();
 };
-C_ASSERT(sizeof(ChainElem) == 0x20);
+ZUN_ASSERT_SIZE(ChainElem, 0x20);
 
 class Chain
 {
@@ -66,7 +66,7 @@ class Chain
 
     ChainElem *CreateElem(ChainCallback callback);
 };
-C_ASSERT(sizeof(Chain) == 0x48);
+ZUN_ASSERT_SIZE(Chain, 0x48);
 
 DIFFABLE_EXTERN(Chain, g_Chain)
 }; // namespace th06

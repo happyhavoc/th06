@@ -134,5 +134,5 @@ struct GameManager
     i32 minRank;
     i32 subRank;
 };
-C_ASSERT(sizeof(GameManager) == 0x1a80);
+ZUN_ASSERT_SIZE(GameManager, 0x1a80);
 }; // namespace th06

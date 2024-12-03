@@ -89,5 +89,5 @@ struct Ending
     EndingFadeType fadeType;
     char *endFileDataPtr;
 };
-C_ASSERT(sizeof(Ending) == 0x1170);
+ZUN_ASSERT_SIZE(Ending, 0x1170);
 }; // namespace th06

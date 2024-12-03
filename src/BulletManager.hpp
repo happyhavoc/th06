@@ -36,7 +36,7 @@ struct BulletTypeSprites
     u8 unk_55c;
     u8 bulletHeight;
 };
-C_ASSERT(sizeof(BulletTypeSprites) == 0x560);
+ZUN_ASSERT_SIZE(BulletTypeSprites, 0x560);
 
 struct Bullet
 {
@@ -63,7 +63,7 @@ struct Bullet
     u8 unk_5c2;
     u8 isGrazed;
 };
-C_ASSERT(sizeof(Bullet) == 0x5c4);
+ZUN_ASSERT_SIZE(Bullet, 0x5c4);
 
 struct Laser
 {
@@ -87,7 +87,7 @@ struct Laser
     i16 color;
     u8 state;
 };
-C_ASSERT(sizeof(Laser) == 0x270);
+ZUN_ASSERT_SIZE(Laser, 0x270);
 
 struct BulletManager
 {
@@ -119,7 +119,7 @@ struct BulletManager
     ZunTimer time;
     char *bulletAnmPath;
 };
-C_ASSERT(sizeof(BulletManager) == 0xf5c18);
+ZUN_ASSERT_SIZE(BulletManager, 0xf5c18);
 
 DIFFABLE_EXTERN(u32 *, g_EffectsColor);
 DIFFABLE_EXTERN(BulletManager, g_BulletManager);
