@@ -116,6 +116,7 @@ _g_NumOfFramesInputsWereHeld,           0x0069d910
 _g_LastFileSize,                        0x0069d914
 _g_Chain,                               0x0069d918
 _g_GameErrorContext,                    0x0069d998
+_g_CMyFont,                             0x0069e1a0
 _g_ControllerData,                      0x0069e1af
 _g_TextBufferSurface,                   0x0069e230
 _g_ItemManager,                         0x0069e268

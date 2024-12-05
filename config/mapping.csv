@@ -198,9 +198,9 @@ th06::Controller::SetButtonFromControllerInputs,0x41d600,0x75,__stdcall,,unsigne
 th06::Controller::GetControllerState,0x41d680,0x19e,default,,u8*
 th06::Controller::GetInput,0x41d820,0x894,__stdcall,,u16
 th06::Controller::ResetKeyboard,0x41e0c0,0x85,default,,void
-FUN_0041e150,0x41e150,0xc0,unknown,,u8,u32,u32,u32
-FUN_0041e210,0x41e210,0x4b,unknown,,u8,u32,u32,u32,u32
-CDocObjectServer::ReleaseDocSite,0x41e260,0x30,__thiscall,,void,CDocObjectServer*
+th06::CMyFont::Init,0x41e150,0xc0,__thiscall,,void,CMyFont*,IDirect3DDevice8*,i32,i32
+th06::CMyFont::Print,0x41e210,0x4b,__thiscall,,void,CMyFont*,char*,i32,i32,unsigned long
+th06::CMyFont::Clean,0x41e260,0x30,__thiscall,,void,CMyFont*
 th06::FileSystem::OpenPath,0x41e290,0x1c8,__stdcall,,u8*,char*,i32
 th06::FileSystem::WriteDataToFile,0x41e460,0x63,__stdcall,,i32,char*,void*,u32
 th06::GameErrorContext::Log,0x41e4d0,0x14b,__stdcall,varargs,char*,GameErrorContext*,char*
