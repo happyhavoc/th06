@@ -74,8 +74,10 @@ enum BulletState
 };
 struct PlayerRect
 {
-    D3DXVECTOR2 pos;
-    D3DXVECTOR2 size;
+    f32 posX;
+    f32 posY;
+    f32 sizeX;
+    f32 sizeY;
 };
 C_ASSERT(sizeof(PlayerRect) == 0x10);
 
