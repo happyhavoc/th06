@@ -774,7 +774,7 @@ void ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr)
         effect->unk_11c.x = (g_Rng.GetRandomF32ZeroToOne() * 40.0f - 20.0f) / 60.0f;
         effect->unk_11c.y = (8.0f * baseAngleModifier) / 60.0f - (4.0f / 15.0f);
         effect->unk_11c.z = 0.0;
-        effect->unk_128 = -effect->unk_11c * invertf(120.0f);
+        effect->unk_128 = -effect->unk_11c / RECIPROCAL(120.0f);
 
         particlePos = enemy->position;
         particlePos.x -= cosf(finalAngle) * distanceModifier;
@@ -783,7 +783,7 @@ void ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr)
         effect->unk_11c.x = (g_Rng.GetRandomF32ZeroToOne() * 40.0f - 20.0f) / 60.0f;
         effect->unk_11c.y = (8.0f * baseAngleModifier) / 60.0f - (4.0f / 15.0f);
         effect->unk_11c.z = 0.0;
-        effect->unk_128 = -effect->unk_11c * invertf(120.0f);
+        effect->unk_128 = -effect->unk_11c / RECIPROCAL(120.0f);
     }
 
     enemy->exInsFunc6Timer.Tick();

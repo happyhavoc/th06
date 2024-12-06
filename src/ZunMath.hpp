@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include <d3dx8math.h>
 
+#define RECIPROCAL(x) (1.0f / x)
+
 struct ZunVec2
 {
     f32 x;
