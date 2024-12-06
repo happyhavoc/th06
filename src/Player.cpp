@@ -1319,8 +1319,8 @@ i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3
     playerRelativeTopLeft = laserTopLeft - this->hitboxSize;
     playerRelativeBottomRight = laserTopLeft + this->hitboxSize;
 
-    laserTopLeft = *laserCenter - *laserSize * invertf(2.0f);
-    laserBottomRight = *laserCenter + *laserSize * invertf(2.0f);
+    laserTopLeft = *laserCenter - *laserSize / 0.5;
+    laserBottomRight = *laserCenter + *laserSize / 0.5;
 
     if (!(playerRelativeTopLeft.x > laserBottomRight.x || playerRelativeBottomRight.x < laserTopLeft.x ||
           playerRelativeTopLeft.y > laserBottomRight.y || playerRelativeBottomRight.y < laserTopLeft.y))
