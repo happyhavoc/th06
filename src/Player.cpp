@@ -1399,7 +1399,7 @@ void Player::ScoreGraze(D3DXVECTOR3 *center)
         }
     }
 
-    particlePosition = (this->positionCenter + *center) * invertf(2.0f);
+    particlePosition = (this->positionCenter + *center) / 0.5f;
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_8, &particlePosition, 1, COLOR_WHITE);
     g_GameManager.AddScore(500);
     g_GameManager.IncreaseSubrank(6);
