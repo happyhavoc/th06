@@ -1319,8 +1319,8 @@ i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3
     playerRelativeTopLeft = laserTopLeft - this->hitboxSize;
     playerRelativeBottomRight = laserTopLeft + this->hitboxSize;
 
-    laserTopLeft = *laserCenter - *laserSize / 0.5;
-    laserBottomRight = *laserCenter + *laserSize / 0.5;
+    laserTopLeft = *laserCenter - *laserSize / RECIPROCAL(2.0f);
+    laserBottomRight = *laserCenter + *laserSize / RECIPROCAL(2.0f);
 
     if (!(playerRelativeTopLeft.x > laserBottomRight.x || playerRelativeBottomRight.x < laserTopLeft.x ||
           playerRelativeTopLeft.y > laserBottomRight.y || playerRelativeBottomRight.y < laserTopLeft.y))
@@ -1399,7 +1399,7 @@ void Player::ScoreGraze(D3DXVECTOR3 *center)
         }
     }
 
-    particlePosition = (this->positionCenter + *center) / 0.5f;
+    particlePosition = (this->positionCenter + *center) / RECIPROCAL(2.0f);
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_8, &particlePosition, 1, COLOR_WHITE);
     g_GameManager.AddScore(500);
     g_GameManager.IncreaseSubrank(6);
