@@ -3,8 +3,6 @@
 #include <Windows.h>
 #include <d3dx8math.h>
 
-#define RECIPROCAL(x) (1.0f / x)
-
 struct ZunVec2
 {
     f32 x;
@@ -87,4 +85,9 @@ void __inline sincosmul(D3DXVECTOR3 *out_vel, f32 input, f32 multiplier)
         fmul [multiplier]
         fstp [eax+4]
     }
+}
+
+f32 __inline invertf(f32 x)
+{
+    return 1.f / x;
 }
