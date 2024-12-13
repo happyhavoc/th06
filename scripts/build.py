@@ -44,7 +44,14 @@ def main():
     )
     parser.add_argument(
         "--build-type",
-        choices=["normal", "diffbuild", "tests", "dllbuild", "objdiffbuild"],
+        choices=[
+            "normal",
+            "diffbuild",
+            "tests",
+            "dllbuild",
+            "objdiffbuild",
+            "binary_matchbuild",
+        ],
         default="normal",
     )
     parser.add_argument(
@@ -84,6 +91,8 @@ def main():
         build_type = BuildType.DLLBUILD
     elif args.build_type == "objdiffbuild":
         build_type = BuildType.OBJDIFFBUILD
+    elif args.build_type == "binary_matchbuild":
+        build_type = BuildType.BINARY_MATCHBUILD
 
     if args.object_name is not None:
         object_name = Path(args.object_name).name

@@ -87,5 +87,5 @@ struct ZunTimer
         return this->current != this->previous;
     }
 };
-C_ASSERT(sizeof(ZunTimer) == 0xc);
+ZUN_ASSERT_SIZE(ZunTimer, 0xc);
 }; // namespace th06
