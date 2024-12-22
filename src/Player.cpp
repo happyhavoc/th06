@@ -165,7 +165,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     }
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(p->bombProjectiles); idx++)
     {
-        p->bombProjectiles[idx].size.x = 0.0;
+        p->bombProjectiles[idx].sizeX = 0.0;
     }
     if (p->bombInfo.isInUse)
     {
@@ -1222,15 +1222,15 @@ i32 Player::CheckGraze(D3DXVECTOR3 *center, D3DXVECTOR3 *size)
 
     for (i = 0; i < ARRAY_SIZE_SIGNED(this->bombProjectiles); i++, bombProjectile++)
     {
-        if (bombProjectile->size.x == 0.0f)
+        if (bombProjectile->sizeX == 0.0f)
         {
             continue;
         }
 
-        bombTopLeft.x = bombProjectile->pos.x - bombProjectile->size.x / 2.0f;
-        bombTopLeft.y = bombProjectile->pos.y - bombProjectile->size.y / 2.0f;
-        bombBottomRight.x = bombProjectile->size.x / 2.0f + bombProjectile->pos.x;
-        bombBottomRight.y = bombProjectile->size.y / 2.0f + bombProjectile->pos.y;
+        bombTopLeft.x = bombProjectile->posX - bombProjectile->sizeX / 2.0f;
+        bombTopLeft.y = bombProjectile->posY - bombProjectile->sizeY / 2.0f;
+        bombBottomRight.x = bombProjectile->sizeX / 2.0f + bombProjectile->posX;
+        bombBottomRight.y = bombProjectile->sizeY / 2.0f + bombProjectile->posY;
 
         // Bomb clips bullet's hitbox, destroys bullet upon return
         if (!(bombTopLeft.x > bulletBottomRight.x || bombBottomRight.x < bulletTopLeft.x ||
@@ -1273,14 +1273,14 @@ i32 Player::CalcKillBoxCollision(D3DXVECTOR3 *bulletCenter, D3DXVECTOR3 *bulletS
     bulletBottom = bulletCenter->y + bulletSize->y / 2.0f;
     for (curBombIdx = 0; curBombIdx < ARRAY_SIZE_SIGNED(this->bombProjectiles); curBombIdx++, curBombProjectile++)
     {
-        if (curBombProjectile->size.x == 0.0f)
+        if (curBombProjectile->sizeX == 0.0f)
         {
             continue;
         }
-        bombProjectileLeft = curBombProjectile->pos.x - curBombProjectile->size.x / 2.0f;
-        bombProjectileTop = curBombProjectile->pos.y - curBombProjectile->size.y / 2.0f;
-        bombProjectileRight = curBombProjectile->pos.x + curBombProjectile->size.x / 2.0f;
-        bombProjectileBottom = curBombProjectile->pos.y + curBombProjectile->size.y / 2.0f;
+        bombProjectileLeft = curBombProjectile->posX - curBombProjectile->sizeX / 2.0f;
+        bombProjectileTop = curBombProjectile->posY - curBombProjectile->sizeY / 2.0f;
+        bombProjectileRight = curBombProjectile->posX + curBombProjectile->sizeX / 2.0f;
+        bombProjectileBottom = curBombProjectile->posY + curBombProjectile->sizeY / 2.0f;
         if (!(bombProjectileLeft > bulletRight || bombProjectileRight < bulletLeft ||
               bombProjectileTop > bulletBottom || bombProjectileBottom < bulletTop))
         {
@@ -1319,8 +1319,8 @@ i32 Player::CalcLaserHitbox(D3DXVECTOR3 *laserCenter, D3DXVECTOR3 *laserSize, D3
     playerRelativeTopLeft = laserTopLeft - this->hitboxSize;
     playerRelativeBottomRight = laserTopLeft + this->hitboxSize;
 
-    laserTopLeft = *laserCenter - *laserSize * invertf(2.0f);
-    laserBottomRight = *laserCenter + *laserSize * invertf(2.0f);
+    laserTopLeft = *laserCenter - *laserSize / 2.0f;
+    laserBottomRight = *laserCenter + *laserSize / 2.0f;
 
     if (!(playerRelativeTopLeft.x > laserBottomRight.x || playerRelativeBottomRight.x < laserTopLeft.x ||
           playerRelativeTopLeft.y > laserBottomRight.y || playerRelativeBottomRight.y < laserTopLeft.y))
@@ -1399,7 +1399,7 @@ void Player::ScoreGraze(D3DXVECTOR3 *center)
         }
     }
 
-    particlePosition = (this->positionCenter + *center) * invertf(2.0f);
+    particlePosition = (this->positionCenter + *center) / 2.0f;
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_8, &particlePosition, 1, COLOR_WHITE);
     g_GameManager.AddScore(500);
     g_GameManager.IncreaseSubrank(6);
