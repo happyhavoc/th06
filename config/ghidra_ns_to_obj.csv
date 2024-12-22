@@ -3,6 +3,7 @@ AsciiManager,th06::AsciiManager,th06::StageMenu
 BombData,th06::BombData
 BulletManager,th06::BulletManager
 Chain,th06::Chain,th06::ChainElem
+CMyFont,th06::CMyFont
 Controller,th06::Controller
 EclManager,th06::EclManager
 EffectManager,th06::EffectManager

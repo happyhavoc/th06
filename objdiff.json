@@ -59,6 +59,14 @@
             "reverse_fn_order": false
         },
         {
+            "name": "CMyFont",
+
+            "target_path": "build/objdiff/orig/CMyFont.obj",
+            "base_path": "build/objdiff/reimpl/CMyFont.obj",
+
+            "reverse_fn_order": false
+        },
+        {
             "name": "Controller",
 
             "target_path": "build/objdiff/orig/Controller.obj",

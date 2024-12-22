@@ -84,6 +84,9 @@ th06::Chain::RunDrawChain
 th06::Chain::RunCalcChain
 th06::Chain::AddToCalcChain
 th06::Chain::AddToDrawChain
+th06::CMyFont::Init
+th06::CMyFont::Print
+th06::CMyFont::Clean
 th06::GameWindow::InitD3dInterface
 th06::Controller::GetJoystickCaps
 th06::Controller::SetButtonFromControllerInputs

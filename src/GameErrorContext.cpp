@@ -1,11 +1,13 @@
 #include <windows.h>
 
+#include "CMyFont.hpp"
 #include "GameErrorContext.hpp"
 #include <stdio.h>
 
 namespace th06
 {
 DIFFABLE_STATIC(GameErrorContext, g_GameErrorContext)
+DIFFABLE_STATIC(CMyFont, g_CMyFont)
 
 const char *GameErrorContext::Log(GameErrorContext *ctx, const char *fmt, ...)
 {
