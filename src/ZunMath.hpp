@@ -91,3 +91,13 @@ f32 __inline invertf(f32 x)
 {
     return 1.f / x;
 }
+
+f32 __inline rintf(f32 float_in)
+{
+    __asm {
+        fld float_in
+        frndint
+        fstp float_in
+    }
+    return float_in;
+}

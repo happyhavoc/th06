@@ -703,16 +703,6 @@ void AnmManager::TranslateRotation(VertexTex1Xyzrwh *param_1, f32 x, f32 y, f32 
     return;
 }
 
-f32 __inline rintf(f32 float_in)
-{
-    __asm {
-        fld float_in
-        frndint
-        fstp float_in
-    }
-    return float_in;
-}
-
 #pragma var_order(spriteXCenter, spriteYCenter, yOffset, xOffset, zSine, z, zCosine)
 ZunResult AnmManager::Draw(AnmVm *vm)
 {
