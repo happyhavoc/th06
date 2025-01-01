@@ -205,14 +205,43 @@ ZunResult AnmManager::LoadTexture(i32 textureIdx, char *textureName, i32 texture
 }
 
 #pragma var_order(surfaceDesc, data, lockedRectDst, lockedRectSrc, textureSrc, dstData0, srcData0, y0, x0, dstData1,   \
-                  srcData1, x1, y1, dstData2, srcData2, x2, y2)
+                  srcData1, y1, x1, dstData2, srcData2, y2, x2)
 ZunResult AnmManager::LoadTextureAlphaChannel(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey)
 {
+    struct Argb1555Pixel
+    {
+        u16 b : 5;
+        u16 g : 5;
+        u16 r : 5;
+        u16 a : 1;
+    };
+
+    struct Argb4444Pixel
+    {
+        u16 b : 4;
+        u16 g : 4;
+        u16 r : 4;
+        u16 a : 4;
+    };
+
     IDirect3DTexture8 *textureSrc;
     D3DSURFACE_DESC surfaceDesc;
     D3DLOCKED_RECT lockedRectDst;
     D3DLOCKED_RECT lockedRectSrc;
     u8 *data;
+
+    u8 *dstData0;
+    u8 *srcData0;
+    i32 x0;
+    i32 y0;
+    Argb1555Pixel *dstData1;
+    Argb1555Pixel *srcData1;
+    i32 y1;
+    i32 x1;
+    Argb4444Pixel *dstData2;
+    Argb4444Pixel *srcData2;
+    i32 y2;
+    i32 x2;
 
     textureSrc = NULL;
     data = FileSystem::OpenPath(textureName, 0);
@@ -249,12 +278,12 @@ ZunResult AnmManager::LoadTextureAlphaChannel(i32 textureIdx, char *textureName,
     switch (surfaceDesc.Format)
     {
     case D3DFMT_A8R8G8B8:
-        for (i32 y0 = 0; y0 < surfaceDesc.Height; y0++)
+        for (y0 = 0; y0 < surfaceDesc.Height; y0++)
         {
-            u8 *dstData0 = (u8 *)lockedRectDst.pBits + y0 * lockedRectDst.Pitch;
-            u8 *srcData0 = (u8 *)lockedRectSrc.pBits + y0 * lockedRectSrc.Pitch;
+            dstData0 = (u8 *)lockedRectDst.pBits + y0 * lockedRectDst.Pitch;
+            srcData0 = (u8 *)lockedRectSrc.pBits + y0 * lockedRectSrc.Pitch;
 
-            for (i32 x0 = 0; x0 < surfaceDesc.Width; x0++, srcData0 += 4, dstData0 += 4)
+            for (x0 = 0; x0 < surfaceDesc.Width; x0++, srcData0 += 4, dstData0 += 4)
             {
                 dstData0[3] = srcData0[0];
             }
@@ -262,27 +291,28 @@ ZunResult AnmManager::LoadTextureAlphaChannel(i32 textureIdx, char *textureName,
         break;
 
     case D3DFMT_A1R5G5B5:
-        for (i32 y1 = 0; y1 < surfaceDesc.Height; y1++)
+        for (y1 = 0; y1 < surfaceDesc.Height; y1++)
         {
-            u16 *dstData1 = (u16 *)((u8 *)lockedRectDst.pBits + y1 * lockedRectDst.Pitch);
-            u16 *srcData1 = (u16 *)((u8 *)lockedRectSrc.pBits + y1 * lockedRectSrc.Pitch);
 
-            for (i32 x1 = 0; x1 < surfaceDesc.Width; x1++, srcData1++, dstData1++)
+            dstData1 = (Argb1555Pixel *)((u8 *)lockedRectDst.pBits + y1 * lockedRectDst.Pitch);
+            srcData1 = (Argb1555Pixel *)((u8 *)lockedRectSrc.pBits + y1 * lockedRectSrc.Pitch);
+
+            for (x1 = 0; x1 < surfaceDesc.Width; x1++, srcData1++, dstData1++)
             {
-                *dstData1 = (((u16)(*srcData1 & 0x1f) >> 4) & 1) << 15 | *dstData1 & ~ZUN_BIT(15);
+                dstData1->a = srcData1->b >> 4;
             }
         }
         break;
 
     case D3DFMT_A4R4G4B4:
-        for (i32 y2 = 0; y2 < surfaceDesc.Height; y2++)
+        for (y2 = 0; y2 < surfaceDesc.Height; y2++)
         {
-            u16 *dstData2 = (u16 *)((u8 *)lockedRectDst.pBits + y2 * lockedRectDst.Pitch);
-            u16 *srcData2 = (u16 *)((u8 *)lockedRectSrc.pBits + y2 * lockedRectSrc.Pitch);
+            dstData2 = (Argb4444Pixel *)((u8 *)lockedRectDst.pBits + y2 * lockedRectDst.Pitch);
+            srcData2 = (Argb4444Pixel *)((u8 *)lockedRectSrc.pBits + y2 * lockedRectSrc.Pitch);
 
-            for (i32 x2 = 0; x2 < surfaceDesc.Width; x2++, srcData2++, dstData2++)
+            for (x2 = 0; x2 < surfaceDesc.Width; x2++, srcData2++, dstData2++)
             {
-                *dstData2 = (u16)((*srcData2 & 0xf) & 0xf) << 12 | *dstData2 & ~ZUN_RANGE(12, 4);
+                dstData2->a = srcData2->b;
             }
         }
         break;
