@@ -133,6 +133,18 @@ struct MidiOutput : MidiTimer
     static u16 Ntohs(u16 val);
     static u32 SkipVariableLength(u8 **curTrackDataCursor);
 
+    static u32 Ntohl(u32 val)
+    {
+        u8 tmp[4];
+
+        tmp[0] = ((u8 *)&val)[3];
+        tmp[1] = ((u8 *)&val)[2];
+        tmp[2] = ((u8 *)&val)[1];
+        tmp[3] = ((u8 *)&val)[0];
+
+        return *(const u32 *)tmp;
+    }
+
     MIDIHDR *midiHeaders[32];
     i32 midiHeadersCursor;
     u8 *midiFileData[32];
