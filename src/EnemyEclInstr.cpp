@@ -45,8 +45,8 @@ void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
     alu = &instr->args.alu;
     angle = *GetVarFloat(enemy, &alu->arg1.f32, NULL);
 
-    enemy->moveInterp.x = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.x = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.y = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
