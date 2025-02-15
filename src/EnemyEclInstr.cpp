@@ -84,8 +84,8 @@ void MoveTime(Enemy *enemy, EclRawInstr *instr)
     alu = &instr->args.alu;
     angle = *GetVarFloat(enemy, &enemy->angle, NULL);
 
-    enemy->moveInterp.x = sinf(angle) * enemy->speed * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.x = cosf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.y = sinf(angle) * enemy->speed * alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
