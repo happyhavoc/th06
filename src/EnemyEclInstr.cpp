@@ -29,7 +29,7 @@ struct PatchouliShottypeVars
 C_ASSERT(sizeof(PatchouliShottypeVars) == 0x18);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(PatchouliShottypeVars, 2, g_PatchouliShottypeVars) = {{{{0, 3, 1}, {2, 3, 4}}},
-                                                                                   {{{1, 4, 0}, {4, 2, 4}}}};
+                                                                                   {{{1, 4, 0}, {4, 2, 3}}}};
 DIFFABLE_STATIC(i32, g_PlayerShot);
 DIFFABLE_STATIC(f32, g_PlayerDistance);
 DIFFABLE_STATIC(f32, g_PlayerAngle);
