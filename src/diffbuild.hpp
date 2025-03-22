@@ -61,3 +61,9 @@
 #define DIFFABLE_STATIC_ASSIGN(type, name) type name
 #define DIFFABLE_STATIC_ARRAY_ASSIGN(type, size, name) type name[size]
 #endif
+
+#if defined(BINARYMATCHBUILD) || defined(DIFFBUILD) || defined(DLLBUILD)
+#define ZUN_ASSERT_SIZE(type, size) C_ASSERT(sizeof(type) == size);
+#else
+#define ZUN_ASSERT_SIZE(type, size) C_ASSERT(true);
+#endif

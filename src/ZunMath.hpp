@@ -1,4 +1,5 @@
 #pragma once
+#include "diffbuild.hpp"
 #include "inttypes.hpp"
 #include <Windows.h>
 #include <d3dx8math.h>
@@ -23,7 +24,7 @@ struct ZunVec2
         return (D3DXVECTOR2 *)this;
     }
 };
-C_ASSERT(sizeof(ZunVec2) == 0x8);
+ZUN_ASSERT_SIZE(ZunVec2, 0x8);
 
 struct ZunVec3
 {
@@ -45,7 +46,7 @@ struct ZunVec3
         bottomRightCorner->y = size->y / 2.0f + centerPosition->y;
     }
 };
-C_ASSERT(sizeof(ZunVec3) == 0xC);
+ZUN_ASSERT_SIZE(ZunVec3, 0xC);
 
 #define ZUN_MIN(x, y) ((x) > (y) ? (y) : (x))
 #define ZUN_PI ((f32)(3.14159265358979323846))

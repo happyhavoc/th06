@@ -22,7 +22,7 @@ struct MidiTimer
     u32 timerId;
     TIMECAPS timeCaps;
 };
-C_ASSERT(sizeof(MidiTimer) == 0x10);
+ZUN_ASSERT_SIZE(MidiTimer, 0x10);
 
 enum MidiOpcode
 {
@@ -77,7 +77,7 @@ struct MidiTrack
     u8 *startTrackDataMaybe;
     u32 unk1c;
 };
-C_ASSERT(sizeof(MidiTrack) == 0x20);
+ZUN_ASSERT_SIZE(MidiTrack, 0x20);
 
 struct MidiDevice
 {
@@ -92,7 +92,7 @@ struct MidiDevice
     HMIDIOUT handle;
     u32 deviceId;
 };
-C_ASSERT(sizeof(MidiDevice) == 0x8);
+ZUN_ASSERT_SIZE(MidiDevice, 0x8);
 
 struct MidiChannel
 {
@@ -173,5 +173,5 @@ struct MidiOutput : MidiTimer
     ULONGLONG unk2f0;
     ULONGLONG unk2f8;
 };
-C_ASSERT(sizeof(MidiOutput) == 0x300);
+ZUN_ASSERT_SIZE(MidiOutput, 0x300);
 }; // namespace th06

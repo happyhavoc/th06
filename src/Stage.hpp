@@ -22,7 +22,7 @@ struct RawStageHeader
     char songNames[4][128];
     char songPaths[4][128];
 };
-C_ASSERT(sizeof(RawStageHeader) == 0x490);
+ZUN_ASSERT_SIZE(RawStageHeader, 0x490);
 
 struct RawStageQuadBasic
 {
@@ -33,7 +33,7 @@ struct RawStageQuadBasic
     D3DXVECTOR3 position;
     D3DXVECTOR2 size;
 };
-C_ASSERT(sizeof(RawStageQuadBasic) == 0x1c);
+ZUN_ASSERT_SIZE(RawStageQuadBasic, 0x1c);
 
 struct RawStageObject
 {
@@ -44,7 +44,7 @@ struct RawStageObject
     D3DXVECTOR3 size;
     RawStageQuadBasic firstQuad;
 };
-C_ASSERT(sizeof(RawStageObject) == 0x38);
+ZUN_ASSERT_SIZE(RawStageObject, 0x38);
 
 struct RawStageObjectInstance
 {
@@ -52,7 +52,7 @@ struct RawStageObjectInstance
     i16 unk2;
     D3DXVECTOR3 position;
 };
-C_ASSERT(sizeof(RawStageObjectInstance) == 0x10);
+ZUN_ASSERT_SIZE(RawStageObjectInstance, 0x10);
 
 struct RawStageInstr
 {
@@ -61,7 +61,7 @@ struct RawStageInstr
     i16 size;
     i32 args[3];
 };
-C_ASSERT(sizeof(RawStageInstr) == 0x14);
+ZUN_ASSERT_SIZE(RawStageInstr, 0x14);
 
 struct StageCameraSky
 {
@@ -69,7 +69,7 @@ struct StageCameraSky
     f32 farPlane;
     D3DCOLOR color;
 };
-C_ASSERT(sizeof(StageCameraSky) == 0xc);
+ZUN_ASSERT_SIZE(StageCameraSky, 0xc);
 
 enum SpellcardState
 {
@@ -83,7 +83,7 @@ struct StageFile
     char *anmFile;
     char *stdFile;
 };
-C_ASSERT(sizeof(StageFile) == 0x8);
+ZUN_ASSERT_SIZE(StageFile, 0x8);
 
 enum StageOpcode
 {
@@ -142,7 +142,7 @@ struct Stage
     D3DXVECTOR3 positionInterpInitial;
     i32 positionInterpStartTime;
 };
-C_ASSERT(sizeof(Stage) == 0x2f4);
+ZUN_ASSERT_SIZE(Stage, 0x2f4);
 
 DIFFABLE_EXTERN(Stage, g_Stage)
 }; // namespace th06

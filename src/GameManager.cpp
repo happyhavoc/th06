@@ -56,7 +56,7 @@ struct DifficultyInfo
     u32 minRank;
     u32 maxRank;
 };
-C_ASSERT(sizeof(DifficultyInfo) == 0xc);
+ZUN_ASSERT_SIZE(DifficultyInfo, 0xc);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfoForReplay) = {
     // rank, minRank, maxRank

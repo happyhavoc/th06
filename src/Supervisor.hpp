@@ -188,7 +188,7 @@ struct Supervisor
     u32 startupTimeBeforeMenuMusic;
     D3DCAPS8 d3dCaps;
 };
-C_ASSERT(sizeof(Supervisor) == 0x4d8);
+ZUN_ASSERT_SIZE(Supervisor, 0x4d8);
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
 DIFFABLE_EXTERN(Supervisor, g_Supervisor)
