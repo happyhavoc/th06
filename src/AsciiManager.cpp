@@ -699,7 +699,7 @@ i32 StageMenu::OnUpdateRetryMenu()
         this->menuSprites[RETRY_MENU_SPRITE_NO].scaleX = 1.5f;
         this->menuSprites[RETRY_MENU_SPRITE_YES].posOffset = D3DXVECTOR3(-4.0f, -4.0f, 0.0f);
         this->menuSprites[RETRY_MENU_SPRITE_NO].posOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-        if (3 < this->numFrames)
+        if (4 <= this->numFrames)
         {
             if (WAS_PRESSED(TH_BUTTON_UP) || WAS_PRESSED(TH_BUTTON_DOWN))
             {
