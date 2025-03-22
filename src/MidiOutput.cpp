@@ -6,6 +6,7 @@
 #include "FileSystem.hpp"
 #include "MidiOutput.hpp"
 #include "Supervisor.hpp"
+#include "ZunMemory.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -222,30 +223,16 @@ void MidiOutput::ClearTracks()
     this->numTracks = 0;
 }
 
-inline u32 InlineNtohl(u32 val, u8 *tmp)
-{
-    tmp[0] = ((u8 *)&val)[3];
-    tmp[1] = ((u8 *)&val)[2];
-    tmp[2] = ((u8 *)&val)[1];
-    tmp[3] = ((u8 *)&val)[0];
-
-    return *(const u32 *)tmp;
-}
-
 #pragma var_order(trackIdx, currentCursor, currentCursorTrack, fileData, hdrLength, hdrRaw, trackLength,               \
-                  endOfHeaderPointer, tmpHdrLength, trackArraySize, tmpTrackLength, trackLengthRaw)
+                  endOfHeaderPointer)
 ZunResult MidiOutput::ParseFile(i32 fileIdx)
 {
-    u8 trackLengthRaw[4];
     u8 hdrRaw[8];
     u32 trackLength;
     u8 *currentCursor, *currentCursorTrack, *endOfHeaderPointer;
     i32 trackIdx;
     u8 *fileData;
     u32 hdrLength;
-    size_t trackArraySize;
-    u8 tmpHdrLength[4];
-    u8 tmpTrackLength[4];
 
     this->ClearTracks();
     currentCursor = this->midiFileData[fileIdx];
@@ -262,7 +249,7 @@ ZunResult MidiOutput::ParseFile(i32 fileIdx)
 
     // Get a pointer to the end of the header chunk
     currentCursor += sizeof(hdrRaw);
-    hdrLength = InlineNtohl(*(u32 *)(&hdrRaw[4]), tmpHdrLength);
+    hdrLength = MidiOutput::Ntohl(*(u32 *)(hdrRaw + 4));
 
     endOfHeaderPointer = currentCursor;
     currentCursor += hdrLength;
@@ -282,8 +269,7 @@ ZunResult MidiOutput::ParseFile(i32 fileIdx)
     this->numTracks = MidiOutput::Ntohs(*(u16 *)(endOfHeaderPointer + 2));
 
     // Allocate this->divisions * 32 bytes.
-    trackArraySize = sizeof(MidiTrack) * this->numTracks;
-    this->tracks = (MidiTrack *)malloc(trackArraySize);
+    this->tracks = (MidiTrack *)ZunMemory::Alloc(sizeof(MidiTrack) * this->numTracks);
     memset(this->tracks, 0, sizeof(MidiTrack) * this->numTracks);
     for (trackIdx = 0; trackIdx < this->numTracks; trackIdx += 1)
     {
@@ -293,10 +279,9 @@ ZunResult MidiOutput::ParseFile(i32 fileIdx)
         // Read a track (MTrk) chunk.
         //
         // First, read the length of the chunk
-        memcpy(trackLengthRaw, currentCursorTrack + 4, 4);
-        trackLength = InlineNtohl(*(u32 *)trackLengthRaw, tmpTrackLength);
+        trackLength = MidiOutput::Ntohl(*(u32 *)(currentCursorTrack + 4));
         this->tracks[trackIdx].trackLength = trackLength;
-        this->tracks[trackIdx].trackData = (u8 *)malloc(trackLength);
+        this->tracks[trackIdx].trackData = (u8 *)ZunMemory::Alloc(trackLength);
         this->tracks[trackIdx].trackPlaying = 1;
         memcpy(this->tracks[trackIdx].trackData, currentCursor, trackLength);
         currentCursor += trackLength;
