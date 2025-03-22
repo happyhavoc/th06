@@ -47,7 +47,7 @@ jobs:
     - name: Export ghidra
       run: |
         echo "$GHIDRA_SSH_AUTH" > ssh_key
-        python scripts/export_ghidra_database.py --user-mappings config/ghidra-user-maps.toml --username github-action --ssh-key ssh_key --program th06_102h.exe 'ghidra://roblab.la/Touhou 06' th06-re ${{ matrix.type }}
+        python scripts/export_ghidra_database.py --user-mappings config/ghidra-user-maps.toml --username github-action --ssh-key ssh_key --program 'th06_102h.exe' 'ghidra://roblab.la/Touhou/Touhou 06 - The Embodiment of Scarlet Devil/' th06-re ${{ matrix.type }}
         rm ssh_key
       env: # Or as an environment variable
         GHIDRA_SSH_AUTH: ${{ secrets.GHIDRA_SSH_AUTH }}
