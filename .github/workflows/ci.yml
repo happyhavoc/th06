@@ -54,7 +54,7 @@ jobs:
         fail-on-cache-miss: true
     - name: Build binary
       run: python scripts/build.py -j0
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: th06e
         path: |
@@ -81,7 +81,7 @@ jobs:
         fail-on-cache-miss: true
     - name: Build binary
       run: python scripts/build.py -j0 --build-type objdiffbuild
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: th06e-diff
         path: |
@@ -109,7 +109,7 @@ jobs:
         fail-on-cache-miss: true
     - name: Build binary
       run: python scripts/build.py -j0 --build-type dllbuild
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: th06e-dll
         path: |
