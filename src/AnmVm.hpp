@@ -25,7 +25,7 @@ struct AnmLoadedSprite
     f32 widthPx;
     i32 spriteId;
 };
-C_ASSERT(sizeof(AnmLoadedSprite) == 0x38);
+ZUN_ASSERT_SIZE(AnmLoadedSprite, 0x38);
 
 #define AnmOpcode_Exit 0
 #define AnmOpcode_SetActiveSprite 1
@@ -206,5 +206,5 @@ struct AnmVm
     u8 fontHeight;
     // Two final padding bytes
 };
-C_ASSERT(sizeof(AnmVm) == 0x110);
+ZUN_ASSERT_SIZE(AnmVm, 0x110);
 }; // namespace th06

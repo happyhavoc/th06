@@ -26,7 +26,7 @@ struct PatchouliShottypeVars
         i32 var3;
     } shotVars[2];
 };
-C_ASSERT(sizeof(PatchouliShottypeVars) == 0x18);
+ZUN_ASSERT_SIZE(PatchouliShottypeVars, 0x18);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(PatchouliShottypeVars, 2, g_PatchouliShottypeVars) = {{{{0, 3, 1}, {2, 3, 4}}},
                                                                                    {{{1, 4, 0}, {4, 2, 4}}}};

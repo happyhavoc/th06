@@ -34,12 +34,12 @@ struct Effect
     i8 unk_17a;
     i8 unk_17b;
 };
-C_ASSERT(sizeof(Effect) == 0x17c);
+ZUN_ASSERT_SIZE(Effect, 0x17c);
 
 struct EffectInfo
 {
     i32 anmIdx;
     EffectUpdateCallback updateCallback;
 };
-C_ASSERT(sizeof(EffectInfo) == 0x8);
+ZUN_ASSERT_SIZE(EffectInfo, 0x8);
 }; // namespace th06

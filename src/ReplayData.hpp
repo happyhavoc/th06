@@ -24,7 +24,7 @@ struct StageReplayData
     i8 padding[3];
     ReplayDataInput replayInputs[53998];
 };
-C_ASSERT(sizeof(StageReplayData) == 0x69780);
+ZUN_ASSERT_SIZE(StageReplayData, 0x69780);
 
 struct ReplayData
 {
@@ -45,5 +45,5 @@ struct ReplayData
     f32 slowdownRate3;
     StageReplayData *stageReplayData[7];
 };
-C_ASSERT(sizeof(ReplayData) == 0x50);
+ZUN_ASSERT_SIZE(ReplayData, 0x50);
 }; // namespace th06

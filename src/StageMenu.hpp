@@ -23,5 +23,5 @@ struct StageMenu
     AnmVm menuSprites[6];
     AnmVm menuBackground;
 };
-C_ASSERT(sizeof(StageMenu) == 0x778);
+ZUN_ASSERT_SIZE(StageMenu, 0x778);
 }; // namespace th06

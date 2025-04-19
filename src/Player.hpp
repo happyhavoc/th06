@@ -79,7 +79,7 @@ struct PlayerRect
     f32 sizeX;
     f32 sizeY;
 };
-C_ASSERT(sizeof(PlayerRect) == 0x10);
+ZUN_ASSERT_SIZE(PlayerRect, 0x10);
 
 struct PlayerBullet
 {
@@ -108,7 +108,7 @@ struct PlayerBullet
         this->sprite.pos.y = *position;
     }
 };
-C_ASSERT(sizeof(PlayerBullet) == 0x158);
+ZUN_ASSERT_SIZE(PlayerBullet, 0x158);
 
 struct PlayerBombInfo
 {
@@ -123,7 +123,7 @@ struct PlayerBombInfo
     D3DXVECTOR3 bombRegionVelocities[8];
     AnmVm sprites[8][4];
 };
-C_ASSERT(sizeof(PlayerBombInfo) == 0x231c);
+ZUN_ASSERT_SIZE(PlayerBombInfo, 0x231c);
 
 typedef i32 FireBulletResult;
 #define FBR_STOP_SPAWNING (-2)
@@ -139,7 +139,7 @@ struct CharacterData
     FireBulletCallback fireBulletCallback;
     FireBulletCallback fireBulletFocusCallback;
 };
-C_ASSERT(sizeof(CharacterData) == 0x18);
+ZUN_ASSERT_SIZE(CharacterData, 0x18);
 
 struct CharacterPowerBulletData
 {
@@ -155,7 +155,7 @@ struct CharacterPowerBulletData
     i16 anmFileIdx;
     i16 bulletSoundIdx;
 };
-C_ASSERT(sizeof(CharacterPowerBulletData) == 0x24);
+ZUN_ASSERT_SIZE(CharacterPowerBulletData, 0x24);
 
 struct CharacterPowerData
 {
@@ -163,7 +163,7 @@ struct CharacterPowerData
     i32 power;
     CharacterPowerBulletData *bullets;
 };
-C_ASSERT(sizeof(CharacterPowerData) == 0xc);
+ZUN_ASSERT_SIZE(CharacterPowerData, 0xc);
 
 struct Player
 {
@@ -258,7 +258,7 @@ struct Player
         sprite->pos.z = 0.0;
     };
 };
-C_ASSERT(sizeof(Player) == 0x98f0);
+ZUN_ASSERT_SIZE(Player, 0x98f0);
 
 DIFFABLE_EXTERN(Player, g_Player);
 }; // namespace th06

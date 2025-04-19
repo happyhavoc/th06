@@ -24,5 +24,5 @@ class Pbg3Parser : public IPbg3Parser, public FileAbstraction
 
     ~Pbg3Parser();
 };
-C_ASSERT(sizeof(Pbg3Parser) == 0x24);
+ZUN_ASSERT_SIZE(Pbg3Parser, 0x24);
 }; // namespace th06

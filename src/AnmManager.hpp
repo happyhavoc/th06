@@ -77,14 +77,14 @@ struct AnmRawEntry
     u32 spriteOffsets[10];
     AnmRawScript scripts[10];
 };
-C_ASSERT(sizeof(AnmRawEntry) == 0xb8);
+ZUN_ASSERT_SIZE(AnmRawEntry, 0xb8);
 
 struct RenderVertexInfo
 {
     D3DXVECTOR3 position;
     D3DXVECTOR2 textureUV;
 };
-C_ASSERT(sizeof(RenderVertexInfo) == 0x14);
+ZUN_ASSERT_SIZE(RenderVertexInfo, 0x14);
 
 struct AnmManager
 {
@@ -215,7 +215,7 @@ struct AnmManager
     i32 screenshotWidth;
     i32 screenshotHeight;
 };
-C_ASSERT(sizeof(AnmManager) == 0x2112c);
+ZUN_ASSERT_SIZE(AnmManager, 0x2112c);
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
 DIFFABLE_EXTERN(D3DFORMAT, g_TextureFormatD3D8Mapping[6]);
