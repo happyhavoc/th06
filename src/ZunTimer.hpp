@@ -45,7 +45,12 @@ struct ZunTimer
     void Initialize();
     void Increment(i32 value);
     void Decrement(i32 value);
-    i32 NextTick();
+
+    i32 ZunTimer::NextTick()
+    {
+        this->Tick();
+        return this->current;
+    }
 
     void IncrementInline(i32 value)
     {

@@ -123,7 +123,6 @@ def configure(build_type):
             "MainMenu",
             "zwave",
             "BulletData",
-            "ZunTimer",
         ]
 
         small_codegen_sources = set(

@@ -30,9 +30,8 @@ Rng,th06::Rng
 ScreenEffect,th06::ScreenEffect
 SoundPlayer,th06::SoundPlayer
 Stage,th06::Stage,th06::AnmManager::ExecuteAnmIdx
-Supervisor,th06::Supervisor
+Supervisor,th06::Supervisor,th06::ZunTimer
 TextHelper,th06::TextHelper
 utils,th06::utils
-ZunTimer,th06::ZunTimer
 zwave,th06::CSound,th06::CSoundManager,th06::CStreamingSound,th06::CWaveFile
 main,WinMain
