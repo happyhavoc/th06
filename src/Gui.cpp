@@ -20,36 +20,27 @@ DIFFABLE_STATIC(Gui, g_Gui);
 DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
 
-#pragma optimize("s", on)
 ZunBool Gui::IsStageFinished()
 {
     return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::EndPlayerSpellcard()
 {
     (this->impl->bombSpellcardName).pendingInterrupt = 1;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::EndEnemySpellcard()
 {
     this->impl->enemySpellcardName.pendingInterrupt = 1;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunBool Gui::IsDialogueSkippable()
 {
     return (this->impl->msg).dialogueSkippable;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowBonusScore(u32 bonusScore)
 {
     this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 32.0f, 0.0f);
@@ -58,9 +49,7 @@ void Gui::ShowBonusScore(u32 bonusScore)
     this->impl->bonusScore.fmtArg = bonusScore;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowFullPowerMode(i32 fmtArg)
 {
     this->impl->fullPowerMode.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
@@ -69,9 +58,7 @@ void Gui::ShowFullPowerMode(i32 fmtArg)
     this->impl->fullPowerMode.fmtArg = fmtArg;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowSpellcardBonus(u32 spellcardScore)
 {
     this->impl->spellCardBonus.pos = D3DXVECTOR3(224.0f, 16.0f, 0.0f);
@@ -80,9 +67,7 @@ void Gui::ShowSpellcardBonus(u32 spellcardScore)
     this->impl->spellCardBonus.fmtArg = spellcardScore;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ChainCallbackResult Gui::OnUpdate(Gui *gui)
 {
     if (g_GameManager.isTimeStopped)
@@ -93,9 +78,7 @@ ChainCallbackResult Gui::OnUpdate(Gui *gui)
     gui->impl->RunMsg();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ChainCallbackResult Gui::OnDraw(Gui *gui)
 {
     char spellCardBonusStr[32];
@@ -232,9 +215,7 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
     g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
 {
     g_AnmManager->SetAndExecuteScriptIdx(&this->impl->playerSpellcardPortrait, 0x4a1);
@@ -245,9 +226,7 @@ void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
     g_Supervisor.unk198 = 3;
     g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
 {
     g_AnmManager->SetAndExecuteScriptIdx(&this->impl->enemySpellcardPortrait, ANM_SCRIPT_FACE_ENEMY_SPELLCARD_PORTRAIT);
@@ -259,9 +238,7 @@ void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
     g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::ActualAddedCallback()
 {
     i32 idx;
@@ -476,9 +453,7 @@ ZunResult Gui::ActualAddedCallback()
     this->flags.flag2 = 2;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::LoadMsg(char *path)
 {
     i32 idx;
@@ -499,9 +474,7 @@ ZunResult Gui::LoadMsg(char *path)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::FreeMsgFile()
 {
     MsgRawHeader *msg;
@@ -512,18 +485,14 @@ void Gui::FreeMsgFile()
         (this->impl->msg).msgFile = NULL;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::MsgRead(i32 msgIdx)
 {
     this->impl->MsgRead(msgIdx);
     g_Supervisor.unk198 = 3;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void GuiImpl::MsgRead(i32 msgIdx)
 {
     MsgRawHeader *msgFile;
@@ -556,9 +525,7 @@ void GuiImpl::MsgRead(i32 msgIdx)
     }
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult GuiImpl::RunMsg()
 {
     MsgRawInstrArgs *args;
@@ -731,10 +698,8 @@ SKIP_TIME_INCREMENT:
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
 #pragma var_order(dialogueBoxHeight, vertices)
-#pragma optimize("s", on)
 ZunResult GuiImpl::DrawDialogue()
 {
     f32 dialogueBoxHeight;
@@ -819,9 +784,7 @@ ZunResult GuiImpl::DrawDialogue()
     g_AnmManager->DrawNoRotation(&this->msg.introLines[1]);
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 BOOL Gui::MsgWait()
 {
     if (this->impl->msg.ignoreWaitCounter > 0)
@@ -830,16 +793,12 @@ BOOL Gui::MsgWait()
     }
     return 0 <= this->impl->msg.currentMsgIdx;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 BOOL Gui::HasCurrentMsgIdx()
 {
     return 0 <= this->impl->msg.currentMsgIdx;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(idx, stageScore)
 void Gui::UpdateStageElements()
 {
@@ -1022,7 +981,6 @@ void Gui::UpdateStageElements()
     }
     return;
 }
-#pragma optimize("", on)
 
 static ZunColor COLOR1 = 0xa0d0ff;
 static ZunColor COLOR2 = 0xa080ff;
@@ -1030,7 +988,6 @@ static ZunColor COLOR3 = 0xe080c0;
 static ZunColor COLOR4 = 0xff4040;
 
 #pragma var_order(yPos, xPos, idx, vm)
-#pragma optimize("s", on)
 void Gui::DrawGameScene()
 {
     AnmVm *vm;
@@ -1285,9 +1242,7 @@ void Gui::DrawGameScene()
     }
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(stageTextPos, stageTextColor, demoTextColor)
 void Gui::DrawStageElements()
 {
@@ -1380,7 +1335,6 @@ void Gui::DrawStageElements()
         g_AnmManager->DrawNoRotation(&this->impl->loadingScreenSprite);
     }
 }
-#pragma optimize("", on)
 
 #pragma optimize("s", on)
 ZunResult Gui::AddedCallback(Gui *gui)
@@ -1389,7 +1343,6 @@ ZunResult Gui::AddedCallback(Gui *gui)
 }
 #pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::DeletedCallback(Gui *gui)
 {
     g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_A);
@@ -1408,9 +1361,7 @@ ZunResult Gui::DeletedCallback(Gui *gui)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::RegisterChain()
 {
     Gui *gui = &g_Gui;
@@ -1436,13 +1387,10 @@ ZunResult Gui::RegisterChain()
     g_Chain.AddToDrawChain(&g_GuiDrawChain, TH_CHAIN_PRIO_DRAW_GUI);
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 GuiImpl::GuiImpl() {
 
 };
-#pragma optimize("", on)
 
 #pragma optimize("s", on)
 void Gui::CutChain()
