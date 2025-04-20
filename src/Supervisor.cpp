@@ -33,169 +33,6 @@ DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
 DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
 
 #pragma optimize("s", on)
-#pragma var_order(data, wavFile, wavFile2)
-ZunResult Supervisor::LoadConfig(char *path)
-{
-    GameConfiguration *data;
-    FILE *wavFile;
-    FILE *wavFile2;
-
-    memset(&g_Supervisor.cfg, 0, sizeof(GameConfiguration));
-    g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
-    data = (GameConfiguration *)FileSystem::OpenPath(path, 1);
-    if (data == NULL)
-    {
-        g_Supervisor.cfg.lifeCount = 2;
-        g_Supervisor.cfg.bombCount = 3;
-        g_Supervisor.cfg.colorMode16bit = 0xff;
-        g_Supervisor.cfg.version = GAME_VERSION;
-        g_Supervisor.cfg.padXAxis = 600;
-        g_Supervisor.cfg.padYAxis = 600;
-        wavFile = fopen("bgm/th06_01.wav", "rb");
-        if (wavFile != NULL)
-        {
-            g_Supervisor.cfg.musicMode = WAV;
-            fclose(wavFile);
-        }
-        else
-        {
-            g_Supervisor.cfg.musicMode = MIDI;
-            utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
-        }
-        g_Supervisor.cfg.playSounds = 1;
-        g_Supervisor.cfg.defaultDifficulty = 1;
-        g_Supervisor.cfg.windowed = false;
-        g_Supervisor.cfg.frameskipConfig = 0;
-        g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CONFIG_NOT_FOUND);
-    }
-    else
-    {
-        g_Supervisor.cfg = *data;
-        if ((g_Supervisor.cfg.lifeCount >= 5) || (g_Supervisor.cfg.bombCount >= 4) ||
-            (g_Supervisor.cfg.colorMode16bit >= 2) || (g_Supervisor.cfg.musicMode >= 3) ||
-            (g_Supervisor.cfg.defaultDifficulty >= 5) || (g_Supervisor.cfg.playSounds >= 2) ||
-            (g_Supervisor.cfg.windowed >= 2) || (g_Supervisor.cfg.frameskipConfig >= 3) ||
-            (g_Supervisor.cfg.version != GAME_VERSION) || (g_LastFileSize != 0x38))
-        {
-            g_Supervisor.cfg.lifeCount = 2;
-            g_Supervisor.cfg.bombCount = 3;
-            g_Supervisor.cfg.colorMode16bit = 0xff;
-            g_Supervisor.cfg.version = GAME_VERSION;
-            g_Supervisor.cfg.padXAxis = 600;
-            g_Supervisor.cfg.padYAxis = 600;
-            wavFile2 = fopen("bgm/th06_01.wav", "rb");
-            if (wavFile2 != NULL)
-            {
-                g_Supervisor.cfg.musicMode = WAV;
-                fclose(wavFile2);
-            }
-            else
-            {
-                g_Supervisor.cfg.musicMode = MIDI;
-                utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
-            }
-            g_Supervisor.cfg.playSounds = 1;
-            g_Supervisor.cfg.defaultDifficulty = 1;
-            g_Supervisor.cfg.windowed = false;
-            g_Supervisor.cfg.frameskipConfig = 0;
-            g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
-            memset(&g_Supervisor.cfg.opts, 0, sizeof(GameConfigOptsShifts));
-            g_Supervisor.cfg.opts |= (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
-            GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CONFIG_CORRUPTED);
-        }
-        g_ControllerMapping = g_Supervisor.cfg.controllerMapping;
-        free(data);
-    }
-    if (((this->cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_VERTEX_BUFFER);
-    }
-    if (((this->cfg.opts >> GCOS_DONT_USE_FOG) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_FOG);
-    }
-    if (((this->cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_USE_16BIT_TEXTURES);
-    }
-    if (this->IsUnknown())
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_BACKBUFFER_CLEAR);
-    }
-    if (((this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DONT_RENDER_ITEMS);
-    }
-    if (((this->cfg.opts >> GCOS_SUPPRESS_USE_OF_GOROUD_SHADING) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_GOURAUD_SHADING);
-    }
-    if (((this->cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_DEPTH_TESTING);
-    }
-    if (((this->cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_60FPS_MODE);
-        this->vsyncEnabled = 0;
-    }
-    if (((this->cfg.opts >> GCOS_NO_COLOR_COMP) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_TEXTURE_COLOR_COMPOSITING);
-    }
-    if (((this->cfg.opts >> GCOS_NO_COLOR_COMP) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_LAUNCH_WINDOWED);
-    }
-    if (((this->cfg.opts >> GCOS_REFERENCE_RASTERIZER_MODE) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_REFERENCE_RASTERIZER);
-    }
-    if (((this->cfg.opts >> GCOS_NO_DIRECTINPUT_PAD) & 1) != 0)
-    {
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DO_NOT_USE_DIRECTINPUT);
-    }
-    if (FileSystem::WriteDataToFile(path, &g_Supervisor.cfg, sizeof(GameConfiguration)) != 0)
-    {
-        GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FILE_CANNOT_BE_EXPORTED, path);
-        GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL);
-        return ZUN_ERROR;
-    }
-
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-#pragma var_order(chain, supervisor)
-ZunResult Supervisor::RegisterChain()
-{
-    ChainElem *chain;
-    Supervisor *supervisor = &g_Supervisor;
-
-    supervisor->wantedState = 0;
-    supervisor->curState = -1;
-    supervisor->calcCount = 0;
-
-    chain = g_Chain.CreateElem((ChainCallback)Supervisor::OnUpdate);
-    chain->arg = supervisor;
-    chain->addedCallback = (ChainAddedCallback)Supervisor::AddedCallback;
-    chain->deletedCallback = (ChainDeletedCallback)Supervisor::DeletedCallback;
-    if (g_Chain.AddToCalcChain(chain, TH_CHAIN_PRIO_CALC_SUPERVISOR) != 0)
-    {
-        return ZUN_ERROR;
-    }
-
-    chain = g_Chain.CreateElem((ChainCallback)Supervisor::OnDraw);
-    chain->arg = supervisor;
-    g_Chain.AddToDrawChain(chain, TH_CHAIN_PRIO_DRAW_SUPERVISOR);
-
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {
 
@@ -414,6 +251,60 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+#pragma var_order(diprange, pvRefBackup)
+BOOL CALLBACK Supervisor::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
+{
+    LPVOID pvRefBackup;
+    DIPROPRANGE diprange;
+    pvRefBackup = pvRef;
+
+    if (lpddoi->dwType & DIDFT_AXIS)
+    {
+        diprange.diph.dwSize = sizeof(diprange);
+        diprange.diph.dwHeaderSize = sizeof(diprange.diph);
+        diprange.diph.dwHow = DIPH_BYID;
+        diprange.diph.dwObj = lpddoi->dwType;
+        diprange.lMin = -1000;
+        diprange.lMax = 1000;
+
+        if (g_Supervisor.controller->SetProperty(DIPROP_RANGE, &diprange.diph) < 0)
+        {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+#pragma var_order(chain, supervisor)
+ZunResult Supervisor::RegisterChain()
+{
+    ChainElem *chain;
+    Supervisor *supervisor = &g_Supervisor;
+
+    supervisor->wantedState = 0;
+    supervisor->curState = -1;
+    supervisor->calcCount = 0;
+
+    chain = g_Chain.CreateElem((ChainCallback)Supervisor::OnUpdate);
+    chain->arg = supervisor;
+    chain->addedCallback = (ChainAddedCallback)Supervisor::AddedCallback;
+    chain->deletedCallback = (ChainDeletedCallback)Supervisor::DeletedCallback;
+    if (g_Chain.AddToCalcChain(chain, TH_CHAIN_PRIO_CALC_SUPERVISOR) != 0)
+    {
+        return ZUN_ERROR;
+    }
+
+    chain = g_Chain.CreateElem((ChainCallback)Supervisor::OnDraw);
+    chain->arg = supervisor;
+    g_Chain.AddToDrawChain(chain, TH_CHAIN_PRIO_DRAW_SUPERVISOR);
+
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 #pragma var_order(i)
 ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
@@ -467,6 +358,111 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
         return ZUN_ERROR;
 
     return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
+{
+    HINSTANCE hInst;
+
+    hInst = (HINSTANCE)GetWindowLongA(supervisor->hwndGameWindow, GWL_HINSTANCE);
+    if (supervisor->cfg.opts >> GCOS_NO_DIRECTINPUT_PAD & 1)
+    {
+        return ZUN_ERROR;
+    }
+
+    if (DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8A, (LPVOID *)&supervisor->dinputIface, NULL) <
+        0)
+    {
+        supervisor->dinputIface = NULL;
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    if (supervisor->dinputIface->CreateDevice(GUID_SysKeyboard, &supervisor->keyboard, NULL) < 0)
+    {
+        if (supervisor->dinputIface)
+        {
+            supervisor->dinputIface->Release();
+            supervisor->dinputIface = NULL;
+        }
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    if (supervisor->keyboard->SetDataFormat(&c_dfDIKeyboard) < 0)
+    {
+        if (supervisor->keyboard)
+        {
+            supervisor->keyboard->Release();
+            supervisor->keyboard = NULL;
+        }
+
+        if (supervisor->dinputIface)
+        {
+            supervisor->dinputIface->Release();
+            supervisor->dinputIface = NULL;
+        }
+
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    if (supervisor->keyboard->SetCooperativeLevel(supervisor->hwndGameWindow,
+                                                  DISCL_NONEXCLUSIVE | DISCL_FOREGROUND | DISCL_NOWINKEY) < 0)
+    {
+        if (supervisor->keyboard)
+        {
+            supervisor->keyboard->Release();
+            supervisor->keyboard = NULL;
+        }
+
+        if (supervisor->dinputIface)
+        {
+            supervisor->dinputIface->Release();
+            supervisor->dinputIface = NULL;
+        }
+
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE);
+        return ZUN_ERROR;
+    }
+
+    supervisor->keyboard->Acquire();
+    GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
+
+    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Supervisor::EnumGameControllersCb, NULL,
+                                         DIEDFL_ATTACHEDONLY);
+    if (supervisor->controller)
+    {
+        supervisor->controller->SetDataFormat(&c_dfDIJoystick2);
+        supervisor->controller->SetCooperativeLevel(supervisor->hwndGameWindow, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+
+        g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
+
+        supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
+        supervisor->controller->EnumObjects(Supervisor::ControllerCallback, NULL, DIDFT_ALL);
+
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_PAD_FOUND);
+    }
+    return ZUN_SUCCESS;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
+{
+    HRESULT result;
+
+    if (!g_Supervisor.controller)
+    {
+        result = g_Supervisor.dinputIface->CreateDevice(pdidInstance->guidInstance, &g_Supervisor.controller, NULL);
+        if (result < 0)
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
 }
 #pragma optimize("", on)
 
@@ -568,6 +564,25 @@ void Supervisor::DrawFpsCounter()
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
+void Supervisor::TickTimer(i32 *frames, f32 *subframes)
+{
+    if (this->framerateMultiplier <= 0.99f)
+    {
+        *subframes = *subframes + this->effectiveFramerateMultiplier;
+        if (*subframes >= 1.0f)
+        {
+            *frames = *frames + 1;
+            *subframes = *subframes - 1.0f;
+        }
+    }
+    else
+    {
+        *frames = *frames + 1;
+    }
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
 void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL)
@@ -627,152 +642,137 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 #pragma optimize("", on)
 
 #pragma optimize("s", on)
-ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
+#pragma var_order(data, wavFile, wavFile2)
+ZunResult Supervisor::LoadConfig(char *path)
 {
-    HINSTANCE hInst;
+    GameConfiguration *data;
+    FILE *wavFile;
+    FILE *wavFile2;
 
-    hInst = (HINSTANCE)GetWindowLongA(supervisor->hwndGameWindow, GWL_HINSTANCE);
-    if (supervisor->cfg.opts >> GCOS_NO_DIRECTINPUT_PAD & 1)
+    memset(&g_Supervisor.cfg, 0, sizeof(GameConfiguration));
+    g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
+    data = (GameConfiguration *)FileSystem::OpenPath(path, 1);
+    if (data == NULL)
     {
-        return ZUN_ERROR;
-    }
-
-    if (DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8A, (LPVOID *)&supervisor->dinputIface, NULL) <
-        0)
-    {
-        supervisor->dinputIface = NULL;
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    if (supervisor->dinputIface->CreateDevice(GUID_SysKeyboard, &supervisor->keyboard, NULL) < 0)
-    {
-        if (supervisor->dinputIface)
+        g_Supervisor.cfg.lifeCount = 2;
+        g_Supervisor.cfg.bombCount = 3;
+        g_Supervisor.cfg.colorMode16bit = 0xff;
+        g_Supervisor.cfg.version = GAME_VERSION;
+        g_Supervisor.cfg.padXAxis = 600;
+        g_Supervisor.cfg.padYAxis = 600;
+        wavFile = fopen("bgm/th06_01.wav", "rb");
+        if (wavFile != NULL)
         {
-            supervisor->dinputIface->Release();
-            supervisor->dinputIface = NULL;
+            g_Supervisor.cfg.musicMode = WAV;
+            fclose(wavFile);
         }
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    if (supervisor->keyboard->SetDataFormat(&c_dfDIKeyboard) < 0)
-    {
-        if (supervisor->keyboard)
+        else
         {
-            supervisor->keyboard->Release();
-            supervisor->keyboard = NULL;
+            g_Supervisor.cfg.musicMode = MIDI;
+            utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
         }
-
-        if (supervisor->dinputIface)
-        {
-            supervisor->dinputIface->Release();
-            supervisor->dinputIface = NULL;
-        }
-
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    if (supervisor->keyboard->SetCooperativeLevel(supervisor->hwndGameWindow,
-                                                  DISCL_NONEXCLUSIVE | DISCL_FOREGROUND | DISCL_NOWINKEY) < 0)
-    {
-        if (supervisor->keyboard)
-        {
-            supervisor->keyboard->Release();
-            supervisor->keyboard = NULL;
-        }
-
-        if (supervisor->dinputIface)
-        {
-            supervisor->dinputIface->Release();
-            supervisor->dinputIface = NULL;
-        }
-
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    supervisor->keyboard->Acquire();
-    GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
-
-    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Supervisor::EnumGameControllersCb, NULL,
-                                         DIEDFL_ATTACHEDONLY);
-    if (supervisor->controller)
-    {
-        supervisor->controller->SetDataFormat(&c_dfDIJoystick2);
-        supervisor->controller->SetCooperativeLevel(supervisor->hwndGameWindow, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
-
-        g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
-
-        supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
-        supervisor->controller->EnumObjects(Supervisor::ControllerCallback, NULL, DIDFT_ALL);
-
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_PAD_FOUND);
-    }
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-void Supervisor::TickTimer(i32 *frames, f32 *subframes)
-{
-    if (this->framerateMultiplier <= 0.99f)
-    {
-        *subframes = *subframes + this->effectiveFramerateMultiplier;
-        if (*subframes >= 1.0f)
-        {
-            *frames = *frames + 1;
-            *subframes = *subframes - 1.0f;
-        }
+        g_Supervisor.cfg.playSounds = 1;
+        g_Supervisor.cfg.defaultDifficulty = 1;
+        g_Supervisor.cfg.windowed = false;
+        g_Supervisor.cfg.frameskipConfig = 0;
+        g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CONFIG_NOT_FOUND);
     }
     else
     {
-        *frames = *frames + 1;
-    }
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-#pragma var_order(diprange, pvRefBackup)
-BOOL CALLBACK Supervisor::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
-{
-    LPVOID pvRefBackup;
-    DIPROPRANGE diprange;
-    pvRefBackup = pvRef;
-
-    if (lpddoi->dwType & DIDFT_AXIS)
-    {
-        diprange.diph.dwSize = sizeof(diprange);
-        diprange.diph.dwHeaderSize = sizeof(diprange.diph);
-        diprange.diph.dwHow = DIPH_BYID;
-        diprange.diph.dwObj = lpddoi->dwType;
-        diprange.lMin = -1000;
-        diprange.lMax = 1000;
-
-        if (g_Supervisor.controller->SetProperty(DIPROP_RANGE, &diprange.diph) < 0)
+        g_Supervisor.cfg = *data;
+        if ((g_Supervisor.cfg.lifeCount >= 5) || (g_Supervisor.cfg.bombCount >= 4) ||
+            (g_Supervisor.cfg.colorMode16bit >= 2) || (g_Supervisor.cfg.musicMode >= 3) ||
+            (g_Supervisor.cfg.defaultDifficulty >= 5) || (g_Supervisor.cfg.playSounds >= 2) ||
+            (g_Supervisor.cfg.windowed >= 2) || (g_Supervisor.cfg.frameskipConfig >= 3) ||
+            (g_Supervisor.cfg.version != GAME_VERSION) || (g_LastFileSize != 0x38))
         {
-            return FALSE;
+            g_Supervisor.cfg.lifeCount = 2;
+            g_Supervisor.cfg.bombCount = 3;
+            g_Supervisor.cfg.colorMode16bit = 0xff;
+            g_Supervisor.cfg.version = GAME_VERSION;
+            g_Supervisor.cfg.padXAxis = 600;
+            g_Supervisor.cfg.padYAxis = 600;
+            wavFile2 = fopen("bgm/th06_01.wav", "rb");
+            if (wavFile2 != NULL)
+            {
+                g_Supervisor.cfg.musicMode = WAV;
+                fclose(wavFile2);
+            }
+            else
+            {
+                g_Supervisor.cfg.musicMode = MIDI;
+                utils::DebugPrint(TH_ERR_NO_WAVE_FILE);
+            }
+            g_Supervisor.cfg.playSounds = 1;
+            g_Supervisor.cfg.defaultDifficulty = 1;
+            g_Supervisor.cfg.windowed = false;
+            g_Supervisor.cfg.frameskipConfig = 0;
+            g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
+            memset(&g_Supervisor.cfg.opts, 0, sizeof(GameConfigOptsShifts));
+            g_Supervisor.cfg.opts |= (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
+            GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CONFIG_CORRUPTED);
         }
+        g_ControllerMapping = g_Supervisor.cfg.controllerMapping;
+        free(data);
     }
-    return TRUE;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
-{
-    HRESULT result;
-
-    if (!g_Supervisor.controller)
+    if (((this->cfg.opts >> GCOS_DONT_USE_VERTEX_BUF) & 1) != 0)
     {
-        result = g_Supervisor.dinputIface->CreateDevice(pdidInstance->guidInstance, &g_Supervisor.controller, NULL);
-        if (result < 0)
-        {
-            return TRUE;
-        }
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_VERTEX_BUFFER);
     }
-    return FALSE;
+    if (((this->cfg.opts >> GCOS_DONT_USE_FOG) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_FOG);
+    }
+    if (((this->cfg.opts >> GCOS_FORCE_16BIT_COLOR_MODE) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_USE_16BIT_TEXTURES);
+    }
+    if (this->IsUnknown())
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_BACKBUFFER_CLEAR);
+    }
+    if (((this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DONT_RENDER_ITEMS);
+    }
+    if (((this->cfg.opts >> GCOS_SUPPRESS_USE_OF_GOROUD_SHADING) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_GOURAUD_SHADING);
+    }
+    if (((this->cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_DEPTH_TESTING);
+    }
+    if (((this->cfg.opts >> GCOS_FORCE_60FPS) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_60FPS_MODE);
+        this->vsyncEnabled = 0;
+    }
+    if (((this->cfg.opts >> GCOS_NO_COLOR_COMP) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_NO_TEXTURE_COLOR_COMPOSITING);
+    }
+    if (((this->cfg.opts >> GCOS_NO_COLOR_COMP) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_LAUNCH_WINDOWED);
+    }
+    if (((this->cfg.opts >> GCOS_REFERENCE_RASTERIZER_MODE) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_REFERENCE_RASTERIZER);
+    }
+    if (((this->cfg.opts >> GCOS_NO_DIRECTINPUT_PAD) & 1) != 0)
+    {
+        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DO_NOT_USE_DIRECTINPUT);
+    }
+    if (FileSystem::WriteDataToFile(path, &g_Supervisor.cfg, sizeof(GameConfiguration)) != 0)
+    {
+        GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FILE_CANNOT_BE_EXPORTED, path);
+        GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL);
+        return ZUN_ERROR;
+    }
+
+    return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
 
@@ -813,6 +813,29 @@ i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
     }
 
     return TRUE;
+}
+#pragma optimize("", on)
+
+#pragma optimize("s", on)
+ZunResult Supervisor::SetupMidiPlayback(char *path)
+{
+    // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
+    // Standard short circuiting boolean operators and nested conditionals don't seem to work, at least
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
+        goto success;
+    }
+    else if (g_Supervisor.cfg.musicMode == WAV)
+    {
+        goto success;
+    }
+    else
+    {
+        return ZUN_ERROR;
+    }
+
+success:
+    return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
 
@@ -885,29 +908,6 @@ ZunResult Supervisor::StopAudio()
         }
     }
 
-    return ZUN_SUCCESS;
-}
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
-ZunResult Supervisor::SetupMidiPlayback(char *path)
-{
-    // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
-    // Standard short circuiting boolean operators and nested conditionals don't seem to work, at least
-    if (g_Supervisor.cfg.musicMode == MIDI)
-    {
-        goto success;
-    }
-    else if (g_Supervisor.cfg.musicMode == WAV)
-    {
-        goto success;
-    }
-    else
-    {
-        return ZUN_ERROR;
-    }
-
-success:
     return ZUN_SUCCESS;
 }
 #pragma optimize("", on)
