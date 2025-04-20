@@ -1382,10 +1382,12 @@ void Gui::DrawStageElements()
 }
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
 ZunResult Gui::AddedCallback(Gui *gui)
 {
     return gui->ActualAddedCallback();
 }
+#pragma optimize("", on)
 
 #pragma optimize("s", on)
 ZunResult Gui::DeletedCallback(Gui *gui)
@@ -1442,10 +1444,12 @@ GuiImpl::GuiImpl() {
 };
 #pragma optimize("", on)
 
+#pragma optimize("s", on)
 void Gui::CutChain()
 {
     g_Chain.Cut(&g_GuiCalcChain);
     g_Chain.Cut(&g_GuiDrawChain);
     return;
 }
+#pragma optimize("", on)
 }; // namespace th06
