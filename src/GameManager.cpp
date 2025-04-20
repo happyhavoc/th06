@@ -91,7 +91,6 @@ DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 
 #define MAX_LIVES 8
 
-#pragma optimize("s", on)
 i32 GameManager::IsInBounds(f32 x, f32 y, f32 width, f32 height)
 {
     if (width / 2.0f + x < 0.0f)
@@ -614,5 +613,4 @@ GameManager::GameManager()
     (this->arcadeRegionSize).x = GAME_REGION_WIDTH;
     (this->arcadeRegionSize).y = GAME_REGION_HEIGHT;
 }
-#pragma optimize("", on)
 }; // namespace th06
