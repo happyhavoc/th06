@@ -15,7 +15,8 @@ def run_windows_program(args, add_env=None, cwd=None):
     if sys.platform == "win32":
         subprocess.check_call(args, env=env, cwd=cwd)
     else:
-        subprocess.check_call([str(SCRIPTS_DIR / "wineth06")] + args, env=env, cwd=cwd)
+        wine = os.environ.get("WINE", "wine")
+        subprocess.check_call([wine] + args, env=wine_env(env), cwd=cwd)
 
 
 def run_windows_program_output(args, add_env=None, cwd=None) -> str:
@@ -27,15 +28,23 @@ def run_windows_program_output(args, add_env=None, cwd=None) -> str:
     if sys.platform == "win32":
         return subprocess.check_output(args, env=env, cwd=cwd)
     else:
-        return subprocess.check_output(
-            [str(SCRIPTS_DIR / "wineth06")] + args, env=env, cwd=cwd
-        )
+        wine = os.environ.get("WINE", "wine")
+        return subprocess.check_output([wine] + args, env=wine_env(env), cwd=cwd)
 
 
 def get_windows_path(path):
     if sys.platform == "win32":
         return str(path)
     else:
+        wine = os.environ.get("WINE", "wine")
         return subprocess.check_output(
-            [str(SCRIPTS_DIR / "wineth06"), "winepath", "-w", str(path)], text=True
+            [wine, "winepath", "-w", str(path)], text=True
         ).strip()
+
+
+def wine_env(env):
+    env = dict(env)
+    env["WINEPREFIX"] = os.environ["HOME"] + "/.wineth06"
+    env["WINEPATH"] = str(SCRIPTS_DIR) + ";" + os.environ.get("WINEPATH", "")
+    env["WINEDEBUG"] = "-all"
+    return env
