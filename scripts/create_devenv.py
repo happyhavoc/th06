@@ -812,6 +812,10 @@ def main(args: Namespace) -> int:
         wirunsql_path = dl_cache_path / "WiRunSQL.vbs"
         ninja_zip_path = dl_cache_path / "ninja-win.zip"
 
+        if sys.platform != "win32":
+            # Initialize wine.
+            run_windows_program(["wineboot", "--init"])
+
         if "vs" in steps:
             install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path)
         if "dx8" in steps:

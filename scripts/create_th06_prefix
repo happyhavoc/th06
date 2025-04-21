@@ -4,15 +4,7 @@ set -e
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# Allow overriding the wine binary used by providing the WINE environment
-# variable.
-WINE=${WINE:-wine}
-
 PREFIX_PATH=$SCRIPT_DIR/prefix
-
-"$WINE" wineboot --init
-
-mkdir -p "$PREFIX_PATH"
 
 echo "Creating devenv in $PREFIX_PATH"
 # $@ is used to pass all arguments to the python script
