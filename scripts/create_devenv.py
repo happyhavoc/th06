@@ -715,7 +715,7 @@ def install_pragma_var_order(tmp_dir, output_path):
             "/link",
             "/DLL",
         ],
-        add_env={"DEVENV_PREFIX": str(output_path)},
+        add_env={"TH06_DEVENV_PREFIX": str(output_path)},
     )
     VC7 = output_path / "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7"
     if not (VC7 / "BIN/C1XXOrig.DLL").exists():
@@ -811,6 +811,10 @@ def main(args: Namespace) -> int:
         python_installer_path = dl_cache_path / "python-3.4.4.msi"
         wirunsql_path = dl_cache_path / "WiRunSQL.vbs"
         ninja_zip_path = dl_cache_path / "ninja-win.zip"
+
+        if sys.platform != "win32":
+            # Initialize wine.
+            run_windows_program(["wineboot", "--init"])
 
         if "vs" in steps:
             install_compiler_sdk(installer_path, tmp_dir, tmp2_dir, output_path)
