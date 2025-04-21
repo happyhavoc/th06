@@ -715,7 +715,7 @@ def install_pragma_var_order(tmp_dir, output_path):
             "/link",
             "/DLL",
         ],
-        add_env={"DEVENV_PREFIX": str(output_path)},
+        add_env={"TH06_DEVENV_PREFIX": str(output_path)},
     )
     VC7 = output_path / "PROGRAM FILES/MICROSOFT VISUAL STUDIO .NET/VC7"
     if not (VC7 / "BIN/C1XXOrig.DLL").exists():
