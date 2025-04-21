@@ -6,7 +6,7 @@ RUN dpkg --add-architecture i386 && \
     apt-get update && apt-get install -y wget gpg && \
     wget -O - https://dl.winehq.org/wine-builds/winehq.key | gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key - && \
     wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources && \
-    apt-get update && apt-get install -y --install-recommends winehq-stable msitools && \
+    apt-get update && apt-get install -y --install-recommends winehq-stable msitools git && \
     apt-get remove --autoremove -y wget gpg && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 FROM base AS build
