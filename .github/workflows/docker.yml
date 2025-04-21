@@ -1,0 +1,53 @@
+name: Publish devenv docker image
+
+on:
+  workflow_dispatch:
+
+env:
+  # Specify the image name as {owner}/{repo}.
+  IMAGE_NAME: ${{ github.repository }}
+
+# Contents: read the contents of the repo (to build the image)
+# Packages: write the image to GHCR
+# ID-Token: create a token for cosign container signing
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install cosign
+        uses: sigstore/cosign-installer@v3.8.1
+        with:
+          cosign-release: 'v2.4.3'
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v3.10.0
+        with:
+          version: latest
+      - name: Log into registry ghcr
+        uses: docker/login-action@v3.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v6.15.0
+        with:
+          context: ./scripts
+          push: true
+          platforms: linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      - name: Sign the published Docker image
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+        run: cosign sign ghcr.io/${{ env.IMAGE_NAME }}@${{ steps.build-and-push.outputs.digest }}
