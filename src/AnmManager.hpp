@@ -89,9 +89,18 @@ ZUN_ASSERT_SIZE(RenderVertexInfo, 0x14);
 struct AnmManager
 {
     AnmManager();
-    ~AnmManager();
+    ~AnmManager()
+    {
+    }
 
-    void ReleaseVertexBuffer();
+    void ReleaseVertexBuffer()
+    {
+        if (this->vertexBuffer != NULL)
+        {
+            this->vertexBuffer->Release();
+            this->vertexBuffer = NULL;
+        }
+    }
     void SetupVertexBuffer();
 
     ZunResult CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat);

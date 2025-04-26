@@ -16,7 +16,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(FormatInfo, 7, g_FormatInfoArray) = {
     {(D3DFORMAT)-1, 0, 0, 0, 0, 0},
 };
 
-#pragma optimize("s", on)
 TextHelper::TextHelper()
 {
     this->format = (D3DFORMAT)-1;
@@ -27,16 +26,12 @@ TextHelper::TextHelper()
     this->gdiObj = 0;
     this->buffer = NULL;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 TextHelper::~TextHelper()
 {
     this->ReleaseBuffer();
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 bool TextHelper::ReleaseBuffer()
 {
     if (this->hdc)
@@ -58,18 +53,14 @@ bool TextHelper::ReleaseBuffer()
         return false;
     }
 }
-#pragma optimize("", on)
 
 #define TEXT_BUFFER_HEIGHT 64
-#pragma optimize("s", on)
 void TextHelper::CreateTextBuffer()
 {
     g_Supervisor.d3dDevice->CreateImageSurface(GAME_WINDOW_WIDTH, TEXT_BUFFER_HEIGHT, D3DFMT_A1R5G5B5,
                                                &g_TextBufferSurface);
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 bool TextHelper::AllocateBufferWithFallback(i32 width, i32 height, D3DFORMAT format)
 {
     if (this->TryAllocateBuffer(width, height, format))
@@ -87,7 +78,6 @@ bool TextHelper::AllocateBufferWithFallback(i32 width, i32 height, D3DFORMAT for
     }
     return false;
 }
-#pragma optimize("", on)
 
 struct THBITMAPINFO
 {
@@ -96,7 +86,6 @@ struct THBITMAPINFO
 };
 
 #pragma function(memset)
-#pragma optimize("s", on)
 #pragma var_order(imageWidthInBytes, deviceContext, originalBitmapObj, padding, bitmapInfo, formatInfo, bitmapObj,     \
                   bitmapData)
 bool TextHelper::TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format)
@@ -151,9 +140,7 @@ bool TextHelper::TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format)
     this->imageWidthInBytes = imageWidthInBytes;
     return true;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 FormatInfo *TextHelper::GetFormatInfo(D3DFORMAT format)
 {
     i32 local_8;
@@ -167,7 +154,6 @@ FormatInfo *TextHelper::GetFormatInfo(D3DFORMAT format)
     }
     return &g_FormatInfoArray[local_8];
 }
-#pragma optimize("", on)
 
 struct A1R5G5B5
 {
@@ -177,7 +163,6 @@ struct A1R5G5B5
     u16 alpha : 1;
 };
 
-#pragma optimize("s", on)
 #pragma var_order(bufferRegion, idx, doubleArea, bufferCursor, bufferStart)
 bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
 {
@@ -227,9 +212,7 @@ bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
     }
     return true;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma function(memcpy)
 #pragma var_order(dstBuf, dstWidthBytes, rectToLock, curHeight, srcWidthBytes, outSurfaceDesc, srcBuf, lockedRect,     \
                   width, height, thisFormat, thisHeight)
@@ -279,7 +262,6 @@ bool TextHelper::CopyTextToSurface(IDirect3DSurface8 *outSurface)
     return true;
 }
 
-#pragma optimize("s", on)
 #pragma function(strlen)
 #pragma var_order(hdc, font, textSurfaceDesc, h, textHelper, hdc, srcRect, destRect, destSurface)
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
@@ -336,9 +318,7 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     }
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void th06::TextHelper::ReleaseTextBuffer()
 {
     if (g_TextBufferSurface != NULL)
@@ -348,5 +328,4 @@ void th06::TextHelper::ReleaseTextBuffer()
     }
     return;
 }
-#pragma optimize("", on)
 }; // namespace th06

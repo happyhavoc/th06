@@ -69,7 +69,18 @@ struct SoundPlayer
     void PlaySoundByIdx(SoundIdx idx, i32 unused);
     ZunResult PlayBGM(BOOL isLooping);
     void StopBGM();
-    void FadeOut(f32 seconds);
+    void FadeOut(f32 seconds)
+    {
+        CStreamingSound *bgm;
+
+        if (this->backgroundMusic != NULL)
+        {
+            bgm = this->backgroundMusic;
+            bgm->m_dwIsFadingOut = 1;
+            bgm->m_dwCurFadeoutProgress = seconds * 60;
+            bgm->m_dwTotalFadeout = bgm->m_dwCurFadeoutProgress;
+        }
+    }
 
     static DWORD __stdcall BackgroundMusicPlayerThread(LPVOID lpThreadParameter);
 

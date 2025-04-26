@@ -29,16 +29,13 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 7, g_StageList) = {"Stage1", "Stage2", "Sta
                                                         "Stage5", "Stage6", "Extra "};
 
 DIFFABLE_STATIC(i16, g_LastJoystickInput)
-#pragma optimize("s", on)
 MainMenu::MainMenu()
 {
     // what?
     int waste1, waste2, waste3, waste4;
 }
-#pragma optimize("", on)
 
 #pragma function(strcpy)
-#pragma optimize("s", on)
 #pragma var_order(i, vmList, time, deltaTime, deltaTimeAsFrames, deltaTimeAsMs, mapping, startedUp, sVar1,             \
                   controllerData, mappingData, refreshRate, local_48, local_4c, chosenStage, pos1, pos2, pos3, pos4,   \
                   pos5, vm, hasLoadedSprite)
@@ -886,10 +883,8 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 #pragma intrinsic(strcpy)
 
-#pragma optimize("s", on)
 CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 {
     if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
@@ -924,9 +919,7 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 
     return CURSOR_DONT_MOVE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void MainMenu::SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk)
 {
     if (unk == 0 && menu->controlMapping[0] == btnPressed)
@@ -966,9 +959,7 @@ void MainMenu::SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBo
         menu->controlMapping[8] = oldMapping;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR currentItemColor, D3DCOLOR otherItemColor,
                             int vm_amount)
 {
@@ -1012,9 +1003,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         vm->posOffset = otherItemPos;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(time, i, vector3Ptr)
 ZunResult MainMenu::BeginStartup()
 {
@@ -1058,9 +1047,7 @@ ZunResult MainMenu::BeginStartup()
     this->gameState = STATE_PRE_INPUT;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(vm, d3dVec)
 ZunBool MainMenu::WeirdSecondInputCheck()
 {
@@ -1102,9 +1089,7 @@ ZunBool MainMenu::WeirdSecondInputCheck()
     this->framesActive = 60;
     return false;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(i, drawVm)
 ZunResult MainMenu::DrawStartMenu(void)
 {
@@ -1271,9 +1256,7 @@ ZunResult MainMenu::DrawStartMenu(void)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma function(strcpy)
 #pragma var_order(anmVm, cur, replayFileHandle, replayFileIdx, replayData, replayFilePath, replayFileInfo, uh, uh2,    \
                   padding)
@@ -1499,9 +1482,7 @@ i32 MainMenu::ReplayHandling()
     return 0;
 }
 #pragma intrinsic(strcpy)
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(vmRef, i, replayAmount, isSelected, isSelected2)
 ZunResult MainMenu::DrawReplayMenu()
 {
@@ -1605,9 +1586,7 @@ ZunResult MainMenu::DrawReplayMenu()
     g_AsciiManager.isSelected = false;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelected)
 {
     if (subItem != subItemSelected)
@@ -1668,9 +1647,7 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
         vm->posOffset += D3DXVECTOR3(-4.0, -4.0, 0.0);
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(i, optionsVm)
 u32 MainMenu::OnUpdateOptionsMenu()
 {
@@ -1920,9 +1897,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
     }
     return 0;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(stageNum, color, charShotType, selectedStage, textPos)
 ZunResult MainMenu::ChoosePracticeLevel()
 {
@@ -1960,10 +1935,8 @@ ZunResult MainMenu::ChoosePracticeLevel()
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
 #pragma var_order(targetOpacity, window, vmIdx, curVm, posBackup, mgr, shouldDraw, offset, pos)
-#pragma optimize("s", on)
 ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 {
     D3DXVECTOR3 posBackup;
@@ -2049,9 +2022,7 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 {
     i32 i;
@@ -2101,9 +2072,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 {
     AnmVm *vm;
@@ -2172,10 +2141,8 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
 #pragma var_order(fileIdx, vm)
-#pragma optimize("s", on)
 ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
 {
     AnmVm *vm;
@@ -2217,9 +2184,7 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma function(memset)
 ZunResult MainMenu::RegisterChain(u32 isDemo)
 {
@@ -2248,9 +2213,7 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
     return ZUN_SUCCESS;
 }
 #pragma intrinsic(memset)
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(scoredat, i, anmmgr)
 ZunResult MainMenu::AddedCallback(MainMenu *m)
 {
@@ -2332,10 +2295,8 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     g_GameManager.demoFrames = 0;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
 #pragma var_order(i1, i2, mgr, replay)
-#pragma optimize("s", on)
 ZunResult MainMenu::DeletedCallback(MainMenu *menu)
 {
     AnmManager *mgr;
@@ -2364,9 +2325,7 @@ ZunResult MainMenu::DeletedCallback(MainMenu *menu)
     free(replay);
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void MainMenu::ReleaseTitleAnm()
 {
     // There's a bit of an off-by-one error here, where it frees
@@ -2377,7 +2336,6 @@ void MainMenu::ReleaseTitleAnm()
         g_AnmManager->ReleaseAnm(i);
     }
 }
-#pragma optimize("", on)
 
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
 }; // namespace th06
