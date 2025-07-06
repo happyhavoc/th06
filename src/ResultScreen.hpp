@@ -246,8 +246,8 @@ struct ResultScreen
     Th6k fileHeader;
     ChainElem *calcChain;
     ChainElem *drawChain;
-    ReplayData replays[15];
-    ReplayData defaultReplay;
+    ReplayHeader replays[15];
+    ReplayHeader defaultReplay;
 };
 ZUN_ASSERT_SIZE(ResultScreen, 0x56b0);
 }; // namespace th06

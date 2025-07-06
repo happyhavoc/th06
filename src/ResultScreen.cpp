@@ -876,7 +876,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
 
                 if (ReplayManager::ValidateReplayData(replayLoaded, g_LastFileSize) == ZUN_SUCCESS)
                 {
-                    this->replays[idx] = *replayLoaded;
+                    this->replays[idx] = *replayLoaded->header;
                 }
                 std::free(replayLoaded);
             }
