@@ -652,11 +652,9 @@ void SoundPlayer::PlaySoundByIdx(SoundIdx idx, i32 unused)
 
 void SoundPlayer::MixAudio(u32 samples)
 {
-    std::vector<i16> finalBuffer;
+    std::vector<i16> finalBuffer(samples);
     std::vector<i32> mixBuffer(samples);
     u8 playingChannels = 0;
-
-    finalBuffer.reserve(samples);
 
     soundBufMutex.lock();
 
