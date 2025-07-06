@@ -34,8 +34,8 @@ DIFFABLE_STATIC(i32, g_PlayerShot);
 DIFFABLE_STATIC(f32, g_PlayerDistance);
 DIFFABLE_STATIC(f32, g_PlayerAngle);
 DIFFABLE_STATIC_ARRAY(f32, 6, g_StarAngleTable);
-DIFFABLE_STATIC(D3DXVECTOR3, g_EnemyPosVector);
-DIFFABLE_STATIC(D3DXVECTOR3, g_PlayerPosVector);
+DIFFABLE_STATIC(ZunVec3, g_EnemyPosVector);
+DIFFABLE_STATIC(ZunVec3, g_PlayerPosVector);
 
 void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
 {
@@ -59,7 +59,7 @@ void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
 
 void MovePosTime(Enemy *enemy, EclRawInstr *instr)
 {
-    D3DXVECTOR3 newPos;
+    ZunVec3 newPos;
     EclRawInstrAluArgs *alu = &instr->args.alu;
 
     newPos.x = *GetVarFloat(enemy, &alu->arg1.f32, NULL);
@@ -73,7 +73,7 @@ void MovePosTime(Enemy *enemy, EclRawInstr *instr)
     enemy->moveInterpTimer.SetCurrent(enemy->moveInterpStartTime);
 
     enemy->flags.unk1 = 2;
-    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    enemy->axisSpeed = ZunVec3(0.0f, 0.0f, 0.0f);
 }
 
 void MoveTime(Enemy *enemy, EclRawInstr *instr)
@@ -215,7 +215,7 @@ i32 *GetVar(Enemy *enemy, EclVarId *eclVarId, EclValueType *valueType)
         return &enemy->bossTimer.current;
 
     case ECL_VAR_PLAYER_DISTANCE:
-        g_PlayerDistance = D3DXVec3Length(&(g_Player.positionCenter - enemy->position));
+        g_PlayerDistance = (g_Player.positionCenter - enemy->position).getMagnitude();
         if (valueType != NULL)
             *valueType = ECL_VALUE_TYPE_READONLY;
         return (i32 *)&g_PlayerDistance;
@@ -248,7 +248,7 @@ f32 *GetVarFloat(Enemy *enemy, f32 *eclVarId, EclValueType *valueType)
     }
 }
 
-#pragma var_order(lhsPtr, rhsPtr, lhsType)
+
 void SetVar(Enemy *enemy, EclVarId lhs, void *rhs)
 {
     i32 *lhsPtr;
@@ -268,7 +268,7 @@ void SetVar(Enemy *enemy, EclVarId lhs, void *rhs)
     return;
 }
 
-#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+
 void MathAdd(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
     EclValueType outType;
@@ -293,7 +293,7 @@ void MathAdd(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+
 void MathSub(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
     EclValueType outType;
@@ -317,7 +317,7 @@ void MathSub(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+
 void MathMul(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
     EclValueType outType;
@@ -343,7 +343,7 @@ void MathMul(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+
 void MathDiv(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
     EclValueType outType;
@@ -367,7 +367,7 @@ void MathDiv(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-#pragma var_order(outPtr, rhsPtr, lhsPtr, outType)
+
 void MathMod(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
     EclValueType outType;
@@ -391,7 +391,7 @@ void MathMod(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-#pragma var_order(y2Ptr, outPtr, x1Ptr, y1Ptr, outType, x2Ptr)
+
 void MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2, f32 *x2)
 {
     EclValueType outType;
@@ -410,7 +410,7 @@ void MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2, f32 *
     return;
 }
 
-#pragma var_order(i, currentBullet, effectIndex, velocityVector, bulletTimer, accelerationMultiplier, accelerationAngle)
+
 void ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
 {
     f32 accelerationAngle;
@@ -419,7 +419,7 @@ void ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
     Bullet *currentBullet;
     i32 effectIndex;
     i32 i;
-    D3DXVECTOR3 velocityVector;
+    ZunVec3 velocityVector;
 
     currentBullet = g_BulletManager.bullets;
     effectIndex = instr->args.exInstr.i32Param;
@@ -474,17 +474,15 @@ void ExInsShootAtRandomArea(Enemy *enemy, EclRawInstr *instr)
     g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
 }
 
-#pragma var_order(i, propsSpeedBackup, starPatterTarget1, targetDistance, starPatternTarget0, patternPosition,         \
-                  baseTargetPosition)
 void ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr)
 {
     // Variable names are more quick guesses at functionality than anything else, they should not be trusted
-    D3DXVECTOR3 baseTargetPosition;
+    ZunVec3 baseTargetPosition;
     i32 i;
     f32 propsSpeedBackup;
     f32 patternPosition;
-    D3DXVECTOR3 starPatternTarget0;
-    D3DXVECTOR3 starPatterTarget1;
+    ZunVec3 starPatternTarget0;
+    ZunVec3 starPatterTarget1;
     f32 targetDistance;
 
     if (enemy->currentContext.var2 >= enemy->currentContext.var3)
@@ -547,7 +545,7 @@ void ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var3 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var3;
 }
 
-#pragma var_order(playerBulletOffset, bulletsLeft, i, currentBullet)
+
 void ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
 {
     i32 bulletsLeft;
@@ -649,20 +647,17 @@ void ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var2 = 0;
 }
 
-#pragma var_order(patternPosition, i, bulletProps, sinOut, bpPositionOffset, matrixOutSeed, matrixIn, bulletAngle,     \
-                  cosOut, matrixInSeed, matrixOut)
 void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
 {
-
     if (enemy->currentContext.var2 % 9 == 0)
     {
-        D3DXVECTOR3 bpPositionOffset;
+        ZunVec3 bpPositionOffset;
         f32 bulletAngle;
         f32 cosOut;
         i32 i;
-        D3DXVECTOR3 matrixIn;
+        ZunVec3 matrixIn;
         f32 matrixInSeed;
-        D3DXVECTOR3 matrixOut;
+        ZunVec3 matrixOut;
         f32 matrixOutSeed; // Later reused to store angles for trig function calls
         i32 patternPosition;
         f32 sinOut;
@@ -686,7 +681,7 @@ void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
 
         matrixOutSeed = 0.5f - patternPosition * 0.5f / 9.0f;
         matrixOut = g_Player.positionCenter - enemy->position;
-        D3DXVec3Normalize(&matrixIn, &matrixOut);
+        matrixOut.getNormalized(matrixIn);
         if ((patternPosition & 1) != 0)
         {
             matrixInSeed = -256.0f;
@@ -732,14 +727,14 @@ void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var2++;
 }
 
-#pragma var_order(effect, baseAngleModifier, distanceModifier, finalAngle, particlePos)
+
 void ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr)
 {
     i32 baseAngleModifier;
     f32 distanceModifier;
     Effect *effect;
     f32 finalAngle;
-    D3DXVECTOR3 particlePos;
+    ZunVec3 particlePos;
 
     if (enemy->flags.unk15 != 0)
     {
@@ -789,8 +784,6 @@ void ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr)
     enemy->exInsFunc6Timer.Tick();
 }
 
-#pragma var_order(laserProps, i, lengthMultiplier, attackType, innerLoopCount, angleDiff, outerLoopCount, laserAngle,  \
-                  randomAngleModifier, positionVectors)
 void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
 {
     f32 angleDiff;
@@ -803,7 +796,7 @@ void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
     i32 outerLoopCount;
     f32 randomAngleModifier;
 
-    D3DXVECTOR3 positionVectors[8];
+    ZunVec3 positionVectors[8];
 
     attackType = instr->args.exInstr.i32Param;
     randomAngleModifier = g_Rng.GetRandomF32ZeroToOne() * (ZUN_PI * 2);
@@ -907,7 +900,7 @@ void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
     }
 }
 
-#pragma var_order(bulletProps, changedBullets, i, currentBullet)
+
 void ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr)
 {
     i32 changedBullets;
@@ -946,7 +939,7 @@ void ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var3 = changedBullets;
 }
 
-#pragma var_order(unusedBulletProps, i, local64, currentBullet, randomAngleModifier)
+
 void ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr)
 {
     Bullet *currentBullet;
@@ -994,7 +987,7 @@ void ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr)
     }
 }
 
-#pragma var_order(unusedBulletProps, i, currentBullet, unusedRandomNumber)
+
 void ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr)
 {
     Bullet *currentBullet;
@@ -1073,7 +1066,7 @@ void ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
     {
         if (enemy->lasers[i] != NULL && enemy->lasers[i]->inUse != 0)
         {
-            enemy->bulletProps.position = D3DXVECTOR3(64.0, 0.0, 0.0);
+            enemy->bulletProps.position = ZunVec3(64.0, 0.0, 0.0);
             utils::Rotate(&enemy->bulletProps.position, &enemy->bulletProps.position, enemy->lasers[i]->angle);
             enemy->bulletProps.position += enemy->position;
             g_BulletManager.SpawnBulletPattern(&enemy->bulletProps);
@@ -1081,7 +1074,7 @@ void ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
     }
 }
 
-#pragma var_order(i, bulletProps, basePatternAngle, numPatterns)
+
 void ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr)
 {
     f32 basePatternAngle;
@@ -1105,12 +1098,12 @@ void ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var3++;
 }
 
-#pragma var_order(bulletPosition, i, angleSin, currentLaser, angleCos, positionMultiplier)
+
 void ExInsStageXFunc14(Enemy *enemy, EclRawInstr *instr)
 {
     f32 angleCos;
     f32 angleSin;
-    D3DXVECTOR3 bulletPosition;
+    ZunVec3 bulletPosition;
     Laser *currentLaser;
     i32 i;
     f32 positionMultiplier;
@@ -1139,8 +1132,6 @@ void ExInsStageXFunc14(Enemy *enemy, EclRawInstr *instr)
     }
 }
 
-#pragma var_order(unusedBulletProps, totalIterations, i, innerBullet, enemyAngle, distance, currentBullet,             \
-                  bulletsAngle, j)
 void ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr)
 {
     f32 bulletsAngle;
@@ -1205,7 +1196,7 @@ void ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var3 = totalIterations;
 }
 
-#pragma var_order(remainingLife, rangeModifier)
+
 void ExInsStageXFunc16(Enemy *enemy, EclRawInstr *instr)
 {
     f32 rangeModifier;

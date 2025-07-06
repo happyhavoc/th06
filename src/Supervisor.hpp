@@ -1,13 +1,16 @@
 #pragma once
 
-#include <d3d8.h>
-#include <d3dx8math.h>
-#include <dinput.h>
+// #include <d3d8.h>
+// #include <d3dx8math.h>
+// #include <dinput.h>
+
+#include <SDL2/SDL_video.h>
 
 #include "Chain.hpp"
 #include "Controller.hpp"
-#include "MidiOutput.hpp"
+// #include "MidiOutput.hpp"
 #include "ZunBool.hpp"
+#include "ZunMath.hpp"
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
@@ -75,7 +78,7 @@ struct GameConfiguration
 
     u32 IsSoftwareTexturing()
     {
-        return this->opts >> GCOS_NO_COLOR_COMP & 1 | this->opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1;
+        return (this->opts >> GCOS_NO_COLOR_COMP & 1) | (this->opts >> GCOS_USE_D3D_HW_TEXTURE_BLENDING & 1);
     }
 };
 
@@ -119,13 +122,11 @@ struct Supervisor
     ZunResult FadeOutMusic(f32 fadeOutSeconds);
 
     static ZunResult SetupDInput(Supervisor *s);
-    static BOOL CALLBACK ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef);
-    static BOOL CALLBACK EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext);
 
     i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
     void ReleasePbg3(i32 pbg3FileIdx);
 
-    ZunResult LoadConfig(char *path);
+    ZunResult LoadConfig(const char *path);
 
     void TickTimer(i32 *frames, f32 *subframes);
 
@@ -136,8 +137,8 @@ struct Supervisor
 
     u32 IsUnknown()
     {
-        return this->cfg.opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH & 1 |
-               this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1;
+        return (this->cfg.opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH & 1) |
+               (this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1);
     }
 
     u32 ShouldRunAt60Fps()
@@ -145,18 +146,18 @@ struct Supervisor
         return (this->cfg.opts >> GCOS_FORCE_60FPS & 1) && this->vsyncEnabled;
     }
 
-    HINSTANCE hInstance;
-    PDIRECT3D8 d3dIface;
-    PDIRECT3DDEVICE8 d3dDevice;
-    LPDIRECTINPUT8 dinputIface;
-    LPDIRECTINPUTDEVICE8A keyboard;
-    LPDIRECTINPUTDEVICE8A controller;
-    DIDEVCAPS controllerCaps;
-    HWND hwndGameWindow;
-    D3DXMATRIX viewMatrix;
-    D3DXMATRIX projectionMatrix;
-    D3DVIEWPORT8 viewport;
-    D3DPRESENT_PARAMETERS presentParameters;
+//    HINSTANCE hInstance;
+//    PDIRECT3D8 d3dIface;
+//    PDIRECT3DDEVICE8 d3dDevice;
+//    LPDIRECTINPUT8 dinputIface;
+//    LPDIRECTINPUTDEVICE8A keyboard;
+//    LPDIRECTINPUTDEVICE8A controller;
+//    DIDEVCAPS controllerCaps;
+    SDL_Window *gameWindow;
+    ZunMatrix viewMatrix;
+    ZunMatrix projectionMatrix;
+    ZunViewport viewport;
+//    D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
     GameConfiguration defaultConfig;
     i32 calcCount;
@@ -169,11 +170,11 @@ struct Supervisor
     ZunBool isInEnding;
 
     i32 vsyncEnabled;
-    i32 lastFrameTime;
+    u32 lastFrameTime;
     f32 effectiveFramerateMultiplier;
     f32 framerateMultiplier;
 
-    MidiOutput *midiOutput;
+//    MidiOutput *midiOutput;
 
     f32 unk1b4;
     f32 unk1b8;
@@ -186,7 +187,7 @@ struct Supervisor
     u8 colorMode16Bits;
 
     u32 startupTimeBeforeMenuMusic;
-    D3DCAPS8 d3dCaps;
+//    D3DCAPS8 d3dCaps;
 };
 ZUN_ASSERT_SIZE(Supervisor, 0x4d8);
 
@@ -195,6 +196,6 @@ DIFFABLE_EXTERN(Supervisor, g_Supervisor)
 DIFFABLE_EXTERN(u16, g_LastFrameInput)
 DIFFABLE_EXTERN(u16, g_CurFrameInput)
 DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
-DIFFABLE_EXTERN(IDirect3DSurface8 *, g_TextBufferSurface)
+DIFFABLE_EXTERN(SDL_Surface *, g_TextBufferSurface)
 DIFFABLE_EXTERN(u16, g_NumOfFramesInputsWereHeld);
 }; // namespace th06

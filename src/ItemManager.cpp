@@ -8,7 +8,7 @@
 #include "SoundPlayer.hpp"
 #include "utils.hpp"
 
-#include <d3dx8math.h>
+// #include <d3dx8math.h>
 
 namespace th06
 {
@@ -18,7 +18,7 @@ ItemManager::ItemManager() {
 
 };
 
-void ItemManager::SpawnItem(D3DXVECTOR3 *position, ItemType itemType, int state)
+void ItemManager::SpawnItem(ZunVec3 *position, ItemType itemType, int state)
 {
     Item *item;
     i32 idx;
@@ -74,7 +74,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 31, g_PowerItemScore) = {
     10,  20,  30,   40,   50,   60,   70,   80,   90,   100,  200,  300,   400,   500,   600,  700,
     800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 51200};
 
-i32 __inline calculatePointScore(Item *curItem, i32 scoreAcquiredItemTop, i32 scoreAcquiredItemBottom,
+i32 inline calculatePointScore(Item *curItem, i32 scoreAcquiredItemTop, i32 scoreAcquiredItemBottom,
                                  i32 posMultiplier)
 {
     return ((i32)curItem->currentPosition.y < 128)
@@ -82,7 +82,7 @@ i32 __inline calculatePointScore(Item *curItem, i32 scoreAcquiredItemTop, i32 sc
                : (scoreAcquiredItemBottom - (((i32)curItem->currentPosition.y - 128) * posMultiplier));
 }
 
-#pragma var_order(idx, itemScore, playerAngle, itemAcquired, curItem, fVar5, idx2, iVar8, idx3, iVar9)
+
 void ItemManager::OnUpdate()
 {
     i32 iVar9;
@@ -97,7 +97,7 @@ void ItemManager::OnUpdate()
     i32 itemAcquired;
 
     curItem = &this->items[0];
-    static D3DXVECTOR3 g_ItemSize(16.0f, 16.0f, 16.0f);
+    static ZunVec3 g_ItemSize(16.0f, 16.0f, 16.0f);
     itemAcquired = false;
     this->itemCount = 0;
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->items); idx++, curItem++)
@@ -112,12 +112,12 @@ void ItemManager::OnUpdate()
             if ((i32)(60 > curItem->timer.current))
             {
                 fVar5 = curItem->timer.AsFramesFloat() / 60.0f;
-                curItem->currentPosition = fVar5 * curItem->targetPosition + curItem->startPosition * (1.0f - fVar5);
+                curItem->currentPosition = curItem->targetPosition * fVar5 + curItem->startPosition * (1.0f - fVar5);
                 goto yolo;
             }
             else if ((i32)(curItem->timer.current == 60))
             {
-                curItem->startPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+                curItem->startPosition = ZunVec3(0.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -336,7 +336,7 @@ void ItemManager::OnUpdate()
     return;
 }
 
-#pragma var_order(idx, cursor)
+
 void ItemManager::RemoveAllItems()
 {
     Item *cursor;
@@ -353,7 +353,7 @@ void ItemManager::RemoveAllItems()
     return;
 }
 
-#pragma var_order(itemAlpha, idx, curItem)
+
 void ItemManager::OnDraw()
 {
     Item *curItem;

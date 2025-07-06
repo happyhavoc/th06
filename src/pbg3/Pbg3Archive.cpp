@@ -1,4 +1,6 @@
-#include <stddef.h>
+#include <cstddef>
+#include <cstdlib>
+#include <cstring>
 
 #include "pbg3/Pbg3Archive.hpp"
 
@@ -12,7 +14,7 @@ Pbg3Archive::Pbg3Archive()
     this->numOfEntries = 0;
     this->entries = NULL;
     this->parser = NULL;
-    this->unk = 0;
+    this->unk = NULL;
 }
 
 i32 Pbg3Archive::ParseHeader()
@@ -24,19 +26,19 @@ i32 Pbg3Archive::ParseHeader()
             delete this->parser;
             this->parser = NULL;
         }
-        return FALSE;
+        return false;
     }
 
     this->numOfEntries = this->parser->ReadVarInt();
     this->fileTableOffset = this->parser->ReadVarInt();
-    if (this->parser->SeekToOffset(this->fileTableOffset) == FALSE)
+    if (!this->parser->SeekToOffset(this->fileTableOffset))
     {
         if (this->parser != NULL)
         {
             delete this->parser;
             this->parser = NULL;
         }
-        return FALSE;
+        return false;
     }
 
     this->entries = new Pbg3Entry[this->numOfEntries];
@@ -47,7 +49,7 @@ i32 Pbg3Archive::ParseHeader()
             delete this->parser;
             this->parser = NULL;
         }
-        return FALSE;
+        return false;
     }
 
     for (u32 idx = 0; idx < this->numOfEntries; idx += 1)
@@ -57,7 +59,7 @@ i32 Pbg3Archive::ParseHeader()
         this->entries[idx].checksum = this->parser->ReadVarInt();
         this->entries[idx].dataOffset = this->parser->ReadVarInt();
         this->entries[idx].uncompressedSize = this->parser->ReadVarInt();
-        if (this->parser->ReadString(this->entries[idx].filename, sizeof(this->entries[idx].filename)) == FALSE)
+        if (!this->parser->ReadString(this->entries[idx].filename, sizeof(this->entries[idx].filename)))
         {
             if (this->parser != NULL)
             {
@@ -70,11 +72,11 @@ i32 Pbg3Archive::ParseHeader()
                 this->entries = NULL;
             }
 
-            return FALSE;
+            return false;
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 i32 Pbg3Archive::Release()
@@ -91,16 +93,16 @@ i32 Pbg3Archive::Release()
         delete[] this->entries;
         this->entries = NULL;
     }
-    delete this->unk;
-    return TRUE;
+    std::free(this->unk);
+    return true;
 }
 
-i32 Pbg3Archive::FindEntry(char *path)
+i32 Pbg3Archive::FindEntry(const char *path)
 {
     for (u32 entryIdx = 0; entryIdx < this->numOfEntries; entryIdx += 1)
     {
         char *entryFilename = this->entries[entryIdx].filename;
-        i32 res = strcmp(path, entryFilename);
+        i32 res = std::strcmp(path, entryFilename);
         if (res == 0)
         {
             return entryIdx;
@@ -135,7 +137,7 @@ u8 *Pbg3Archive::ReadEntryRaw(u32 *outSize, u32 *outChecksum, i32 entryIdx)
     if (outChecksum == NULL)
         return NULL;
 
-    if (this->parser->SeekToOffset(this->entries[entryIdx].dataOffset) == FALSE)
+    if (!this->parser->SeekToOffset(this->entries[entryIdx].dataOffset))
         return NULL;
 
     u32 size;
@@ -152,7 +154,7 @@ u8 *Pbg3Archive::ReadEntryRaw(u32 *outSize, u32 *outChecksum, i32 entryIdx)
     if (data == NULL)
         return NULL;
 
-    if (this->parser->ReadByteAlignedData(data, size) == FALSE)
+    if (!this->parser->ReadByteAlignedData(data, size))
     {
         free(data);
         return NULL;
@@ -170,25 +172,25 @@ Pbg3Archive::~Pbg3Archive()
 
 i32 Pbg3Archive::Load(char *path)
 {
-    if (this->Release() == FALSE)
+    if (!this->Release())
     {
-        return FALSE;
+        return false;
     }
 
     this->parser = new Pbg3Parser();
     if (this->parser == NULL)
     {
-        return FALSE;
+        return false;
     }
 
-    if (this->parser->OpenArchive(path) == FALSE)
+    if (!this->parser->OpenArchive(path))
     {
         if (this->parser != NULL)
         {
             delete this->parser;
             this->parser = NULL;
         }
-        return FALSE;
+        return false;
     }
 
     return this->ParseHeader();
@@ -244,7 +246,7 @@ i32 Pbg3Archive::Load(char *path)
         DEC_NEXT_BIT();                                                                                                \
     }
 
-u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, char *filename)
+u8 *Pbg3Archive::ReadDecompressEntry(u32 entryIdx, const char *filename)
 {
     if (entryIdx >= this->numOfEntries || this->parser == NULL)
         return NULL;

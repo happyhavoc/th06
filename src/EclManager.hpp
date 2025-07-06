@@ -8,8 +8,8 @@
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include <Windows.h>
-#include <d3dx8math.h>
+// #include <Windows.h>
+// #include <d3dx8math.h>
 
 namespace th06
 {
@@ -56,9 +56,9 @@ struct EclTimelineInstrArgs
     u16 ushortVar2;
     u32 uintVar4;
 
-    D3DXVECTOR3 *Var1AsVec()
+    ZunVec3 *Var1AsVec()
     {
-        return (D3DXVECTOR3 *)&this->uintVar1;
+        return (ZunVec3 *)&this->uintVar1;
     }
 };
 
@@ -341,8 +341,8 @@ struct EclRawHeader
 {
     i16 subCount;
     i16 mainCount;
-    EclTimelineInstr *timelineOffsets[3];
-    EclRawInstr *subOffsets[0];
+    u32 timelineOffsets[3];
+    u32 subOffsets[0];
 };
 ZUN_ASSERT_SIZE(EclRawHeader, 0x10);
 
@@ -494,6 +494,7 @@ struct EclManager
     ZunResult CallEclSub(EnemyEclContext *enemyEcl, i16 subId);
 
     EclRawHeader *eclFile;
+    EclTimelineInstr *timelinePtrs[3];
     EclRawInstr **subTable;
     EclTimelineInstr *timeline;
 };

@@ -17,12 +17,11 @@ class Pbg3Parser : public IPbg3Parser, public FileAbstraction
     i32 SeekToOffset(u32 fileOffset);
     i32 SeekToNextByte();
     i32 ReadByteAlignedData(u8 *data, u32 bytesToRead);
-    i32 GetLastWriteTime(LPFILETIME lastWriteTime);
+    i32 GetLastWriteTime(std::filesystem::file_time_type& lastWriteTime);
 
     void Close();
     i32 ReadByte();
 
     ~Pbg3Parser();
 };
-ZUN_ASSERT_SIZE(Pbg3Parser, 0x24);
 }; // namespace th06

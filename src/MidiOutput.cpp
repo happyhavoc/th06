@@ -1,7 +1,7 @@
 #include "inttypes.hpp"
-#include <Windows.h>
-#include <mmreg.h>
-#include <mmsystem.h>
+// #include <Windows.h>
+// #include <mmreg.h>
+// #include <mmsystem.h>
 
 #include "FileSystem.hpp"
 #include "MidiOutput.hpp"
@@ -245,7 +245,7 @@ void MidiOutput::ReleaseFileData(u32 idx)
     this->midiFileData[idx] = NULL;
 }
 
-#pragma var_order(trackIndex, data, tracks)
+
 void MidiOutput::ClearTracks()
 {
     i32 trackIndex;
@@ -264,7 +264,7 @@ void MidiOutput::ClearTracks()
     this->numTracks = 0;
 }
 
-#pragma var_order(trackIdx, currentCursor, currentCursorTrack, fileData, hdrLength, hdrRaw, trackLength,               \
+
                   endOfHeaderPointer)
 ZunResult MidiOutput::ParseFile(i32 fileIdx)
 {
@@ -449,7 +449,7 @@ u32 MidiOutput::SetFadeOut(u32 ms)
     return 0;
 }
 
-#pragma var_order(trackIndex, local_14, trackLoaded)
+
 void MidiOutput::OnTimerElapsed()
 {
     unsigned __int64 local_14;
@@ -502,7 +502,7 @@ void MidiOutput::OnTimerElapsed()
     return;
 }
 
-#pragma var_order(nextTrackLength, idx, arg2, lVar5, opcodeLow, opcodeHigh, opcode, arg1, curTrackLength, midiHdr,     \
+
                   cVar1, unk24, local_2c, local_30, midiHeaderSize, lpdata)
 void MidiOutput::ProcessMsg(MidiTrack *track)
 {
@@ -697,7 +697,7 @@ void MidiOutput::ProcessMsg(MidiTrack *track)
     return;
 }
 
-#pragma var_order(arg1, idx, volumeByte, midiStatus, volumeClamped)
+
 void MidiOutput::FadeOutSetVolume(i32 volume)
 {
     i32 volumeClamped;

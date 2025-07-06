@@ -1,8 +1,10 @@
 #pragma once
 
+#include <GLES/gl.h>
+#include <SDL2/SDL_video.h>
+
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include <windows.h>
 
 #define GAME_WINDOW_WIDTH 640
 #define GAME_WINDOW_HEIGHT 480
@@ -21,13 +23,12 @@ struct GameWindow
     RenderResult Render();
     static void Present();
 
-    static i32 InitD3dInterface();
-    static void CreateGameWindow(HINSTANCE hInstance);
+    static void CreateGameWindow();
     static i32 InitD3dRendering();
     static void InitD3dDevice();
-    static LRESULT __stdcall WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-    HWND window;
+    SDL_Window *window;
+    SDL_GLContext glContext;
     i32 isAppClosing;
     i32 lastActiveAppValue;
     i32 isAppActive;

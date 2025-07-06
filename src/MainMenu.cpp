@@ -1,14 +1,14 @@
-#include <D3DX8.h>
+// #include <D3DX8.h>
 #include <cstdio>
-#include <direct.h>
-#include <windows.h>
+// #include <direct.h>
+// #include <windows.h>
 
 #include "MainMenu.hpp"
 
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
 #include "ChainPriorities.hpp"
-#include "Filesystem.hpp"
+#include "FileSystem.hpp"
 #include "GameErrorContext.hpp"
 #include "GameManager.hpp"
 #include "ReplayData.hpp"
@@ -21,32 +21,29 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
+#include <cstring>
+#include <SDL2/SDL_timer.h>
+
 namespace th06
 {
-DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
-DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 5, g_DifficultyList) = {"Easy   ", "Normal ", "Hard   ", "Lunatic", "Extra  "};
-DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 7, g_StageList) = {"Stage1", "Stage2", "Stage3", "Stage4",
+DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 4, g_ShortCharacterList) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
+DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 5, g_DifficultyList) = {"Easy   ", "Normal ", "Hard   ", "Lunatic", "Extra  "};
+DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 7, g_StageList) = {"Stage1", "Stage2", "Stage3", "Stage4",
                                                         "Stage5", "Stage6", "Extra "};
 
 DIFFABLE_STATIC(i16, g_LastJoystickInput)
-#pragma optimize("s", on)
+
 MainMenu::MainMenu()
 {
     // what?
     int waste1, waste2, waste3, waste4;
 }
-#pragma optimize("", on)
 
-#pragma function(strcpy)
-#pragma optimize("s", on)
-#pragma var_order(i, vmList, time, deltaTime, deltaTimeAsFrames, deltaTimeAsMs, mapping, startedUp, sVar1,             \
-                  controllerData, mappingData, refreshRate, local_48, local_4c, chosenStage, pos1, pos2, pos3, pos4,   \
-                  pos5, vm, hasLoadedSprite)
 ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
 {
     i32 i;
     AnmVm *vmList;
-    DWORD time;
+    u32 time;
     i32 deltaTime;
     f32 deltaTimeAsFrames;
     f32 deltaTimeAsMs;
@@ -59,23 +56,21 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     f32 local_48;
     i32 local_4c;
     u32 chosenStage;
-    D3DXVECTOR3 pos1;
-    D3DXVECTOR3 pos2;
-    D3DXVECTOR3 pos3;
-    D3DXVECTOR3 pos4;
-    D3DXVECTOR3 pos5;
+    ZunVec3 pos1;
+    ZunVec3 pos2;
+    ZunVec3 pos3;
+    ZunVec3 pos4;
+    ZunVec3 pos5;
     AnmVm *vm;
     u32 hasLoadedSprite;
 
     if (menu->timeRelatedArrSize < ARRAY_SIZE_SIGNED(menu->timeRelatedArr))
     {
-        timeBeginPeriod(1);
         if (menu->lastFrameTime == 0)
         {
-            menu->lastFrameTime = timeGetTime();
+            menu->lastFrameTime = SDL_GetTicks();
         }
-        time = timeGetTime();
-        timeEndPeriod(1);
+        time = SDL_GetTicks();
         menu->frameCountForRefreshRateCalc = menu->frameCountForRefreshRateCalc + 1;
         deltaTime = time - menu->lastFrameTime;
         if (deltaTime >= 700)
@@ -134,7 +129,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             g_GameManager.demoMode = 1;
             g_GameManager.demoFrames = 0;
             g_Supervisor.framerateMultiplier = 1.0;
-            strcpy(g_GameManager.replayFile, "data/demo/demo00.rpy");
+            std::strcpy((char *) g_GameManager.replayFile, "data/demo/demo00.rpy");
             g_GameManager.currentStage = 3;
             g_GameManager.difficulty = LUNATIC;
             g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER;
@@ -337,7 +332,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     pos1.x = 0.0;
                     pos1.y = 0.0;
                     pos1.z = 0.0;
-                    memcpy(vmList->posOffset, &pos1, sizeof(D3DXVECTOR3));
+                    std::memcpy(&vmList->posOffset, &pos1, sizeof(ZunVec3));
                     vmList->alphaInterpEndTime = 0;
                 }
                 else
@@ -353,7 +348,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     pos2.x = -6.0f;
                     pos2.y = -6.0f;
                     pos2.z = 0.0;
-                    memcpy(vmList->posOffset, &pos2, sizeof(D3DXVECTOR3));
+                    std::memcpy(&vmList->posOffset, &pos2, sizeof(ZunVec3));
                 }
             }
             vmList->flags.flag1 = 0;
@@ -377,7 +372,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 pos3.x = -6.0f;
                 pos3.y = -6.0f;
                 pos3.z = 0.0;
-                memcpy(vmList->posOffset, &pos3, sizeof(D3DXVECTOR3));
+                std::memcpy(&vmList->posOffset, &pos3, sizeof(ZunVec3));
             }
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
@@ -454,7 +449,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     case STATE_CHARACTER_SELECT:
         if (menu->stateTimer < 30)
             break;
-        if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
+        if (WAS_PRESSED_PERIODIC(TH_BUTTON_LEFT))
         {
             menu->cursor = menu->cursor + 1;
             if (2 <= menu->cursor)
@@ -489,7 +484,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
             }
         }
-        if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
+        if (WAS_PRESSED_PERIODIC(TH_BUTTON_RIGHT))
         {
             menu->cursor = menu->cursor - 1;
             if (menu->cursor < 0)
@@ -627,7 +622,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 pos4.x = 0.0;
                 pos4.y = 0.0;
                 pos4.z = 0.0;
-                memcpy(&vmList->posOffset, &pos4, sizeof(D3DXVECTOR3));
+                memcpy(&vmList->posOffset, &pos4, sizeof(ZunVec3));
             }
             else
             {
@@ -642,7 +637,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 pos5.x = -6.f;
                 pos5.y = -6.f;
                 pos5.z = 0.0;
-                memcpy(&vmList->posOffset, &pos5, sizeof(D3DXVECTOR3));
+                memcpy(&vmList->posOffset, &pos5, sizeof(ZunVec3));
             }
         }
         if (30 > menu->stateTimer)
@@ -877,7 +872,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         }
         else
         {
-            hasLoadedSprite = g_AnmManager->textures[vm->sprite->sourceFileIndex] != NULL;
+            hasLoadedSprite = g_AnmManager->textures[vm->sprite->sourceFileIndex].handle != 0;
         }
         if (hasLoadedSprite)
         {
@@ -886,13 +881,13 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
+
 #pragma intrinsic(strcpy)
 
-#pragma optimize("s", on)
+
 CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 {
-    if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
+    if (WAS_PRESSED_PERIODIC(TH_BUTTON_UP))
     {
         menu->cursor--;
         g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
@@ -907,7 +902,7 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
         return CURSOR_MOVE_UP;
     }
 
-    if (WAS_PRESSED_WEIRD(TH_BUTTON_DOWN))
+    if (WAS_PRESSED_PERIODIC(TH_BUTTON_DOWN))
     {
         menu->cursor++;
         g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
@@ -924,9 +919,9 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 
     return CURSOR_DONT_MOVE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 void MainMenu::SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk)
 {
     if (unk == 0 && menu->controlMapping[0] == btnPressed)
@@ -966,14 +961,12 @@ void MainMenu::SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBo
         menu->controlMapping[8] = oldMapping;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR currentItemColor, D3DCOLOR otherItemColor,
+void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, ZunColor currentItemColor, ZunColor otherItemColor,
                             int vm_amount)
 {
-    D3DXVECTOR3 otherItemPos;
-    D3DXVECTOR3 currentItemPos;
+    ZunVec3 otherItemPos;
+    ZunVec3 currentItemPos;
 
     if (itemNumber == cursor)
     {
@@ -984,8 +977,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         else
         {
             g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex + vm_amount);
-            vm->color = currentItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
-                        D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // just... why?
+            vm->color = (currentItemColor & COLOR_BLACK) | COLOR_RGB_MASK; // just... why?
         }
 
         currentItemPos.x = -4.0f;
@@ -1003,8 +995,7 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         else
         {
             g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex);
-            vm->color = otherItemColor & D3DCOLOR_RGBA(0x00, 0x00, 0x00, 0xff) |
-                        D3DCOLOR_RGBA(0xff, 0xff, 0xff, 0x00); // again, why?
+            vm->color = (otherItemColor & COLOR_BLACK) | COLOR_RGB_MASK; // again, why?
         }
         otherItemPos.x = 0.0f;
         otherItemPos.y = 0.0f;
@@ -1012,14 +1003,14 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, D3DCOLOR curr
         vm->posOffset = otherItemPos;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(time, i, vector3Ptr)
+
+
+
 ZunResult MainMenu::BeginStartup()
 {
-    D3DXVECTOR3 vector3Ptr;
-    DWORD time;
+    ZunVec3 vector3Ptr;
+    u32 time;
     int i;
 
     if (LoadTitleAnm(this) != ZUN_SUCCESS)
@@ -1029,11 +1020,11 @@ ZunResult MainMenu::BeginStartup()
     }
     if (g_Supervisor.startupTimeBeforeMenuMusic > 0)
     {
-        time = timeGetTime();
+        time = SDL_GetTicks();
         while ((time - g_Supervisor.startupTimeBeforeMenuMusic >= 0) &&
                (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
         {
-            time = timeGetTime();
+            time = SDL_GetTicks();
         }
         g_Supervisor.startupTimeBeforeMenuMusic = 0;
         g_Supervisor.PlayAudio("bgm/th06_01.mid");
@@ -1058,21 +1049,21 @@ ZunResult MainMenu::BeginStartup()
     this->gameState = STATE_PRE_INPUT;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(vm, d3dVec)
+
+
+
 ZunBool MainMenu::WeirdSecondInputCheck()
 {
     i32 vm;
-    D3DXVECTOR3 d3dVec;
+    ZunVec3 d3dVec;
 
     if (this->stateTimer < 0x1e)
     {
         return true;
     }
 
-    if (!WAS_PRESSED_WEIRD(TH_BUTTON_SELECTMENU | TH_BUTTON_BOMB | TH_BUTTON_MENU | TH_BUTTON_Q | TH_BUTTON_S))
+    if (!WAS_PRESSED_PERIODIC(TH_BUTTON_SELECTMENU | TH_BUTTON_BOMB | TH_BUTTON_MENU | TH_BUTTON_Q | TH_BUTTON_S))
     {
         return true;
     }
@@ -1102,10 +1093,10 @@ ZunBool MainMenu::WeirdSecondInputCheck()
     this->framesActive = 60;
     return false;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(i, drawVm)
+
+
+
 ZunResult MainMenu::DrawStartMenu(void)
 {
     i32 i;
@@ -1271,21 +1262,16 @@ ZunResult MainMenu::DrawStartMenu(void)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma function(strcpy)
-#pragma var_order(anmVm, cur, replayFileHandle, replayFileIdx, replayData, replayFilePath, replayFileInfo, uh, uh2,    \
-                  padding)
 i32 MainMenu::ReplayHandling()
 {
     AnmVm *anmVm;
     i32 cur;
-    HANDLE replayFileHandle;
+//    HANDLE replayFileHandle;
     u32 replayFileIdx;
     ReplayData *replayData;
     char replayFilePath[32];
-    WIN32_FIND_DATA replayFileInfo;
+//    WIN32_FIND_DATA replayFileInfo;
     u8 padding[0x20]; // idk
 
     switch (this->gameState)
@@ -1304,8 +1290,9 @@ i32 MainMenu::ReplayHandling()
                 replayFileIdx = 0;
                 for (cur = 0; cur < 15; cur++)
                 {
-                    sprintf(replayFilePath, "./replay/th6_%.2d.rpy", cur + 1);
-                    replayData = (ReplayData *)FileSystem::OpenPath(replayFilePath, 1);
+                    std::sprintf(replayFilePath, "./replay/th6_%.2d.rpy", cur + 1);
+                    replayData = (ReplayData *) std::malloc(sizeof(ReplayData));
+                    replayData->header = (ReplayHeader *)FileSystem::OpenPath(replayFilePath, 1);
                     if (replayData == NULL)
                     {
                         continue;
@@ -1313,38 +1300,37 @@ i32 MainMenu::ReplayHandling()
                     if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                     {
                         this->replayFileData[replayFileIdx] = *replayData;
-                        strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
-                        sprintf(this->replayFileName[replayFileIdx], "No.%.2d", cur + 1);
+                        std::strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
+                        std::sprintf(this->replayFileName[replayFileIdx], "No.%.2d", cur + 1);
                         replayFileIdx++;
                     }
-                    free(replayData);
                 }
-                _mkdir("./replay");
-                _chdir("./replay");
-                replayFileHandle = FindFirstFileA("th6_ud????.rpy", &replayFileInfo);
-                if (replayFileHandle != INVALID_HANDLE_VALUE)
-                {
-                    for (cur = 0; cur < 0x2d; cur++)
-                    {
-                        replayData = (ReplayData *)FileSystem::OpenPath(replayFilePath, 1);
-                        if (replayData == NULL)
-                        {
-                            continue;
-                        }
-                        if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
-                        {
-                            this->replayFileData[replayFileIdx] = *replayData;
-                            sprintf(this->replayFilePaths[replayFileIdx], "./replay/%s", replayFileInfo.cFileName);
-                            sprintf(this->replayFileName[replayFileIdx], "User ");
-                            replayFileIdx++;
-                        }
-                        free(replayData);
-                        if (!FindNextFileA(replayFileHandle, &replayFileInfo))
-                            break;
-                    }
-                }
-                FindClose(replayFileHandle);
-                _chdir("../");
+//                _mkdir("./replay");
+//                _chdir("./replay");
+//                replayFileHandle = FindFirstFileA("th6_ud????.rpy", &replayFileInfo);
+//                if (replayFileHandle != INVALID_HANDLE_VALUE)
+//                {
+//                    for (cur = 0; cur < 0x2d; cur++)
+//                    {
+//                        replayData = (ReplayData *)FileSystem::OpenPath(replayFilePath, 1);
+//                        if (replayData == NULL)
+//                        {
+//                            continue;
+//                        }
+//                        if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
+//                        {
+//                            this->replayFileData[replayFileIdx] = *replayData;
+//                            sprintf(this->replayFilePaths[replayFileIdx], "./replay/%s", replayFileInfo.cFileName);
+//                            sprintf(this->replayFileName[replayFileIdx], "User ");
+//                            replayFileIdx++;
+//                        }
+//                        free(replayData);
+//                        if (!FindNextFileA(replayFileHandle, &replayFileInfo))
+//                            break;
+//                    }
+//                }
+//                FindClose(replayFileHandle);
+//                _chdir("../");
                 this->replayFilesNum = replayFileIdx;
                 this->minimumOpacity = 0;
                 this->framesInactive = this->framesActive;
@@ -1389,19 +1375,24 @@ i32 MainMenu::ReplayHandling()
                 this->stateTimer = 0;
                 this->cursor = 0;
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
-                this->currentReplay = (ReplayData *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
+                this->currentReplay = (ReplayData *) std::malloc(sizeof(ReplayData));
+                this->currentReplay->header = (ReplayHeader *) FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
                 ReplayManager::ValidateReplayData(this->currentReplay, g_LastFileSize);
                 for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData); cur++)
                 {
-                    if (this->currentReplay->stageReplayData[cur] != NULL)
+                    if (this->currentReplay->header->stageReplayDataOffsets[cur] != 0)
                     {
                         this->currentReplay->stageReplayData[cur] =
-                            (StageReplayData *)((u32)this->currentReplay +
-                                                (u32)this->currentReplay->stageReplayData[cur]);
+                            (StageReplayData *)(((u8 *) this->currentReplay->header) +
+                                                (this->currentReplay->header->stageReplayDataOffsets[cur]));
+                    }
+                    else
+                    {
+                        this->currentReplay->stageReplayData[cur] = NULL;
                     }
                 }
 
-                while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
+                while (this->replayFileData[this->chosenReplay].header->stageReplayDataOffsets[this->cursor] == 0)
                 {
                     this->cursor = this->cursor + 1;
 
@@ -1433,7 +1424,7 @@ i32 MainMenu::ReplayHandling()
         cur = MoveCursor(this, 7);
         if (cur < 0)
         {
-            while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
+            while (this->replayFileData[this->chosenReplay].header->stageReplayDataOffsets[this->cursor] == 0)
             {
                 this->cursor--;
                 if (this->cursor < 0)
@@ -1444,7 +1435,7 @@ i32 MainMenu::ReplayHandling()
         }
         else if (cur > 0)
         {
-            while (this->replayFileData[this->chosenReplay].stageReplayData[this->cursor] == NULL)
+            while (this->replayFileData[this->chosenReplay].header->stageReplayDataOffsets[this->cursor] == 0)
             {
                 this->cursor++;
                 if (this->cursor >= 7)
@@ -1453,14 +1444,14 @@ i32 MainMenu::ReplayHandling()
                 }
             }
         }
-        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].stageReplayData)
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].header->stageReplayDataOffsets)
         {
             g_GameManager.isInReplay = 1;
             g_Supervisor.framerateMultiplier = 1.0;
-            strcpy(g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
-            g_GameManager.difficulty = (Difficulty)this->currentReplay->difficulty;
-            g_GameManager.character = this->currentReplay->shottypeChara / 2;
-            g_GameManager.shotType = this->currentReplay->shottypeChara % 2;
+            std::strcpy((char *) g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
+            g_GameManager.difficulty = (Difficulty)this->currentReplay->header->difficulty;
+            g_GameManager.character = this->currentReplay->header->shottypeChara / 2;
+            g_GameManager.shotType = this->currentReplay->header->shottypeChara % 2;
             cur = 0;
             while (this->currentReplay->stageReplayData[cur] == NULL)
             {
@@ -1468,8 +1459,8 @@ i32 MainMenu::ReplayHandling()
             }
             g_GameManager.livesRemaining = this->currentReplay->stageReplayData[cur]->livesRemaining;
             g_GameManager.bombsRemaining = this->currentReplay->stageReplayData[cur]->bombsRemaining;
-            ReplayData *uh = this->currentReplay;
-            free(uh);
+            std::free(this->currentReplay->header);
+            std::free(this->currentReplay);
             this->currentReplay = NULL;
             g_GameManager.currentStage = this->cursor;
             g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER;
@@ -1477,8 +1468,8 @@ i32 MainMenu::ReplayHandling()
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
-            ReplayData *uh2 = this->currentReplay;
-            free(uh2);
+            std::free(this->currentReplay->header);
+            std::free(this->currentReplay);
             this->currentReplay = NULL;
             this->gameState = STATE_REPLAY_ANIM;
             this->stateTimer = 0;
@@ -1498,11 +1489,7 @@ i32 MainMenu::ReplayHandling()
     }
     return 0;
 }
-#pragma intrinsic(strcpy)
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(vmRef, i, replayAmount, isSelected, isSelected2)
 ZunResult MainMenu::DrawReplayMenu()
 {
     i32 replayAmount;
@@ -1548,9 +1535,9 @@ ZunResult MainMenu::DrawReplayMenu()
         }
 
         g_AsciiManager.AddFormatText(&vmRef->pos, "%s %8s  %8s %7s  %7s", this->replayFileName[i],
-                                     this->replayFileData[i].name, this->replayFileData[i].date,
-                                     g_ShortCharacterList[this->replayFileData[i].shottypeChara],
-                                     g_DifficultyList[this->replayFileData[i].difficulty]);
+                                     this->replayFileData[i].header->name, this->replayFileData[i].header->date,
+                                     g_ShortCharacterList[this->replayFileData[i].header->shottypeChara],
+                                     g_DifficultyList[this->replayFileData[i].header->difficulty]);
     }
     if (this->gameState == STATE_REPLAY_SELECT && this->currentReplay)
     {
@@ -1558,7 +1545,7 @@ ZunResult MainMenu::DrawReplayMenu()
         g_AsciiManager.isSelected = false;
 
         vmRef = &this->vm[97];
-        g_AsciiManager.AddFormatText(&vmRef->pos, "       %2.3f%%", this->currentReplay->slowdownRate);
+        g_AsciiManager.AddFormatText(&vmRef->pos, "       %2.3f%%", this->currentReplay->header->slowdownRate);
 
         vmRef = &this->vm[114];
         g_AsciiManager.AddFormatText(&vmRef->pos, "Stage  LastScore");
@@ -1605,9 +1592,7 @@ ZunResult MainMenu::DrawReplayMenu()
     g_AsciiManager.isSelected = false;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelected)
 {
     if (subItem != subItemSelected)
@@ -1622,7 +1607,7 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
         }
         vm->scaleX = 1.0;
         vm->scaleY = 1.0;
-        vm->posOffset = D3DXVECTOR3(0.0, 0.0, 0.0);
+        vm->posOffset = ZunVec3(0.0, 0.0, 0.0);
     }
     else
     {
@@ -1638,7 +1623,7 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
         {
             g_AnmManager->SetActiveSprite(vm, vm->baseSpriteIndex + (ANM_OFFSET_TITLE04S - ANM_OFFSET_TITLE04));
         }
-        vm->posOffset = D3DXVECTOR3(-2.0, -2.0, 0.0);
+        vm->posOffset = ZunVec3(-2.0, -2.0, 0.0);
     }
 
     if (item != this->cursor)
@@ -1652,7 +1637,7 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
             vm->color = COLOR_SET_ALPHA2(vm->color, 128);
         }
 
-        vm->posOffset += D3DXVECTOR3(0.0, 0.0, 0.0);
+        vm->posOffset += ZunVec3(0.0, 0.0, 0.0);
     }
     else
     {
@@ -1665,13 +1650,10 @@ void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelect
             vm->color = COLOR_SET_ALPHA2(vm->color, 255);
         }
 
-        vm->posOffset += D3DXVECTOR3(-4.0, -4.0, 0.0);
+        vm->posOffset += ZunVec3(-4.0, -4.0, 0.0);
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(i, optionsVm)
 u32 MainMenu::OnUpdateOptionsMenu()
 {
 
@@ -1723,7 +1705,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
     }
     if (this->stateTimer >= 32)
     {
-        if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
+        if (WAS_PRESSED_PERIODIC(TH_BUTTON_LEFT))
         {
             switch (this->cursor)
             {
@@ -1796,7 +1778,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
             this->cursor = CURSOR_OPTIONS_POS_EXIT;
             g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
         }
-        if (WAS_PRESSED_WEIRD(TH_BUTTON_RIGHT))
+        if (WAS_PRESSED_PERIODIC(TH_BUTTON_RIGHT))
         {
             switch (this->cursor)
             {
@@ -1920,15 +1902,12 @@ u32 MainMenu::OnUpdateOptionsMenu()
     }
     return 0;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(stageNum, color, charShotType, selectedStage, textPos)
 ZunResult MainMenu::ChoosePracticeLevel()
 {
     if (this->gameState == STATE_PRACTICE_LVL_SELECT)
     {
-        D3DXVECTOR3 textPos(320.0, 200.0, 0.0);
+        ZunVec3 textPos(320.0, 200.0, 0.0);
         u32 color = (this->stateTimer < 30) ? this->stateTimer * 0xFF / 30 : 0xff;
         i32 charShotType = (g_GameManager.character << 1) + g_GameManager.shotType;
         i32 selectedStage =
@@ -1960,16 +1939,16 @@ ZunResult MainMenu::ChoosePracticeLevel()
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma var_order(targetOpacity, window, vmIdx, curVm, posBackup, mgr, shouldDraw, offset, pos)
-#pragma optimize("s", on)
+
+
+
 ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 {
-    D3DXVECTOR3 posBackup;
-    D3DXVECTOR3 *pos;
-    D3DXVECTOR3 *offset;
-    BOOL shouldDraw;
+    ZunVec3 posBackup;
+    ZunVec3 *pos;
+    ZunVec3 *offset;
+    bool shouldDraw;
     AnmVm *curVm;
     i32 vmIdx;
     ZunRect window;
@@ -1986,7 +1965,7 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
         return CHAIN_CALLBACK_RESULT_CONTINUE;
     }
     mgr = g_AnmManager;
-    mgr->currentTexture = NULL;
+    mgr->currentTextureHandle = 0;
     g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
     if (menu->framesActive != 0)
     {
@@ -2024,18 +2003,18 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
         }
         else
         {
-            shouldDraw = g_AnmManager->textures[curVm->sprite->sourceFileIndex] != NULL;
+            shouldDraw = g_AnmManager->textures[curVm->sprite->sourceFileIndex].handle != 0;
         }
         if (shouldDraw)
         {
-            memcpy(posBackup, curVm->pos, sizeof(D3DXVECTOR3));
+            std::memcpy(&posBackup, &curVm->pos, sizeof(ZunVec3));
             offset = &curVm->posOffset;
             pos = &curVm->pos;
             pos->x += offset->x;
             pos->y += offset->y;
             pos->z += offset->z;
             g_AnmManager->Draw(curVm);
-            memcpy(curVm->pos, posBackup, sizeof(D3DXVECTOR3));
+            std::memcpy(&curVm->pos, &posBackup, sizeof(ZunVec3));
         }
     }
     switch (menu->gameState)
@@ -2049,9 +2028,7 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
     }
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 {
     i32 i;
@@ -2101,9 +2078,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
 {
     AnmVm *vm;
@@ -2166,16 +2141,13 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
         {
             vm->color = COLOR_WHITE;
         }
-        vm->posOffset = D3DXVECTOR3(0, 0, 0);
+        vm->posOffset = ZunVec3(0, 0, 0);
         vm->baseSpriteIndex = vm->activeSpriteIndex;
         vm->flags.zWriteDisable = 1;
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma var_order(fileIdx, vm)
-#pragma optimize("s", on)
 ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
 {
     AnmVm *vm;
@@ -2211,23 +2183,19 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
         {
             vm->color = COLOR_WHITE;
         }
-        vm->posOffset = D3DXVECTOR3(0, 0, 0);
+        vm->posOffset = ZunVec3(0, 0, 0);
         vm->baseSpriteIndex = vm->activeSpriteIndex;
         vm->flags.zWriteDisable = 1;
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma function(memset)
 ZunResult MainMenu::RegisterChain(u32 isDemo)
 {
     MainMenu *menu = &g_MainMenu;
 
-    memset(menu, 0, sizeof(MainMenu));
+    std::memset(menu, 0, sizeof(MainMenu));
     g_GameManager.isInGameMenu = 0;
-    utils::DebugPrint(TH_DBG_MAINMENU_VRAM, g_Supervisor.d3dDevice->GetAvailableTextureMem());
     menu->gameState = isDemo ? STATE_REPLAY_LOAD : STATE_STARTUP;
     g_Supervisor.framerateMultiplier = 0.0;
     menu->chainCalc = g_Chain.CreateElem((ChainCallback)MainMenu::OnUpdate);
@@ -2247,11 +2215,7 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
     menu->frameCountForRefreshRateCalc = 0;
     return ZUN_SUCCESS;
 }
-#pragma intrinsic(memset)
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(scoredat, i, anmmgr)
 ZunResult MainMenu::AddedCallback(MainMenu *m)
 {
     i32 i;
@@ -2332,17 +2296,16 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     g_GameManager.demoFrames = 0;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma var_order(i1, i2, mgr, replay)
-#pragma optimize("s", on)
+
+
+
 ZunResult MainMenu::DeletedCallback(MainMenu *menu)
 {
     AnmManager *mgr;
     void *replay;
     i32 i1, i2;
 
-    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
     MainMenu::ReleaseTitleAnm();
     for (i1 = ANM_FILE_SELECT01; i1 <= ANM_FILE_REPLAY; i1++)
     {
@@ -2364,9 +2327,9 @@ ZunResult MainMenu::DeletedCallback(MainMenu *menu)
     free(replay);
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 void MainMenu::ReleaseTitleAnm()
 {
     // There's a bit of an off-by-one error here, where it frees
@@ -2377,7 +2340,7 @@ void MainMenu::ReleaseTitleAnm()
         g_AnmManager->ReleaseAnm(i);
     }
 }
-#pragma optimize("", on)
+
 
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
 }; // namespace th06

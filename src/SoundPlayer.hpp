@@ -1,11 +1,14 @@
 #pragma once
 
-#include <Windows.h>
+// #include <Windows.h>
 
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include "zwave.hpp"
+#include <mutex>
+#include <thread>
+#include <SDL2/SDL_audio.h>
+// #include "zwave.hpp"
 
 namespace th06
 {
@@ -54,47 +57,60 @@ struct SoundBufferIdxVolume
 };
 ZUN_ASSERT_SIZE(SoundBufferIdxVolume, 0x8);
 
+struct SoundData
+{
+    i16 *samples;
+    u32 pos;
+    u32 len;
+    bool isPlaying;
+};
+
 struct SoundPlayer
 {
     SoundPlayer();
 
-    ZunResult InitializeDSound(HWND window);
+    ZunResult InitializeDSound();
     ZunResult InitSoundBuffers();
     ZunResult Release(void);
 
-    ZunResult LoadSound(i32 idx, char *path);
-    static WAVEFORMATEX *GetWavFormatData(u8 *soundData, char *formatString, i32 *formatSize,
-                                          u32 fileSizeExcludingFormat);
+    ZunResult LoadSound(i32 idx, const char *path, f32 volumeMultiplier);
+//    static WAVEFORMATEX *GetWavFormatData(u8 *soundData, char *formatString, i32 *formatSize,
+//                                          u32 fileSizeExcludingFormat);
     void PlaySounds();
     void PlaySoundByIdx(SoundIdx idx, i32 unused);
-    ZunResult PlayBGM(BOOL isLooping);
+    ZunResult PlayBGM(bool isLooping);
     void StopBGM();
     void FadeOut(f32 seconds);
 
-    static DWORD __stdcall BackgroundMusicPlayerThread(LPVOID lpThreadParameter);
+//    static DWORD __stdcall BackgroundMusicPlayerThread(LPVOID lpThreadParameter);
+    void BackgroundMusicPlayerThread();
 
     ZunResult LoadWav(char *path);
     ZunResult LoadPos(char *path);
 
-    LPDIRECTSOUND dsoundHdl;
+    void MixAudio(u32 samples);
+
+//    LPDIRECTSOUND dsoundHdl;
     i32 unk4;
-    LPDIRECTSOUNDBUFFER soundBuffers[128];
-    LPDIRECTSOUNDBUFFER duplicateSoundBuffers[128];
+    SoundData soundBuffers[128];
+    std::mutex soundBufMutex;
+//    LPDIRECTSOUNDBUFFER duplicateSoundBuffers[128];
     i32 unk408[128];
-    LPDIRECTSOUNDBUFFER initSoundBuffer;
-    HWND gameWindow;
-    CSoundManager *manager;
-    DWORD backgroundMusicThreadId;
-    HANDLE backgroundMusicThreadHandle;
+//    LPDIRECTSOUNDBUFFER initSoundBuffer;
+//    HWND gameWindow;
+//    CSoundManager *manager;
+    SDL_AudioDeviceID audioDev;
+//    DWORD backgroundMusicThreadId;
+    std::thread backgroundMusicThreadHandle;
     i32 unk61c;
     i32 soundBuffersToPlay[3];
-    CStreamingSound *backgroundMusic;
-    HANDLE backgroundMusicUpdateEvent;
-    BOOL isLooping;
+//    CStreamingSound *backgroundMusic;
+//    HANDLE backgroundMusicUpdateEvent;
+    bool isLooping;
 };
 ZUN_ASSERT_SIZE(SoundPlayer, 0x638);
 
 DIFFABLE_EXTERN(SoundBufferIdxVolume, g_SoundBufferIdxVol[32]);
-DIFFABLE_EXTERN(char, *g_SFXList[26]);
+DIFFABLE_EXTERN(const char *, g_SFXList[26]);
 DIFFABLE_EXTERN(SoundPlayer, g_SoundPlayer)
 }; // namespace th06

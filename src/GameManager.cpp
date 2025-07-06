@@ -16,8 +16,8 @@
 #include "Supervisor.hpp"
 #include "utils.hpp"
 
-#include <d3d8types.h>
-#include <d3dx8math.h>
+// #include <d3d8types.h>
+// #include <d3dx8math.h>
 
 namespace th06
 {
@@ -92,7 +92,7 @@ DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 
 #define MAX_LIVES 8
 
-#pragma optimize("s", on)
+
 i32 GameManager::IsInBounds(f32 x, f32 y, f32 width, f32 height)
 {
     if (width / 2.0f + x < 0.0f)
@@ -115,7 +115,7 @@ i32 GameManager::IsInBounds(f32 x, f32 y, f32 width, f32 height)
     return true;
 }
 
-#pragma var_order(score_increment, is_in_menu)
+
 ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
 {
     u32 isInMenu;
@@ -168,8 +168,12 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
 
     SetupCamera(0);
 
-    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
-    g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, g_Stage.skyFog.color, 1.0, 0);
+    g_Supervisor.viewport.Set();
+    glClearDepthf(g_Stage.skyFog.color);
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+//    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+//    g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, g_Stage.skyFog.color, 1.0, 0);
 
     // Seems like gameManager->isInGameMenu was supposed to have 3 states, but all the times it ends up checking both
     if (gameManager->isInGameMenu == 1 || gameManager->isInGameMenu == 2 || gameManager->isInRetryMenu)
@@ -268,7 +272,7 @@ ZunResult GameManager::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-#pragma var_order(failedToLoadReplay, catk, i, catkCursor, scoredat, clrdIdx, unk1, unk2, padding)
+
 ZunResult GameManager::AddedCallback(GameManager *mgr)
 {
     ScoreDat *scoredat;
@@ -280,7 +284,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     i32 padding[3];
 
     failedToLoadReplay = false;
-    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+//    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
     if (g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT)
     {
         g_Supervisor.defaultConfig.bombCount = g_GameManager.bombsRemaining;
@@ -391,7 +395,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     g_Supervisor.LoadPbg3(ST_PBG3_INDEX, TH_ST_DAT_FILE);
     if (g_GameManager.isInReplay == 1)
     {
-        if (ReplayManager::RegisterChain(1, g_GameManager.replayFile) != ZUN_SUCCESS)
+        if (ReplayManager::RegisterChain(1, (char *) g_GameManager.replayFile) != ZUN_SUCCESS)
         {
             failedToLoadReplay = true;
         }
@@ -475,7 +479,7 @@ ZunResult GameManager::DeletedCallback(GameManager *mgr)
 {
     i32 padding1, padding2, padding3;
 
-    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
+//    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
     if (!g_GameManager.demoMode)
     {
         g_Supervisor.StopAudio();
@@ -499,12 +503,12 @@ void GameManager::CutChain()
     g_Chain.Cut(&g_GameManagerDrawChain);
 }
 
-#pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec)
+
 void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
 {
-    D3DXVECTOR3 eyeVec;
-    D3DXVECTOR3 atVec;
-    D3DXVECTOR3 upVec;
+    ZunVec3 eyeVec;
+    ZunVec3 atVec;
+    ZunVec3 upVec;
     f32 fov;
     f32 aspectRatio;
     f32 viewportMiddleWidth;
@@ -514,7 +518,7 @@ void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
     viewportMiddleWidth = g_Supervisor.viewport.Width / 2.0f;
     viewportMiddleHeight = g_Supervisor.viewport.Height / 2.0f;
     aspectRatio = (f32)g_Supervisor.viewport.Width / (f32)g_Supervisor.viewport.Height;
-    fov = D3DXToRadian(30);
+    fov = ZUN_PI * (30.0f / 180.0f);
     cameraDistance = viewportMiddleHeight / tanf(fov / 2);
     upVec.x = 0.0f;
     upVec.y = 1.0f;
@@ -525,22 +529,24 @@ void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
     eyeVec.x = viewportMiddleWidth;
     eyeVec.y = -viewportMiddleHeight;
     eyeVec.z = -cameraDistance;
-    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
+    createViewMatrix(eyeVec, atVec, upVec);
+    glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *) &g_Supervisor.viewMatrix.m);
+//    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
     g_GameManager.cameraDistance = fabsf(cameraDistance);
-    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
-                               10000.0f + extraRenderDistance);
-    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
-    g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
+    perspectiveMatrixFromFOV(fov, aspectRatio, 100.0f, 10000.0f + extraRenderDistance);
+    glGetFloatv(GL_PROJECTION_MATRIX, (GLfloat *) &g_Supervisor.projectionMatrix.m);
+//    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
+//                               10000.0f + extraRenderDistance);
+//    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
+//    g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
     return;
 }
 
-#pragma var_order(cameraDistance, viewportMiddleHeight, viewportMiddleWidth, aspectRatio, fov, upVec, atVec, eyeVec,   \
-                  atVecY, atVecX, eyeVecZ)
 void GameManager::SetupCamera(f32 extraRenderDistance)
 {
-    D3DXVECTOR3 eyeVec;
-    D3DXVECTOR3 atVec;
-    D3DXVECTOR3 upVec;
+    ZunVec3 eyeVec;
+    ZunVec3 atVec;
+    ZunVec3 upVec;
     f32 fov;
     f32 aspectRatio;
     f32 viewportMiddleWidth;
@@ -554,7 +560,7 @@ void GameManager::SetupCamera(f32 extraRenderDistance)
     viewportMiddleWidth = g_Supervisor.viewport.Width / 2.0f;
     viewportMiddleHeight = g_Supervisor.viewport.Height / 2.0f;
     aspectRatio = (f32)g_Supervisor.viewport.Width / (f32)g_Supervisor.viewport.Height;
-    fov = D3DXToRadian(30);
+    fov = ZUN_PI * (30.0f / 180.0f);
     cameraDistance = viewportMiddleHeight / tanf(fov / 2);
     upVec.x = 0.0f;
     upVec.y = 1.0f;
@@ -568,12 +574,16 @@ void GameManager::SetupCamera(f32 extraRenderDistance)
     eyeVec.x = viewportMiddleWidth;
     eyeVec.y = -viewportMiddleHeight;
     eyeVec.z = eyeVecZ;
-    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
+    createViewMatrix(eyeVec, atVec, upVec);
+    glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *) &g_Supervisor.viewMatrix.m);
+//    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
     g_GameManager.cameraDistance = fabsf(cameraDistance);
-    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
-                               10000.0f + extraRenderDistance);
-    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
-    g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
+    perspectiveMatrixFromFOV(fov, aspectRatio, 100.0f, 10000.0f + extraRenderDistance);
+    glGetFloatv(GL_PROJECTION_MATRIX, (GLfloat *) &g_Supervisor.projectionMatrix.m);
+//    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
+//                               10000.0f + extraRenderDistance);
+//    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
+//    g_Supervisor.d3dDevice->SetTransform(D3DTS_PROJECTION, &g_Supervisor.projectionMatrix);
     return;
 }
 
@@ -622,5 +632,5 @@ i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
             this->clrd[shottype + character * 2].difficultyClearedWithRetries[2] == MAX_CLEARS ||
             this->clrd[shottype + character * 2].difficultyClearedWithRetries[3] == MAX_CLEARS);
 }
-#pragma optimize("", on)
+
 }; // namespace th06

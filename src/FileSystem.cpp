@@ -1,5 +1,6 @@
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "FileSystem.hpp"
 #include "pbg3/Pbg3Archive.hpp"
@@ -9,20 +10,20 @@ namespace th06
 {
 DIFFABLE_STATIC(u32, g_LastFileSize)
 
-#pragma var_order(pbg3Idx, entryname, entryIdx, fsize, data, file)
-u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
+
+u8 *FileSystem::OpenPath(const char *filepath, int isExternalResource)
 {
     u8 *data;
     FILE *file;
     size_t fsize;
     i32 entryIdx;
-    char *entryname;
+    const char *entryname;
     i32 pbg3Idx;
 
     entryIdx = -1;
     if (isExternalResource == 0)
     {
-        entryname = strrchr(filepath, '\\');
+        entryname = std::strrchr(filepath, '\\');
         if (entryname == (char *)0x0)
         {
             entryname = filepath;
@@ -31,7 +32,7 @@ u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
         {
             entryname = entryname + 1;
         }
-        entryname = strrchr(entryname, '/');
+        entryname = std::strrchr(entryname, '/');
         if (entryname == (char *)0x0)
         {
             entryname = filepath;
@@ -68,7 +69,7 @@ u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
     else
     {
         utils::DebugPrint2("%s Load ... \n", filepath);
-        file = fopen(filepath, "rb");
+        file = std::fopen(filepath, "rb");
         if (file == NULL)
         {
             utils::DebugPrint2("error : %s is not found.\n", filepath);
@@ -76,37 +77,37 @@ u8 *FileSystem::OpenPath(char *filepath, int isExternalResource)
         }
         else
         {
-            fseek(file, 0, SEEK_END);
-            fsize = ftell(file);
+            std::fseek(file, 0, SEEK_END);
+            fsize = std::ftell(file);
             g_LastFileSize = fsize;
-            fseek(file, 0, SEEK_SET);
-            data = (u8 *)malloc(fsize);
-            fread(data, 1, fsize, file);
-            fclose(file);
+            std::fseek(file, 0, SEEK_SET);
+            data = (u8 *) std::malloc(fsize);
+            std::fread(data, 1, fsize, file);
+            std::fclose(file);
         }
     }
     return data;
 }
 
-int FileSystem::WriteDataToFile(char *path, void *data, size_t size)
+int FileSystem::WriteDataToFile(const char *path, void *data, size_t size)
 {
     FILE *f;
 
-    f = fopen(path, "wb");
+    f = std::fopen(path, "wb");
     if (f == NULL)
     {
         return -1;
     }
     else
     {
-        if (fwrite(data, 1, size, f) != size)
+        if (std::fwrite(data, 1, size, f) != size)
         {
-            fclose(f);
+            std::fclose(f);
             return -2;
         }
         else
         {
-            fclose(f);
+            std::fclose(f);
             return 0;
         }
     }

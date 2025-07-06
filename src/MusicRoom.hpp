@@ -21,7 +21,7 @@ struct TrackDescriptor
 ZUN_ASSERT_SIZE(TrackDescriptor, 0x272);
 
 // Force constructor to generate size optimized code when it's placed in the binary
-#pragma optimize("s", on)
+
 struct MusicRoom
 {
     MusicRoom()
@@ -51,5 +51,5 @@ struct MusicRoom
     AnmVm descriptionSprites[16];
 };
 ZUN_ASSERT_SIZE(MusicRoom, 0x3434);
-#pragma optimize("", on)
+
 }; // namespace th06

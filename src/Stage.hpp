@@ -5,9 +5,9 @@
 #include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include "zwave.hpp"
-#include <d3d8.h>
-#include <d3dx8math.h>
+// #include "zwave.hpp"
+// #include <d3d8.h>
+// #include <d3dx8math.h>
 
 namespace th06
 {
@@ -30,8 +30,8 @@ struct RawStageQuadBasic
     i16 byteSize;
     i16 anmScript;
     i16 vmIdx;
-    D3DXVECTOR3 position;
-    D3DXVECTOR2 size;
+    ZunVec3 position;
+    ZunVec2 size;
 };
 ZUN_ASSERT_SIZE(RawStageQuadBasic, 0x1c);
 
@@ -40,8 +40,8 @@ struct RawStageObject
     i16 id;
     i8 zLevel;
     i8 flags;
-    D3DXVECTOR3 position;
-    D3DXVECTOR3 size;
+    ZunVec3 position;
+    ZunVec3 size;
     RawStageQuadBasic firstQuad;
 };
 ZUN_ASSERT_SIZE(RawStageObject, 0x38);
@@ -50,7 +50,7 @@ struct RawStageObjectInstance
 {
     i16 id;
     i16 unk2;
-    D3DXVECTOR3 position;
+    ZunVec3 position;
 };
 ZUN_ASSERT_SIZE(RawStageObjectInstance, 0x10);
 
@@ -67,7 +67,7 @@ struct StageCameraSky
 {
     f32 nearPlane;
     f32 farPlane;
-    D3DCOLOR color;
+    ZunColor color;
 };
 ZUN_ASSERT_SIZE(StageCameraSky, 0xc);
 
@@ -121,7 +121,7 @@ struct Stage
     i32 instructionIndex;
     ZunTimer timer;
     u32 stage;
-    D3DXVECTOR3 position;
+    ZunVec3 position;
     StageCameraSky skyFog;
     StageCameraSky skyFogInterpInitial;
     StageCameraSky skyFogInterpFinal;
@@ -133,13 +133,13 @@ struct Stage
     AnmVm spellcardBackground;
     AnmVm unk2;
     u8 unpauseFlag;
-    D3DXVECTOR3 facingDirInterpInitial;
-    D3DXVECTOR3 facingDirInterpFinal;
+    ZunVec3 facingDirInterpInitial;
+    ZunVec3 facingDirInterpFinal;
     i32 facingDirInterpDuration;
     ZunTimer facingDirInterpTimer;
-    D3DXVECTOR3 positionInterpFinal;
+    ZunVec3 positionInterpFinal;
     i32 positionInterpEndTime;
-    D3DXVECTOR3 positionInterpInitial;
+    ZunVec3 positionInterpInitial;
     i32 positionInterpStartTime;
 };
 ZUN_ASSERT_SIZE(Stage, 0x2f4);

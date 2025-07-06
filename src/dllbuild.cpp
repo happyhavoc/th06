@@ -37,8 +37,8 @@
 #include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "detours.h"
+#include <cstring>
 #include <fstream>
-#include <string.h>
 
 struct Detouring
 {
@@ -61,7 +61,7 @@ extern "C" IDirect3D8 *__stdcall Direct3DCreate8(UINT sdk_version)
 {
     char path[MAX_PATH + 1];
     GetSystemDirectoryA(path, MAX_PATH);
-    strncat(path, "\\d3d8.dll", MAX_PATH - strlen(path));
+    std::strncat(path, "\\d3d8.dll", MAX_PATH - std::strlen(path));
     HMODULE d3d8dll = LoadLibraryA(path);
     if (d3d8dll == NULL)
     {

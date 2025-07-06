@@ -6,7 +6,7 @@
 #include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include <Windows.h>
+// #include <Windows.h>
 
 namespace th06
 {
@@ -63,13 +63,14 @@ struct MsgRawInstr
 struct MsgRawHeader
 {
     i32 numInstrs;
-    MsgRawInstr *instrs[1];
+    u32 instrsOffsets[1];
 };
 ZUN_ASSERT_SIZE(MsgRawHeader, 0x8);
 
 struct GuiMsgVm
 {
     MsgRawHeader *msgFile;
+    MsgRawInstr **instrs;
     MsgRawInstr *currentInstr;
     i32 currentMsgIdx;
     ZunTimer timer;
@@ -77,8 +78,8 @@ struct GuiMsgVm
     AnmVm portraits[2];
     AnmVm dialogueLines[2];
     AnmVm introLines[2];
-    D3DCOLOR textColorsA[4];
-    D3DCOLOR textColorsB[4];
+    ZunColor textColorsA[4];
+    ZunColor textColorsB[4];
     u32 fontSize;
     u32 ignoreWaitCounter;
     u8 dialogueSkippable;
@@ -87,7 +88,7 @@ ZUN_ASSERT_SIZE(GuiMsgVm, 0x6a8);
 
 struct GuiFormattedText
 {
-    D3DXVECTOR3 pos;
+    ZunVec3 pos;
     i32 fmtArg;
     i32 isShown;
     ZunTimer timer;

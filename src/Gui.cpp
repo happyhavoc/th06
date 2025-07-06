@@ -1,6 +1,9 @@
 #include "Gui.hpp"
 
-#include <stdio.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <GLES/gl.h>
 
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
@@ -20,69 +23,55 @@ DIFFABLE_STATIC(Gui, g_Gui);
 DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
 
-#pragma optimize("s", on)
+
 ZunBool Gui::IsStageFinished()
 {
     return this->impl->loadingScreenSprite.activeSpriteIndex >= 0 && this->impl->loadingScreenSprite.flags.flag13;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::EndPlayerSpellcard()
 {
     (this->impl->bombSpellcardName).pendingInterrupt = 1;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::EndEnemySpellcard()
 {
     this->impl->enemySpellcardName.pendingInterrupt = 1;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunBool Gui::IsDialogueSkippable()
 {
     return (this->impl->msg).dialogueSkippable;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowBonusScore(u32 bonusScore)
 {
-    this->impl->bonusScore.pos = D3DXVECTOR3(416.0f, 32.0f, 0.0f);
+    this->impl->bonusScore.pos = ZunVec3(416.0f, 32.0f, 0.0f);
     this->impl->bonusScore.isShown = 1;
     this->impl->bonusScore.timer.InitializeForPopup();
     this->impl->bonusScore.fmtArg = bonusScore;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowFullPowerMode(i32 fmtArg)
 {
-    this->impl->fullPowerMode.pos = D3DXVECTOR3(416.0f, 232.0f, 0.0f);
+    this->impl->fullPowerMode.pos = ZunVec3(416.0f, 232.0f, 0.0f);
     this->impl->fullPowerMode.isShown = 1;
     this->impl->fullPowerMode.timer.InitializeForPopup();
     this->impl->fullPowerMode.fmtArg = fmtArg;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowSpellcardBonus(u32 spellcardScore)
 {
-    this->impl->spellCardBonus.pos = D3DXVECTOR3(224.0f, 16.0f, 0.0f);
+    this->impl->spellCardBonus.pos = ZunVec3(224.0f, 16.0f, 0.0f);
     this->impl->spellCardBonus.isShown = 1;
     this->impl->spellCardBonus.timer.InitializeForPopup();
     this->impl->spellCardBonus.fmtArg = spellcardScore;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ChainCallbackResult Gui::OnUpdate(Gui *gui)
 {
     if (g_GameManager.isTimeStopped)
@@ -93,15 +82,14 @@ ChainCallbackResult Gui::OnUpdate(Gui *gui)
     gui->impl->RunMsg();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ChainCallbackResult Gui::OnDraw(Gui *gui)
 {
     char spellCardBonusStr[32];
-    D3DXVECTOR3 stringPos;
+    ZunVec3 stringPos;
 
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+    glDepthFunc(GL_ALWAYS);
+//    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
     if (gui->impl->finishedStage)
     {
         stringPos.x = GAME_REGION_LEFT + 42.0f;
@@ -211,14 +199,14 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
         g_AsciiManager.color = COLOR_RED;
 
         gui->impl->spellCardBonus.pos.x =
-            ((f32)GAME_REGION_WIDTH - (f32)strlen("Spell Card Bonus!") * 16.0f) / 2.0f + (f32)GAME_REGION_LEFT;
+            ((f32)GAME_REGION_WIDTH - (f32)std::strlen("Spell Card Bonus!") * 16.0f) / 2.0f + (f32)GAME_REGION_LEFT;
         gui->impl->spellCardBonus.pos.y = GAME_REGION_TOP + 64.0f;
         g_AsciiManager.AddFormatText(&gui->impl->spellCardBonus.pos, "Spell Card Bonus!");
 
         gui->impl->spellCardBonus.pos.y += 16.0f;
-        sprintf(spellCardBonusStr, "+%d", gui->impl->spellCardBonus.fmtArg);
+        std::sprintf(spellCardBonusStr, "+%d", gui->impl->spellCardBonus.fmtArg);
         gui->impl->spellCardBonus.pos.x =
-            ((f32)GAME_REGION_WIDTH - (f32)strlen(spellCardBonusStr) * 32.0f) / 2.0f + (f32)GAME_REGION_LEFT;
+            ((f32)GAME_REGION_WIDTH - (f32)std::strlen(spellCardBonusStr) * 32.0f) / 2.0f + (f32)GAME_REGION_LEFT;
         g_AsciiManager.scale.x = 2.0f;
         g_AsciiManager.scale.y = 2.0f;
         g_AsciiManager.color = COLOR_LIGHT_RED;
@@ -229,25 +217,22 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
         g_AsciiManager.color = COLOR_WHITE;
     }
     g_AsciiManager.isGui = 0;
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+    glDepthFunc(GL_LEQUAL);
+//    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
 {
     g_AnmManager->SetAndExecuteScriptIdx(&this->impl->playerSpellcardPortrait, 0x4a1);
     g_AnmManager->SetActiveSprite(&this->impl->playerSpellcardPortrait, sprite);
     g_AnmManager->SetAndExecuteScriptIdx(&this->impl->bombSpellcardName, 0x706);
     g_AnmManager->DrawVmTextFmt(g_AnmManager, &this->impl->bombSpellcardName, 0xf0f0ff, 0x0, bombName);
-    this->bombSpellcardBarLength = strlen(bombName) * 0xf / 2.0f + 16;
+    this->bombSpellcardBarLength = std::strlen(bombName) * 0xf / 2.0f + 16;
     g_Supervisor.unk198 = 3;
     g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
 {
     g_AnmManager->SetAndExecuteScriptIdx(&this->impl->enemySpellcardPortrait, ANM_SCRIPT_FACE_ENEMY_SPELLCARD_PORTRAIT);
@@ -255,13 +240,11 @@ void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
     g_AnmManager->SetAndExecuteScriptIdx(&this->impl->enemySpellcardName, ANM_SCRIPT_TEXT_ENEMY_SPELLCARD_NAME);
     AnmManager::DrawStringFormat(g_AnmManager, &this->impl->enemySpellcardName, 0xfff0f0, COLOR_RGB(COLOR_BLACK),
                                  spellcardName);
-    this->blueSpellcardBarLength = strlen(spellcardName) * 15 / 2.0f + 16.0f;
+    this->blueSpellcardBarLength = std::strlen(spellcardName) * 15 / 2.0f + 16.0f;
     g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::ActualAddedCallback()
 {
     i32 idx;
@@ -476,9 +459,7 @@ ZunResult Gui::ActualAddedCallback()
     this->flags.flag2 = 2;
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::LoadMsg(char *path)
 {
     i32 idx;
@@ -492,51 +473,49 @@ ZunResult Gui::LoadMsg(char *path)
     }
     this->impl->msg.currentMsgIdx = 0xffffffff;
     this->impl->msg.currentInstr = NULL;
+
+    this->impl->msg.instrs = (MsgRawInstr **) std::malloc(sizeof(MsgRawInstr **) * this->impl->msg.msgFile->numInstrs);
+
     for (idx = 0; idx < this->impl->msg.msgFile->numInstrs; idx++)
     {
-        this->impl->msg.msgFile->instrs[idx] =
-            (MsgRawInstr *)((i32)this->impl->msg.msgFile->instrs[idx] + (i32)this->impl->msg.msgFile);
+        this->impl->msg.instrs[idx] =
+            (MsgRawInstr *) (((u8 *) + this->impl->msg.msgFile) + this->impl->msg.msgFile->instrsOffsets[idx]);
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Gui::FreeMsgFile()
 {
-    MsgRawHeader *msg;
-    if ((this->impl->msg).msgFile != NULL)
-    {
-        msg = (this->impl->msg).msgFile;
-        free(msg);
-        (this->impl->msg).msgFile = NULL;
-    }
-}
-#pragma optimize("", on)
+    std::free(this->impl->msg.msgFile);
+    this->impl->msg.msgFile = NULL;
 
-#pragma optimize("s", on)
+    std::free(this->impl->msg.instrs);
+    this->impl->msg.instrs = NULL;
+}
+
 void Gui::MsgRead(i32 msgIdx)
 {
     this->impl->MsgRead(msgIdx);
     g_Supervisor.unk198 = 3;
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void GuiImpl::MsgRead(i32 msgIdx)
 {
     MsgRawHeader *msgFile;
+    MsgRawInstr **msgInstrs;
 
     if (this->msg.msgFile->numInstrs <= msgIdx)
     {
         return;
     }
     msgFile = this->msg.msgFile;
-    memset(&this->msg, 0, sizeof(GuiMsgVm));
+    msgInstrs = this->msg.instrs;
+    std::memset(&this->msg, 0, sizeof(GuiMsgVm));
     this->msg.currentMsgIdx = msgIdx;
     this->msg.msgFile = msgFile;
-    this->msg.currentInstr = this->msg.msgFile->instrs[msgIdx];
+    this->msg.instrs = msgInstrs;
+    this->msg.currentInstr = this->msg.instrs[msgIdx];
     this->msg.dialogueLines[0].anmFileIndex = -1;
     this->msg.dialogueLines[1].anmFileIndex = -1;
     this->msg.fontSize = 15;
@@ -556,9 +535,9 @@ void GuiImpl::MsgRead(i32 msgIdx)
     }
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 ZunResult GuiImpl::RunMsg()
 {
     MsgRawInstrArgs *args;
@@ -715,7 +694,7 @@ ZunResult GuiImpl::RunMsg()
             break;
         }
         this->msg.currentInstr =
-            (MsgRawInstr *)(((i32) & this->msg.currentInstr->args) + this->msg.currentInstr->argSize);
+            (MsgRawInstr *)(((u8 *) &this->msg.currentInstr->args) + this->msg.currentInstr->argSize);
     }
     this->msg.timer.NextTick();
 SKIP_TIME_INCREMENT:
@@ -731,10 +710,10 @@ SKIP_TIME_INCREMENT:
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma var_order(dialogueBoxHeight, vertices)
-#pragma optimize("s", on)
+
+
+
 ZunResult GuiImpl::DrawDialogue()
 {
     f32 dialogueBoxHeight;
@@ -755,92 +734,132 @@ ZunResult GuiImpl::DrawDialogue()
     {
         dialogueBoxHeight = 48.0f;
     }
-    VertexDiffuseXyzrwh vertices[4];
+    VertexDiffuseXyzrhw vertices[4];
     // Probably not what Zun wrote, but I don't like Zun's design. My guess is
-    // Zun made a separate vertex structure with a D3DXVECTOR3 for the xyz, a
+    // Zun made a separate vertex structure with a ZunVec3 for the xyz, a
     // separate f32 for the w, and a D3DCOLOR for the diffuse. This kinda makes
     // no sense though - the position is a D3DXVECTOR4.
-    memcpy(&vertices[0].position,
-           &D3DXVECTOR3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
-                            16.0f,
-                        384.0f, 0.0f),
-           sizeof(D3DXVECTOR3));
+//    std::memcpy(&vertices[0].position,
+//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
+//                            16.0f,
+//                        384.0f, 0.0f),
+//           sizeof(ZunVec3));
 
-    memcpy(&vertices[1].position,
-           &D3DXVECTOR3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
-                            256.0f + 16.0f,
-                        384.0f, 0.0f),
-           sizeof(D3DXVECTOR3));
+    vertices[0].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
+                                   16.0f, 384.0f, 0.0f, 1.0f);
 
-    memcpy(&vertices[2].position,
-           &D3DXVECTOR3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
-                            16.0f,
-                        384.0f + dialogueBoxHeight, 0.0f),
-           sizeof(D3DXVECTOR3));
+//    std::memcpy(&vertices[1].position,
+//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
+//                            256.0f + 16.0f,
+//                        384.0f, 0.0f),
+//           sizeof(ZunVec3));
 
-    memcpy(&vertices[3].position,
-           &D3DXVECTOR3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
-                            256.0f + 16.0f,
-                        384.0f + dialogueBoxHeight, 0.0f),
-           sizeof(D3DXVECTOR3));
+    vertices[1].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
+                            256.0f + 16.0f, 384.0f, 0.0f, 1.0f),
 
-    vertices[0].diffuse = vertices[1].diffuse = 0xd0000000;
-    vertices[2].diffuse = vertices[3].diffuse = 0x90000000;
-    vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0f;
+//    std::memcpy(&vertices[2].position,
+//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
+//                            16.0f,
+//                        384.0f + dialogueBoxHeight, 0.0f),
+//           sizeof(ZunVec3));
+
+    vertices[2].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
+                            16.0f, 384.0f + dialogueBoxHeight, 0.0f, 1.0f),
+
+//    std::memcpy(&vertices[3].position,
+//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
+//                            256.0f + 16.0f,
+//                        384.0f + dialogueBoxHeight, 0.0f),
+//           sizeof(ZunVec3));
+
+    vertices[3].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
+                            256.0f + 16.0f, 384.0f + dialogueBoxHeight, 0.0f, 1.0f);
+
+    vertices[0].diffuse = vertices[1].diffuse = ColorData(0xd0000000);
+    vertices[2].diffuse = vertices[3].diffuse = ColorData(0x90000000);
+//    vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0f;
     g_AnmManager->DrawNoRotation(&this->msg.portraits[0]);
     g_AnmManager->DrawNoRotation(&this->msg.portraits[1]);
     if (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     }
-    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
+//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
     if (((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
     {
-        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 0);
+        glDepthMask(GL_FALSE);
+//        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 0);
     }
-    g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
-    g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(vertices[0]));
+
+    if (g_AnmManager->currentTextureHandle == 0)
+    {
+        g_AnmManager->SetCurrentTexture(g_AnmManager->dummyTextureHandle);
+    }
+
+    inverseViewportMatrix();
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
+    glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices[0].position);
+    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices[0].diffuse);
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+
+//    g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
+//    g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(vertices[0]));
     g_AnmManager->SetCurrentVertexShader(0xff);
     g_AnmManager->SetCurrentColorOp(0xff);
     g_AnmManager->SetCurrentBlendMode(0xff);
     g_AnmManager->SetCurrentZWriteDisable(0xff);
     if (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 4);
-        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 4);
+//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4);
     }
-    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, 2);
-    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, 2);
+
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
+    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, 2);
+//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, 2);
     g_AnmManager->DrawNoRotation(&this->msg.dialogueLines[0]);
     g_AnmManager->DrawNoRotation(&this->msg.dialogueLines[1]);
     g_AnmManager->DrawNoRotation(&this->msg.introLines[0]);
     g_AnmManager->DrawNoRotation(&this->msg.introLines[1]);
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-BOOL Gui::MsgWait()
+
+
+ZunBool Gui::MsgWait()
 {
     if (this->impl->msg.ignoreWaitCounter > 0)
     {
-        return FALSE;
+        return false;
     }
     return 0 <= this->impl->msg.currentMsgIdx;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-BOOL Gui::HasCurrentMsgIdx()
+ZunBool Gui::HasCurrentMsgIdx()
 {
     return 0 <= this->impl->msg.currentMsgIdx;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(idx, stageScore)
 void Gui::UpdateStageElements()
 {
     i32 stageScore;
@@ -1022,15 +1041,13 @@ void Gui::UpdateStageElements()
     }
     return;
 }
-#pragma optimize("", on)
+
 
 static ZunColor COLOR1 = 0xa0d0ff;
 static ZunColor COLOR2 = 0xa080ff;
 static ZunColor COLOR3 = 0xe080c0;
 static ZunColor COLOR4 = 0xff4040;
 
-#pragma var_order(yPos, xPos, idx, vm)
-#pragma optimize("s", on)
 void Gui::DrawGameScene()
 {
     AnmVm *vm;
@@ -1040,7 +1057,6 @@ void Gui::DrawGameScene()
 
     if (this->impl->msg.currentMsgIdx < 0 && (this->bossPresent + this->impl->bossHealthBarState) > 0)
     {
-#pragma var_order(cappedSpellcardSecondsRemaining, bossLivesColor, textPos)
         vm = &this->impl->vms[19];
         g_AnmManager->DrawNoRotation(vm);
         vm = &this->impl->vms[21];
@@ -1050,11 +1066,11 @@ void Gui::DrawGameScene()
         vm->pos.y = 24.0f;
         vm->pos.z = 0.0;
         g_AnmManager->DrawNoRotation(vm);
-        D3DXVECTOR3 textPos(80.0f, 16.0f, 0.0);
+        ZunVec3 textPos(80.0f, 16.0f, 0.0);
         g_AsciiManager.SetColor(this->bossUIOpacity << 24 | 0xffff80);
         g_AsciiManager.AddFormatText(&textPos, "%d", this->eclSetLives);
-        textPos = D3DXVECTOR3(384.0f, 16.0f, 0.0f);
-        D3DCOLOR bossLivesColor;
+        textPos = ZunVec3(384.0f, 16.0f, 0.0f);
+        ZunColor bossLivesColor;
         if (this->spellcardSecondsRemaining >= 20)
         {
             bossLivesColor = COLOR1;
@@ -1088,34 +1104,36 @@ void Gui::DrawGameScene()
     g_Supervisor.viewport.Y = 0;
     g_Supervisor.viewport.Width = 640;
     g_Supervisor.viewport.Height = 480;
-    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    g_Supervisor.viewport.Set();
+//    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    
     vm = &this->impl->vms[6];
     if (((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) == 0 &&
         (vm->currentInstruction != NULL || g_Supervisor.unk198 != 0 || g_Supervisor.IsUnknown()))
     {
         for (yPos = 0.0f; yPos < 464.0f; yPos += 32.0f)
         {
-            vm->pos = D3DXVECTOR3(0.0f, yPos, 0.49f);
+            vm->pos = ZunVec3(0.0f, yPos, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
         for (xPos = 416.0f; xPos < 624.0f; xPos += 32.0f)
         {
             for (yPos = 0.0f; yPos < 464.0f; yPos += 32.0f)
             {
-                vm->pos = D3DXVECTOR3(xPos, yPos, 0.49f);
+                vm->pos = ZunVec3(xPos, yPos, 0.49f);
                 g_AnmManager->DrawNoRotation(vm);
             }
         }
         vm = &this->impl->vms[7];
         for (xPos = 32.0f; xPos < 416.0f; xPos += 32.0f)
         {
-            vm->pos = D3DXVECTOR3(xPos, 0.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 0.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
         vm = &this->impl->vms[8];
         for (xPos = 32.0f; xPos < 416.0f; xPos += 32.0f)
         {
-            vm->pos = D3DXVECTOR3(xPos, 464.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 464.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
         g_AnmManager->Draw(&this->impl->vms[5]);
@@ -1141,38 +1159,38 @@ void Gui::DrawGameScene()
     {
         vm = &this->impl->vms[22];
         xPos = 496.0f;
-        vm->pos = D3DXVECTOR3(xPos, 58.0f, 0.49f);
+        vm->pos = ZunVec3(xPos, 58.0f, 0.49f);
         g_AnmManager->DrawNoRotation(vm);
-        vm->pos = D3DXVECTOR3(xPos, 82.0f, 0.49f);
+        vm->pos = ZunVec3(xPos, 82.0f, 0.49f);
         g_AnmManager->DrawNoRotation(vm);
         if (this->flags.flag0)
         {
-            vm->pos = D3DXVECTOR3(xPos, 122.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 122.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
         if (this->flags.flag1)
         {
-            vm->pos = D3DXVECTOR3(xPos, 146.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 146.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
         if (this->flags.flag2)
         {
-            vm->pos = D3DXVECTOR3(xPos, 186.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 186.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
         if (this->flags.flag3)
         {
-            vm->pos = D3DXVECTOR3(xPos, 206.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 206.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
         if (this->flags.flag4)
         {
-            vm->pos = D3DXVECTOR3(xPos, 226.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 226.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
-        vm->pos = D3DXVECTOR3(488.0f, 464.0f, 0.49f);
+        vm->pos = ZunVec3(488.0f, 464.0f, 0.49f);
         g_AnmManager->DrawNoRotation(vm);
-        vm->pos = D3DXVECTOR3(0.0, 464.0f, 0.49f);
+        vm->pos = ZunVec3(0.0, 464.0f, 0.49f);
         g_AnmManager->DrawNoRotation(vm);
     }
     if (this->flags.flag0 || ((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) != 0))
@@ -1180,7 +1198,7 @@ void Gui::DrawGameScene()
         vm = &this->impl->vms[16];
         for (idx = 0, xPos = 496.0f; idx < g_GameManager.livesRemaining; idx++, xPos += 16.0f)
         {
-            vm->pos = D3DXVECTOR3(xPos, 122.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 122.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
     }
@@ -1189,77 +1207,118 @@ void Gui::DrawGameScene()
         vm = &this->impl->vms[17];
         for (idx = 0, xPos = 496.0f; idx < g_GameManager.bombsRemaining; idx++, xPos += 16.0f)
         {
-            vm->pos = D3DXVECTOR3(xPos, 146.0f, 0.49f);
+            vm->pos = ZunVec3(xPos, 146.0f, 0.49f);
             g_AnmManager->DrawNoRotation(vm);
         }
     }
     if (this->flags.flag2 || ((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) != 0))
     {
-        VertexDiffuseXyzrwh vertices[4];
+        VertexDiffuseXyzrhw vertices[4];
         if (g_GameManager.currentPower > 0)
         {
-            memcpy(&vertices[0].position, &D3DXVECTOR3(496.0f, 186.0f, 0.1f), sizeof(D3DXVECTOR3));
-            memcpy(&vertices[1].position, &D3DXVECTOR3(g_GameManager.currentPower + 496 + 0.0f, 186.0f, 0.1f),
-                   sizeof(D3DXVECTOR3));
-            memcpy(&vertices[2].position, &D3DXVECTOR3(496.0f, 202.0f, 0.1f), sizeof(D3DXVECTOR3));
-            memcpy(&vertices[3].position, &D3DXVECTOR3(g_GameManager.currentPower + 496 + 0.0f, 202.0f, 0.1f),
-                   sizeof(D3DXVECTOR3));
+//            std::memcpy(&vertices[0].position, &ZunVec3(496.0f, 186.0f, 0.1f), sizeof(ZunVec3));
+//            std::memcpy(&vertices[1].position, &ZunVec3(g_GameManager.currentPower + 496 + 0.0f, 186.0f, 0.1f),
+//                   sizeof(ZunVec3));
+//            std::memcpy(&vertices[2].position, &ZunVec3(496.0f, 202.0f, 0.1f), sizeof(ZunVec3));
+//            std::memcpy(&vertices[3].position, &ZunVec3(g_GameManager.currentPower + 496 + 0.0f, 202.0f, 0.1f),
+//                   sizeof(ZunVec3));
 
-            vertices[0].diffuse = vertices[2].diffuse = 0xe0e0e0ff;
-            vertices[1].diffuse = vertices[3].diffuse = 0x80e0e0ff;
+            vertices[0].position = ZunVec4(496.0f, 186.0f, 0.1f, 1.0f);
+            vertices[1].position = ZunVec4(g_GameManager.currentPower + 496 + 0.0f, 186.0f, 0.1f, 1.0f);
+            vertices[2].position = ZunVec4(496.0f, 202.0f, 0.1f, 1.0f);
+            vertices[3].position = ZunVec4(g_GameManager.currentPower + 496 + 0.0f, 202.0f, 0.1f, 1.0f);
 
-            vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0;
+            vertices[0].diffuse = vertices[2].diffuse = ColorData(0xe0e0e0ff);
+            vertices[1].diffuse = vertices[3].diffuse = ColorData(0x80e0e0ff);
+
+//            vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0;
 
             if ((g_Supervisor.cfg.opts >> 8 & 1) == 0)
             {
-                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
             }
-            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
+//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
             if ((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST & 1) == 0)
             {
-                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+                glDepthFunc(GL_ALWAYS);
+                glDepthMask(GL_FALSE);
+//                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+//                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
             }
-            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
-            g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(VertexDiffuseXyzrwh));
+
+            if (g_AnmManager->currentTextureHandle == 0)
+            {
+                g_AnmManager->SetCurrentTexture(g_AnmManager->dummyTextureHandle);
+            }
+
+            inverseViewportMatrix();
+
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glEnableClientState(GL_COLOR_ARRAY);
+            glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices[0].position);
+            glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices[0].diffuse);
+
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+            glMatrixMode(GL_TEXTURE);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
+            glPopMatrix();
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+
+//            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
+//            g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(VertexDiffuseXyzrhw));
             g_AnmManager->SetCurrentVertexShader(0xff);
             g_AnmManager->SetCurrentColorOp(0xff);
             g_AnmManager->SetCurrentBlendMode(0xff);
             g_AnmManager->SetCurrentZWriteDisable(0xff);
             if ((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1) == 0)
             {
-                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
             }
-            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
+            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
             if (128 <= g_GameManager.currentPower)
             {
                 vm = &this->impl->vms[18];
-                vm->pos = D3DXVECTOR3(496.0f, 186.0f, 0.0f);
+                vm->pos = ZunVec3(496.0f, 186.0f, 0.0f);
                 g_AnmManager->DrawNoRotation(vm);
             }
         }
         if (g_GameManager.currentPower < 128)
         {
-            g_AsciiManager.AddFormatText(&D3DXVECTOR3(496.0f, 186.0f, 0.0f), "%d", g_GameManager.currentPower);
+            ZunVec3 formatTextPos = ZunVec3(496.0f, 186.0f, 0.0f);
+
+            g_AsciiManager.AddFormatText(&formatTextPos, "%d", g_GameManager.currentPower);
         }
     }
     {
-        D3DXVECTOR3 elemPos(496.0f, 82.0f, 0.0f);
+        ZunVec3 elemPos(496.0f, 82.0f, 0.0f);
         g_AsciiManager.AddFormatText(&elemPos, "%.9d", g_GameManager.guiScore);
-        elemPos = D3DXVECTOR3(496.0f, 58.0f, 0.0f);
+        elemPos = ZunVec3(496.0f, 58.0f, 0.0f);
         g_AsciiManager.AddFormatText(&elemPos, "%.9d", g_GameManager.highScore);
         if (this->flags.flag3 || ((g_Supervisor.cfg.opts >> 4 & 1) != 0))
         {
-            elemPos = D3DXVECTOR3(496.0f, 206.0f, 0.0f);
+            elemPos = ZunVec3(496.0f, 206.0f, 0.0f);
             g_AsciiManager.AddFormatText(&elemPos, "%d", g_GameManager.grazeInStage);
         }
         if (this->flags.flag4 || ((g_Supervisor.cfg.opts >> 4 & 1) != 0))
         {
-            elemPos = D3DXVECTOR3(496.0f, 226.0f, 0.0f);
+            elemPos = ZunVec3(496.0f, 226.0f, 0.0f);
             g_AsciiManager.AddFormatText(&elemPos, "%d", g_GameManager.pointItemsCollectedInStage);
         }
     }
@@ -1285,13 +1344,10 @@ void Gui::DrawGameScene()
     }
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(stageTextPos, stageTextColor, demoTextColor)
 void Gui::DrawStageElements()
 {
-    D3DXVECTOR3 stageTextPos;
+    ZunVec3 stageTextPos;
     ZunColor stageTextColor;
     ZunColor demoTextColor;
 
@@ -1376,20 +1432,17 @@ void Gui::DrawStageElements()
         g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
         g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
 
-        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+        g_Supervisor.viewport.Set();
+//        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
         g_AnmManager->DrawNoRotation(&this->impl->loadingScreenSprite);
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::AddedCallback(Gui *gui)
 {
     return gui->ActualAddedCallback();
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::DeletedCallback(Gui *gui)
 {
     g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_A);
@@ -1408,15 +1461,13 @@ ZunResult Gui::DeletedCallback(Gui *gui)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Gui::RegisterChain()
 {
     Gui *gui = &g_Gui;
     if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
     {
-        memset(gui, 0, sizeof(Gui));
+        std::memset(gui, 0, sizeof(Gui));
         gui->impl = new GuiImpl();
     }
     g_GuiCalcChain.callback = (ChainCallback)Gui::OnUpdate;
@@ -1436,20 +1487,14 @@ ZunResult Gui::RegisterChain()
     g_Chain.AddToDrawChain(&g_GuiDrawChain, TH_CHAIN_PRIO_DRAW_GUI);
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-GuiImpl::GuiImpl() {
+GuiImpl::GuiImpl() { };
 
-};
-#pragma optimize("", on)
-
-#pragma optimize("s", on)
 void Gui::CutChain()
 {
     g_Chain.Cut(&g_GuiCalcChain);
     g_Chain.Cut(&g_GuiDrawChain);
     return;
 }
-#pragma optimize("", on)
+
 }; // namespace th06

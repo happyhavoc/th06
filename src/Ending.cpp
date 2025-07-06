@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include "Ending.hpp"
 #include "AnmIdx.hpp"
 #include "AnmManager.hpp"
@@ -18,7 +19,7 @@ i32 Ending::ReadEndFileParameter()
 {
     i32 readResult;
 
-    readResult = atol(this->endFileDataPtr);
+    readResult = std::atol(this->endFileDataPtr);
     while (this->endFileDataPtr[0] != '\0')
     {
         this->endFileDataPtr++;
@@ -30,7 +31,7 @@ i32 Ending::ReadEndFileParameter()
     return readResult;
 }
 
-#pragma var_order(endingRect, color)
+
 void Ending::FadingEffect()
 {
     ZunRect endingRect;
@@ -107,8 +108,6 @@ void Ending::FadingEffect()
     }
 }
 
-#pragma var_order(lineDisplayed, textBuffer, charactersReaded, anmScriptIdx, vmIndex, anmSpriteIdx, scrollBGDistance,  \
-                  scrollBGDuration, characterIdx, diffIdx, spriteIdx, musicFadeFrames, fill)
 ZunResult Ending::ParseEndFile()
 {
     i32 vmIndex;
@@ -445,7 +444,7 @@ ZunResult Ending::LoadEnding(char *endFilePath)
         this->timer1.InitializeForPopup();
         if (endFileDat != NULL)
         {
-            free(endFileDat);
+            std::free(endFileDat);
         }
         return ZUN_SUCCESS;
     }
@@ -472,7 +471,7 @@ ZunResult Ending::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-#pragma var_order(framesPressed, idx)
+
 ChainCallbackResult Ending::OnUpdate(Ending *ending)
 {
     i32 idx;
@@ -505,7 +504,7 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
 {
     i32 idx;
 
-    g_AnmManager->DrawEndingRect(0, 0, 0, ending->backgroundPos.x, ending->backgroundPos.y, 640, 480);
+    g_AnmManager->CopySurfaceRectToBackBuffer(0, 0, 0, ending->backgroundPos.x, ending->backgroundPos.y, 640, 480);
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(ending->sprites); idx++)
     {
         if (ending->sprites[idx].anmFileIndex != 0)
@@ -517,7 +516,7 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-#pragma var_order(unused, shotTypeAndCharacter)
+
 ZunResult Ending::AddedCallback(Ending *ending)
 {
     i32 shotTypeAndCharacter;
@@ -532,7 +531,7 @@ ZunResult Ending::AddedCallback(Ending *ending)
     g_AnmManager->LoadAnm(ANM_FILE_STAFF02, "data/staff02.anm", ANM_OFFSET_STAFF02);
     g_AnmManager->LoadAnm(ANM_FILE_STAFF03, "data/staff03.anm", ANM_OFFSET_STAFF03);
 
-    g_AnmManager->SetCurrentTexture(NULL);
+    g_AnmManager->SetCurrentTexture(0);
     g_AnmManager->SetCurrentSprite(NULL);
     g_AnmManager->SetCurrentBlendMode(0xff);
     g_AnmManager->SetCurrentVertexShader(0xff);
@@ -630,7 +629,7 @@ ZunResult Ending::DeletedCallback(Ending *ending)
     // be correct since ending->endFileData was allocated with malloc. One way to solve it, would be to do the same with
     // ending, and align both variables with var_order, but that would be "incorrect", weird...
     char *endfiledata = ending->endFileData;
-    free(endfiledata);
+    std::free(endfiledata);
 
     g_Chain.Cut(ending->drawChain);
     ending->drawChain = NULL;

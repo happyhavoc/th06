@@ -63,7 +63,7 @@
 #endif
 
 #if defined(BINARYMATCHBUILD) || defined(DIFFBUILD) || defined(DLLBUILD)
-#define ZUN_ASSERT_SIZE(type, size) C_ASSERT(sizeof(type) == size);
+#define ZUN_ASSERT_SIZE(type, size) static_assert(sizeof(type) == size);
 #else
-#define ZUN_ASSERT_SIZE(type, size) C_ASSERT(true);
+#define ZUN_ASSERT_SIZE(type, size) static_assert(true);
 #endif

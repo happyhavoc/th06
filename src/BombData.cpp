@@ -1,5 +1,7 @@
 #include "BombData.hpp"
 
+#include <cmath>
+
 #include "EffectManager.hpp"
 #include "Gui.hpp"
 #include "Rng.hpp"
@@ -16,13 +18,13 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BombData, 4, g_BombData) = {
     /* MarisaB */ {BombData::BombMarisaBCalc, BombData::BombMarisaBDraw},
 };
 
-#pragma var_order(angle, i, bombSprite, vecLength, bombPivot, bombIdx)
+
 void BombData::BombReimuACalc(Player *player)
 {
     i32 i;
     f32 vecLength;
     i32 bombIdx;
-    D3DXVECTOR3 bombPivot;
+    ZunVec3 bombPivot;
     AnmVm *bombSprite;
     ZunVec2 angle;
 
@@ -98,7 +100,7 @@ void BombData::BombReimuACalc(Player *player)
                 angle.x = bombPivot.x - player->bombInfo.bombRegionPositions[i].x;
                 angle.y = bombPivot.y - player->bombInfo.bombRegionPositions[i].y;
 
-                vecLength = sqrtf(angle.x * angle.x + angle.y * angle.y) /
+                vecLength = std::sqrtf(angle.x * angle.x + angle.y * angle.y) /
                             (player->bombInfo.reimuABombProjectilesRelated[i] / 8.0f);
                 if (vecLength < 1.0f)
                 {
@@ -106,7 +108,7 @@ void BombData::BombReimuACalc(Player *player)
                 }
                 angle.x = angle.x / vecLength + player->bombInfo.bombRegionVelocities[i].x;
                 angle.y = angle.y / vecLength + player->bombInfo.bombRegionVelocities[i].y;
-                vecLength = sqrtf(angle.x * angle.x + angle.y * angle.y);
+                vecLength = std::sqrtf(angle.x * angle.x + angle.y * angle.y);
 
                 player->bombInfo.reimuABombProjectilesRelated[i] = ZUN_MIN(vecLength, 10.0f);
 
@@ -181,7 +183,7 @@ void BombData::BombReimuACalc(Player *player)
     player->bombInfo.timer.Tick();
 }
 
-#pragma var_order(bombSprite, idx)
+
 void BombData::BombReimuADraw(Player *player)
 {
     i32 idx;
@@ -220,7 +222,7 @@ void BombData::BombReimuADraw(Player *player)
     return;
 }
 
-#pragma var_order(local8, viewport, darkeningTimeLeft)
+
 void BombData::DarkenViewport(Player *player)
 {
     ZunRect viewport;
@@ -250,12 +252,12 @@ void BombData::DarkenViewport(Player *player)
     ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
 }
 
-#pragma var_order(i, bombSprite, unusedVector)
+
 void BombData::BombReimuBCalc(Player *player)
 {
     AnmVm *bombSprite;
     i32 i;
-    D3DXVECTOR3 unusedVector;
+    ZunVec3 unusedVector;
 
     if (player->bombInfo.timer >= player->bombInfo.duration)
     {
@@ -330,7 +332,7 @@ void BombData::BombReimuBCalc(Player *player)
     player->bombInfo.timer.Tick();
 }
 
-#pragma var_order(bombSprite, i)
+
 void BombData::BombReimuBDraw(Player *player)
 {
     AnmVm *bombSprite;
@@ -348,7 +350,7 @@ void BombData::BombReimuBDraw(Player *player)
     }
 }
 
-#pragma var_order(i, starSprite, unused, starAngle)
+
 void BombData::BombMarisaACalc(Player *player)
 {
 
@@ -415,7 +417,7 @@ void BombData::BombMarisaACalc(Player *player)
     return;
 }
 
-#pragma var_order(bombSprite, idx)
+
 void BombData::BombMarisaADraw(Player *player)
 {
 
@@ -459,12 +461,11 @@ void BombData::BombMarisaADraw(Player *player)
     }
 }
 
-#pragma var_order(i, bombSprite, unusedVector)
+
 void BombData::BombMarisaBCalc(Player *player)
 {
     AnmVm *bombSprite;
     i32 i;
-    D3DXVECTOR3 unusedVector;
 
     if (player->bombInfo.timer >= player->bombInfo.duration)
     {
@@ -525,7 +526,7 @@ void BombData::BombMarisaBCalc(Player *player)
     player->bombInfo.timer.Tick();
 }
 
-#pragma var_order(bombSprite, i, spriteAngle)
+
 void BombData::BombMarisaBDraw(Player *player)
 {
     AnmVm *bombSprite;

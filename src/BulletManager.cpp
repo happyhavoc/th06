@@ -1,3 +1,5 @@
+#include <GLES/gl.h>
+
 #include "BulletManager.hpp"
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
@@ -78,7 +80,7 @@ BulletManager::BulletManager()
     this->InitializeToZero();
 }
 
-#pragma var_order(bulletSpeed, local_c, bullet, bulletAngle)
+
 u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bulletIdx1, i32 bulletIdx2, f32 angle)
 {
     f32 bulletAngle;
@@ -377,7 +379,7 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
     return 0;
 }
 
-#pragma var_order(itemPos, i, sine, bullet, laser, cosine, offset)
+
 void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
 {
     f32 cosine;
@@ -386,7 +388,7 @@ void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
     Laser *laser;
     Bullet *bullet;
     i32 i;
-    D3DXVECTOR3 itemPos;
+    ZunVec3 itemPos;
 
     for (bullet = &g_BulletManager.bullets[0], i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, bullet++)
     {
@@ -443,7 +445,7 @@ void BulletManager::TurnAllBulletsIntoPoints()
     this->RemoveAllBullets(true);
 }
 
-#pragma var_order(bulletScore, totalBonusScore, awardedBullets, i, sine, bullets, itemPos, laser, cosine, offset)
+
 i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
 {
     i32 bulletScore;
@@ -455,7 +457,7 @@ i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
     f32 offset;
     Laser *laser;
     Bullet *bullets;
-    D3DXVECTOR3 itemPos;
+    ZunVec3 itemPos;
 
     totalBonusScore = 0;
     bulletScore = 2000;
@@ -556,7 +558,7 @@ out:
     return ZUN_SUCCESS;
 }
 
-#pragma var_order(idx, laser)
+
 Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
 {
     Laser *laser;
@@ -648,13 +650,13 @@ ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
     return ZUN_SUCCESS;
 }
 
-#pragma var_order(grazeState, idx, bulletSpeed, local_14, laserSize, curBullet, laserColor, curLaser, laserCenter, res)
+
 ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 {
     i32 res;
-    D3DXVECTOR3 laserSize;
+    ZunVec3 laserSize;
     i32 laserColor;
-    D3DXVECTOR3 laserCenter;
+    ZunVec3 laserCenter;
     f32 local_14;
 
     Bullet *curBullet;
@@ -1096,7 +1098,7 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-#pragma var_order(idx, sine, curLaser, laserOffset, cosine, curBullet1, curBullet2)
+
 ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
 {
     i32 idx;
@@ -1107,7 +1109,7 @@ ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
     Bullet *curBullet1;
     Bullet *curBullet2;
 
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+    glDepthFunc(GL_ALWAYS);
 
     for (curLaser = &mgr->lasers[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->lasers); idx++, curLaser++)
     {
@@ -1263,7 +1265,7 @@ ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
         }
     }
 
-    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+    glDepthFunc(GL_LEQUAL);
 
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }

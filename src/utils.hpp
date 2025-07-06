@@ -14,18 +14,17 @@
 
 #define IS_PRESSED(key) (g_CurFrameInput & (key))
 #define WAS_PRESSED(key) (((g_CurFrameInput & (key)) != 0) && (g_CurFrameInput & (key)) != (g_LastFrameInput & (key)))
-#define WAS_PRESSED_WEIRD(key)                                                                                         \
+#define WAS_PRESSED_PERIODIC(key)                                                                                     \
     (WAS_PRESSED(key) || (((g_CurFrameInput & (key)) != 0) && (g_IsEigthFrameOfHeldInput != 0)))
 
 namespace th06
 {
 namespace utils
 {
-ZunResult CheckForRunningGameInstance(void);
 void DebugPrint(const char *fmt, ...);
 void DebugPrint2(const char *fmt, ...);
 
 f32 AddNormalizeAngle(f32 a, f32 b);
-void Rotate(D3DXVECTOR3 *outVector, D3DXVECTOR3 *point, f32 angle);
+void Rotate(ZunVec3 *outVector, ZunVec3 *point, f32 angle);
 }; // namespace utils
 }; // namespace th06

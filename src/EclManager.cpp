@@ -39,19 +39,23 @@ ZunResult EclManager::Load(char *eclPath)
     i32 idx;
 
     this->eclFile = (EclRawHeader *)FileSystem::OpenPath(eclPath, false);
+    
     if (this->eclFile == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ECLMANAGER_ENEMY_DATA_CORRUPT);
         return ZUN_ERROR;
     }
-    this->eclFile->timelineOffsets[0] =
-        (EclTimelineInstr *)((int)this->eclFile->timelineOffsets[0] + (int)this->eclFile);
-    this->subTable = &this->eclFile->subOffsets[0];
+    
+    this->timelinePtrs[0] = (EclTimelineInstr *) (((u8 *) this->eclFile) + this->eclFile->timelineOffsets[0]);
+
+    this->subTable = (EclRawInstr **) malloc(sizeof(EclRawInstr *) * this->eclFile->subCount);
+    
     for (idx = 0; idx < this->eclFile->subCount; idx++)
     {
-        this->subTable[idx] = (EclRawInstr *)((int)this->subTable[idx] + (int)this->eclFile);
+        this->subTable[idx] = (EclRawInstr *) (((u8 *) this->eclFile) + this->eclFile->subOffsets[idx]);
     }
-    this->timeline = this->eclFile->timelineOffsets[0];
+
+    this->timeline = this->timelinePtrs[0];
     return ZUN_SUCCESS;
 }
 
@@ -59,12 +63,12 @@ void EclManager::Unload()
 {
     EclRawHeader *file;
 
-    if (this->eclFile != NULL)
-    {
-        file = this->eclFile;
-        free(file);
-    }
+    free(this->eclFile);
     this->eclFile = NULL;
+
+    free(this->subTable);
+    this->subTable = NULL;
+
     return;
 }
 
@@ -76,10 +80,6 @@ ZunResult EclManager::CallEclSub(EnemyEclContext *ctx, i16 subId)
     return ZUN_SUCCESS;
 }
 
-#pragma var_order(local_8, local_14, local_18, args, instruction, local_24, local_28, local_2c, local_30, local_34,    \
-                  local_38, local_3c, local_40, local_44, local_48, local_4c, local_50, local_54, local_58, local_5c,  \
-                  local_60, local_64, local_68, local_6c, local_70, local_74, csum, scoreIncrease, local_80, local_84, \
-                  local_88, local_8c, local_98, local_b0, local_b4, local_b8, local_bc, local_c0)
 ZunResult EclManager::RunEcl(Enemy *enemy)
 {
     EclRawInstr *instruction;
@@ -95,7 +95,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
     EnemyLaserShooter *local_60;
     EclRawInstrLaserArgs *local_64;
     EclRawInstrSpellcardEffectArgs *local_6c;
-    D3DXVECTOR3 local_98;
+    ZunVec3 local_98;
     EclRawInstrEnemyCreateArgs local_b0;
     Enemy *local_b4;
 
@@ -129,7 +129,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             case ECL_OPCODE_JUMP:
             HANDLE_JUMP:
                 enemy->currentContext.time.current = instruction->args.jump.time;
-                instruction = (EclRawInstr *)((int)instruction + args->jump.offset);
+                instruction = (EclRawInstr *)(((u8 *) instruction) + args->jump.offset);
                 goto YOLO;
             case ECL_OPCODE_SETINT:
             case ECL_OPCODE_SETFLOAT:
@@ -307,14 +307,14 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                                                      args->anmSetSlot.scriptIdx + ANM_SCRIPT_ENEMY_START);
                 break;
             case ECL_OPCODE_MOVEPOSITION:
-                enemy->position = *instruction->args.move.pos.AsD3dXVec();
+                enemy->position = instruction->args.move.pos;
                 enemy->position.x = *EnemyEclInstr::GetVarFloat(enemy, &enemy->position.x, NULL);
                 enemy->position.y = *EnemyEclInstr::GetVarFloat(enemy, &enemy->position.y, NULL);
                 enemy->position.z = *EnemyEclInstr::GetVarFloat(enemy, &enemy->position.z, NULL);
                 enemy->ClampPos();
                 break;
             case ECL_OPCODE_MOVEAXISVELOCITY:
-                enemy->axisSpeed = *instruction->args.move.pos.AsD3dXVec();
+                enemy->axisSpeed = instruction->args.move.pos;
                 enemy->axisSpeed.x = *EnemyEclInstr::GetVarFloat(enemy, &enemy->axisSpeed.x, NULL);
                 enemy->axisSpeed.y = *EnemyEclInstr::GetVarFloat(enemy, &enemy->axisSpeed.y, NULL);
                 enemy->axisSpeed.z = *EnemyEclInstr::GetVarFloat(enemy, &enemy->axisSpeed.z, NULL);
@@ -497,7 +497,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 if (enemy->lasers[instruction->args.laserOp.laserIdx] != NULL)
                 {
                     enemy->lasers[instruction->args.laserOp.laserIdx]->pos =
-                        enemy->position + *instruction->args.laserOp.arg1.AsD3dXVec();
+                        enemy->position + instruction->args.laserOp.arg1;
                 }
                 break;
             case ECL_OPCODE_LASERTEST:
@@ -546,7 +546,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 local_6c = &instruction->args.spellcardEffect;
                 enemy->effectArray[enemy->effectIdx] = g_EffectManager.SpawnParticles(
                     0xd, &enemy->position, 1, (ZunColor)g_EffectsColor[local_6c->effectColorId]);
-                enemy->effectArray[enemy->effectIdx]->pos2 = *local_6c->pos.AsD3dXVec();
+                enemy->effectArray[enemy->effectIdx]->pos2 = local_6c->pos;
                 enemy->effectDistance = local_6c->effectDistance;
                 enemy->effectIdx++;
                 break;
@@ -851,14 +851,14 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 local_b0.pos.x = *EnemyEclInstr::GetVarFloat(enemy, &local_b0.pos.x, NULL);
                 local_b0.pos.y = *EnemyEclInstr::GetVarFloat(enemy, &local_b0.pos.y, NULL);
                 local_b0.pos.z = *EnemyEclInstr::GetVarFloat(enemy, &local_b0.pos.z, NULL);
-                g_EnemyManager.SpawnEnemy(local_b0.subId, local_b0.pos.AsD3dXVec(), local_b0.life, local_b0.itemDrop,
+                g_EnemyManager.SpawnEnemy(local_b0.subId, &local_b0.pos, local_b0.life, local_b0.itemDrop,
                                           local_b0.score);
                 break;
             case ECL_OPCODE_ENEMYKILLALL:
                 for (local_b4 = &g_EnemyManager.enemies[0], local_b8 = 0;
                      local_b8 < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies) - 1; local_b8++, local_b4++)
                 {
-                    if (!local_b4->flags.unk5)
+                    if (!local_b4->flags.active)
                     {
                         continue;
                     }
@@ -958,13 +958,13 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                     local_bc = 1.0f - local_bc;
                     local_bc = local_bc * local_bc * local_bc * local_bc;
                 }
-                enemy->axisSpeed = local_bc * enemy->moveInterp + enemy->moveInterpStartPos - enemy->position;
+                enemy->axisSpeed =  enemy->moveInterp * local_bc + enemy->moveInterpStartPos - enemy->position;
                 enemy->angle = atan2f(enemy->axisSpeed.y, enemy->axisSpeed.x);
                 if ((ZunBool)(enemy->moveInterpTimer.current <= 0))
                 {
                     enemy->flags.unk1 = 0;
                     enemy->position = enemy->moveInterpStartPos + enemy->moveInterp;
-                    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+                    enemy->axisSpeed = ZunVec3(0.0f, 0.0f, 0.0f);
                 }
                 break;
             }

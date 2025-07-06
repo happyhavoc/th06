@@ -1,5 +1,7 @@
 #include "EffectManager.hpp"
 
+#include <cmath>
+
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
@@ -90,42 +92,50 @@ i32 EffectManager::EffectCallbackStill(Effect *effect)
     return EFFECT_CALLBACK_RESULT_DONE;
 }
 
-#pragma var_order(posOffset, verticalAngle, local_54, horizontalAngle, normalizedPos, alpha)
+
 i32 EffectManager::EffectUpdateCallback4(Effect *effect)
 {
-    D3DXVECTOR3 posOffset;
+    f32 posMagnitude;
+    ZunVec3 posOffset;
     f32 verticalAngle;
-    D3DXMATRIX local_54;
+    ZunMatrix local_54;
     f32 horizontalAngle;
-    D3DXVECTOR3 normalizedPos;
+    ZunVec3 normalizedPos;
     f32 alpha;
 
-    D3DXVec3Normalize(&normalizedPos, &effect->pos2);
+    effect->pos2.getNormalized(normalizedPos);
 
-    verticalAngle = sinf(effect->angleRelated);
-    horizontalAngle = cosf(effect->angleRelated);
+    verticalAngle = std::sinf(effect->angleRelated);
+    horizontalAngle = std::cosf(effect->angleRelated);
 
     effect->quaternion.x = normalizedPos.x * verticalAngle;
     effect->quaternion.y = normalizedPos.y * verticalAngle;
     effect->quaternion.z = normalizedPos.z * verticalAngle;
     effect->quaternion.w = horizontalAngle;
-    D3DXMatrixRotationQuaternion(&local_54, &effect->quaternion);
+
+    local_54.Rotate(effect->angleRelated, normalizedPos.x, normalizedPos.y, normalizedPos.z);
+
+//    D3DXMatrixRotationQuaternion(&local_54, &effect->quaternion);
 
     posOffset.x = normalizedPos.y * 1.0f - normalizedPos.z * 0.0f;
     posOffset.y = normalizedPos.z * 0.0f - normalizedPos.x * 1.0f;
     posOffset.z = normalizedPos.x * 0.0f - normalizedPos.y * 0.0f;
 
-    if (D3DXVec3LengthSq(&posOffset) < 0)
+    posMagnitude = posOffset.getMagnitude();
+
+    if (posMagnitude * posMagnitude < 0)
     {
-        normalizedPos = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
+        normalizedPos = ZunVec3(1.0f, 0.0f, 0.0f);
     }
     else
     {
-        D3DXVec3Normalize(&posOffset, &posOffset);
+        posOffset.getNormalized(posOffset);
+//        D3DXVec3Normalize(&posOffset, &posOffset);
     }
 
     posOffset *= effect->unk_15c;
-    D3DXVec3TransformCoord(&posOffset, &posOffset, &local_54);
+//    D3DXVec3TransformCoord(&posOffset, &posOffset, &local_54);
+    posOffset = local_54 * posOffset;
     posOffset.z *= 6.0f;
 
     effect->pos1 = posOffset + effect->position;
@@ -165,7 +175,7 @@ i32 EffectManager::EffectCallbackAttract(Effect *effect)
 
     angle = 256.0f - effect->timer.AsFramesFloat() * 256.0f / 60.0f;
 
-    effect->pos1 = angle * effect->pos2 + effect->position;
+    effect->pos1 = effect->pos2 * angle + effect->position;
 
     return EFFECT_CALLBACK_RESULT_DONE;
 }
@@ -179,20 +189,20 @@ i32 EffectManager::EffectCallbackAttractSlow(Effect *effect)
         effect->position = effect->pos1;
 
         angle = g_Rng.GetRandomF32ZeroToOne() * ZUN_2PI - ZUN_PI;
-        effect->pos2.x = cosf(angle);
-        effect->pos2.y = sinf(angle);
+        effect->pos2.x = std::cosf(angle);
+        effect->pos2.y = std::sinf(angle);
         effect->pos2.z = 0.0;
     }
 
     angle = 256.0f - effect->timer.AsFramesFloat() * 256.0f / 240.0f;
 
-    effect->pos1 = angle * effect->pos2 + effect->position;
+    effect->pos1 = effect->pos2 * angle + effect->position;
 
     return EFFECT_CALLBACK_RESULT_DONE;
 }
 
-#pragma var_order(effect, idx)
-Effect *EffectManager::SpawnParticles(i32 effectIdx, D3DXVECTOR3 *pos, i32 count, ZunColor color)
+
+Effect *EffectManager::SpawnParticles(i32 effectIdx, ZunVec3 *pos, i32 count, ZunColor color)
 {
     i32 idx;
     Effect *effect;

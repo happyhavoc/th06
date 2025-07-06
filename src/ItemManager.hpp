@@ -5,7 +5,7 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
-#include <d3dx8math.h>
+// #include <d3dx8math.h>
 
 namespace th06
 {
@@ -24,9 +24,9 @@ enum ItemType // This enum is 1 byte in size on Enemy
 struct Item
 {
     AnmVm sprite;
-    D3DXVECTOR3 currentPosition;
-    D3DXVECTOR3 startPosition;
-    D3DXVECTOR3 targetPosition;
+    ZunVec3 currentPosition;
+    ZunVec3 startPosition;
+    ZunVec3 targetPosition;
     ZunTimer timer;
     i8 itemType;
     i8 isInUse;
@@ -38,7 +38,7 @@ ZUN_ASSERT_SIZE(Item, 0x144);
 struct ItemManager
 {
     ItemManager();
-    void SpawnItem(D3DXVECTOR3 *position, ItemType type, i32 state);
+    void SpawnItem(ZunVec3 *position, ItemType type, i32 state);
     void OnUpdate();
     void OnDraw();
     void RemoveAllItems();

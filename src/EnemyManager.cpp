@@ -41,13 +41,13 @@ void EnemyManager::Initialize()
     {
         enemy->vms[i].anmFileIndex = -1;
     }
-    enemy->flags.unk5 = 1;
+    enemy->flags.active = 1;
     enemy->bossTimer.InitializeForPopup();
     enemy->flags.unk6 = 1;
     enemy->flags.unk7 = 1;
     enemy->flags.unk8 = 0;
-    enemy->hitboxDimensions = D3DXVECTOR3(12.0f, 12.0f, 12.0f);
-    enemy->axisSpeed = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    enemy->hitboxDimensions = ZunVec3(12.0f, 12.0f, 12.0f);
+    enemy->axisSpeed = ZunVec3(0.0f, 0.0f, 0.0f);
     enemy->angularVelocity = 0.0f;
     enemy->angle = 0.0f;
     enemy->acceleration = 0.0f;
@@ -64,7 +64,7 @@ void EnemyManager::Initialize()
     enemy->deathAnm3 = 0;
     enemy->shootInterval = 0;
     enemy->shootIntervalTimer.InitializeForPopup();
-    enemy->shootOffset = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+    enemy->shootOffset = ZunVec3(0.0f, 0.0f, 0.0f);
     enemy->anmExLeft = -1;
     enemy->anmExRight = -1;
     enemy->anmExDefaults = -1;
@@ -88,7 +88,7 @@ EnemyManager::EnemyManager()
     this->Initialize();
 }
 
-Enemy *EnemyManager::SpawnEnemy(i32 eclSubId, D3DXVECTOR3 *pos, i16 life, i16 itemDrop, i32 score)
+Enemy *EnemyManager::SpawnEnemy(i32 eclSubId, ZunVec3 *pos, i16 life, i16 itemDrop, i32 score)
 {
     Enemy *newEnemy;
     i32 idx;
@@ -97,7 +97,7 @@ Enemy *EnemyManager::SpawnEnemy(i32 eclSubId, D3DXVECTOR3 *pos, i16 life, i16 it
     idx = 0;
     for (; idx < ARRAY_SIZE_SIGNED(this->enemies) - 1; idx++, newEnemy++)
     {
-        if (newEnemy->flags.unk5)
+        if (newEnemy->flags.active)
             continue;
 
         *newEnemy = this->enemyTemplate;
@@ -139,13 +139,13 @@ void Enemy::ResetEffectArray(Enemy *enemy)
     enemy->effectIdx = 0;
 }
 
-#pragma var_order(spawnedEnemy, subrankIncreaseFrame, args1, args2, args3, pos1, pos2, args4, pos3, pos4)
+
 void EnemyManager::RunEclTimeline()
 {
-    D3DXVECTOR3 pos4;
-    D3DXVECTOR3 pos3;
-    D3DXVECTOR3 pos2;
-    D3DXVECTOR3 pos1;
+    ZunVec3 pos4;
+    ZunVec3 pos3;
+    ZunVec3 pos2;
+    ZunVec3 pos1;
     EclTimelineInstrArgs *args4;
     EclTimelineInstrArgs *args3;
     EclTimelineInstrArgs *args2;
@@ -315,7 +315,7 @@ void EnemyManager::RunEclTimeline()
                 break;
             case 0xc:
                 if (this->bosses[this->timelineInstr->arg0] != NULL &&
-                    this->bosses[this->timelineInstr->arg0]->flags.unk5)
+                    this->bosses[this->timelineInstr->arg0]->flags.active)
                 {
                     this->timelineTime.Decrement(1);
                     return;
@@ -326,7 +326,8 @@ void EnemyManager::RunEclTimeline()
         {
             break;
         }
-        this->timelineInstr = (EclTimelineInstr *)((i32)this->timelineInstr + this->timelineInstr->size);
+
+        this->timelineInstr = (EclTimelineInstr *)(((u8 *)this->timelineInstr) + this->timelineInstr->size);
     }
     if (!g_Gui.HasCurrentMsgIdx())
     {
@@ -335,7 +336,6 @@ void EnemyManager::RunEclTimeline()
     return;
 }
 
-#pragma var_order(curEnemy, i)
 ZunBool Enemy::HandleLifeCallback()
 {
 
@@ -359,7 +359,7 @@ ZunBool Enemy::HandleLifeCallback()
         curEnemy = g_EnemyManager.enemies;
         for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies) - 1; i++, curEnemy++)
         {
-            if (!curEnemy->flags.unk5)
+            if (!curEnemy->flags.active)
             {
                 continue;
             }
@@ -381,7 +381,7 @@ ZunBool Enemy::HandleLifeCallback()
     return false;
 }
 
-#pragma var_order(curEnemy, i)
+
 ZunBool Enemy::HandleTimerCallback()
 {
 
@@ -417,7 +417,7 @@ ZunBool Enemy::HandleTimerCallback()
         curEnemy = g_EnemyManager.enemies;
         for (i = 0; i < ARRAY_SIZE_SIGNED(g_EnemyManager.enemies) - 1; i++, curEnemy++)
         {
-            if (!curEnemy->flags.unk5)
+            if (!curEnemy->flags.active)
             {
                 continue;
             }
@@ -449,7 +449,7 @@ void Enemy::Despawn()
 {
     if (!this->flags.unk11)
     {
-        this->flags.unk5 = 0;
+        this->flags.active = 0;
     }
     else
     {
@@ -516,13 +516,13 @@ ZunResult EnemyManager::RegisterChain(char *stgEnm1, char *stgEnm2)
     return ZUN_SUCCESS;
 }
 
-#pragma var_order(local_8, damage, enemyIdx, enemyHitbox, enemyVmIdx, enemyLifeBeforeDmg, curEnemy)
+
 ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
 {
     Enemy *curEnemy;
     i32 enemyLifeBeforeDmg;
     i32 enemyVmIdx;
-    D3DXVECTOR3 enemyHitbox;
+    ZunVec3 enemyHitbox;
     i32 enemyIdx;
     i32 damage;
     i32 local_8;
@@ -532,12 +532,13 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
     for (curEnemy = &mgr->enemies[0], mgr->enemyCount = 0, enemyIdx = 0; enemyIdx < ARRAY_SIZE_SIGNED(mgr->enemies) - 1;
          enemyIdx++, curEnemy++)
     {
-        if (!curEnemy->flags.unk5)
+        if (!curEnemy->flags.active)
         {
             continue;
         }
         mgr->enemyCount++;
         curEnemy->Move();
+
         curEnemy->ClampPos();
         if (curEnemy->flags.unk8 == 0 &&
             g_GameManager.IsInBounds(curEnemy->position.x, curEnemy->position.y, curEnemy->primaryVm.sprite->widthPx,
@@ -549,7 +550,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
             !g_GameManager.IsInBounds(curEnemy->position.x, curEnemy->position.y, curEnemy->primaryVm.sprite->widthPx,
                                       curEnemy->primaryVm.sprite->heightPx))
         {
-            curEnemy->flags.unk5 = 0;
+            curEnemy->flags.active = 0;
             curEnemy->Despawn();
             continue;
         }
@@ -563,7 +564,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
         }
         if (g_EclManager.RunEcl(curEnemy) == ZUN_ERROR)
         {
-            curEnemy->flags.unk5 = 0;
+            curEnemy->flags.active = 0;
             curEnemy->Despawn();
             continue;
         }
@@ -659,7 +660,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                     goto LAB_00412a4d;
                 case 0:
                     g_GameManager.AddScore(curEnemy->score);
-                    curEnemy->flags.unk5 = 0;
+                    curEnemy->flags.active = 0;
                 LAB_00412a4d:
                     if (curEnemy->flags.isBoss)
                     {
@@ -741,7 +742,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-#pragma var_order(effect, i)
+
 void Enemy::UpdateEffects(Enemy *enemy)
 {
     Effect *effect;
@@ -765,7 +766,7 @@ void Enemy::UpdateEffects(Enemy *enemy)
     }
 }
 
-#pragma var_order(curEnemyIdx, curEnemyVm, curEnemyVmIdx, curEnemy)
+
 ChainCallbackResult EnemyManager::OnDraw(EnemyManager *mgr)
 {
     AnmVm *curEnemyVm;
@@ -776,7 +777,7 @@ ChainCallbackResult EnemyManager::OnDraw(EnemyManager *mgr)
     for (curEnemy = &mgr->enemies[0], curEnemyIdx = 0; curEnemyIdx < ARRAY_SIZE_SIGNED(mgr->enemies) - 1;
          curEnemyIdx++, curEnemy++)
     {
-        if (!curEnemy->flags.unk5)
+        if (!curEnemy->flags.active)
         {
             continue;
         }

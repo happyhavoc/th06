@@ -40,7 +40,7 @@ ChainElem::~ChainElem()
 
 Chain::Chain()
 {
-    midiOutputDeviceCount = midiOutGetNumDevs();
+//    midiOutputDeviceCount = midiOutGetNumDevs();
     unk = 0;
 }
 

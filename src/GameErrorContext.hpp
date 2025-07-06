@@ -1,7 +1,5 @@
 #pragma once
 
-#include <windows.h>
-
 #include "diffbuild.hpp"
 #include "i18n.hpp"
 #include "inttypes.hpp"

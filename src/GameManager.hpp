@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Windows.h>
-#include <d3d8.h>
-#include <d3dx8math.h>
+// #include <Windows.h>
+// #include <d3d8.h>
+// #include <d3dx8math.h>
 
 #include "Chain.hpp"
 #include "ResultScreen.hpp"
@@ -122,12 +122,12 @@ struct GameManager
     u32 gameFrames;
     i32 currentStage;
     u32 menuCursorBackup;
-    D3DXVECTOR2 arcadeRegionTopLeftPos;
-    D3DXVECTOR2 arcadeRegionSize;
-    D3DXVECTOR2 playerMovementAreaTopLeftPos;
-    D3DXVECTOR2 playerMovementAreaSize;
+    ZunVec2 arcadeRegionTopLeftPos;
+    ZunVec2 arcadeRegionSize;
+    ZunVec2 playerMovementAreaTopLeftPos;
+    ZunVec2 playerMovementAreaSize;
     f32 cameraDistance;
-    D3DXVECTOR3 stageCameraFacingDir;
+    ZunVec3 stageCameraFacingDir;
     i32 counat;
     i32 rank;
     i32 maxRank;

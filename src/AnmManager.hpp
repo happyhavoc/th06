@@ -1,7 +1,10 @@
 #pragma once
 
-#include <d3d8.h>
-#include <d3dx8math.h>
+// #include <d3d8.h>
+// #include <d3dx8math.h>
+
+#include <GLES/gl.h>
+#include <SDL2/SDL_video.h>
 
 #include "AnmIdx.hpp"
 #include "AnmVm.hpp"
@@ -13,41 +16,85 @@
 
 namespace th06
 {
-// structure of a vertex with SetVertexShade FVF set to D3DFVF_DIFFUSE | D3DFVF_XYZRHW
-struct VertexDiffuseXyzrwh
+struct TextureData
 {
-    D3DXVECTOR4 position;
-    D3DCOLOR diffuse;
+    GLuint handle;
+    void *fileData;
+
+    // Fields needed to compensate for inability to read back texture for alpha loading
+    u8 *textureData;
+    u32 width;
+    u32 height;
+    i32 format;
+};
+
+// Endian-neutral version of ZunColor, for use with OpenGL
+struct ColorData
+{
+    GLubyte r;
+    GLubyte g;
+    GLubyte b;
+    GLubyte a;
+
+    ColorData() {}
+
+    ColorData(ZunColor color)
+    {
+        a = (color >> 24);
+        r = (color >> 16) & 0xFF;
+        g = (color >> 8) & 0xFF;
+        b = color & 0xFF;
+    };
+};
+static_assert(sizeof(ColorData) == 0x04, "ColorData has additional padding between struct members");
+
+// NOTE: Every usage of a position with RHW in EoSD simply sets RHW to 1.0f
+// D3D8 interprets vertices with D3DFVF_XYZRHW as having already been transformed, so Zun
+// uses RHW simply to draw polygons in an orthographic manner
+// This has to be worked around, since OpenGL does transform vertices with vec4 positions
+// With the workaround done, all uses of XYZRHW vertices should be replaceable with XYZ vertices
+
+// structure of a vertex with SetVertexShade FVF set to D3DFVF_DIFFUSE | D3DFVF_XYZRHW
+struct VertexDiffuseXyzrhw
+{
+    ZunVec4 position;
+    ColorData diffuse;
 };
 
 // Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_XYZRHW
-struct VertexTex1Xyzrwh
+struct VertexTex1Xyzrhw
 {
-    D3DXVECTOR4 position;
-    D3DXVECTOR2 textureUV;
+    ZunVec4 position;
+    ZunVec2 textureUV;
 };
 
 // Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZRHW
-struct VertexTex1DiffuseXyzrwh
+struct VertexTex1DiffuseXyzrhw
 {
-    D3DXVECTOR4 position;
-    D3DCOLOR diffuse;
-    D3DXVECTOR2 textureUV;
+    ZunVec4 position;
+    ColorData diffuse;
+    ZunVec2 textureUV;
 };
 
 // Structure of a vertex with SetVertexShade FVF set to D3DFVF_TEX1 | D3DFVF_DIFFUSE | D3DFVF_XYZ
 struct VertexTex1DiffuseXyz
 {
-    D3DXVECTOR3 position;
-    D3DCOLOR diffuse;
-    D3DXVECTOR2 textureUV;
+    ZunVec3 position;
+    ColorData diffuse;
+    ZunVec2 textureUV;
+};
+
+struct VertexTex1Xy
+{
+    ZunVec2 position;
+    ZunVec2 textureUV;
 };
 
 struct AnmRawSprite
 {
     u32 id;
-    D3DXVECTOR2 offset;
-    D3DXVECTOR2 size;
+    ZunVec2 offset;
+    ZunVec2 size;
 };
 
 struct AnmRawScript
@@ -55,6 +102,9 @@ struct AnmRawScript
     u32 id;
     AnmRawInstr *firstInstruction;
 };
+
+// WARNING: scripts seems unused, but if it were to be used, 
+//   this would be dangerous for compatibility since AnmRawScript contains a pointer
 
 struct AnmRawEntry
 {
@@ -67,7 +117,7 @@ struct AnmRawEntry
     u32 colorKey;
     u32 nameOffset;
     u32 spriteIdxOffset;
-    u32 mipmapNameOffset;
+    u32 alphaNameOffset;
     u32 version;
     u32 unk1;
     u32 textureOffset;
@@ -81,8 +131,8 @@ ZUN_ASSERT_SIZE(AnmRawEntry, 0xb8);
 
 struct RenderVertexInfo
 {
-    D3DXVECTOR3 position;
-    D3DXVECTOR2 textureUV;
+    ZunVec3 position;
+    ZunVec2 textureUV;
 };
 ZUN_ASSERT_SIZE(RenderVertexInfo, 0x14);
 
@@ -91,12 +141,12 @@ struct AnmManager
     AnmManager();
     ~AnmManager();
 
-    void ReleaseVertexBuffer();
+//    void ReleaseVertexBuffer();
     void SetupVertexBuffer();
 
     ZunResult CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat);
-    ZunResult LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
-    ZunResult LoadTextureAlphaChannel(i32 textureIdx, char *textureName, i32 textureFormat, D3DCOLOR colorKey);
+    ZunResult LoadTexture(i32 textureIdx, char *textureName, i32 textureFormat, ZunColor colorKey);
+    ZunResult LoadTextureAlphaChannel(i32 textureIdx, char *textureName, i32 textureFormat, ZunColor colorKey);
     void ReleaseTexture(i32 textureIdx);
     void TakeScreenshotIfRequested();
     void TakeScreenshot(i32 textureId, i32 left, i32 top, i32 width, i32 height);
@@ -130,9 +180,13 @@ struct AnmManager
     {
         this->currentZWriteDisable = zwriteDisable;
     }
-    void SetCurrentTexture(IDirect3DTexture8 *texture)
+    void SetCurrentTexture(GLuint textureHandle)
     {
-        this->currentTexture = texture;
+        if(this->currentTextureHandle != textureHandle)
+        {
+            this->currentTextureHandle = textureHandle;
+            glBindTexture(GL_TEXTURE_2D, textureHandle);
+        }
     }
     void SetCurrentSprite(AnmLoadedSprite *sprite)
     {
@@ -147,7 +201,7 @@ struct AnmManager
     static void DrawStringFormat2(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
     static void DrawVmTextFmt(AnmManager *anm_mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
     ZunResult DrawNoRotation(AnmVm *vm);
-    ZunResult DrawInner(AnmVm *vm, i32 unk);
+    ZunResult DrawOrthographic(AnmVm *vm, bool roundToPixel);
     ZunResult DrawFacingCamera(AnmVm *vm);
     ZunResult Draw2(AnmVm *vm);
     ZunResult Draw3(AnmVm *vm);
@@ -156,21 +210,21 @@ struct AnmManager
     ZunResult SetActiveSprite(AnmVm *vm, u32 spriteIdx);
 
     void ReleaseSurfaces(void);
-    ZunResult LoadSurface(i32 surfaceIdx, char *path);
+    ZunResult LoadSurface(i32 surfaceIdx, const char *path);
     void ReleaseSurface(i32 surfaceIdx);
     void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
-    void DrawEndingRect(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLeft, i32 rectTop, i32 width, i32 height);
+    void CopySurfaceRectToBackBuffer(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLeft, i32 rectTop, i32 width, i32 height);
 
-    void TranslateRotation(VertexTex1Xyzrwh *param_1, float x, float y, float sine, float cosine, float xOffset,
+    void TranslateRotation(VertexTex1Xyzrhw *param_1, float x, float y, float sine, float cosine, float xOffset,
                            float yOffset);
 
     void ReleaseAnm(i32 anmIdx);
-    ZunResult LoadAnm(i32 anmIdx, char *path, i32 spriteIdxOffset);
-    void AnmManager::ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
+    ZunResult LoadAnm(i32 anmIdx, const char *path, i32 spriteIdxOffset);
+    void ExecuteAnmIdx(AnmVm *vm, i32 anmFileIdx)
     {
         vm->anmFileIndex = anmFileIdx;
-        vm->pos = D3DXVECTOR3(0, 0, 0);
-        vm->posOffset = D3DXVECTOR3(0, 0, 0);
+        vm->pos = ZunVec3(0, 0, 0);
+        vm->posOffset = ZunVec3(0, 0, 0);;
         vm->fontHeight = 15;
         vm->fontWidth = 15;
 
@@ -188,26 +242,35 @@ struct AnmManager
         this->screenshotHeight = GAME_REGION_HEIGHT;
     }
 
+    static SDL_Surface *LoadToSurfaceWithFormat(const char *filename, SDL_PixelFormatEnum format, u8 **fileData);
+    static u8 *ExtractSurfacePixels(SDL_Surface *src, u8 pixelDepth);
+    static void FlipSurface(SDL_Surface *surface);
+    void ApplySurfaceToColorBuffer(SDL_Surface *src, const SDL_Rect &srcRect, const SDL_Rect &dstRect);
+    // Creates, binds, and set parameters for a new texture
+    void CreateTextureObject();
+
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;
-    IDirect3DTexture8 *textures[264];
-    void *imageDataArray[256];
+//    GLuint textures[264];
+//    void *imageDataArray[256];
+    TextureData textures[264];
     i32 maybeLoadedSpriteCount;
     AnmRawInstr *scripts[2048];
     i32 spriteIndices[2048];
     AnmRawEntry *anmFiles[128];
     u32 anmFilesSpriteIndexOffsets[128];
-    IDirect3DSurface8 *surfaces[32];
-    IDirect3DSurface8 *surfacesBis[32];
-    D3DXIMAGE_INFO surfaceSourceInfo[32];
-    D3DCOLOR currentTextureFactor;
-    IDirect3DTexture8 *currentTexture;
+    SDL_Surface *surfaces[32];
+//    SDL_Surface *surfacesBis[32];
+//    D3DXIMAGE_INFO surfaceSourceInfo[32];
+    ZunColor currentTextureFactor;
+    GLuint currentTextureHandle;
+    GLuint dummyTextureHandle;
     u8 currentBlendMode;
     u8 currentColorOp;
     u8 currentVertexShader;
     u8 currentZWriteDisable;
     AnmLoadedSprite *currentSprite;
-    IDirect3DVertexBuffer8 *vertexBuffer;
+//    IDirect3DVertexBuffer8 *vertexBuffer;
     RenderVertexInfo vertexBufferContents[4];
     i32 screenshotTextureId;
     i32 screenshotLeft;
@@ -218,5 +281,4 @@ struct AnmManager
 ZUN_ASSERT_SIZE(AnmManager, 0x2112c);
 
 DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
-DIFFABLE_EXTERN(D3DFORMAT, g_TextureFormatD3D8Mapping[6]);
 }; // namespace th06

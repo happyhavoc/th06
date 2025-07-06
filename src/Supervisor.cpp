@@ -19,27 +19,29 @@
 #include "inttypes.hpp"
 #include "utils.hpp"
 
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+#include <SDL2/SDL_timer.h>
 
 namespace th06
 {
 DIFFABLE_STATIC(Supervisor, g_Supervisor)
 DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
-DIFFABLE_STATIC(IDirect3DSurface8 *, g_TextBufferSurface)
+DIFFABLE_STATIC(SDL_Surface *, g_TextBufferSurface)
 DIFFABLE_STATIC(u16, g_LastFrameInput);
 DIFFABLE_STATIC(u16, g_CurFrameInput);
 DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
 DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
 
-#pragma optimize("s", on)
+
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {
 
-    if (g_SoundPlayer.backgroundMusic != NULL)
-    {
-        g_SoundPlayer.backgroundMusic->UpdateFadeOut();
-    }
+//    if (g_SoundPlayer.backgroundMusic != NULL)
+//    {
+//        g_SoundPlayer.backgroundMusic->UpdateFadeOut();
+//    }
     g_LastFrameInput = g_CurFrameInput;
     g_CurFrameInput = Controller::GetInput();
     g_IsEigthFrameOfHeldInput = 0;
@@ -71,7 +73,6 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
         case SUPERVISOR_STATE_INIT:
         REINIT_MAINMENU:
             s->curState = SUPERVISOR_STATE_MAINMENU;
-            g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
             if (MainMenu::RegisterChain(0) != ZUN_SUCCESS)
             {
                 return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
@@ -137,7 +138,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 
             case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
                 GameManager::CutChain();
-                if (ResultScreen::RegisterChain(TRUE) != ZUN_SUCCESS)
+                if (ResultScreen::RegisterChain(true) != ZUN_SUCCESS)
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -159,7 +160,6 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
                 s->curState = SUPERVISOR_STATE_INIT;
                 ReplayManager::SaveReplay(NULL, NULL);
                 s->curState = SUPERVISOR_STATE_MAINMENU;
-                g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
                 if (MainMenu::RegisterChain(1) != ZUN_SUCCESS)
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
@@ -207,7 +207,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
                 s->curState = SUPERVISOR_STATE_INIT;
                 goto REINIT_MAINMENU;
             case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
-                if (ResultScreen::RegisterChain(TRUE) != ZUN_SUCCESS)
+                if (ResultScreen::RegisterChain(true) != ZUN_SUCCESS)
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -221,10 +221,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
     s->calcCount++;
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(anmm0, anmm1, anmm2, anmm3, anmm4, anmm5)
 ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
 {
     AnmManager *anmm0 = g_AnmManager;
@@ -234,7 +231,7 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
     anmm1->currentSprite = NULL;
 
     AnmManager *anmm2 = g_AnmManager;
-    anmm2->currentTexture = NULL;
+    anmm2->currentTextureHandle = 0;
 
     AnmManager *anmm3 = g_AnmManager;
     anmm3->currentColorOp = 0xff;
@@ -248,36 +245,33 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
     Supervisor::DrawFpsCounter();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(diprange, pvRefBackup)
-BOOL CALLBACK Supervisor::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
-{
-    LPVOID pvRefBackup;
-    DIPROPRANGE diprange;
-    pvRefBackup = pvRef;
+// BOOL CALLBACK Supervisor::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
+// {
+//     LPVOID pvRefBackup;
+//     DIPROPRANGE diprange;
+//     pvRefBackup = pvRef;
+// 
+//     if (lpddoi->dwType & DIDFT_AXIS)
+//     {
+//         diprange.diph.dwSize = sizeof(diprange);
+//         diprange.diph.dwHeaderSize = sizeof(diprange.diph);
+//         diprange.diph.dwHow = DIPH_BYID;
+//         diprange.diph.dwObj = lpddoi->dwType;
+//         diprange.lMin = -1000;
+//         diprange.lMax = 1000;
+// 
+//         if (g_Supervisor.controller->SetProperty(DIPROP_RANGE, &diprange.diph) < 0)
+//         {
+//             return FALSE;
+//         }
+//     }
+//     return TRUE;
+// }
 
-    if (lpddoi->dwType & DIDFT_AXIS)
-    {
-        diprange.diph.dwSize = sizeof(diprange);
-        diprange.diph.dwHeaderSize = sizeof(diprange.diph);
-        diprange.diph.dwHow = DIPH_BYID;
-        diprange.diph.dwObj = lpddoi->dwType;
-        diprange.lMin = -1000;
-        diprange.lMax = 1000;
 
-        if (g_Supervisor.controller->SetProperty(DIPROP_RANGE, &diprange.diph) < 0)
-        {
-            return FALSE;
-        }
-    }
-    return TRUE;
-}
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(chain, supervisor)
+
 ZunResult Supervisor::RegisterChain()
 {
     ChainElem *chain;
@@ -302,10 +296,10 @@ ZunResult Supervisor::RegisterChain()
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(i)
+
+
+
 ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
     i32 i;
@@ -320,23 +314,33 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
     {
         return ZUN_ERROR;
     }
+
+    // D3DX code swaps twice to copy to both buffers
+
     g_AnmManager->LoadSurface(0, "data/title/th06logo.jpg");
     g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
-    if (g_Supervisor.d3dDevice->Present(0, 0, 0, 0) < 0)
-        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
+//    if (g_Supervisor.d3dDevice->Present(0, 0, 0, 0) < 0)
+//        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
 
+    SDL_GL_SwapWindow(g_Supervisor.gameWindow);
+
+//
     g_AnmManager->CopySurfaceToBackBuffer(0, 0, 0, 0, 0);
-    if (g_Supervisor.d3dDevice->Present(0, 0, 0, 0) < 0)
-        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
+//    if (g_Supervisor.d3dDevice->Present(0, 0, 0, 0) < 0)
+//        g_Supervisor.d3dDevice->Reset(&g_Supervisor.presentParameters);
+//
+
+    SDL_GL_SwapWindow(g_Supervisor.gameWindow);
 
     g_AnmManager->ReleaseSurface(0);
 
-    s->startupTimeBeforeMenuMusic = timeGetTime();
+    s->startupTimeBeforeMenuMusic = SDL_GetTicks();
     Supervisor::SetupDInput(s);
 
-    s->midiOutput = new MidiOutput();
+//    s->midiOutput = new MidiOutput();
 
-    g_Rng.Initialize(timeGetTime());
+    // Replacing a seeding method that used win32 timeGetTime
+    g_Rng.Initialize((u16) std::time(NULL));
 
     g_SoundPlayer.InitSoundBuffers();
     if (g_AnmManager->LoadAnm(ANM_FILE_TEXT, "data/text.anm", ANM_OFFSET_TEXT) != 0)
@@ -352,126 +356,131 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     s->unk198 = 0;
     g_AnmManager->SetupVertexBuffer();
-    TextHelper::CreateTextBuffer();
+
+    if (TextHelper::CreateTextBuffer() != ZUN_SUCCESS)
+    {
+        return ZUN_ERROR;
+    }
+    
     s->ReleasePbg3(IN_PBG3_INDEX);
     if (g_Supervisor.LoadPbg3(MD_PBG3_INDEX, TH_MD_DAT_FILE) != 0)
         return ZUN_ERROR;
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
 {
-    HINSTANCE hInst;
-
-    hInst = (HINSTANCE)GetWindowLongA(supervisor->hwndGameWindow, GWL_HINSTANCE);
-    if (supervisor->cfg.opts >> GCOS_NO_DIRECTINPUT_PAD & 1)
-    {
-        return ZUN_ERROR;
-    }
-
-    if (DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8A, (LPVOID *)&supervisor->dinputIface, NULL) <
-        0)
-    {
-        supervisor->dinputIface = NULL;
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    if (supervisor->dinputIface->CreateDevice(GUID_SysKeyboard, &supervisor->keyboard, NULL) < 0)
-    {
-        if (supervisor->dinputIface)
-        {
-            supervisor->dinputIface->Release();
-            supervisor->dinputIface = NULL;
-        }
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    if (supervisor->keyboard->SetDataFormat(&c_dfDIKeyboard) < 0)
-    {
-        if (supervisor->keyboard)
-        {
-            supervisor->keyboard->Release();
-            supervisor->keyboard = NULL;
-        }
-
-        if (supervisor->dinputIface)
-        {
-            supervisor->dinputIface->Release();
-            supervisor->dinputIface = NULL;
-        }
-
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    if (supervisor->keyboard->SetCooperativeLevel(supervisor->hwndGameWindow,
-                                                  DISCL_NONEXCLUSIVE | DISCL_FOREGROUND | DISCL_NOWINKEY) < 0)
-    {
-        if (supervisor->keyboard)
-        {
-            supervisor->keyboard->Release();
-            supervisor->keyboard = NULL;
-        }
-
-        if (supervisor->dinputIface)
-        {
-            supervisor->dinputIface->Release();
-            supervisor->dinputIface = NULL;
-        }
-
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE);
-        return ZUN_ERROR;
-    }
-
-    supervisor->keyboard->Acquire();
+//    HINSTANCE hInst;
+//
+//    hInst = (HINSTANCE)GetWindowLongA(supervisor->hwndGameWindow, GWL_HINSTANCE);
+//    if (supervisor->cfg.opts >> GCOS_NO_DIRECTINPUT_PAD & 1)
+//    {
+//        return ZUN_ERROR;
+//    }
+//
+//    if (DirectInput8Create(hInst, DIRECTINPUT_VERSION, IID_IDirectInput8A, (LPVOID *)&supervisor->dinputIface, NULL) <
+//        0)
+//    {
+//        supervisor->dinputIface = NULL;
+//        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
+//        return ZUN_ERROR;
+//    }
+//
+//    if (supervisor->dinputIface->CreateDevice(GUID_SysKeyboard, &supervisor->keyboard, NULL) < 0)
+//    {
+//        if (supervisor->dinputIface)
+//        {
+//            supervisor->dinputIface->Release();
+//            supervisor->dinputIface = NULL;
+//        }
+//        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_NOT_AVAILABLE);
+//        return ZUN_ERROR;
+//    }
+//
+//    if (supervisor->keyboard->SetDataFormat(&c_dfDIKeyboard) < 0)
+//    {
+//        if (supervisor->keyboard)
+//        {
+//            supervisor->keyboard->Release();
+//            supervisor->keyboard = NULL;
+//        }
+//
+//        if (supervisor->dinputIface)
+//        {
+//            supervisor->dinputIface->Release();
+//            supervisor->dinputIface = NULL;
+//        }
+//
+//        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETDATAFORMAT_NOT_AVAILABLE);
+//        return ZUN_ERROR;
+//    }
+//
+//    if (supervisor->keyboard->SetCooperativeLevel(supervisor->hwndGameWindow,
+//                                                  DISCL_NONEXCLUSIVE | DISCL_FOREGROUND | DISCL_NOWINKEY) < 0)
+//    {
+//        if (supervisor->keyboard)
+//        {
+//            supervisor->keyboard->Release();
+//            supervisor->keyboard = NULL;
+//        }
+//
+//        if (supervisor->dinputIface)
+//        {
+//            supervisor->dinputIface->Release();
+//            supervisor->dinputIface = NULL;
+//        }
+//
+//        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_SETCOOPERATIVELEVEL_NOT_AVAILABLE);
+//        return ZUN_ERROR;
+//    }
+//
+//    supervisor->keyboard->Acquire();
     GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
 
-    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Supervisor::EnumGameControllersCb, NULL,
-                                         DIEDFL_ATTACHEDONLY);
-    if (supervisor->controller)
-    {
-        supervisor->controller->SetDataFormat(&c_dfDIJoystick2);
-        supervisor->controller->SetCooperativeLevel(supervisor->hwndGameWindow, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
-
-        g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
-
-        supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
-        supervisor->controller->EnumObjects(Supervisor::ControllerCallback, NULL, DIDFT_ALL);
-
-        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_PAD_FOUND);
-    }
+//    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Supervisor::EnumGameControllersCb, NULL,
+//                                         DIEDFL_ATTACHEDONLY);
+//    if (supervisor->controller)
+//    {
+//        supervisor->controller->SetDataFormat(&c_dfDIJoystick2);
+//        supervisor->controller->SetCooperativeLevel(supervisor->hwndGameWindow, DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+//
+//        g_Supervisor.controllerCaps.dwSize = sizeof(g_Supervisor.controllerCaps);
+//
+//        supervisor->controller->GetCapabilities(&g_Supervisor.controllerCaps);
+//        supervisor->controller->EnumObjects(Supervisor::ControllerCallback, NULL, DIDFT_ALL);
+//
+//        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_PAD_FOUND);
+//    }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
-{
-    HRESULT result;
 
-    if (!g_Supervisor.controller)
-    {
-        result = g_Supervisor.dinputIface->CreateDevice(pdidInstance->guidInstance, &g_Supervisor.controller, NULL);
-        if (result < 0)
-        {
-            return TRUE;
-        }
-    }
-    return FALSE;
-}
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+// BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
+// {
+//     HRESULT result;
+// 
+//     if (!g_Supervisor.controller)
+//     {
+//         result = g_Supervisor.dinputIface->CreateDevice(pdidInstance->guidInstance, &g_Supervisor.controller, NULL);
+//         if (result < 0)
+//         {
+//             return TRUE;
+//         }
+//     }
+//     return FALSE;
+// }
+
+
+
 ZunResult Supervisor::DeletedCallback(Supervisor *s)
 {
     i32 pbg3Idx;
 
-    g_AnmManager->ReleaseVertexBuffer();
+//    g_AnmManager->ReleaseVertexBuffer();
     for (pbg3Idx = 0; pbg3Idx < ARRAY_SIZE_SIGNED(s->pbg3Archives); pbg3Idx += 1)
     {
         s->ReleasePbg3(pbg3Idx);
@@ -479,56 +488,56 @@ ZunResult Supervisor::DeletedCallback(Supervisor *s)
     g_AnmManager->ReleaseAnm(0);
     AsciiManager::CutChain();
     g_SoundPlayer.StopBGM();
-    if (s->midiOutput != NULL)
-    {
-        s->midiOutput->StopPlayback();
-        delete s->midiOutput;
-        s->midiOutput = NULL;
-    }
+//    if (s->midiOutput != NULL)
+//    {
+//        s->midiOutput->StopPlayback();
+//        delete s->midiOutput;
+//        s->midiOutput = NULL;
+//    }
     ReplayManager::SaveReplay(NULL, NULL);
     TextHelper::ReleaseTextBuffer();
-    if (s->keyboard != NULL)
-    {
-        s->keyboard->Unacquire();
-    }
-    if (s->keyboard != NULL)
-    {
-        s->keyboard->Release();
-        s->keyboard = NULL;
-    }
-    if (s->controller != NULL)
-    {
-        s->controller->Unacquire();
-    }
-    if (s->controller != NULL)
-    {
-        s->controller->Release();
-        s->controller = NULL;
-    }
-    if (s->dinputIface != NULL)
-    {
-        s->dinputIface->Release();
-        s->dinputIface = NULL;
-    }
+//    if (s->keyboard != NULL)
+//    {
+//        s->keyboard->Unacquire();
+//    }
+//    if (s->keyboard != NULL)
+//    {
+//        s->keyboard->Release();
+//        s->keyboard = NULL;
+//    }
+//    if (s->controller != NULL)
+//    {
+//        s->controller->Unacquire();
+//    }
+//    if (s->controller != NULL)
+//    {
+//        s->controller->Release();
+//        s->controller = NULL;
+//    }
+//    if (s->dinputIface != NULL)
+//    {
+//        s->dinputIface->Release();
+//        s->dinputIface = NULL;
+//    }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(curTime, framerate, fps, elapsed, fpsCounterPos)
+
+
+
 void Supervisor::DrawFpsCounter()
 {
-    DWORD curTime;
+    u32 curTime;
     float framerate;
     float elapsed;
     float fps;
-    D3DXVECTOR3 fpsCounterPos;
+    ZunVec3 fpsCounterPos;
 
     static u32 g_NumFramesSinceLastTime = 0;
-    static DWORD g_LastTime = timeGetTime();
+    static u32 g_LastTime = SDL_GetTicks();
     static char g_FpsCounterBuffer[256];
 
-    curTime = timeGetTime();
+    curTime = SDL_GetTicks();
     g_NumFramesSinceLastTime = g_NumFramesSinceLastTime + 1 + (u32)g_Supervisor.cfg.frameskipConfig;
     if (500 <= curTime - g_LastTime)
     {
@@ -561,9 +570,9 @@ void Supervisor::DrawFpsCounter()
     }
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 void Supervisor::TickTimer(i32 *frames, f32 *subframes)
 {
     if (this->framerateMultiplier <= 0.99f)
@@ -580,9 +589,9 @@ void Supervisor::TickTimer(i32 *frames, f32 *subframes)
         *frames = *frames + 1;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL)
@@ -603,9 +612,9 @@ void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
     delete this->pbg3Archives[pbg3FileIdx];
     this->pbg3Archives[pbg3FileIdx] = NULL;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
@@ -615,10 +624,10 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
         utils::DebugPrint("%s open ...\n", filename);
         if (this->pbg3Archives[pbg3FileIdx]->Load(filename) != 0)
         {
-            strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
+            std::strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
 
             char verPath[128];
-            sprintf(verPath, "ver%.4x.dat", GAME_VERSION);
+            std::sprintf(verPath, "ver%.4x.dat", GAME_VERSION);
             i32 res = this->pbg3Archives[pbg3FileIdx]->FindEntry(verPath);
             if (res < 0)
             {
@@ -639,17 +648,17 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
     }
     return 0;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
-#pragma var_order(data, wavFile, wavFile2)
-ZunResult Supervisor::LoadConfig(char *path)
+
+
+
+ZunResult Supervisor::LoadConfig(const char *path)
 {
     GameConfiguration *data;
     FILE *wavFile;
     FILE *wavFile2;
 
-    memset(&g_Supervisor.cfg, 0, sizeof(GameConfiguration));
+    std::memset(&g_Supervisor.cfg, 0, sizeof(GameConfiguration));
     g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
     data = (GameConfiguration *)FileSystem::OpenPath(path, 1);
     if (data == NULL)
@@ -660,11 +669,11 @@ ZunResult Supervisor::LoadConfig(char *path)
         g_Supervisor.cfg.version = GAME_VERSION;
         g_Supervisor.cfg.padXAxis = 600;
         g_Supervisor.cfg.padYAxis = 600;
-        wavFile = fopen("bgm/th06_01.wav", "rb");
+        wavFile = std::fopen("bgm/th06_01.wav", "rb");
         if (wavFile != NULL)
         {
             g_Supervisor.cfg.musicMode = WAV;
-            fclose(wavFile);
+            std::fclose(wavFile);
         }
         else
         {
@@ -693,11 +702,11 @@ ZunResult Supervisor::LoadConfig(char *path)
             g_Supervisor.cfg.version = GAME_VERSION;
             g_Supervisor.cfg.padXAxis = 600;
             g_Supervisor.cfg.padYAxis = 600;
-            wavFile2 = fopen("bgm/th06_01.wav", "rb");
+            wavFile2 = std::fopen("bgm/th06_01.wav", "rb");
             if (wavFile2 != NULL)
             {
                 g_Supervisor.cfg.musicMode = WAV;
-                fclose(wavFile2);
+                std::fclose(wavFile2);
             }
             else
             {
@@ -709,7 +718,7 @@ ZunResult Supervisor::LoadConfig(char *path)
             g_Supervisor.cfg.windowed = false;
             g_Supervisor.cfg.frameskipConfig = 0;
             g_Supervisor.cfg.controllerMapping = g_ControllerMapping;
-            memset(&g_Supervisor.cfg.opts, 0, sizeof(GameConfigOptsShifts));
+            std::memset(&g_Supervisor.cfg.opts, 0, sizeof(GameConfigOptsShifts));
             g_Supervisor.cfg.opts |= (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
             GameErrorContext::Log(&g_GameErrorContext, TH_ERR_CONFIG_CORRUPTED);
         }
@@ -774,49 +783,49 @@ ZunResult Supervisor::LoadConfig(char *path)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 ZunBool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
 {
     // Return conventions seem opposite of normal? But they're never used anyway
     if (g_Supervisor.cfg.musicMode == MIDI)
     {
-        if (g_Supervisor.midiOutput != NULL)
-        {
-            g_Supervisor.midiOutput->ReadFileData(midiFileIdx, path);
-        }
+//        if (g_Supervisor.midiOutput != NULL)
+//        {
+//            g_Supervisor.midiOutput->ReadFileData(midiFileIdx, path);
+//        }
 
-        return FALSE;
+        return false;
     }
 
-    return TRUE;
+    return true;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
 {
-    MidiOutput *globalMidiController;
+//    MidiOutput *globalMidiController;
+//
+//    if (g_Supervisor.cfg.musicMode == MIDI)
+//    {
+//        if (g_Supervisor.midiOutput != NULL)
+//        {
+//            globalMidiController = g_Supervisor.midiOutput;
+//            globalMidiController->StopPlayback();
+//            globalMidiController->ParseFile(midiFileIdx);
+//            globalMidiController->Play();
+//        }
+//
+        return false;
+//    }
 
-    if (g_Supervisor.cfg.musicMode == MIDI)
-    {
-        if (g_Supervisor.midiOutput != NULL)
-        {
-            globalMidiController = g_Supervisor.midiOutput;
-            globalMidiController->StopPlayback();
-            globalMidiController->ParseFile(midiFileIdx);
-            globalMidiController->Play();
-        }
-
-        return FALSE;
-    }
-
-    return TRUE;
+    return true;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 ZunResult Supervisor::SetupMidiPlayback(char *path)
 {
     // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
@@ -837,9 +846,9 @@ ZunResult Supervisor::SetupMidiPlayback(char *path)
 success:
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 ZunResult Supervisor::PlayAudio(char *path)
 {
     char wavName[256];
@@ -848,34 +857,34 @@ ZunResult Supervisor::PlayAudio(char *path)
 
     if (g_Supervisor.cfg.musicMode == MIDI)
     {
-        if (g_Supervisor.midiOutput != NULL)
-        {
-            MidiOutput *midiOutput = g_Supervisor.midiOutput;
-            midiOutput->StopPlayback();
-            midiOutput->LoadFile(path);
-            midiOutput->Play();
-        }
+//        if (g_Supervisor.midiOutput != NULL)
+//        {
+//            MidiOutput *midiOutput = g_Supervisor.midiOutput;
+//            midiOutput->StopPlayback();
+//            midiOutput->LoadFile(path);
+//            midiOutput->Play();
+//        }
     }
     else if (g_Supervisor.cfg.musicMode == WAV)
     {
-        strcpy(wavName, path);
-        strcpy(wavPos, path);
-        pathExtension = strrchr(wavName, L'.');
+        std::strcpy(wavName, path);
+        std::strcpy(wavPos, path);
+        pathExtension = std::strrchr(wavName, L'.');
         pathExtension[1] = 'w';
         pathExtension[2] = 'a';
         pathExtension[3] = 'v';
-        pathExtension = strrchr(wavPos, L'.');
+        pathExtension = std::strrchr(wavPos, L'.');
         pathExtension[1] = 'p';
         pathExtension[2] = 'o';
         pathExtension[3] = 's';
         g_SoundPlayer.LoadWav(wavName);
         if (g_SoundPlayer.LoadPos(wavPos) < ZUN_SUCCESS)
         {
-            g_SoundPlayer.PlayBGM(FALSE);
+            g_SoundPlayer.PlayBGM(false);
         }
         else
         {
-            g_SoundPlayer.PlayBGM(TRUE);
+            g_SoundPlayer.PlayBGM(true);
         }
     }
     else
@@ -884,17 +893,17 @@ ZunResult Supervisor::PlayAudio(char *path)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 ZunResult Supervisor::StopAudio()
 {
     if (g_Supervisor.cfg.musicMode == MIDI)
     {
-        if (g_Supervisor.midiOutput != NULL)
-        {
-            g_Supervisor.midiOutput->StopPlayback();
-        }
+//        if (g_Supervisor.midiOutput != NULL)
+//        {
+//            g_Supervisor.midiOutput->StopPlayback();
+//        }
     }
     else
     {
@@ -910,9 +919,9 @@ ZunResult Supervisor::StopAudio()
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
+
+
 ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 {
     i32 unused1;
@@ -921,10 +930,10 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 
     if (g_Supervisor.cfg.musicMode == MIDI)
     {
-        if (g_Supervisor.midiOutput != NULL)
-        {
-            g_Supervisor.midiOutput->SetFadeOut(1000.0f * fadeOutSeconds);
-        }
+//        if (g_Supervisor.midiOutput != NULL)
+//        {
+//            g_Supervisor.midiOutput->SetFadeOut(1000.0f * fadeOutSeconds);
+//        }
     }
     else
     {
@@ -954,6 +963,6 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
+
 
 }; // namespace th06

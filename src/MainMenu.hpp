@@ -1,11 +1,12 @@
 #pragma once
 
-#include <D3D8.h>
+// #include <D3D8.h>
 
 #include "AnmVm.hpp"
 #include "Chain.hpp"
 #include "ReplayData.hpp"
 #include "ZunBool.hpp"
+#include "ZunColor.hpp"
 #include "ZunResult.hpp"
 #include "inttypes.hpp"
 
@@ -66,8 +67,8 @@ struct MainMenu
 
     static ZunResult LoadTitleAnm(MainMenu *menu);
     static CursorMovement MoveCursor(MainMenu *menu, i32 menuLength);
-    static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, D3DCOLOR activeItemColor,
-                             D3DCOLOR inactiveItemColor, i32 spriteIdx /* I think*/);
+    static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, ZunColor activeItemColor,
+                             ZunColor inactiveItemColor, i32 spriteIdx /* I think*/);
     static void SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk);
 
     i32 ReplayHandling();
@@ -91,10 +92,10 @@ struct MainMenu
     GameState gameState;
     i32 stateTimer;
     i32 idleFrames;
-    D3DCOLOR minimumOpacity;
-    D3DCOLOR menuTextColor;
-    D3DCOLOR color2;
-    D3DCOLOR color1;
+    ZunColor minimumOpacity;
+    ZunColor menuTextColor;
+    ZunColor color2;
+    ZunColor color1;
     i32 numFramesSinceActive;
     u32 framesActive;
     u32 framesInactive;

@@ -156,7 +156,7 @@ struct ScoreListNode
 };
 ZUN_ASSERT_SIZE(ScoreListNode, 0xc);
 
-struct ScoreDat
+struct ScoreRaw
 {
     Th6k *ShiftOneByte()
     {
@@ -173,10 +173,16 @@ struct ScoreDat
     u16 unk_8;
     u8 unk[2];
     u32 dataOffset;
-    ScoreListNode *scores;
+    u32 padding; // Originally used as space for a ScoreListNode pointer, but that caused obvious ABI issues
     u32 fileLen;
 };
 ZUN_ASSERT_SIZE(ScoreDat, 0x14);
+
+struct ScoreDat
+{
+    ScoreRaw *rawScoreFile;
+    ScoreListNode *scores;
+};
 
 struct ResultScreen
 {

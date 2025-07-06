@@ -26,7 +26,7 @@ struct StageReplayData
 };
 ZUN_ASSERT_SIZE(StageReplayData, 0x69780);
 
-struct ReplayData
+struct ReplayHeader
 {
     char magic[4];
     u16 version;
@@ -43,7 +43,13 @@ struct ReplayData
     f32 slowdownRate2;
     f32 slowdownRate;
     f32 slowdownRate3;
-    StageReplayData *stageReplayData[7];
+    u32 stageReplayDataOffsets[7];
 };
 ZUN_ASSERT_SIZE(ReplayData, 0x50);
+
+struct ReplayData
+{
+    struct ReplayHeader *header;
+    StageReplayData *stageReplayData[7];
+};
 }; // namespace th06

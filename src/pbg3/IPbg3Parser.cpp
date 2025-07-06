@@ -72,17 +72,17 @@ u32 IPbg3Parser::ReadMagic()
 u32 IPbg3Parser::ReadString(char *out, u32 maxSize)
 {
     if (out == NULL)
-        return FALSE;
+        return false;
 
     for (u32 idx = 0; idx < maxSize; idx++)
     {
         out[idx] = this->ReadInt(8);
         if (out[idx] == '\0')
         {
-            return TRUE;
+            return true;
         }
     }
 
-    return FALSE;
+    return false;
 }
 }; // namespace th06

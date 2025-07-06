@@ -1,10 +1,12 @@
 #pragma once
 
-#include <d3dx8math.h>
+// #include <d3dx8math.h>
 
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "StageMenu.hpp"
+#include "ZunColor.hpp"
+#include "ZunMath.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
@@ -16,9 +18,9 @@ namespace th06
 struct AsciiManagerString
 {
     char text[64];
-    D3DXVECTOR3 position;
-    D3DCOLOR color;
-    D3DXVECTOR2 scale;
+    ZunVec3 position;
+    ZunColor color;
+    ZunVec2 scale;
     // If true, we are drawing the currently selected element of the MainMenu
     // class.
     u32 isSelected;
@@ -30,8 +32,8 @@ ZUN_ASSERT_SIZE(AsciiManagerString, 0x60);
 struct AsciiManagerPopup
 {
     char digits[8];
-    D3DXVECTOR3 position;
-    D3DCOLOR color;
+    ZunVec3 position;
+    ZunColor color;
     ZunTimer timer;
     u8 inUse;
     u8 characterCount;
@@ -40,12 +42,6 @@ ZUN_ASSERT_SIZE(AsciiManagerPopup, 0x28);
 
 struct WeirdPadding
 {
-    WeirdPadding()
-    {
-        i32 pad11, pad12, pad13, pad14, pad15, pad16, pad17, pad18;
-        i32 pad21, pad22, pad23, pad24, pad25, pad26, pad27, pad28;
-        i32 pad31, pad32;
-    }
     u32 unk;
 };
 
@@ -74,10 +70,10 @@ struct AsciiManager
     void DrawPopupsWithHwVertexProcessing();
     void DrawPopupsWithoutHwVertexProcessing();
 
-    void AddString(D3DXVECTOR3 *position, char *text);
-    void AddFormatText(D3DXVECTOR3 *position, const char *fmt, ...);
-    void CreatePopup1(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);
-    void CreatePopup2(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);
+    void AddString(ZunVec3 *position, char *text);
+    void AddFormatText(ZunVec3 *position, const char *fmt, ...);
+    void CreatePopup1(ZunVec3 *position, i32 value, ZunColor color);
+    void CreatePopup2(ZunVec3 *position, i32 value, ZunColor color);
 
     void SetColor(ZunColor color)
     {
@@ -88,8 +84,8 @@ struct AsciiManager
     AnmVm vm1;
     AsciiManagerString strings[256];
     i32 numStrings;
-    D3DCOLOR color;
-    D3DXVECTOR2 scale;
+    ZunColor color;
+    ZunVec2 scale;
     // If true, we are drawing an element of the Gui class.
     u32 isGui;
     // If true, we are drawing the currently selected element of the MainMenu

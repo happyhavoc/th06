@@ -7,13 +7,14 @@
 #include "ItemManager.hpp"
 #include "SoundPlayer.hpp"
 #include "ZunBool.hpp"
+#include "ZunMath.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
-#include <Windows.h>
-#include <d3d8.h>
-#include <d3dx8math.h>
-#include <string.h>
+// #include <Windows.h>
+// #include <d3d8.h>
+// #include <d3dx8math.h>
+#include <cstring>
 
 namespace th06
 {
@@ -27,7 +28,7 @@ struct EnemyBulletShooter
     }
     i16 sprite;
     i16 spriteOffset;
-    D3DXVECTOR3 position;
+    ZunVec3 position;
     f32 angle1;
     f32 angle2;
     f32 speed1;
@@ -52,7 +53,7 @@ struct EnemyLaserShooter
     }
     i16 sprite;
     i16 spriteOffset;
-    D3DXVECTOR3 position;
+    ZunVec3 position;
     f32 angle;
     u32 unk_14;
     f32 speed;
@@ -102,7 +103,7 @@ struct EnemyFlags
     u8 unk2 : 3;
     u8 unk3 : 1;
     u8 unk4 : 1;
-    u8 unk5 : 1;
+    u8 active : 1;
 
     // Second byte
     u8 unk6 : 1;
@@ -150,9 +151,9 @@ struct Enemy
         return (f32)this->life / (f32)this->maxLife;
     }
 
-    D3DXVECTOR3 HitboxDimensions(f32 shrinkFactor)
+    ZunVec3 HitboxDimensions(f32 shrinkFactor)
     {
-        return (1.0f / shrinkFactor) * this->hitboxDimensions;
+        return this->hitboxDimensions * (1.0f / shrinkFactor);
     }
 
     ZunBool HasBossTimerFinished()
@@ -204,16 +205,16 @@ struct Enemy
     i32 deathCallbackSub;
     i32 interrupts[8];
     i32 runInterrupt;
-    D3DXVECTOR3 position;
-    D3DXVECTOR3 hitboxDimensions;
-    D3DXVECTOR3 axisSpeed;
+    ZunVec3 position;
+    ZunVec3 hitboxDimensions;
+    ZunVec3 axisSpeed;
     f32 angle;
     f32 angularVelocity;
     f32 speed;
     f32 acceleration;
-    D3DXVECTOR3 shootOffset;
-    D3DXVECTOR3 moveInterp;
-    D3DXVECTOR3 moveInterpStartPos;
+    ZunVec3 shootOffset;
+    ZunVec3 moveInterp;
+    ZunVec3 moveInterpStartPos;
     ZunTimer moveInterpTimer;
     i32 moveInterpStartTime;
     f32 bulletRankSpeedLow;
@@ -247,8 +248,8 @@ struct Enemy
     i16 anmExFarRight;
     i16 anmExLeft;
     i16 anmExRight;
-    D3DXVECTOR2 lowerMoveLimit;
-    D3DXVECTOR2 upperMoveLimit;
+    ZunVec2 lowerMoveLimit;
+    ZunVec2 upperMoveLimit;
     Effect *effectArray[12];
     u32 effectIdx;
     f32 effectDistance;

@@ -1,11 +1,19 @@
 #pragma once
 
-#include "diffbuild.hpp"
+#include <cstdio>
+#include <filesystem>
+#include <system_error>
 #include "inttypes.hpp"
-#include <Windows.h>
 
 namespace th06
 {
+enum AccessMode
+{
+  ACCESS_READ,
+  ACCESS_WRITE,
+  ACCESS_INVALID
+};
+
 class IFileAbstraction
 {
   public:
@@ -38,24 +46,22 @@ class FileAbstraction : public IFileAbstraction
     virtual u32 GetSize();
     virtual u8 *ReadWholeFile(u32 maxSize);
 
-    BOOL HasNonNullHandle()
+    bool HasNonNullHandle()
     {
         return this->handle != NULL;
     }
-    BOOL HasValidHandle()
+    bool GetLastWriteTime(std::filesystem::file_time_type& lastWriteTime)
     {
-        return this->handle != INVALID_HANDLE_VALUE;
-    }
-    i32 GetLastWriteTime(LPFILETIME lastWriteTime)
-    {
-        return GetFileTime(this->handle, NULL, NULL, lastWriteTime);
+        std::error_code err;
+        lastWriteTime = std::filesystem::last_write_time(*path, err);
+        return (bool) err;
     }
 
   protected:
-    HANDLE handle;
+    std::FILE *handle;
+    std::filesystem::path *path;
 
   private:
-    DWORD access;
+    AccessMode access;
 };
-ZUN_ASSERT_SIZE(FileAbstraction, 0xc);
 }; // namespace th06
