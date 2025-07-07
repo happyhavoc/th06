@@ -103,7 +103,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     {
 //         return true;
 //     }
-// 
+//
 //     if (format == D3DFMT_A1R5G5B5 || format == D3DFMT_A4R4G4B4)
 //     {
 //         return this->TryAllocateBuffer(width, height, D3DFMT_A8R8G8B8);
@@ -114,13 +114,13 @@ ZunResult TextHelper::CreateTextBuffer()
 //     }
 //     return false;
 // }
-// 
+//
 // struct THBITMAPINFO
 // {
 //     BITMAPINFOHEADER bmiHeader;
 //     RGBQUAD bmiColors[17];
 // };
-// 
+//
 // bool TextHelper::TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format)
 // {
 //     HGDIOBJ originalBitmapObj;
@@ -131,7 +131,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     u32 padding;
 //     HDC deviceContext;
 //     i32 imageWidthInBytes;
-// 
+//
 //     this->ReleaseBuffer();
 //     memset(&bitmapInfo, 0, sizeof(THBITMAPINFO));
 //     formatInfo = this->GetFormatInfo(format);
@@ -173,11 +173,11 @@ ZunResult TextHelper::CreateTextBuffer()
 //     this->imageWidthInBytes = imageWidthInBytes;
 //     return true;
 // }
-// 
+//
 // FormatInfo *TextHelper::GetFormatInfo(D3DFORMAT format)
 // {
 //     i32 local_8;
-// 
+//
 //     for (local_8 = 0; g_FormatInfoArray[local_8].format != -1 && g_FormatInfoArray[local_8].format != format; local_8++)
 //     {
 //     }
@@ -187,7 +187,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     }
 //     return &g_FormatInfoArray[local_8];
 // }
-// 
+//
 // struct A1R5G5B5
 // {
 //     u16 blue : 5;
@@ -195,7 +195,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     u16 red : 5;
 //     u16 alpha : 1;
 // };
-// 
+//
 // bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
 // {
 //     i32 doubleArea;
@@ -203,7 +203,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     i32 idx;
 //     u8 *bufferStart;
 //     A1R5G5B5 *bufferCursor;
-// 
+//
 //     doubleArea = spriteWidth * fontHeight * 2;
 //     bufferStart = &this->buffer[0];
 //     bufferRegion = &bufferStart[y * spriteWidth * 2];
@@ -244,7 +244,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     }
 //     return true;
 // }
-// 
+//
 // bool TextHelper::CopyTextToSurface(SDL_Surface *outSurface)
 // {
 //     D3DLOCKED_RECT lockedRect;
@@ -259,7 +259,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     i32 height;
 //     D3DFORMAT thisFormat;
 //     i32 thisHeight;
-// 
+//
 //     if (!(bool)(u32)(this->gdiObj2 != NULL))
 //     {
 //         return false;
@@ -291,8 +291,6 @@ ZunResult TextHelper::CreateTextBuffer()
 //     return true;
 // }
 
-#include <errno.h>
-
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
                                      i32 fontWidth, ZunColor textColor, ZunColor shadowColor, char *string,
                                      TextureData *outTexture)
@@ -301,7 +299,7 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     SDL_Rect finalCopyDst;
     SDL_Rect shadowRect;
     SDL_Rect textRect;
-    
+
 //    HGDIOBJ h;
 //    LPDIRECT3DSURFACE8 destSurface;
 //    RECT destRect;
@@ -351,7 +349,7 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     SDL_FillRect(g_TextBufferSurface, &finalCopySrc, 0);
 
     SDL_Surface *shadowText = NULL;
-    
+
     if (shadowColor != COLOR_WHITE)
     {
 //        // Render shadow.
@@ -396,41 +394,63 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
 
         SDL_SetSurfaceBlendMode(regularText, SDL_BLENDMODE_BLEND);
         SDL_BlitSurface(regularText, NULL, g_TextBufferSurface, &textRect);
- 
+
         SDL_FreeSurface(regularText);
     }
 
-    SDL_Surface *textureSurface = SDL_CreateRGBSurfaceWithFormatFrom(outTexture->textureData, outTexture->width, outTexture->height,
-                                                                     SDL_BITSPERPIXEL(outTexture->format), 
-                                                                     outTexture->width * SDL_BYTESPERPIXEL(outTexture->format), 
-                                                                     outTexture->format);
-    
+    if (!outTexture->textureData) {
+        outTexture->textureData = (u8*)malloc(outTexture->width * outTexture->height * 4);
+        memset(outTexture->textureData, 0, outTexture->width * outTexture->height * 4);
+    }
+
+    outTexture->format = SDL_PIXELFORMAT_RGBA8888;
+    SDL_Surface *textureSurface = SDL_CreateRGBSurfaceWithFormatFrom(
+        outTexture->textureData, outTexture->width, outTexture->height,
+        SDL_BITSPERPIXEL(outTexture->format),
+        outTexture->width * SDL_BYTESPERPIXEL(outTexture->format),
+        outTexture->format
+    );
+
     // Render main text.
 //    SetTextColor(hdc, textColor);
 //    TextOutA(hdc, xPos * 2, 0, string, strlen(string));
 //
-
-
-
 //    SelectObject(hdc, h);
 //    textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6);
 //    textHelper.CopyTextToSurface(g_TextBufferSurface);
 //    SelectObject(hdc, h);
 //    DeleteObject(font);
+
     finalCopyDst.x = 0;
     finalCopyDst.y = yPos;
     finalCopyDst.w = spriteWidth;
     finalCopyDst.h = 16;
 
-    finalCopySrc.y = g_TextBufferSurface->h - fontHeight * 2 - 3;
-    finalCopySrc.h = fontHeight * 2;
+
 //    outTexture->GetSurfaceLevel(0, &destSurface);
 //    D3DXLoadSurfaceFromSurface(destSurface, NULL, &destRect, g_TextBufferSurface, NULL, &srcRect, 4, 0);
 
-    SDL_BlitScaled(g_TextBufferSurface, &finalCopySrc, textureSurface, &finalCopyDst);
+    if (SDL_BlitScaled(g_TextBufferSurface, &finalCopySrc, textureSurface, &finalCopyDst) < 0) {
+        SDL_Log("SDL_BlitScaled failed! Error: %s", SDL_GetError());
+    }
+
+    glBindTexture(GL_TEXTURE_2D, outTexture->handle);
+
+    glTexSubImage2D(
+        GL_TEXTURE_2D,
+        0,
+        0, 0,
+        outTexture->width,
+        outTexture->height,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        outTexture->textureData
+    );
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     glNormal3f(0.0f, 0.0f, 0.0f);
-    
+
     SDL_FreeSurface(textureSurface);
 
     return;
