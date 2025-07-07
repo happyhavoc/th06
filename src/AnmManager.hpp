@@ -3,7 +3,7 @@
 // #include <d3d8.h>
 // #include <d3dx8math.h>
 
-#include <GLES/gl.h>
+#include <GL/gl.h>
 #include <SDL2/SDL_video.h>
 
 #include "AnmIdx.hpp"
@@ -103,7 +103,7 @@ struct AnmRawScript
     AnmRawInstr *firstInstruction;
 };
 
-// WARNING: scripts seems unused, but if it were to be used, 
+// WARNING: scripts seems unused, but if it were to be used,
 //   this would be dangerous for compatibility since AnmRawScript contains a pointer
 
 struct AnmRawEntry

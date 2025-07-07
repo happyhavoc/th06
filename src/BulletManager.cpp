@@ -1,4 +1,4 @@
-#include <GLES/gl.h>
+#include <GL/gl.h>
 
 #include "BulletManager.hpp"
 #include "AnmManager.hpp"

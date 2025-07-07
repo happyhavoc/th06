@@ -2,10 +2,13 @@
 
 #include <cmath>
 #include <cstring>
-#include <GLES/gl.h>
+#include <GL/gl.h>
 #include "GameWindow.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
+
+#define glDepthRangef glDepthRange
+#define glFrustumf glFrustum
 
 // sizeof checks kept in because technically, the standard does allow compilers to add more padding than is required
 
@@ -124,7 +127,7 @@ struct ZunVec3
 
     void calcCross(ZunVec3 &dst, ZunVec3 &vec)
     {
-        dst = ZunVec3(this->y * vec.z - this->z * vec.y, 
+        dst = ZunVec3(this->y * vec.z - this->z * vec.y,
                       this->z * vec.x - this->x * vec.z,
                       this->x * vec.y - this->y * vec.x);
     }
@@ -176,7 +179,7 @@ struct ZunMatrix
         for(int i = 0; i < 4; i++) {
             for(int j = 0; j < 4; j++) {
                 result.m[i][j] = 0.0f;
-                
+
                 for(int k = 0; k < 4; k++) {
                     result.m[i][j] += this->m[k][j] * b.m[i][k];
                 }
@@ -326,8 +329,8 @@ inline void createViewMatrix(ZunVec3 &camera, ZunVec3 &target, ZunVec3 &up)
 
     ZunVec3 xAxis;
     ZunVec3 yAxis;
-    ZunVec3 zAxis; 
-    
+    ZunVec3 zAxis;
+
     (target - camera).getNormalized(zAxis);
 
     up.calcCross(xAxis, zAxis);
@@ -380,7 +383,7 @@ inline void perspectiveMatrixFromFOV(f32 verticalFOV, f32 aspectRatio, f32 nearP
     glScalef(1.0f, 1.0f, -1.0f);
 }
 
-// Pushes an identity matrix to the modelview stack and pushes a matrix that maps screen coordinates to 
+// Pushes an identity matrix to the modelview stack and pushes a matrix that maps screen coordinates to
 //   NDCs to the projection stack. Used for drawing RHW positions, since D3D interprets them has having
 //   been already transformed, but OpenGL has no option to prevent transformation
 inline void inverseViewportMatrix()
@@ -413,7 +416,7 @@ inline void inverseViewportMatrix()
     //   finicky about rasterization). To prevent obvious off-by-one errors with edges in the UI, no accounting
     //   is done for the pixel coordinate discrepancy aside from changing the rounding in DrawOrthographic, if
     //   applied, to use whole integers (OpenGL pixel boundaries), rather than half integers (D3D pixel boundaries).
-    //   Graphical output should really be checked thoroughly to make sure nothing (especially in the 3D draw functions) 
+    //   Graphical output should really be checked thoroughly to make sure nothing (especially in the 3D draw functions)
     //   ends up a half pixel off.
 
     glTranslatef(-1.0f, 1.0f, -1.0f);
@@ -430,7 +433,7 @@ inline void projectVec3(ZunVec3 &out, ZunVec3 &inVec, ZunViewport &viewport, Zun
     f32 wVal = eyeVector.z;
 
     ZunVec3 clipVector = projection * eyeVector;
-    
+
     clipVector /= wVal;
 
     // OpenGL clip space and window coordinates differ from D3D's, so we have to invert Y here

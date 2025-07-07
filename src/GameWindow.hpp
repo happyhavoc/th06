@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GLES/gl.h>
+#include <GL/gl.h>
 #include <SDL2/SDL_video.h>
 
 #include "diffbuild.hpp"

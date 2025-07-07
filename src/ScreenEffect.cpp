@@ -6,7 +6,7 @@
 #include "Supervisor.hpp"
 
 #include <cstring>
-#include <GLES/gl.h>
+#include <GL/gl.h>
 #include <SDL2/SDL_video.h>
 
 namespace th06
@@ -18,7 +18,7 @@ void ScreenEffect::Clear(ZunColor color)
     f32 r = ((color >> 16) & 0xFF) / 255.0f;
     f32 g = ((color >> 8) & 0xFF) / 255.0f;
     f32 b = (color & 0xFF) / 255.0f;
-    
+
     glClearColor(r, g, b, a);
 
     // D3D version clears and presents twice (probably to clear both draw buffers?)

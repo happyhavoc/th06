@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <GLES/gl.h>
+#include <GL/gl.h>
 
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
@@ -1106,7 +1106,7 @@ void Gui::DrawGameScene()
     g_Supervisor.viewport.Height = 480;
     g_Supervisor.viewport.Set();
 //    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
-    
+
     vm = &this->impl->vms[6];
     if (((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) == 0 &&
         (vm->currentInstruction != NULL || g_Supervisor.unk198 != 0 || g_Supervisor.IsUnknown()))

@@ -14,7 +14,7 @@
 #include <cstring>
 #include <new>
 
-#include <GLES/gl.h>
+#include <GL/gl.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_rwops.h>
 #include <SDL2/SDL_surface.h>
@@ -27,7 +27,7 @@ DIFFABLE_STATIC(VertexTex1DiffuseXyz, g_PrimitivesToDrawUnknown[4]);
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)
 
 SDL_PixelFormatEnum g_TextureFormatSDLMapping[6] = {
-    SDL_PIXELFORMAT_UNKNOWN, SDL_PIXELFORMAT_RGBA32, SDL_PIXELFORMAT_RGBA5551, 
+    SDL_PIXELFORMAT_UNKNOWN, SDL_PIXELFORMAT_RGBA32, SDL_PIXELFORMAT_RGBA5551,
     SDL_PIXELFORMAT_RGB565, SDL_PIXELFORMAT_RGB24, SDL_PIXELFORMAT_RGBA4444
 };
 
@@ -148,7 +148,7 @@ void AnmManager::FlipSurface(SDL_Surface *surface)
     copyBuf = new u8[surface->h / 2 * surface->pitch];
 
     lowIndex = 0;
-    highPtr = ((u8 *) surface->pixels) + (surface->h - 1) * surface->pitch; 
+    highPtr = ((u8 *) surface->pixels) + (surface->h - 1) * surface->pitch;
 
     std::memcpy(copyBuf, surface->pixels, surface->h / 2 * surface->pitch);
 
@@ -342,7 +342,7 @@ ZunResult AnmManager::LoadTexture(i32 textureIdx, char *textureName, i32 texture
         }
     }
 
-    textureSurface = LoadToSurfaceWithFormat(textureName, g_TextureFormatSDLMapping[textureFormat], 
+    textureSurface = LoadToSurfaceWithFormat(textureName, g_TextureFormatSDLMapping[textureFormat],
                                                    (u8 **) &this->textures[textureIdx].fileData);
 
     if (textureSurface == NULL)
@@ -369,7 +369,7 @@ ZunResult AnmManager::LoadTexture(i32 textureIdx, char *textureName, i32 texture
     // Both of those should be globally disabled for the texture unit anyway
     // This also drops colorKey (an equivalent doesn't exist in OpenGL). I'm not sure its use ever matters anyway
 
-    glTexImage2D(GL_TEXTURE_2D, 0, g_TextureFormatGLFormatMapping[textureFormat], textureSurface->w, textureSurface->h, 0, 
+    glTexImage2D(GL_TEXTURE_2D, 0, g_TextureFormatGLFormatMapping[textureFormat], textureSurface->w, textureSurface->h, 0,
                  g_TextureFormatGLFormatMapping[textureFormat], g_TextureFormatGLTypeMapping[textureFormat], rawTextureData);
 
     SDL_FreeSurface(textureSurface);
@@ -415,7 +415,7 @@ ZunResult AnmManager::LoadTextureAlphaChannel(i32 textureIdx, char *textureName,
     }
 
     SDL_LockSurface(alphaSurface);
-    
+
     dstData = (u8 *) textureDesc->textureData;
     srcData = (u8 *) alphaSurface->pixels;
 
@@ -486,8 +486,8 @@ ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, 
     this->textures[textureIdx].height = std::bit_ceil(height);
     this->textures[textureIdx].format = textureFormat;
 
-    glTexImage2D(GL_TEXTURE_2D, 0, g_TextureFormatGLFormatMapping[textureFormat], 
-                 textures[textureIdx].width, textures[textureIdx].height, 0, 
+    glTexImage2D(GL_TEXTURE_2D, 0, g_TextureFormatGLFormatMapping[textureFormat],
+                 textures[textureIdx].width, textures[textureIdx].height, 0,
                  g_TextureFormatGLFormatMapping[textureFormat], g_TextureFormatGLTypeMapping[textureFormat], NULL);
 
     return ZUN_SUCCESS;
@@ -612,7 +612,7 @@ void AnmManager::ReleaseTexture(i32 textureIdx)
         {
             this->currentTextureHandle = 0;
         }
-    
+
         glDeleteTextures(1, &this->textures[textureIdx].handle);
 
         this->textures[textureIdx].handle = 0;
@@ -1299,7 +1299,7 @@ ZunResult AnmManager::Draw2(AnmVm *vm)
     }
 
     this->SetRenderStateForVm(vm);
-    
+
     if ((g_Supervisor.cfg.opts >> GCOS_DONT_USE_VERTEX_BUF & 1) == 0)
     {
         glVertexPointer(3, GL_FLOAT, sizeof(*g_PrimitivesToDrawUnknown), &g_PrimitivesToDrawUnknown[0].position);
@@ -1775,7 +1775,7 @@ ZunResult AnmManager::LoadSurface(i32 surfaceIdx, const char *path)
     }
 
     return ZUN_SUCCESS;
-    
+
 //    u8 *data = FileSystem::OpenPath(path, 0);
 //    if (data == NULL)
 //    {
@@ -1910,7 +1910,7 @@ void AnmManager::CopySurfaceRectToBackBuffer(i32 surfaceIdx, i32 dstX, i32 dstY,
         return;
     }
 
-    ApplySurfaceToColorBuffer(srcSurface, (SDL_Rect) {.x = rectLeft, .y = rectTop, .w = rectWidth, .h = rectHeight}, 
+    ApplySurfaceToColorBuffer(srcSurface, (SDL_Rect) {.x = rectLeft, .y = rectTop, .w = rectWidth, .h = rectHeight},
                                           (SDL_Rect) {.x = dstX, .y = dstY, .w = rectWidth, .h = rectHeight});
 //
 //    IDirect3DSurface8 *D3D_Surface;

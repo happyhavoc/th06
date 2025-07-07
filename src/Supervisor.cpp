@@ -251,7 +251,7 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
 //     LPVOID pvRefBackup;
 //     DIPROPRANGE diprange;
 //     pvRefBackup = pvRef;
-// 
+//
 //     if (lpddoi->dwType & DIDFT_AXIS)
 //     {
 //         diprange.diph.dwSize = sizeof(diprange);
@@ -260,7 +260,7 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
 //         diprange.diph.dwObj = lpddoi->dwType;
 //         diprange.lMin = -1000;
 //         diprange.lMax = 1000;
-// 
+//
 //         if (g_Supervisor.controller->SetProperty(DIPROP_RANGE, &diprange.diph) < 0)
 //         {
 //             return FALSE;
@@ -361,7 +361,7 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
     {
         return ZUN_ERROR;
     }
-    
+
     s->ReleasePbg3(IN_PBG3_INDEX);
     if (g_Supervisor.LoadPbg3(MD_PBG3_INDEX, TH_MD_DAT_FILE) != 0)
         return ZUN_ERROR;
@@ -462,7 +462,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
 // BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
 // {
 //     HRESULT result;
-// 
+//
 //     if (!g_Supervisor.controller)
 //     {
 //         result = g_Supervisor.dinputIface->CreateDevice(pdidInstance->guidInstance, &g_Supervisor.controller, NULL);

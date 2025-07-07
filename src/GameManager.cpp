@@ -19,6 +19,10 @@
 // #include <d3d8types.h>
 // #include <d3dx8math.h>
 
+#ifndef glClearDepthf
+#define glClearDepthf glClearDepth
+#endif
+
 namespace th06
 {
 

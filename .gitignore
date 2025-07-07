@@ -8,3 +8,6 @@ scripts/dls
 scripts/prefix
 build.ninja
 __pycache__
+
+obj/
+th06
