@@ -290,6 +290,7 @@ ZunResult TextHelper::CreateTextBuffer()
 //     outSurface->UnlockRect();
 //     return true;
 // }
+//
 
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
                                      i32 fontWidth, ZunColor textColor, ZunColor shadowColor, char *string,
@@ -352,7 +353,7 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
 
     if (shadowColor != COLOR_WHITE)
     {
-//        // Render shadow.
+        // Render shadow.
         SDL_Color sdlShadowColor;
         sdlShadowColor.a = shadowColor >> 24;
         sdlShadowColor.r = (shadowColor >> 16) & 0xFF;
@@ -360,8 +361,8 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
         sdlShadowColor.b = shadowColor & 0xFF;
 
         shadowText = TTF_RenderUTF8_Solid(g_Font, convertedText, sdlShadowColor);
-//        SetTextColor(hdc, shadowColor);
-//        TextOutA(hdc, xPos * 2 + 3, 2, string, strlen(string));
+        // SetTextColor(hdc, shadowColor);
+        // TextOutA(hdc, xPos * 2 + 3, 2, string, strlen(string));
 
         if (shadowText != NULL)
         {
@@ -403,7 +404,7 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
         memset(outTexture->textureData, 0, outTexture->width * outTexture->height * 4);
     }
 
-    outTexture->format = SDL_PIXELFORMAT_RGBA8888;
+    outTexture->format = SDL_PIXELFORMAT_ARGB8888;
     SDL_Surface *textureSurface = SDL_CreateRGBSurfaceWithFormatFrom(
         outTexture->textureData, outTexture->width, outTexture->height,
         SDL_BITSPERPIXEL(outTexture->format),
@@ -412,14 +413,14 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     );
 
     // Render main text.
-//    SetTextColor(hdc, textColor);
-//    TextOutA(hdc, xPos * 2, 0, string, strlen(string));
-//
-//    SelectObject(hdc, h);
-//    textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6);
-//    textHelper.CopyTextToSurface(g_TextBufferSurface);
-//    SelectObject(hdc, h);
-//    DeleteObject(font);
+    // SetTextColor(hdc, textColor);
+    // TextOutA(hdc, xPos * 2, 0, string, strlen(string));
+
+    // SelectObject(hdc, h);
+    // textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6);
+    // textHelper.CopyTextToSurface(g_TextBufferSurface);
+    // SelectObject(hdc, h);
+    // DeleteObject(font);
 
     finalCopyDst.x = 0;
     finalCopyDst.y = yPos;
@@ -427,8 +428,8 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     finalCopyDst.h = 16;
 
 
-//    outTexture->GetSurfaceLevel(0, &destSurface);
-//    D3DXLoadSurfaceFromSurface(destSurface, NULL, &destRect, g_TextBufferSurface, NULL, &srcRect, 4, 0);
+    // outTexture->GetSurfaceLevel(0, &destSurface);
+    // D3DXLoadSurfaceFromSurface(destSurface, NULL, &destRect, g_TextBufferSurface, NULL, &srcRect, 4, 0);
 
     if (SDL_BlitScaled(g_TextBufferSurface, &finalCopySrc, textureSurface, &finalCopyDst) < 0) {
         SDL_Log("SDL_BlitScaled failed! Error: %s", SDL_GetError());
