@@ -250,7 +250,7 @@ struct Enemy
     D3DXVECTOR2 lowerMoveLimit;
     D3DXVECTOR2 upperMoveLimit;
     Effect *effectArray[12];
-    u32 effectIdx;
+    i32 effectIdx;
     f32 effectDistance;
     i32 lifeCallbackThreshold;
     i32 lifeCallbackSub;
