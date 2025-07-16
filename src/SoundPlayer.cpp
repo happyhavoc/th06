@@ -25,7 +25,7 @@ namespace th06
 #define BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE 16
 #define BACKGROUND_MUSIC_WAV_BLOCK_ALIGN BACKGROUND_MUSIC_WAV_BITS_PER_SAMPLE / 8 * BACKGROUND_MUSIC_WAV_NUM_CHANNELS
 
-// DirectSound deals with volume by subtracting a number measured in hundreths of decibels from the source sound.
+// DirectSound deals with volume by subtracting a number measured in hundredths of decibels from the source sound.
 //   The scale is from 0 (no volume modification) to -10,000 (subtraction of 100 decibels, and basically silent).
 //   20 decibels affects wave amplitude by a factor of 10
 
@@ -150,6 +150,9 @@ ZunResult SoundPlayer::Release(void)
 //    {
 //        return ZUN_SUCCESS;
 //    }
+
+    this->soundBufMutex.lock();
+
     for (i = 0; i < 0x80; i++)
     {
 //        if (this->duplicateSoundBuffers[i] != NULL)
@@ -161,8 +164,16 @@ ZunResult SoundPlayer::Release(void)
         {
             delete[] this->soundBuffers[i].samples;
             this->soundBuffers[i].samples = NULL;
+            this->soundBuffers[i].isPlaying = false;
         }
     }
+
+    this->soundBufMutex.unlock();
+
+    this->terminateFlag = true;
+    this->backgroundMusicThreadHandle.join();
+    this->terminateFlag = false;
+
 //    KillTimer(this->gameWindow, 1);
 //    StopBGM();
 //    this->dsoundHdl = NULL;
@@ -692,7 +703,7 @@ void SoundPlayer::MixAudio(u32 samples)
 
     const int mixDivisor = std::max(4, (int) playingChannels);
 
-    for(int i = 0; i < samples; i++)
+    for (int i = 0; i < samples; i++)
     {
         // Integer division like this doesn't get optimized at all by the compiler. If it becomes
         //   a problem, it could be a good idea to convert to float, or to do the division as
@@ -717,12 +728,12 @@ void SoundPlayer::BackgroundMusicPlayerThread()
 //    HRESULT res;
 //
 
-    SDL_PauseAudioDevice(audioDev, 0);
+    SDL_PauseAudioDevice(this->audioDev, 0);
 
     u64 samplesSent = 0;
     u64 startTick = SDL_GetTicks64();
 
-    while(1)
+    while (1)
     {
         u64 curTicks = SDL_GetTicks64();
         u64 elapsedTicks = curTicks - startTick;
@@ -734,6 +745,11 @@ void SoundPlayer::BackgroundMusicPlayerThread()
         {
             this->MixAudio(targetSamples);
             samplesSent += targetSamples;
+        }
+
+        if (this->terminateFlag)
+        {
+            return;
         }
 
         SDL_Delay(5);

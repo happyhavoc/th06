@@ -5,6 +5,7 @@
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
+#include <atomic>
 #include <mutex>
 #include <thread>
 #include <SDL2/SDL_audio.h>
@@ -102,6 +103,7 @@ struct SoundPlayer
     SDL_AudioDeviceID audioDev;
 //    DWORD backgroundMusicThreadId;
     std::thread backgroundMusicThreadHandle;
+    std::atomic_bool terminateFlag;
     i32 unk61c;
     i32 soundBuffersToPlay[3];
 //    CStreamingSound *backgroundMusic;
