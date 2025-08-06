@@ -234,6 +234,31 @@ struct ZunMatrix
 
         *this = rotationMatrix * *this;
     }
+
+    // Equivalent to D3DXMatrixRotationQuaternion
+    void FromQuaternion(const ZunVec4 &q)
+    {
+        float x2 = 2.0f * q.x;
+        float y2 = 2.0f * q.y;
+        float z2 = 2.0f * q.z;
+    
+        this->m[0][0] = 1.0f - y2 * q.y - z2 * q.z;
+        this->m[0][1] = y2 * q.x + z2 * q.w;
+        this->m[0][2] = z2 * q.x - y2 * q.w;
+        this->m[0][3] = 0.0f;
+        this->m[1][0] = y2 * q.x - z2 * q.w;
+        this->m[1][1] = 1.0f - x2 * q.x - z2 * q.z;
+        this->m[1][2] = z2 * q.y + x2 * q.w;
+        this->m[1][3] = 0.0f;
+        this->m[2][0] = z2 * q.x + y2 * q.w;
+        this->m[2][1] = z2 * q.y - x2 * q.w;
+        this->m[2][2] = 1.0f - x2 * q.x - y2 * q.y;
+        this->m[2][3] = 0.0f;
+        this->m[3][0] = 0.0f;
+        this->m[3][1] = 0.0f;
+        this->m[3][2] = 0.0f;
+        this->m[3][3] = 1.0f;
+    }
 };
 static_assert(sizeof(ZunMatrix) == 0x40, "ZunMatrix has additional padding between struct members!");
 

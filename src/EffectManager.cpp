@@ -113,7 +113,7 @@ i32 EffectManager::EffectUpdateCallback4(Effect *effect)
     effect->quaternion.z = normalizedPos.z * verticalAngle;
     effect->quaternion.w = horizontalAngle;
 
-    local_54.Rotate(effect->angleRelated, normalizedPos.x, normalizedPos.y, normalizedPos.z);
+    local_54.FromQuaternion(effect->quaternion);
 
 //    D3DXMatrixRotationQuaternion(&local_54, &effect->quaternion);
 
