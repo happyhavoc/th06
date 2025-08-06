@@ -34,7 +34,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(EffectInfo, 20, g_Effects) = {
     {ANM_SCRIPT_BULLET4_SCRIPT_18, EffectManager::EffectUpdateCallback4},
     {ANM_SCRIPT_EFFECTS_SPELLCARD_BACKGROUND, NULL},
     {ANM_SCRIPT_BULLET4_SPAWN_GLOW_2, EffectManager::EffectCallbackAttract},
-    {ANM_SCRIPT_BULLET4_SPAWN_WHITE_PARTICLE, EffectManager::EffectCallbackAttractSlow},
+    {ANM_SCRIPT_BULLET4_SPAWN_GLOW_3, EffectManager::EffectCallbackAttractSlow},
     {ANM_SCRIPT_BULLET4_SCRIPT_19, EffectManager::EffectCallbackStill},
 };
 
