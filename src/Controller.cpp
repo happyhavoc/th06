@@ -248,7 +248,6 @@ u32 Controller::SetButtonFromControllerInputs(u16 *outButtons, i16 controllerBut
 
 DIFFABLE_STATIC_ARRAY(u8, (32 * 4), g_ControllerData)
 
-#pragma optimize("", on)
 #pragma var_order(joyinfoex, joyButtonBit, joyButtonIndex, dires, dijoystate2, diRetryCount)
 // This is for rebinding keys
 u8 *th06::Controller::GetControllerState()
@@ -311,7 +310,6 @@ u8 *th06::Controller::GetControllerState()
         return g_ControllerData;
     }
 }
-#pragma optimize("", on)
 
 u16 Controller::GetInput(void)
 {

@@ -32,7 +32,6 @@ DIFFABLE_STATIC(u16, g_CurFrameInput);
 DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
 DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
 
-#pragma optimize("s", on)
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {
 
@@ -221,9 +220,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
     s->calcCount++;
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(anmm0, anmm1, anmm2, anmm3, anmm4, anmm5)
 ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
 {
@@ -248,9 +245,7 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
     Supervisor::DrawFpsCounter();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(diprange, pvRefBackup)
 BOOL CALLBACK Supervisor::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, LPVOID pvRef)
 {
@@ -274,9 +269,7 @@ BOOL CALLBACK Supervisor::ControllerCallback(LPCDIDEVICEOBJECTINSTANCEA lpddoi, 
     }
     return TRUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(chain, supervisor)
 ZunResult Supervisor::RegisterChain()
 {
@@ -302,9 +295,7 @@ ZunResult Supervisor::RegisterChain()
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(i)
 ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
@@ -359,9 +350,7 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
 {
     HINSTANCE hInst;
@@ -447,9 +436,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
 {
     HRESULT result;
@@ -464,9 +451,7 @@ BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstanc
     }
     return FALSE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Supervisor::DeletedCallback(Supervisor *s)
 {
     i32 pbg3Idx;
@@ -512,9 +497,7 @@ ZunResult Supervisor::DeletedCallback(Supervisor *s)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(curTime, framerate, fps, elapsed, fpsCounterPos)
 void Supervisor::DrawFpsCounter()
 {
@@ -561,9 +544,7 @@ void Supervisor::DrawFpsCounter()
     }
     return;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Supervisor::TickTimer(i32 *frames, f32 *subframes)
 {
     if (this->framerateMultiplier <= 0.99f)
@@ -580,9 +561,7 @@ void Supervisor::TickTimer(i32 *frames, f32 *subframes)
         *frames = *frames + 1;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL)
@@ -603,9 +582,7 @@ void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
     delete this->pbg3Archives[pbg3FileIdx];
     this->pbg3Archives[pbg3FileIdx] = NULL;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
@@ -639,9 +616,7 @@ i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
     }
     return 0;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(data, wavFile, wavFile2)
 ZunResult Supervisor::LoadConfig(char *path)
 {
@@ -774,9 +749,7 @@ ZunResult Supervisor::LoadConfig(char *path)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunBool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
 {
     // Return conventions seem opposite of normal? But they're never used anyway
@@ -792,9 +765,7 @@ ZunBool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
 
     return TRUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
 {
     MidiOutput *globalMidiController;
@@ -814,9 +785,7 @@ i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
 
     return TRUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Supervisor::SetupMidiPlayback(char *path)
 {
     // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
@@ -837,9 +806,7 @@ ZunResult Supervisor::SetupMidiPlayback(char *path)
 success:
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Supervisor::PlayAudio(char *path)
 {
     char wavName[256];
@@ -884,9 +851,7 @@ ZunResult Supervisor::PlayAudio(char *path)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Supervisor::StopAudio()
 {
     if (g_Supervisor.cfg.musicMode == MIDI)
@@ -910,9 +875,7 @@ ZunResult Supervisor::StopAudio()
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 {
     i32 unused1;
@@ -954,6 +917,5 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
 }; // namespace th06

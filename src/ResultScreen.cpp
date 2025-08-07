@@ -41,7 +41,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 4, g_ShortCharacterList2) = {"ReimuA ", "Re
 
 #define DEFAULT_HIGH_SCORE_NAME "Nanashi "
 
-#pragma optimize("s", on)
 #pragma var_order(scoreData, bytesShifted, xorValue, checksum, bytes, remainingData, decryptedFilePointer, fileLen,    \
                   scoreDatSize, scoreListNodeSize)
 ScoreDat *ResultScreen::OpenScore(char *path)
@@ -125,9 +124,7 @@ ScoreDat *ResultScreen::OpenScore(char *path)
     scoreData->scores->prev = NULL;
     return scoreData;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(highScore, remainingSize, scoreData, dataScore, score)
 u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 character, u32 difficulty)
 {
@@ -187,9 +184,7 @@ u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 char
     }
     return score;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(scoresAmount, nextNode, scoreNodeSize)
 i32 ResultScreen::LinkScore(ScoreListNode *prevNode, Hscr *newScore)
 {
@@ -217,9 +212,7 @@ i32 ResultScreen::LinkScore(ScoreListNode *prevNode, Hscr *newScore)
     prevNode->next = nextNode;
     return scoresAmount;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void ResultScreen::FreeAllScores(ScoreListNode *scores)
 {
     ScoreListNode *next;
@@ -231,9 +224,7 @@ void ResultScreen::FreeAllScores(ScoreListNode *scores)
         scores = next;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(parsedCatk, cursor, sd)
 ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
 {
@@ -264,9 +255,7 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(parsedClrd, characterShotType, cursor, difficulty, sd)
 #pragma function(memset)
 ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
@@ -316,10 +305,8 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 #pragma intrinsic(memset)
 
-#pragma optimize("s", on)
 #pragma var_order(pscr, parsedPscr, character, stage, cursor, difficulty, sd)
 #pragma function(memset)
 ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
@@ -377,10 +364,8 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 #pragma intrinsic(memset)
 
-#pragma optimize("s", on)
 void ResultScreen::ReleaseScoreDat(ScoreDat *scoreDat)
 {
     ScoreListNode *scores;
@@ -389,9 +374,7 @@ void ResultScreen::ReleaseScoreDat(ScoreDat *scoreDat)
     free(scores);
     free(scoreDat);
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma function("memcpy")
 #pragma var_order(difficulty, characterSlot, fileBuffer, sizeOfFile, currentCharacter, character, clrd, catk, pscr,    \
                   stage, shotType, originalByte, remainingSize, xorValue, bytes, sd, fileBufferSize)
@@ -545,25 +528,19 @@ void ResultScreen::WriteScore(ResultScreen *resultScreen)
     FileSystem::WriteDataToFile("score.dat", fileBuffer, sizeOfFile);
     free(fileBuffer);
 }
-#pragma optimize("", on)
 #pragma intrinsic("memcpy")
 
-#pragma optimize("s", on)
 i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
 {
     return ResultScreen::LinkScore(&this->scores[difficulty][character], out);
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void ResultScreen::FreeScore(i32 difficulty, i32 character)
 {
     free(&this->scores[difficulty][character]);
 }
-#pragma optimize("", on)
 
 #pragma function("strcpy")
-#pragma optimize("s", on)
 #pragma var_order(idx, sprite, replayNameIdx, replayNameIdx2)
 i32 ResultScreen::HandleResultKeyboard()
 {
@@ -763,10 +740,8 @@ i32 ResultScreen::HandleResultKeyboard()
     }
     return 0;
 }
-#pragma optimize("", on)
 #pragma intrinsic("strcpy")
 
-#pragma optimize("s", on)
 #pragma var_order(sprite, saveInterrupt, idx, replayLoaded, replayToReadPath, replayNameCharacter, replayPath,         \
                   replayNameCharacter2)
 i32 ResultScreen::HandleReplaySaveKeyboard()
@@ -1142,9 +1117,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
     }
     return 0;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
 {
     if (WAS_PRESSED_WEIRD(TH_BUTTON_UP))
@@ -1166,9 +1139,7 @@ void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
         g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 length)
 {
     if (WAS_PRESSED_WEIRD(TH_BUTTON_LEFT))
@@ -1196,9 +1167,7 @@ ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 len
         return false;
     }
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 ZunResult ResultScreen::CheckConfirmButton()
 {
     AnmVm *viewport;
@@ -1230,9 +1199,7 @@ ZunResult ResultScreen::CheckConfirmButton()
     }
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(viewport, strPos, unknownFloat, completion, slowdownRate, color)
 u32 ResultScreen::DrawFinalStats()
 {
@@ -1356,9 +1323,7 @@ u32 ResultScreen::DrawFinalStats()
     }
     return 0;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(resultScreen, unused)
 ZunResult ResultScreen::RegisterChain(i32 unk)
 {
@@ -1397,20 +1362,16 @@ ZunResult ResultScreen::RegisterChain(i32 unk)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
 #pragma function(memset)
-#pragma optimize("s", on)
 ResultScreen::ResultScreen()
 {
     i32 unused[12];
     memset(this, 0, sizeof(ResultScreen));
     this->cursor = 1;
 }
-#pragma optimize("", on)
 #pragma intrinsic(memset)
 
-#pragma optimize("s", on)
 #pragma var_order(i, vm, characterShotType, difficulty)
 ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 {
@@ -1760,9 +1721,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
     resultScreen->frameTimer++;
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
-#pragma optimize("s", on)
 #pragma var_order(strPos, row, name, sprite, ShootScoreListNodeA, column, ShootScoreListNodeB, spritePos,              \
                   spellcardIdx, charPos, unused, unused2, unused3, unk, keyboardCharacter)
 ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
@@ -2085,10 +2044,8 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
 
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-#pragma optimize("", on)
 
 #pragma function("strcpy")
-#pragma optimize("s", on)
 #pragma var_order(i, sprite, character, slot)
 ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
 {
@@ -2205,10 +2162,8 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 #pragma intrinsic("strcpy")
 
-#pragma optimize("s", on)
 #pragma var_order(difficulty, character)
 ZunResult ResultScreen::DeletedCallback(ResultScreen *resultScreen)
 {
@@ -2244,6 +2199,5 @@ ZunResult ResultScreen::DeletedCallback(ResultScreen *resultScreen)
 
     return ZUN_SUCCESS;
 }
-#pragma optimize("", on)
 
 }; // namespace th06

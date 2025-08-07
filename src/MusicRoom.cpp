@@ -10,7 +10,6 @@
 
 namespace th06
 {
-#pragma optimize("s", on)
 ZunResult MusicRoom::CheckInputEnable()
 {
     if (this->waitFramesCount >= 8)
@@ -419,5 +418,4 @@ ZunResult MusicRoom::DeletedCallback(MusicRoom *musicRoom)
     return ZUN_SUCCESS;
 }
 
-#pragma optimize("", on)
 } // namespace th06

@@ -53,21 +53,6 @@ void AnmManager::TakeScreenshotIfRequested()
     return;
 }
 
-AnmManager::~AnmManager()
-{
-}
-
-#pragma optimize("s", on)
-void AnmManager::ReleaseVertexBuffer()
-{
-    if (this->vertexBuffer != NULL)
-    {
-        this->vertexBuffer->Release();
-        this->vertexBuffer = NULL;
-    }
-}
-#pragma optimize("s", off)
-
 AnmManager::AnmManager()
 {
     this->maybeLoadedSpriteCount = 0;

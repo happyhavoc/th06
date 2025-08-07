@@ -83,7 +83,6 @@ DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 
 #define MAX_SCORE 999999999
-#define MAX_CLEARS 99
 
 #define DEMO_FADEOUT_FRAMES 3600
 #define DEMO_FRAMES 3720
@@ -92,7 +91,6 @@ DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
 
 #define MAX_LIVES 8
 
-#pragma optimize("s", on)
 i32 GameManager::IsInBounds(f32 x, f32 y, f32 width, f32 height)
 {
     if (width / 2.0f + x < 0.0f)
@@ -615,12 +613,4 @@ GameManager::GameManager()
     (this->arcadeRegionSize).x = GAME_REGION_WIDTH;
     (this->arcadeRegionSize).y = GAME_REGION_HEIGHT;
 }
-
-i32 GameManager::HasReachedMaxClears(i32 character, i32 shottype)
-{
-    return (this->clrd[shottype + character * 2].difficultyClearedWithRetries[1] == MAX_CLEARS ||
-            this->clrd[shottype + character * 2].difficultyClearedWithRetries[2] == MAX_CLEARS ||
-            this->clrd[shottype + character * 2].difficultyClearedWithRetries[3] == MAX_CLEARS);
-}
-#pragma optimize("", on)
 }; // namespace th06

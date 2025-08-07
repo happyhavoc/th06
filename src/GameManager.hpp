@@ -49,6 +49,8 @@ enum StageNumber
 #define GAME_REGION_RIGHT (GAME_REGION_LEFT + GAME_REGION_WIDTH)
 #define GAME_REGION_BOTTOM (GAME_REGION_TOP + GAME_REGION_HEIGHT)
 
+#define MAX_CLEARS 99
+
 struct GameManager;
 
 DIFFABLE_EXTERN(GameManager, g_GameManager);
@@ -64,7 +66,12 @@ struct GameManager
     static void SetupCamera(f32);
     static void SetupCameraStageBackground(f32);
 
-    i32 HasReachedMaxClears(i32 character, i32 shottype);
+    i32 HasReachedMaxClears(i32 character, i32 shottype)
+    {
+        return (this->clrd[shottype + character * 2].difficultyClearedWithRetries[1] == MAX_CLEARS ||
+                this->clrd[shottype + character * 2].difficultyClearedWithRetries[2] == MAX_CLEARS ||
+                this->clrd[shottype + character * 2].difficultyClearedWithRetries[3] == MAX_CLEARS);
+    }
     void IncreaseSubrank(i32 amount);
     void DecreaseSubrank(i32 amount);
     i32 IsInBounds(f32 x, f32 y, f32 width, f32 height);
