@@ -29,7 +29,7 @@ struct PatchouliShottypeVars
 ZUN_ASSERT_SIZE(PatchouliShottypeVars, 0x18);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(PatchouliShottypeVars, 2, g_PatchouliShottypeVars) = {{{{0, 3, 1}, {2, 3, 4}}},
-                                                                                   {{{1, 4, 0}, {4, 2, 4}}}};
+                                                                                   {{{1, 4, 0}, {4, 2, 3}}}};
 DIFFABLE_STATIC(i32, g_PlayerShot);
 DIFFABLE_STATIC(f32, g_PlayerDistance);
 DIFFABLE_STATIC(f32, g_PlayerAngle);
@@ -45,8 +45,8 @@ void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
     alu = &instr->args.alu;
     angle = *GetVarFloat(enemy, &alu->arg1.f32, NULL);
 
-    enemy->moveInterp.x = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.x = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.y = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
@@ -84,8 +84,8 @@ void MoveTime(Enemy *enemy, EclRawInstr *instr)
     alu = &instr->args.alu;
     angle = *GetVarFloat(enemy, &enemy->angle, NULL);
 
-    enemy->moveInterp.x = sinf(angle) * enemy->speed * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.x = cosf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.y = sinf(angle) * enemy->speed * alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
