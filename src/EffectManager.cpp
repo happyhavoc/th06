@@ -335,13 +335,13 @@ ZunResult EffectManager::AddedCallback(EffectManager *mgr)
         }
         break;
     case 6:
-        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff06.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
+        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff05.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;
         }
         break;
     case 7:
-        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff07.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
+        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff04.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;
         }
