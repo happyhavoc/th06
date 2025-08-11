@@ -386,9 +386,7 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
 
     char convertedText[1024];
 
-    std::strcpy(convertedText, string);
-
-    if (!isUTF8Encoded(convertedText))
+    if (!isUTF8Encoded(string))
     {
         // Standard doesn't specify what happens with the length fields during state reset, so give a value to be safe
         size_t stringBytes = 1024;
