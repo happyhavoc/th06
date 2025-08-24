@@ -631,13 +631,11 @@ ChainCallbackResult Player::OnDrawLowPrio(Player *p)
 }
 
 #pragma var_order(playerDirection, verticalSpeed, horizontalSpeed, verticalOrbOffset, horizontalOrbOffset,             \
-                  intermediateFloat, posCenterY, posCenterX)
+                  intermediateFloat)
 ZunResult Player::HandlePlayerInputs()
 {
     float intermediateFloat;
 
-    float *posCenterY;
-    float *posCenterX;
     float horizontalOrbOffset;
     float verticalOrbOffset;
 
@@ -802,12 +800,8 @@ ZunResult Player::HandlePlayerInputs()
     this->previousVerticalSpeed = verticalSpeed;
 
     // TODO: Match stack variables here
-    posCenterX = &this->positionCenter.x;
-    *posCenterX +=
-        horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
-    posCenterY = &this->positionCenter.y;
-    *posCenterY +=
-        verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+    this->positionCenter[0] += horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+    this->positionCenter[1] += verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
 
     if (this->positionCenter.x < g_GameManager.playerMovementAreaTopLeftPos.x)
     {
