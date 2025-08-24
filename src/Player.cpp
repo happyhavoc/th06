@@ -1091,15 +1091,15 @@ void Player::SpawnBullets(Player *p, u32 timer)
     }
 }
 
-#pragma var_order(bulletData, bulletFrame, pfVar4, unused, unused2)
+#pragma var_order(bulletData, bulletFrame, unused3, unused, unused2)
 FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, i32 bulletIdx,
                                           i32 framesSinceLastBullet, CharacterPowerData *powerData)
 {
     CharacterPowerBulletData *bulletData;
-    f32 *pfVar4;
     i32 bulletFrame;
     i32 unused;
     i32 unused2;
+    i32 unused3;
 
     while (g_GameManager.currentPower >= powerData->power)
     {
@@ -1135,10 +1135,8 @@ FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, 
         {
             bullet->position = player->orbsPosition[bulletData->spawnPositionIdx - 1];
         }
-        pfVar4 = &bullet->position.x;
-        *pfVar4 = *pfVar4 + bulletData->motion.x;
-        pfVar4 = &bullet->position.y;
-        *pfVar4 = *pfVar4 + bulletData->motion.y;
+        bullet->position[0] += bulletData->motion.x;
+        bullet->position[1] += bulletData->motion.y;
 
         bullet->position.z = 0.495f;
 
