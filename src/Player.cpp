@@ -795,8 +795,10 @@ ZunResult Player::HandlePlayerInputs()
     this->previousVerticalSpeed = verticalSpeed;
 
     // TODO: Match stack variables here
-    this->positionCenter[0] += horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
-    this->positionCenter[1] += verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+    this->positionCenter[0] +=
+        horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
+    this->positionCenter[1] +=
+        verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
 
     if (this->positionCenter.x < g_GameManager.playerMovementAreaTopLeftPos.x)
     {
