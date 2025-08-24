@@ -568,9 +568,9 @@ void Player::UpdatePlayerBullets(Player *player)
             break;
         }
 
-        bullet->MoveHorizontal(&bullet->position.x);
+        bullet->sprite.pos.x = bullet->position[0] += bullet->velocity.x * g_Supervisor.effectiveFramerateMultiplier;
 
-        bullet->MoveVertical(&bullet->position.y);
+        bullet->sprite.pos.y = bullet->position[1] += bullet->velocity.y * g_Supervisor.effectiveFramerateMultiplier;
 
         bullet->sprite.pos.z = bullet->position.z;
         if (bullet->bulletType != BULLET_TYPE_LASER &&
