@@ -568,9 +568,9 @@ void Player::UpdatePlayerBullets(Player *player)
             break;
         }
 
-        bullet->MoveHorizontal(&bullet->position.x);
+        bullet->sprite.pos.x = bullet->position[0] += bullet->velocity.x * g_Supervisor.effectiveFramerateMultiplier;
 
-        bullet->MoveVertical(&bullet->position.y);
+        bullet->sprite.pos.y = bullet->position[1] += bullet->velocity.y * g_Supervisor.effectiveFramerateMultiplier;
 
         bullet->sprite.pos.z = bullet->position.z;
         if (bullet->bulletType != BULLET_TYPE_LASER &&
@@ -588,7 +588,6 @@ void Player::UpdatePlayerBullets(Player *player)
     }
 }
 
-#pragma var_order(x1, y1, x2, y2)
 ChainCallbackResult Player::OnDrawHighPrio(Player *p)
 {
     Player::DrawBullets(p);
@@ -607,14 +606,10 @@ ChainCallbackResult Player::OnDrawHighPrio(Player *p)
         {
             p->orbsSprite[0].pos = p->orbsPosition[0];
             p->orbsSprite[1].pos = p->orbsPosition[1];
-            f32 *x1 = &p->orbsSprite[0].pos.x;
-            *x1 += g_GameManager.arcadeRegionTopLeftPos.x;
-            f32 *y1 = &p->orbsSprite[0].pos.y;
-            *y1 += g_GameManager.arcadeRegionTopLeftPos.y;
-            f32 *x2 = &p->orbsSprite[1].pos.x;
-            *x2 += g_GameManager.arcadeRegionTopLeftPos.x;
-            f32 *y2 = &p->orbsSprite[1].pos.y;
-            *y2 += g_GameManager.arcadeRegionTopLeftPos.y;
+            p->orbsSprite[0].pos[0] += g_GameManager.arcadeRegionTopLeftPos.x;
+            p->orbsSprite[0].pos[1] += g_GameManager.arcadeRegionTopLeftPos.y;
+            p->orbsSprite[1].pos[0] += g_GameManager.arcadeRegionTopLeftPos.x;
+            p->orbsSprite[1].pos[1] += g_GameManager.arcadeRegionTopLeftPos.y;
             p->orbsSprite[0].pos.z = 0.491;
             p->orbsSprite[1].pos.z = 0.491;
             g_AnmManager->Draw(&p->orbsSprite[0]);
@@ -631,13 +626,11 @@ ChainCallbackResult Player::OnDrawLowPrio(Player *p)
 }
 
 #pragma var_order(playerDirection, verticalSpeed, horizontalSpeed, verticalOrbOffset, horizontalOrbOffset,             \
-                  intermediateFloat, posCenterY, posCenterX)
+                  intermediateFloat)
 ZunResult Player::HandlePlayerInputs()
 {
     float intermediateFloat;
 
-    float *posCenterY;
-    float *posCenterX;
     float horizontalOrbOffset;
     float verticalOrbOffset;
 
@@ -802,11 +795,9 @@ ZunResult Player::HandlePlayerInputs()
     this->previousVerticalSpeed = verticalSpeed;
 
     // TODO: Match stack variables here
-    posCenterX = &this->positionCenter.x;
-    *posCenterX +=
+    this->positionCenter[0] +=
         horizontalSpeed * this->horizontalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
-    posCenterY = &this->positionCenter.y;
-    *posCenterY +=
+    this->positionCenter[1] +=
         verticalSpeed * this->verticalMovementSpeedMultiplierDuringBomb * g_Supervisor.effectiveFramerateMultiplier;
 
     if (this->positionCenter.x < g_GameManager.playerMovementAreaTopLeftPos.x)
@@ -1097,15 +1088,15 @@ void Player::SpawnBullets(Player *p, u32 timer)
     }
 }
 
-#pragma var_order(bulletData, bulletFrame, pfVar4, unused, unused2)
+#pragma var_order(bulletData, bulletFrame, unused3, unused, unused2)
 FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, i32 bulletIdx,
                                           i32 framesSinceLastBullet, CharacterPowerData *powerData)
 {
     CharacterPowerBulletData *bulletData;
-    f32 *pfVar4;
     i32 bulletFrame;
     i32 unused;
     i32 unused2;
+    i32 unused3;
 
     while (g_GameManager.currentPower >= powerData->power)
     {
@@ -1141,10 +1132,8 @@ FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, 
         {
             bullet->position = player->orbsPosition[bulletData->spawnPositionIdx - 1];
         }
-        pfVar4 = &bullet->position.x;
-        *pfVar4 = *pfVar4 + bulletData->motion.x;
-        pfVar4 = &bullet->position.y;
-        *pfVar4 = *pfVar4 + bulletData->motion.y;
+        bullet->position[0] += bulletData->motion.x;
+        bullet->position[1] += bulletData->motion.y;
 
         bullet->position.z = 0.495f;
 

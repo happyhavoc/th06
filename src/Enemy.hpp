@@ -150,11 +150,6 @@ struct Enemy
         return (f32)this->life / (f32)this->maxLife;
     }
 
-    D3DXVECTOR3 HitboxDimensions(f32 shrinkFactor)
-    {
-        return (1.0f / shrinkFactor) * this->hitboxDimensions;
-    }
-
     ZunBool HasBossTimerFinished()
     {
         return this->bossTimer.current >= this->timerCallbackThreshold;
