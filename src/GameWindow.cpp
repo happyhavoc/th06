@@ -28,7 +28,6 @@ RenderResult GameWindow::Render()
     ZunViewport viewport;
     f64 delta;
     u32 curtime;
-    f64 local_34;
 
     if (this->lastActiveAppValue == 0)
     {
@@ -37,7 +36,7 @@ RenderResult GameWindow::Render()
 
     if (this->curFrame == 0)
     {
-    LOOP_USING_GOTO_BECAUSE_WHY_NOT:
+    RUN_CHAINS:
         if (g_Supervisor.cfg.frameskipConfig <= this->curFrame)
         {
             if (g_Supervisor.IsUnknown())
@@ -78,7 +77,7 @@ RenderResult GameWindow::Render()
         this->curFrame++;
     }
 
-    if (g_Supervisor.cfg.windowed != false || g_Supervisor.ShouldRunAt60Fps())
+    if (g_Supervisor.cfg.windowed || g_Supervisor.ShouldRunAt60Fps())
     {
         if (this->curFrame != 0)
         {
@@ -88,29 +87,27 @@ RenderResult GameWindow::Render()
             {
                 g_LastFrameTime = slowdown;
             }
-            local_34 = fabs(slowdown - g_LastFrameTime);
-            if (local_34 >= FRAME_TIME)
+            delta = fabs(slowdown - g_LastFrameTime);
+            if (delta >= FRAME_TIME)
             {
                 do
                 {
                     g_LastFrameTime += FRAME_TIME;
-                    local_34 -= FRAME_TIME;
-                } while (local_34 >= FRAME_TIME);
+                    delta -= FRAME_TIME;
+                } while (delta >= FRAME_TIME);
 
                 if (g_Supervisor.cfg.frameskipConfig < this->curFrame)
                     goto I_HAVE_NO_CLUE_WHY_BUT_I_MUST_JUMP_HERE;
-                goto LOOP_USING_GOTO_BECAUSE_WHY_NOT;
+                goto RUN_CHAINS;
             }
         }
     }
-
-    if (g_Supervisor.cfg.windowed == false && !g_Supervisor.ShouldRunAt60Fps())
+    else
     {
-
         if (g_Supervisor.cfg.frameskipConfig >= this->curFrame)
         {
             Present();
-            goto LOOP_USING_GOTO_BECAUSE_WHY_NOT;
+            goto RUN_CHAINS;
         }
 
     I_HAVE_NO_CLUE_WHY_BUT_I_MUST_JUMP_HERE:
@@ -333,6 +330,7 @@ i32 GameWindow::InitD3dRendering(void)
 //    present_params.Flags = D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
     SDL_GL_SetSwapInterval(1);
+    g_Supervisor.vsyncEnabled = 1;
 
     g_Supervisor.lockableBackbuffer = 1;
 //    memcpy(&g_Supervisor.presentParameters, &present_params, sizeof(D3DPRESENT_PARAMETERS));
