@@ -198,7 +198,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             }
             if (sVar1 < 32 && g_LastJoystickInput != sVar1)
             {
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 switch (menu->cursor)
                 {
                 case 0:
@@ -263,7 +263,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                         menu->vm[sVar1].pendingInterrupt = 3;
                     }
                     menu->cursor = 7;
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                     memcpy(&g_ControllerMapping, menu->controlMapping, sizeof(ControllerMapping));
                     memcpy(&g_Supervisor.cfg.controllerMapping, menu->controlMapping, sizeof(ControllerMapping));
                     break;
@@ -383,7 +383,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->vm[i].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             if (g_GameManager.difficulty < 4)
             {
                 g_Supervisor.cfg.defaultDifficulty = menu->cursor;
@@ -410,7 +410,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->vm[i].pendingInterrupt = 7;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
             if (g_GameManager.difficulty < 4)
             {
                 vmList = &menu->vm[81 + menu->cursor];
@@ -466,7 +466,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
                 goto here;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
             vmList = &menu->vm[86];
             for (i = 0; i < 2; i++, vmList++)
             {
@@ -502,7 +502,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             }
             else
             {
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 vmList = &menu->vm[86];
                 for (i = 0; i < 2; i++, vmList++)
                 {
@@ -542,7 +542,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
                 menu->cursor = 0;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             break;
         }
         if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
@@ -589,7 +589,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     menu->cursor = 1 - g_GameManager.shotType;
                 }
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
         }
         break;
     case STATE_SHOT_SELECT:
@@ -663,7 +663,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             }
             vmList = &menu->vm[81 + g_GameManager.difficulty];
             vmList->pendingInterrupt = 0;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             g_GameManager.shotType = menu->cursor;
             menu->cursor = g_GameManager.character;
             vmList = &menu->vm[86];
@@ -699,7 +699,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     g_GameManager.bombsRemaining = 3;
                 }
                 g_Supervisor.curState = 2;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 g_GameManager.isInReplay = 0;
                 local_48 = 0.0f;
                 if (menu->timeRelatedArrSize >= 2)
@@ -826,7 +826,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
             }
             menu->cursor = g_GameManager.shotType;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
             break;
         }
         else if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
@@ -890,7 +890,7 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_UP))
     {
         menu->cursor--;
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         if (menu->cursor < 0)
         {
             menu->cursor = menuLength - 1;
@@ -905,7 +905,7 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_DOWN))
     {
         menu->cursor++;
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         if (menu->cursor < 0)
         {
             menu->cursor = menuLength - 1;
@@ -1137,7 +1137,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 1:
                 if (!(!g_GameManager.HasReachedMaxClears(0, 0) && !g_GameManager.HasReachedMaxClears(0, 1) &&
@@ -1155,11 +1155,11 @@ ZunResult MainMenu::DrawStartMenu(void)
                     this->menuTextColor = COLOR_BLACK;
                     this->numFramesSinceActive = 0;
                     this->framesActive = 60;
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 }
                 else
                 {
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                 }
                 break;
             case 2:
@@ -1182,7 +1182,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 3:
                 for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
@@ -1196,7 +1196,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 4:
                 for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
@@ -1209,7 +1209,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 5:
                 this->gameState = STATE_MUSIC_ROOM;
@@ -1218,7 +1218,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 6:
                 this->gameState = STATE_OPTIONS;
@@ -1231,7 +1231,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->colorMode16bit = g_Supervisor.cfg.colorMode16bit;
                 this->windowed = g_Supervisor.cfg.windowed;
                 this->frameskipConfig = g_Supervisor.cfg.frameskipConfig;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 7:
                 this->gameState = STATE_QUIT;
@@ -1240,7 +1240,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
-                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                 break;
             }
         }
@@ -1252,12 +1252,12 @@ ZunResult MainMenu::DrawStartMenu(void)
             {
                 this->vm[i].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
             this->cursor = 7;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
     }
     return ZUN_SUCCESS;
@@ -1374,7 +1374,7 @@ i32 MainMenu::ReplayHandling()
                 anmVm->pendingInterrupt = 0x10;
                 this->stateTimer = 0;
                 this->cursor = 0;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 this->currentReplay = (ReplayData *) std::malloc(sizeof(ReplayData));
                 this->currentReplay->header = (ReplayHeader *) FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
                 ReplayManager::ValidateReplayData(this->currentReplay, g_LastFileSize);
@@ -1411,7 +1411,7 @@ i32 MainMenu::ReplayHandling()
             {
                 this->vm[cur].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             this->cursor = 0;
             break;
         }
@@ -1477,7 +1477,7 @@ i32 MainMenu::ReplayHandling()
             {
                 this->vm[cur].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             this->gameState = STATE_REPLAY_ANIM;
             anmVm = this->vm;
             for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur += 1, anmVm++)
@@ -1711,7 +1711,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
             {
             case CURSOR_OPTIONS_POS_LIFECOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.lifeCount <= 0)
                 {
                     g_Supervisor.cfg.lifeCount = 5;
@@ -1721,7 +1721,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_BOMBCOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.bombCount <= 0)
                 {
                     g_Supervisor.cfg.bombCount = 4;
@@ -1731,7 +1731,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_COLORMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.colorMode16bit <= 0)
                 {
                     g_Supervisor.cfg.colorMode16bit = 2;
@@ -1741,7 +1741,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_MUSICMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.StopAudio();
                 if (g_Supervisor.cfg.musicMode <= OFF)
                 {
@@ -1754,7 +1754,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_PLAYSOUNDS:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.playSounds <= 0)
                 {
                     g_Supervisor.cfg.playSounds = 2;
@@ -1764,7 +1764,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_SCREENMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (this->windowed <= 0)
                 {
                     this->windowed = 2;
@@ -1776,7 +1776,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
         if (WAS_PRESSED(TH_BUTTON_MENU | TH_BUTTON_BOMB))
         {
             this->cursor = CURSOR_OPTIONS_POS_EXIT;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
         if (WAS_PRESSED_PERIODIC(TH_BUTTON_RIGHT))
         {
@@ -1784,7 +1784,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
             {
             case CURSOR_OPTIONS_POS_LIFECOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.lifeCount += 1;
                 if (g_Supervisor.cfg.lifeCount >= 5)
                 {
@@ -1793,7 +1793,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_BOMBCOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.bombCount += 1;
                 if (g_Supervisor.cfg.bombCount >= 4)
                 {
@@ -1802,7 +1802,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_COLORMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.colorMode16bit += 1;
                 if (g_Supervisor.cfg.colorMode16bit >= 2)
                 {
@@ -1811,7 +1811,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_MUSICMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.StopAudio();
                 g_Supervisor.cfg.musicMode += 1;
                 if (g_Supervisor.cfg.musicMode >= MIDI + 1)
@@ -1823,7 +1823,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_PLAYSOUNDS:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.playSounds += 1;
                 if (g_Supervisor.cfg.playSounds >= 2)
                 {
@@ -1832,7 +1832,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_SCREENMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 this->windowed += 1;
                 if (this->windowed >= 2)
                 {
@@ -1854,7 +1854,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                     this->vm[i].pendingInterrupt = 5;
                 }
                 this->cursor = 0;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
 
                 memcpy(this->controlMapping, &g_ControllerMapping, sizeof(ControllerMapping));
 
@@ -1886,7 +1886,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 }
                 // TODO: Cursor enum for the main menu
                 this->cursor = 6;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                 if (this->colorMode16bit != g_Supervisor.cfg.colorMode16bit ||
                     this->windowed != g_Supervisor.cfg.windowed ||
                     this->frameskipConfig != g_Supervisor.cfg.frameskipConfig)

@@ -780,8 +780,7 @@ void SoundPlayer::PlaySounds()
     soundBufMutex.unlock();
 }
 
-
-void SoundPlayer::PlaySoundByIdx(SoundIdx idx, i32 unused)
+void SoundPlayer::PlaySoundByIdx(SoundIdx idx)
 {
     i32 SFXToPlay;
     i32 i;

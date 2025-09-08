@@ -230,7 +230,7 @@ void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
     g_AnmManager->DrawVmTextFmt(g_AnmManager, &this->impl->bombSpellcardName, 0xf0f0ff, 0x0, bombName);
     this->bombSpellcardBarLength = std::strlen(bombName) * 0xf / 2.0f + 16;
     g_Supervisor.unk198 = 3;
-    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
+    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB);
 }
 
 void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
@@ -241,7 +241,7 @@ void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
     AnmManager::DrawStringFormat(g_AnmManager, &this->impl->enemySpellcardName, 0xfff0f0, COLOR_RGB(COLOR_BLACK),
                                  spellcardName);
     this->blueSpellcardBarLength = std::strlen(spellcardName) * 15 / 2.0f + 16.0f;
-    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB, 0);
+    g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB);
     return;
 }
 
@@ -1094,7 +1094,7 @@ void Gui::DrawGameScene()
         if (cappedSpellcardSecondsRemaining < 10 &&
             this->lastSpellcardSecondsRemaining != this->spellcardSecondsRemaining)
         {
-            g_SoundPlayer.PlaySoundByIdx(SOUND_1D, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_1D);
         }
         g_AsciiManager.AddFormatText(&textPos, "%.2d", cappedSpellcardSecondsRemaining);
         g_AsciiManager.color = COLOR_WHITE;

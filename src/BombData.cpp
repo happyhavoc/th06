@@ -75,7 +75,7 @@ void BombData::BombReimuACalc(Player *player)
             {
                 g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_REIMU_A_BOMB_ARRAY + bombIdx);
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMU_A, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMU_A);
         }
     }
     player->playerState = PLAYER_STATE_INVULNERABLE;
@@ -157,7 +157,7 @@ void BombData::BombReimuACalc(Player *player)
 
                     player->bombInfo.bombRegionVelocities[i] / 100.0f; // ZUN moment
 
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_F, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_F);
                     ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 16, 8, 0, 0);
                 }
             }
@@ -279,7 +279,7 @@ void BombData::BombReimuBCalc(Player *player)
             g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_REIMU_B_BOMB_ARRAY + i);
         }
 
-        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMARI, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMARI);
         player->bombInfo.bombRegionPositions[0].x = player->positionCenter.x;
         player->bombInfo.bombRegionPositions[0].y = 224.0f;
         player->bombInfo.bombRegionPositions[0].z = 0.42f;
@@ -386,7 +386,7 @@ void BombData::BombMarisaACalc(Player *player)
             player->bombInfo.bombRegionVelocities[i].y = sinf(starAngle) * 2;
             player->bombInfo.bombRegionVelocities[i].z = 0.0f;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMARI, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_REIMARI);
         ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 120, 4, 1, 0);
     }
     else
@@ -488,7 +488,7 @@ void BombData::BombMarisaBCalc(Player *player)
             g_AnmManager->ExecuteAnmIdx(bombSprite, ANM_SCRIPT_PLAYER_MARISA_B_MASTER_SPARK + i);
             player->bombInfo.bombRegionPositions[i] = player->positionCenter;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_MARISA_B, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BOMB_MARISA_B);
         player->verticalMovementSpeedMultiplierDuringBomb = 0.3f;
         player->horizontalMovementSpeedMultiplierDuringBomb = 0.3f;
     }

@@ -553,7 +553,7 @@ ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
 out:
     if ((bulletProps->flags & 0x200) != 0)
     {
-        g_SoundPlayer.PlaySoundByIdx(bulletProps->sfx, 0);
+        g_SoundPlayer.PlaySoundByIdx(bulletProps->sfx);
     }
     return ZUN_SUCCESS;
 }

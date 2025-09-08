@@ -533,7 +533,7 @@ void ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr)
             enemy->bulletProps.speed1 = propsSpeedBackup;
             enemy->bulletProps.angle1 -= (ZUN_PI / 6) * patternPosition;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_16, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_16);
     }
     enemy->currentContext.var2++;
 }
@@ -722,7 +722,7 @@ void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
             bulletProps.spriteOffset = 3;
             g_BulletManager.SpawnBulletPattern(&bulletProps);
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_7, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_7);
     }
     enemy->currentContext.var2++;
 }

@@ -1165,7 +1165,7 @@ FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, 
         bullet->damage = bulletData->unk_1c;
         if (bulletData->bulletSoundIdx >= 0)
         {
-            g_SoundPlayer.PlaySoundByIdx((SoundIdx)bulletData->bulletSoundIdx, 0);
+            g_SoundPlayer.PlaySoundByIdx((SoundIdx)bulletData->bulletSoundIdx);
         }
 
         return bulletIdx >= powerData->numBullets - 1;
@@ -1402,7 +1402,7 @@ void Player::ScoreGraze(ZunVec3 *center)
     g_GameManager.AddScore(500);
     g_GameManager.IncreaseSubrank(6);
     g_Gui.flags.flag3 = 2;
-    g_SoundPlayer.PlaySoundByIdx(SOUND_GRAZE, 0);
+    g_SoundPlayer.PlaySoundByIdx(SOUND_GRAZE);
 }
 
 
@@ -1415,7 +1415,7 @@ void Player::Die()
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_6, &this->positionCenter, 16, COLOR_WHITE);
     this->playerState = PLAYER_STATE_DEAD;
     this->invulnerabilityTimer.InitializeForPopup();
-    g_SoundPlayer.PlaySoundByIdx(SOUND_PICHUN, 0);
+    g_SoundPlayer.PlaySoundByIdx(SOUND_PICHUN);
     g_GameManager.deaths++;
     for (curLaserTimerIdx = 0; curLaserTimerIdx < ARRAY_SIZE_SIGNED(this->laserTimer); curLaserTimerIdx++)
     {
