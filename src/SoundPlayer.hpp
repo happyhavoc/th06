@@ -9,6 +9,7 @@
 #include <mutex>
 #include <thread>
 #include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_rwops.h>
 // #include "zwave.hpp"
 
 namespace th06
@@ -66,6 +67,23 @@ struct SoundData
     bool isPlaying;
 };
 
+struct WavData
+{
+    SDL_RWops *fileStream;
+    u32 dataStartOffset;
+    u32 samples;
+};
+
+struct MusicStream
+{
+    WavData srcWav;
+    u32 pos;
+    u32 loopStart;
+    u32 loopEnd;
+    u32 fadeoutLen;
+    u32 fadeoutProgress;
+};
+
 struct SoundPlayer
 {
     SoundPlayer();
@@ -104,9 +122,8 @@ struct SoundPlayer
 //    DWORD backgroundMusicThreadId;
     std::thread backgroundMusicThreadHandle;
     std::atomic_bool terminateFlag;
-    i32 unk61c;
     i32 soundBuffersToPlay[3];
-//    CStreamingSound *backgroundMusic;
+    MusicStream backgroundMusic;
 //    HANDLE backgroundMusicUpdateEvent;
     bool isLooping;
 };

@@ -804,12 +804,12 @@ ZunBool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
 
 
 
-i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
+ZunResult Supervisor::PlayMidiFile(i32 midiFileIdx)
 {
 //    MidiOutput *globalMidiController;
 //
-//    if (g_Supervisor.cfg.musicMode == MIDI)
-//    {
+    if (g_Supervisor.cfg.musicMode == MIDI)
+    {
 //        if (g_Supervisor.midiOutput != NULL)
 //        {
 //            globalMidiController = g_Supervisor.midiOutput;
@@ -818,10 +818,10 @@ i32 Supervisor::PlayMidiFile(i32 midiFileIdx)
 //            globalMidiController->Play();
 //        }
 //
-        return false;
-//    }
+        return ZUN_SUCCESS;
+    }
 
-    return true;
+    return ZUN_ERROR;
 }
 
 

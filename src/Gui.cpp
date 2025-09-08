@@ -627,7 +627,7 @@ ZunResult GuiImpl::RunMsg()
             AnmManager::DrawStringFormat(g_AnmManager, &this->songNameSprite, COLOR_RGB(COLOR_LIGHTCYAN),
                                          COLOR_RGB(COLOR_BLACK), "♪%s",
                                          g_Stage.stdData->songNames[this->msg.currentInstr->args.music]);
-            if (g_Supervisor.PlayMidiFile(this->msg.currentInstr->args.music) != 0)
+            if (g_Supervisor.PlayMidiFile(this->msg.currentInstr->args.music) != ZUN_SUCCESS)
             {
                 g_Supervisor.PlayAudio(g_Stage.stdData->songPaths[this->msg.currentInstr->args.music]);
             }
