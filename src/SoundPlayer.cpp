@@ -523,7 +523,7 @@ ZunResult SoundPlayer::InitSoundBuffers()
         for (idx = 0; idx < ARRAY_SIZE(g_SoundBufferIdxVol); idx++)
         {
             if (this->LoadSound(idx, g_SFXList[g_SoundBufferIdxVol[idx].bufferIdx], 
-                                1.0f / std::powf(1.222f, g_SoundBufferIdxVol[idx].volume / -100)) != ZUN_SUCCESS)
+                                1.0f / std::powf(10.0f, g_SoundBufferIdxVol[idx].volume / -2000)) != ZUN_SUCCESS)
             {
                 GameErrorContext::Log(&g_GameErrorContext, TH_ERR_SOUNDPLAYER_FAILED_TO_LOAD_SOUND_FILE,
                                       g_SFXList[idx]);
@@ -847,8 +847,8 @@ void SoundPlayer::MixAudio(u32 samples)
 
         if (backgroundMusic.fadeoutLen != 0)
         {
-            f32 fadeoutInterp = mapRange(backgroundMusic.fadeoutProgress, 0, backgroundMusic.fadeoutLen, 0, 50);
-            fadeoutMult = 1.0f / std::powf(1.222f, fadeoutInterp);
+            f32 fadeoutInterp = mapRange(backgroundMusic.fadeoutProgress, 0, backgroundMusic.fadeoutLen, 0, 5);
+            fadeoutMult = 1.0f / std::powf(10.0f, fadeoutInterp / 2.0f);
         }
         else
         {
