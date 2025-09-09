@@ -1786,7 +1786,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                         {
                             g_AsciiManager.color = 0xfff0f0ff;
 
-                            std::strcpy(name, "       ");
+                            std::strcpy(name, "        ");
                             name[8] = 0;
 
                             name[resultScreen->cursor >= 8 ? 7 : resultScreen->cursor] = '_';
@@ -1833,7 +1833,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                         {
                             g_AsciiManager.color = 0xfffff0f0;
 
-                            std::strcpy(name, "       ");
+                            std::strcpy(name, "        ");
                             name[8] = 0;
 
                             name[resultScreen->cursor >= 8 ? 7 : resultScreen->cursor] = '_';
@@ -2009,7 +2009,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                                              resultScreen->defaultReplay.score);
                 g_AsciiManager.color = 0xfff0f0ff;
 
-                std::strcpy(name, "       ");
+                std::strcpy(name, "        ");
 
                 name[8] = 0;
 
