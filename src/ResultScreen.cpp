@@ -1723,8 +1723,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
     u8 unused3;
 
     AnmVm *sprite;
-    char keyboardCharacter;
-    u8 unk;
+    char keyboardCharacter[2];
     ZunVec2 charPos;
 
     i32 spellcardIdx;
@@ -1951,22 +1950,22 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                 strPos = spritePos;
                 strPos.x += charPos.y;
                 strPos.y += charPos.x;
-                keyboardCharacter = g_AlphabetList[row * RESULT_KEYBOARD_COLUMNS + column];
-                unk = 0;
+                keyboardCharacter[0] = g_AlphabetList[row * RESULT_KEYBOARD_COLUMNS + column];
+                keyboardCharacter[1] = '\0';
 
                 if (row == 5)
                 {
                     if (column == 14)
                     {
-                        keyboardCharacter = 0x80; // SP
+                        keyboardCharacter[0] = 0x80; // SP
                     }
                     else if (column == 15)
                     {
-                        keyboardCharacter = 0x81; // END
+                        keyboardCharacter[1] = 0x81; // END
                     }
                 }
 
-                g_AsciiManager.AddString(&strPos, &keyboardCharacter);
+                g_AsciiManager.AddString(&strPos, keyboardCharacter);
 
                 spritePos.x += 20.0f;
             }
