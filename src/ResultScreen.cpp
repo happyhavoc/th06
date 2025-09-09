@@ -29,8 +29,10 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(f32, 5, g_DifficultyWeightsList) = {-30.0f, -10.0f,
 
 DIFFABLE_STATIC_ASSIGN(u32, g_DefaultMagic) = 'DMYS';
 
+// EoSD assumes every character in this array is a single byte, which is a safe assumption in SJIS, but not
+//   in UTF-8, so we have to encode '･' with an escape sequence
 DIFFABLE_STATIC_ASSIGN(char *, g_AlphabetList) =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,:;･@abcdefghijklmnopqrstuvwxyz+-/*=%0123456789(){}[]<>#!?'\"$      --";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,:;\xA5@abcdefghijklmnopqrstuvwxyz+-/*=%0123456789(){}[]<>#!?'\"$      --";
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 6, g_CharacterList) = {TH_HAKUREI_REIMU_SPIRIT,  TH_HAKUREI_REIMU_DREAM,
                                                             TH_KIRISAME_MARISA_DEVIL, TH_KIRISAME_MARISA_LOVE,
