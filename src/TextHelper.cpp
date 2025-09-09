@@ -292,6 +292,81 @@ ZunResult TextHelper::CreateTextBuffer()
 // }
 //
 
+// Text strings in asset files are encoded using Shift_JIS. This allows RenderTextToTexture to handle both UTF-8 and
+// Shift_JIS. This also does not check for overlong encoding, but that shouldn't matter
+bool isUTF8Encoded(char *string)
+{
+    #define UTF8_1BYTE_MASK 0x80
+    #define UTF8_2BYTE_MASK 0xE0
+    #define UTF8_3BYTE_MASK 0xF0
+    #define UTF8_4BYTE_MASK 0xF8
+    
+    #define UTF8_2NDBYTE_MASK 0xC0
+    
+    // 0xxx xxxx
+    #define UTF8_1BYTE_PREFIX 0x00
+    // 110x xxxx
+    #define UTF8_2BYTE_PREFIX 0xC0
+    // 1110 xxxx
+    #define UTF8_3BYTE_PREFIX 0xE0
+    // 1111 0xxx
+    #define UTF8_4BYTE_PREFIX 0xF0
+    
+    // 10xx xxxx
+    #define UTF8_2NDBYTE_PREFIX 0x80
+
+    bool isMultiByteParse = false;
+    int codepointLen = 0;
+
+    while (*string != '\0')
+    {
+        unsigned char c = *(unsigned char *)string;
+
+        if (!isMultiByteParse)
+        {
+            if ((c & UTF8_1BYTE_MASK) != UTF8_1BYTE_PREFIX)
+            {
+                isMultiByteParse = true;
+
+                if ((c & UTF8_2BYTE_MASK) == UTF8_2BYTE_PREFIX)
+                    codepointLen = 1;
+                else if ((c & UTF8_3BYTE_MASK) == UTF8_3BYTE_PREFIX)
+                    codepointLen = 2;
+                else if ((c & UTF8_4BYTE_MASK) == UTF8_4BYTE_PREFIX)
+                    codepointLen = 3;
+                else
+                    return false;
+            }
+        }
+        else
+        {
+            if ((c & UTF8_2NDBYTE_MASK) != UTF8_2NDBYTE_PREFIX)
+                return false;
+
+            if (--codepointLen == 0)
+                isMultiByteParse = false;
+        }
+
+        string++;
+    }
+
+    return true;
+
+    #undef UTF8_1BYTE_MASK
+    #undef UTF8_2BYTE_MASK
+    #undef UTF8_3BYTE_MASK
+    #undef UTF8_4BYTE_MASK
+
+    #undef UTF8_2NDBYTE_MASK
+
+    #undef UTF8_1BYTE_PREFIX
+    #undef UTF8_2BYTE_PREFIX
+    #undef UTF8_3BYTE_PREFIX
+    #undef UTF8_4BYTE_PREFIX
+
+    #undef UTF8_2NDBYTE_PREFIX
+}
+
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
                                      i32 fontWidth, ZunColor textColor, ZunColor shadowColor, char *string,
                                      TextureData *outTexture)
@@ -311,23 +386,30 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
 
     char convertedText[1024];
 
-    // Standard doesn't specify what happens with the length fields during state reset, so give a value to be safe
-    size_t stringBytes = 1024;
-    size_t outBytes = 1024;
-
-    iconv(g_Iconv, NULL, &stringBytes, NULL, &outBytes); // Resets iconv state
-
-    stringBytes = std::strlen(string);
-    outBytes = sizeof(convertedText) - 1;
-    char *convEnd = convertedText;
-
-    if(iconv(g_Iconv, (char **) &string, &stringBytes, &convEnd, &outBytes) == (size_t) -1)
+    if (!isUTF8Encoded(string))
     {
-        // Just don't render text in case of error
-        return;
-    }
+        // Standard doesn't specify what happens with the length fields during state reset, so give a value to be safe
+        size_t stringBytes = 1024;
+        size_t outBytes = 1024;
 
-    *convEnd = '\0';
+        iconv(g_Iconv, NULL, &stringBytes, NULL, &outBytes); // Resets iconv state
+
+        stringBytes = std::strlen(string);
+        outBytes = sizeof(convertedText) - 1;
+        char *convEnd = convertedText;
+
+        if(iconv(g_Iconv, (char **) &string, &stringBytes, &convEnd, &outBytes) == (size_t) -1)
+        {
+            // Just don't render text in case of error
+            return;
+        }
+
+        *convEnd = '\0';
+    }
+    else
+    {
+        std::strcpy(convertedText, string);
+    }
 
     TTF_SetFontSize(g_Font, fontHeight * 2);
 
