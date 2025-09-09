@@ -1269,7 +1269,7 @@ i32 MainMenu::ReplayHandling()
     i32 cur;
 //    HANDLE replayFileHandle;
     u32 replayFileIdx;
-    ReplayData *replayData;
+    ReplayHeader *replayData;
     char replayFilePath[32];
 //    WIN32_FIND_DATA replayFileInfo;
     u8 padding[0x20]; // idk
@@ -1291,15 +1291,15 @@ i32 MainMenu::ReplayHandling()
                 for (cur = 0; cur < 15; cur++)
                 {
                     std::sprintf(replayFilePath, "./replay/th6_%.2d.rpy", cur + 1);
-                    replayData = (ReplayData *) std::malloc(sizeof(ReplayData));
-                    replayData->header = (ReplayHeader *)FileSystem::OpenPath(replayFilePath, 1);
+                    replayData = (ReplayHeader *)FileSystem::OpenPath(replayFilePath, 1);
                     if (replayData == NULL)
                     {
+                        std::free(replayData);
                         continue;
                     }
                     if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                     {
-                        this->replayFileData[replayFileIdx] = *replayData;
+                        this->replayFileData[replayFileIdx].header = replayData;
                         std::strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
                         std::sprintf(this->replayFileName[replayFileIdx], "No.%.2d", cur + 1);
                         replayFileIdx++;
@@ -1377,7 +1377,7 @@ i32 MainMenu::ReplayHandling()
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 this->currentReplay = (ReplayData *) std::malloc(sizeof(ReplayData));
                 this->currentReplay->header = (ReplayHeader *) FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
-                ReplayManager::ValidateReplayData(this->currentReplay, g_LastFileSize);
+                ReplayManager::ValidateReplayData(this->currentReplay->header, g_LastFileSize);
                 for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData); cur++)
                 {
                     if (this->currentReplay->header->stageReplayDataOffsets[cur] != 0)

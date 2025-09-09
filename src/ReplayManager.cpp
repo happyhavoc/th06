@@ -18,31 +18,28 @@ namespace th06
 DIFFABLE_STATIC(ReplayManager *, g_ReplayManager)
 
 
-ZunResult ReplayManager::ValidateReplayData(ReplayData *data, i32 fileSize)
+ZunResult ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
 {
     u8 *checksumCursor;
     u32 checksum;
     u8 *obfuscateCursor;
     u8 obfOffset;
     i32 idx;
-    ReplayHeader *decryptedData;
 
-    decryptedData = data->header;
-
-    if (decryptedData == NULL)
+    if (data == NULL)
     {
         return ZUN_ERROR;
     }
 
     /* "T6RP" magic bytes */
-    if (*(i32 *)decryptedData->magic != *(i32 *)"T6RP")
+    if (*(i32 *)data->magic != *(i32 *)"T6RP")
     {
         return ZUN_ERROR;
     }
 
     /* Deobfuscate the replay decryptedData */
-    obfuscateCursor = (u8 *)&decryptedData->rngValue3;
-    obfOffset = decryptedData->key;
+    obfuscateCursor = (u8 *)&data->rngValue3;
+    obfOffset = data->key;
     for (idx = 0; idx < fileSize - (i32)offsetof(ReplayHeader, rngValue3); idx += 1, obfuscateCursor += 1)
     {
         *obfuscateCursor -= obfOffset;
@@ -51,19 +48,19 @@ ZunResult ReplayManager::ValidateReplayData(ReplayData *data, i32 fileSize)
 
     /* Calculate the checksum */
     /* (0x3f000318 + key + sum(c for c in decryptedData)) % (2 ** 32) */
-    checksumCursor = (u8 *)&decryptedData->key;
+    checksumCursor = (u8 *)&data->key;
     checksum = 0x3f000318;
     for (idx = 0; idx < fileSize - (i32)offsetof(ReplayHeader, key); idx += 1, checksumCursor += 1)
     {
         checksum += *checksumCursor;
     }
 
-    if (checksum != decryptedData->checksum)
+    if (checksum != data->checksum)
     {
         return ZUN_ERROR;
     }
 
-    if (decryptedData->version != GAME_VERSION)
+    if (data->version != GAME_VERSION)
     {
         return ZUN_ERROR;
     }
@@ -288,7 +285,7 @@ ZunResult ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
         mgr->replayData = (ReplayData *) std::malloc(sizeof(ReplayData));
 
         mgr->replayData->header = (ReplayHeader *)FileSystem::OpenPath(mgr->replayFile, g_GameManager.demoMode == 0);
-        if (ValidateReplayData(mgr->replayData, g_LastFileSize) != ZUN_SUCCESS)
+        if (ValidateReplayData(mgr->replayData->header, g_LastFileSize) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;
         }

@@ -741,7 +741,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
     char replayPath[64];
     i32 replayNameCharacter;
     char replayToReadPath[64];
-    ReplayData *replayLoaded;
+    ReplayHeader *replayLoaded;
     i32 idx;
     i32 saveInterrupt;
     std::filesystem::path dirPath;
@@ -868,7 +868,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
             for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->replays); idx++)
             {
                 std::sprintf(replayToReadPath, "./replay/th6_%.2d.rpy", idx + 1);
-                replayLoaded = (ReplayData *)FileSystem::OpenPath(replayToReadPath, 1);
+                replayLoaded = (ReplayHeader *)FileSystem::OpenPath(replayToReadPath, 1);
                 if (replayLoaded == NULL)
                 {
                     continue;
@@ -876,7 +876,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
 
                 if (ReplayManager::ValidateReplayData(replayLoaded, g_LastFileSize) == ZUN_SUCCESS)
                 {
-                    this->replays[idx] = *replayLoaded->header;
+                    this->replays[idx] = *replayLoaded;
                 }
                 std::free(replayLoaded);
             }
