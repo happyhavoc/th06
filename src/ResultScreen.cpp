@@ -1963,7 +1963,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                     }
                     else if (column == 15)
                     {
-                        keyboardCharacter[1] = 0x81; // END
+                        keyboardCharacter[0] = 0x81; // END
                     }
                 }
 
