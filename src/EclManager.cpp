@@ -133,7 +133,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 goto YOLO;
             case ECL_OPCODE_SETINT:
             case ECL_OPCODE_SETFLOAT:
-                EnemyEclInstr::SetVar(enemy, instruction->args.alu.res, &args->alu.arg1.i32);
+                EnemyEclInstr::SetVar(enemy, instruction->args.alu.res, &args->alu.arg1.i32Param);
                 break;
             case ECL_OPCODE_MATHNORMANGLE:
                 local_18 = *(f32 *)EnemyEclInstr::GetVar(enemy, &instruction->args.alu.res, NULL);
@@ -153,13 +153,13 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 EnemyEclInstr::SetVar(enemy, instruction->args.alu.res, &local_14);
                 break;
             case ECL_OPCODE_SETFLOATRAND:
-                local_30 = *EnemyEclInstr::GetVarFloat(enemy, &args->alu.arg1.f32, NULL);
+                local_30 = *EnemyEclInstr::GetVarFloat(enemy, &args->alu.arg1.f32Param, NULL);
                 local_18 = g_Rng.GetRandomF32InRange(local_30);
                 EnemyEclInstr::SetVar(enemy, instruction->args.alu.res, &local_18);
                 break;
             case ECL_OPCODE_SETFLOATRANDMIN:
-                local_34 = *EnemyEclInstr::GetVarFloat(enemy, &args->alu.arg1.f32, NULL);
-                local_38 = *EnemyEclInstr::GetVarFloat(enemy, &args->alu.arg2.f32, NULL);
+                local_34 = *EnemyEclInstr::GetVarFloat(enemy, &args->alu.arg1.f32Param, NULL);
+                local_38 = *EnemyEclInstr::GetVarFloat(enemy, &args->alu.arg2.f32Param, NULL);
                 local_18 = g_Rng.GetRandomF32InRange(local_34);
                 local_18 += local_38;
                 EnemyEclInstr::SetVar(enemy, instruction->args.alu.res, &local_18);
@@ -202,8 +202,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 EnemyEclInstr::MathMod(enemy, instruction->args.alu.res, &args->alu.arg1.id, &args->alu.arg2.id);
                 break;
             case ECL_OPCODE_MATHATAN2:
-                EnemyEclInstr::MathAtan2(enemy, instruction->args.alu.res, &args->alu.arg1.f32, &args->alu.arg2.f32,
-                                         &args->alu.arg3.f32, &args->alu.arg4.f32);
+                EnemyEclInstr::MathAtan2(enemy, instruction->args.alu.res, &args->alu.arg1.f32Param, &args->alu.arg2.f32Param,
+                                         &args->alu.arg3.f32Param, &args->alu.arg4.f32Param);
                 break;
             case ECL_OPCODE_CMPINT:
                 local_48 = *EnemyEclInstr::GetVar(enemy, &instruction->args.cmp.lhs.id, NULL);
@@ -211,8 +211,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 enemy->currentContext.compareRegister = local_48 == local_44 ? 0 : local_48 < local_44 ? -1 : 1;
                 break;
             case ECL_OPCODE_CMPFLOAT:
-                local_4c = *EnemyEclInstr::GetVarFloat(enemy, &instruction->args.cmp.lhs.f32, NULL);
-                local_50 = *EnemyEclInstr::GetVarFloat(enemy, &instruction->args.cmp.rhs.f32, NULL);
+                local_4c = *EnemyEclInstr::GetVarFloat(enemy, &instruction->args.cmp.lhs.f32Param, NULL);
+                local_50 = *EnemyEclInstr::GetVarFloat(enemy, &instruction->args.cmp.rhs.f32Param, NULL);
                 enemy->currentContext.compareRegister = local_4c == local_50 ? 0 : (local_4c < local_50 ? -1 : 1);
                 break;
             case ECL_OPCODE_JUMPLSS:

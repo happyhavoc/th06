@@ -43,10 +43,10 @@ void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
     f32 angle;
 
     alu = &instr->args.alu;
-    angle = *GetVarFloat(enemy, &alu->arg1.f32, NULL);
+    angle = *GetVarFloat(enemy, &alu->arg1.f32Param, NULL);
 
-    enemy->moveInterp.x = std::cos(angle) * alu->arg2.f32 * alu->res / 2.0f;
-    enemy->moveInterp.y = std::sin(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.x = std::cos(angle) * alu->arg2.f32Param * alu->res / 2.0f;
+    enemy->moveInterp.y = std::sin(angle) * alu->arg2.f32Param * alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
@@ -62,9 +62,9 @@ void MovePosTime(Enemy *enemy, EclRawInstr *instr)
     ZunVec3 newPos;
     EclRawInstrAluArgs *alu = &instr->args.alu;
 
-    newPos.x = *GetVarFloat(enemy, &alu->arg1.f32, NULL);
-    newPos.y = *GetVarFloat(enemy, &alu->arg2.f32, NULL);
-    newPos.z = *GetVarFloat(enemy, &alu->arg3.f32, NULL);
+    newPos.x = *GetVarFloat(enemy, &alu->arg1.f32Param, NULL);
+    newPos.y = *GetVarFloat(enemy, &alu->arg2.f32Param, NULL);
+    newPos.z = *GetVarFloat(enemy, &alu->arg3.f32Param, NULL);
 
     enemy->moveInterp = newPos - enemy->position;
     enemy->moveInterpStartPos = enemy->position;
