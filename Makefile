@@ -1,4 +1,3 @@
-CXX = clang++
 ODIR=obj
 SDIR=src
 PBG_SDIR=src/pbg3
@@ -15,8 +14,10 @@ PBG_OBJ = $(patsubst %,$(ODIR)/%,$(_PBG_OBJ))
 default: th06
 
 $(OBJ): $(ODIR)/%.o: $(SDIR)/%.cpp $(SDIR)/$(DEPS)
+		mkdir -p $(ODIR)
 		$(CXX) -c -o $@ $< $(CXXFLAGS)
 $(PBG_OBJ): $(ODIR)/%.o: $(PBG_SDIR)/%.cpp
+		mkdir -p $(ODIR)
 		$(CXX) -c -o $@ $< $(CXXFLAGS)
 th06: $(OBJ) $(PBG_OBJ)
 		$(CXX) -o $@ $^ $(LDFLAGS)
