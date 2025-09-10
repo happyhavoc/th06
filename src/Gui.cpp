@@ -625,7 +625,7 @@ ZunResult GuiImpl::RunMsg()
             this->songNameSprite.fontWidth = 16;
             this->songNameSprite.fontHeight = 16;
             AnmManager::DrawStringFormat(g_AnmManager, &this->songNameSprite, COLOR_RGB(COLOR_LIGHTCYAN),
-                                         COLOR_RGB(COLOR_BLACK), "♪%s",
+                                         COLOR_RGB(COLOR_BLACK), TH_SONG_NAME,
                                          g_Stage.stdData->songNames[this->msg.currentInstr->args.music]);
             if (g_Supervisor.PlayMidiFile(this->msg.currentInstr->args.music) != ZUN_SUCCESS)
             {
