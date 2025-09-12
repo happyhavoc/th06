@@ -74,14 +74,12 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 31, g_PowerItemScore) = {
     10,  20,  30,   40,   50,   60,   70,   80,   90,   100,  200,  300,   400,   500,   600,  700,
     800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 51200};
 
-i32 inline calculatePointScore(Item *curItem, i32 scoreAcquiredItemTop, i32 scoreAcquiredItemBottom,
-                                 i32 posMultiplier)
+i32 inline calculatePointScore(Item *curItem, i32 scoreAcquiredItemTop, i32 scoreAcquiredItemBottom, i32 posMultiplier)
 {
     return ((i32)curItem->currentPosition.y < 128)
                ? scoreAcquiredItemTop
                : (scoreAcquiredItemBottom - (((i32)curItem->currentPosition.y - 128) * posMultiplier));
 }
-
 
 void ItemManager::OnUpdate()
 {
@@ -336,7 +334,6 @@ void ItemManager::OnUpdate()
     return;
 }
 
-
 void ItemManager::RemoveAllItems()
 {
     Item *cursor;
@@ -352,7 +349,6 @@ void ItemManager::RemoveAllItems()
     }
     return;
 }
-
 
 void ItemManager::OnDraw()
 {

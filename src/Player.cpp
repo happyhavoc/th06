@@ -151,7 +151,6 @@ ZunResult Player::DeletedCallback(Player *p)
     return ZUN_SUCCESS;
 }
 
-
 ChainCallbackResult Player::OnUpdate(Player *p)
 {
     f32 scaleFactor1, scaleFactor2;
@@ -342,7 +341,6 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-
 i32 Player::CalcDamageToEnemy(ZunVec3 *enemyPos, ZunVec3 *enemyHitboxSize, ZunBool *hitWithLazerDuringBomb)
 {
     ZunVec3 bulletTopLeft;
@@ -471,7 +469,6 @@ i32 Player::CalcDamageToEnemy(ZunVec3 *enemyPos, ZunVec3 *enemyHitboxSize, ZunBo
     return damage;
 }
 
-
 void Player::UpdatePlayerBullets(Player *player)
 {
     ZunVec2 vector;
@@ -590,7 +587,6 @@ void Player::UpdatePlayerBullets(Player *player)
         bullet->unk_140.Tick();
     }
 }
-
 
 ChainCallbackResult Player::OnDrawHighPrio(Player *p)
 {
@@ -1015,7 +1011,6 @@ ZunResult Player::UpdateFireBulletsTimer(Player *p)
     return ZUN_SUCCESS;
 }
 
-
 f32 Player::AngleFromPlayer(ZunVec3 *pos)
 {
     f32 relX;
@@ -1027,10 +1022,9 @@ f32 Player::AngleFromPlayer(ZunVec3 *pos)
     {
         return ZUN_PI / 2;
     }
-    
+
     return std::atan2(relY, relX);
 }
-
 
 f32 Player::AngleToPlayer(ZunVec3 *pos)
 {
@@ -1045,10 +1039,9 @@ f32 Player::AngleToPlayer(ZunVec3 *pos)
         // clockwise.
         return RADIANS(90.0f);
     }
-    
+
     return std::atan2(relY, relX);
 }
-
 
 void Player::SpawnBullets(Player *p, u32 timer)
 {
@@ -1097,7 +1090,6 @@ void Player::SpawnBullets(Player *p, u32 timer)
         }
     }
 }
-
 
 FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, i32 bulletIdx,
                                           i32 framesSinceLastBullet, CharacterPowerData *powerData)
@@ -1205,7 +1197,6 @@ FireBulletResult Player::FireBulletMarisaB(Player *player, PlayerBullet *bullet,
     return player->FireSingleBullet(player, bullet, bulletIdx, framesSinceLastBullet, g_CharacterPowerDataMarisaB);
 }
 
-
 i32 Player::CheckGraze(ZunVec3 *center, ZunVec3 *size)
 {
     ZunVec3 bombBottomRight;
@@ -1301,9 +1292,7 @@ i32 Player::CalcKillBoxCollision(ZunVec3 *bulletCenter, ZunVec3 *bulletSize)
     }
 }
 
-
-i32 Player::CalcLaserHitbox(ZunVec3 *laserCenter, ZunVec3 *laserSize, ZunVec3 *rotation, f32 angle,
-                            i32 canGraze)
+i32 Player::CalcLaserHitbox(ZunVec3 *laserCenter, ZunVec3 *laserSize, ZunVec3 *rotation, f32 angle, i32 canGraze)
 {
     ZunVec3 laserTopLeft;
     ZunVec3 laserBottomRight;
@@ -1358,7 +1347,6 @@ LASER_COLLISION:
     return 1;
 }
 
-
 i32 Player::CalcItemBoxCollision(ZunVec3 *itemCenter, ZunVec3 *itemSize)
 {
     if (this->playerState != PLAYER_STATE_ALIVE && this->playerState != PLAYER_STATE_INVULNERABLE)
@@ -1366,9 +1354,9 @@ i32 Player::CalcItemBoxCollision(ZunVec3 *itemCenter, ZunVec3 *itemSize)
         return 0;
     }
     ZunVec3 itemTopLeft = *itemCenter - *itemSize / 2.0f;
-//    std::memcpy(&itemTopLeft, &(*itemCenter - *itemSize / 2.0f), sizeof(ZunVec3));
+    //    std::memcpy(&itemTopLeft, &(*itemCenter - *itemSize / 2.0f), sizeof(ZunVec3));
     ZunVec3 itemBottomRight = *itemCenter + *itemSize / 2.0f;
-//    std::memcpy(&itemBottomRight, &(*itemCenter + *itemSize / 2.0f), sizeof(ZunVec3));
+    //    std::memcpy(&itemBottomRight, &(*itemCenter + *itemSize / 2.0f), sizeof(ZunVec3));
 
     if (this->grabItemTopLeft.x > itemBottomRight.x || this->grabItemBottomRight.x < itemTopLeft.x ||
         this->grabItemTopLeft.y > itemBottomRight.y || this->grabItemBottomRight.y < itemTopLeft.y)
@@ -1404,7 +1392,6 @@ void Player::ScoreGraze(ZunVec3 *center)
     g_Gui.flags.flag3 = 2;
     g_SoundPlayer.PlaySoundByIdx(SOUND_GRAZE);
 }
-
 
 void Player::Die()
 {

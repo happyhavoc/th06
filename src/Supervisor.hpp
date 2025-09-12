@@ -146,18 +146,18 @@ struct Supervisor
         return (this->cfg.opts >> GCOS_FORCE_60FPS & 1) && this->vsyncEnabled;
     }
 
-//    HINSTANCE hInstance;
-//    PDIRECT3D8 d3dIface;
-//    PDIRECT3DDEVICE8 d3dDevice;
-//    LPDIRECTINPUT8 dinputIface;
-//    LPDIRECTINPUTDEVICE8A keyboard;
-//    LPDIRECTINPUTDEVICE8A controller;
-//    DIDEVCAPS controllerCaps;
+    //    HINSTANCE hInstance;
+    //    PDIRECT3D8 d3dIface;
+    //    PDIRECT3DDEVICE8 d3dDevice;
+    //    LPDIRECTINPUT8 dinputIface;
+    //    LPDIRECTINPUTDEVICE8A keyboard;
+    //    LPDIRECTINPUTDEVICE8A controller;
+    //    DIDEVCAPS controllerCaps;
     SDL_Window *gameWindow;
     ZunMatrix viewMatrix;
     ZunMatrix projectionMatrix;
     ZunViewport viewport;
-//    D3DPRESENT_PARAMETERS presentParameters;
+    //    D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
     GameConfiguration defaultConfig;
     i32 calcCount;
@@ -174,7 +174,7 @@ struct Supervisor
     f32 effectiveFramerateMultiplier;
     f32 framerateMultiplier;
 
-//    MidiOutput *midiOutput;
+    //    MidiOutput *midiOutput;
 
     f32 unk1b4;
     f32 unk1b8;
@@ -187,7 +187,7 @@ struct Supervisor
     u8 colorMode16Bits;
 
     u32 startupTimeBeforeMenuMusic;
-//    D3DCAPS8 d3dCaps;
+    //    D3DCAPS8 d3dCaps;
 };
 ZUN_ASSERT_SIZE(Supervisor, 0x4d8);
 

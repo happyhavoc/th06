@@ -139,7 +139,6 @@ void Enemy::ResetEffectArray(Enemy *enemy)
     enemy->effectIdx = 0;
 }
 
-
 void EnemyManager::RunEclTimeline()
 {
     ZunVec3 pos4;
@@ -381,7 +380,6 @@ ZunBool Enemy::HandleLifeCallback()
     return false;
 }
 
-
 ZunBool Enemy::HandleTimerCallback()
 {
 
@@ -515,7 +513,6 @@ ZunResult EnemyManager::RegisterChain(char *stgEnm1, char *stgEnm2)
     }
     return ZUN_SUCCESS;
 }
-
 
 ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
 {
@@ -742,7 +739,6 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-
 void Enemy::UpdateEffects(Enemy *enemy)
 {
     Effect *effect;
@@ -765,7 +761,6 @@ void Enemy::UpdateEffects(Enemy *enemy)
         effect->angleRelated = utils::AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
     }
 }
-
 
 ChainCallbackResult EnemyManager::OnDraw(EnemyManager *mgr)
 {

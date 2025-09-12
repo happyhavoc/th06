@@ -1,8 +1,8 @@
 #include <GL/gl.h>
 
-#include "BulletManager.hpp"
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
+#include "BulletManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "Enemy.hpp"
@@ -79,7 +79,6 @@ BulletManager::BulletManager()
 {
     this->InitializeToZero();
 }
-
 
 u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bulletIdx1, i32 bulletIdx2, f32 angle)
 {
@@ -379,7 +378,6 @@ u32 BulletManager::SpawnSingleBullet(EnemyBulletShooter *bulletProps, i32 bullet
     return 0;
 }
 
-
 void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
 {
     f32 cosine;
@@ -444,7 +442,6 @@ void BulletManager::TurnAllBulletsIntoPoints()
 {
     this->RemoveAllBullets(true);
 }
-
 
 i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
 {
@@ -558,7 +555,6 @@ out:
     return ZUN_SUCCESS;
 }
 
-
 Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
 {
     Laser *laser;
@@ -649,7 +645,6 @@ ZunResult BulletManager::RegisterChain(char *bulletAnmPath)
     g_Chain.AddToDrawChain(&g_BulletManagerDrawChain, TH_CHAIN_PRIO_DRAW_BULLETMANAGER);
     return ZUN_SUCCESS;
 }
-
 
 ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
 {
@@ -1097,7 +1092,6 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
     mgr->time.Tick();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-
 
 ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
 {

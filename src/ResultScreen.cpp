@@ -61,7 +61,7 @@ ScoreDat *ResultScreen::OpenScore(char *path)
     ScoreRaw *scoreRaw;
     ScoreDat *scoreDat;
 
-    scoreDat = (ScoreDat *) malloc(sizeof(ScoreDat));
+    scoreDat = (ScoreDat *)malloc(sizeof(ScoreDat));
     scoreRaw = (ScoreRaw *)FileSystem::OpenPath(path, true);
     if (scoreRaw == NULL)
     {

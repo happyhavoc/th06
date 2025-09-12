@@ -10,7 +10,6 @@ namespace th06
 {
 DIFFABLE_STATIC(u32, g_LastFileSize)
 
-
 u8 *FileSystem::OpenPath(const char *filepath, int isExternalResource)
 {
     u8 *data;
@@ -81,7 +80,7 @@ u8 *FileSystem::OpenPath(const char *filepath, int isExternalResource)
             fsize = std::ftell(file);
             g_LastFileSize = fsize;
             std::fseek(file, 0, SEEK_SET);
-            data = (u8 *) std::malloc(fsize);
+            data = (u8 *)std::malloc(fsize);
             std::fread(data, 1, fsize, file);
             std::fclose(file);
         }

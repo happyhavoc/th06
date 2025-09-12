@@ -18,7 +18,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(BombData, 4, g_BombData) = {
     /* MarisaB */ {BombData::BombMarisaBCalc, BombData::BombMarisaBDraw},
 };
 
-
 void BombData::BombReimuACalc(Player *player)
 {
     i32 i;
@@ -183,7 +182,6 @@ void BombData::BombReimuACalc(Player *player)
     player->bombInfo.timer.Tick();
 }
 
-
 void BombData::BombReimuADraw(Player *player)
 {
     i32 idx;
@@ -222,7 +220,6 @@ void BombData::BombReimuADraw(Player *player)
     return;
 }
 
-
 void BombData::DarkenViewport(Player *player)
 {
     ZunRect viewport;
@@ -251,7 +248,6 @@ void BombData::DarkenViewport(Player *player)
 
     ScreenEffect::DrawSquare(&viewport, darknessLevel << 24);
 }
-
 
 void BombData::BombReimuBCalc(Player *player)
 {
@@ -332,7 +328,6 @@ void BombData::BombReimuBCalc(Player *player)
     player->bombInfo.timer.Tick();
 }
 
-
 void BombData::BombReimuBDraw(Player *player)
 {
     AnmVm *bombSprite;
@@ -349,7 +344,6 @@ void BombData::BombReimuBDraw(Player *player)
         g_AnmManager->Draw(bombSprite);
     }
 }
-
 
 void BombData::BombMarisaACalc(Player *player)
 {
@@ -417,7 +411,6 @@ void BombData::BombMarisaACalc(Player *player)
     return;
 }
 
-
 void BombData::BombMarisaADraw(Player *player)
 {
 
@@ -460,7 +453,6 @@ void BombData::BombMarisaADraw(Player *player)
         bombSprite++;
     }
 }
-
 
 void BombData::BombMarisaBCalc(Player *player)
 {
@@ -525,7 +517,6 @@ void BombData::BombMarisaBCalc(Player *player)
     player->playerState = PLAYER_STATE_INVULNERABLE;
     player->bombInfo.timer.Tick();
 }
-
 
 void BombData::BombMarisaBDraw(Player *player)
 {

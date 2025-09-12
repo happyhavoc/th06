@@ -196,8 +196,7 @@ struct Player
     f32 AngleToPlayer(ZunVec3 *pos);
     i32 CheckGraze(ZunVec3 *center, ZunVec3 *size);
     i32 CalcKillBoxCollision(ZunVec3 *bulletCenter, ZunVec3 *bulletSize);
-    i32 CalcLaserHitbox(ZunVec3 *laserCenter, ZunVec3 *laserSize, ZunVec3 *rotation, f32 angle,
-                        i32 canGraze);
+    i32 CalcLaserHitbox(ZunVec3 *laserCenter, ZunVec3 *laserSize, ZunVec3 *rotation, f32 angle, i32 canGraze);
     i32 CalcDamageToEnemy(ZunVec3 *enemyPos, ZunVec3 *enemySize, i32 *unk);
     i32 CalcItemBoxCollision(ZunVec3 *center, ZunVec3 *size);
     void ScoreGraze(ZunVec3 *center);

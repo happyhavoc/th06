@@ -1,4 +1,3 @@
-#include <cstdlib>
 #include "Ending.hpp"
 #include "AnmIdx.hpp"
 #include "AnmManager.hpp"
@@ -12,6 +11,7 @@
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
+#include <cstdlib>
 
 namespace th06
 {
@@ -30,7 +30,6 @@ i32 Ending::ReadEndFileParameter()
     }
     return readResult;
 }
-
 
 void Ending::FadingEffect()
 {
@@ -471,7 +470,6 @@ ZunResult Ending::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-
 ChainCallbackResult Ending::OnUpdate(Ending *ending)
 {
     i32 idx;
@@ -515,7 +513,6 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
     ending->FadingEffect();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-
 
 ZunResult Ending::AddedCallback(Ending *ending)
 {

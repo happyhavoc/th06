@@ -1,9 +1,9 @@
 #include "Gui.hpp"
 
+#include <GL/gl.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <GL/gl.h>
 
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
@@ -22,7 +22,6 @@ namespace th06
 DIFFABLE_STATIC(Gui, g_Gui);
 DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
-
 
 ZunBool Gui::IsStageFinished()
 {
@@ -89,7 +88,7 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
     ZunVec3 stringPos;
 
     glDepthFunc(GL_ALWAYS);
-//    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+    //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
     if (gui->impl->finishedStage)
     {
         stringPos.x = GAME_REGION_LEFT + 42.0f;
@@ -218,7 +217,7 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
     }
     g_AsciiManager.isGui = 0;
     glDepthFunc(GL_LEQUAL);
-//    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+    //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
@@ -474,12 +473,12 @@ ZunResult Gui::LoadMsg(char *path)
     this->impl->msg.currentMsgIdx = 0xffffffff;
     this->impl->msg.currentInstr = NULL;
 
-    this->impl->msg.instrs = (MsgRawInstr **) std::malloc(sizeof(MsgRawInstr **) * this->impl->msg.msgFile->numInstrs);
+    this->impl->msg.instrs = (MsgRawInstr **)std::malloc(sizeof(MsgRawInstr **) * this->impl->msg.msgFile->numInstrs);
 
     for (idx = 0; idx < this->impl->msg.msgFile->numInstrs; idx++)
     {
         this->impl->msg.instrs[idx] =
-            (MsgRawInstr *) (((u8 *) + this->impl->msg.msgFile) + this->impl->msg.msgFile->instrsOffsets[idx]);
+            (MsgRawInstr *)(((u8 *)+this->impl->msg.msgFile) + this->impl->msg.msgFile->instrsOffsets[idx]);
     }
     return ZUN_SUCCESS;
 }
@@ -535,8 +534,6 @@ void GuiImpl::MsgRead(i32 msgIdx)
     }
     return;
 }
-
-
 
 ZunResult GuiImpl::RunMsg()
 {
@@ -694,7 +691,7 @@ ZunResult GuiImpl::RunMsg()
             break;
         }
         this->msg.currentInstr =
-            (MsgRawInstr *)(((u8 *) &this->msg.currentInstr->args) + this->msg.currentInstr->argSize);
+            (MsgRawInstr *)(((u8 *)&this->msg.currentInstr->args) + this->msg.currentInstr->argSize);
     }
     this->msg.timer.NextTick();
 SKIP_TIME_INCREMENT:
@@ -710,9 +707,6 @@ SKIP_TIME_INCREMENT:
     }
     return ZUN_SUCCESS;
 }
-
-
-
 
 ZunResult GuiImpl::DrawDialogue()
 {
@@ -739,63 +733,67 @@ ZunResult GuiImpl::DrawDialogue()
     // Zun made a separate vertex structure with a ZunVec3 for the xyz, a
     // separate f32 for the w, and a D3DCOLOR for the diffuse. This kinda makes
     // no sense though - the position is a D3DXVECTOR4.
-//    std::memcpy(&vertices[0].position,
-//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
-//                            16.0f,
-//                        384.0f, 0.0f),
-//           sizeof(ZunVec3));
+    //    std::memcpy(&vertices[0].position,
+    //           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
+    //                            16.0f,
+    //                        384.0f, 0.0f),
+    //           sizeof(ZunVec3));
 
-    vertices[0].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
-                                   16.0f, 384.0f, 0.0f, 1.0f);
+    vertices[0].position =
+        ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f - 16.0f,
+                384.0f, 0.0f, 1.0f);
 
-//    std::memcpy(&vertices[1].position,
-//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
-//                            256.0f + 16.0f,
-//                        384.0f, 0.0f),
-//           sizeof(ZunVec3));
+    //    std::memcpy(&vertices[1].position,
+    //           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
+    //                            256.0f + 16.0f,
+    //                        384.0f, 0.0f),
+    //           sizeof(ZunVec3));
 
-    vertices[1].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
-                            256.0f + 16.0f, 384.0f, 0.0f, 1.0f),
+    vertices[1].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x +
+                                       (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f + 256.0f + 16.0f,
+                                   384.0f, 0.0f, 1.0f),
 
-//    std::memcpy(&vertices[2].position,
-//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
-//                            16.0f,
-//                        384.0f + dialogueBoxHeight, 0.0f),
-//           sizeof(ZunVec3));
+    //    std::memcpy(&vertices[2].position,
+    //           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
+    //                            16.0f,
+    //                        384.0f + dialogueBoxHeight, 0.0f),
+    //           sizeof(ZunVec3));
 
-    vertices[2].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f -
-                            16.0f, 384.0f + dialogueBoxHeight, 0.0f, 1.0f),
+        vertices[2].position =
+            ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f - 16.0f,
+                    384.0f + dialogueBoxHeight, 0.0f, 1.0f),
 
-//    std::memcpy(&vertices[3].position,
-//           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
-//                            256.0f + 16.0f,
-//                        384.0f + dialogueBoxHeight, 0.0f),
-//           sizeof(ZunVec3));
+    //    std::memcpy(&vertices[3].position,
+    //           &ZunVec3(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
+    //                            256.0f + 16.0f,
+    //                        384.0f + dialogueBoxHeight, 0.0f),
+    //           sizeof(ZunVec3));
 
-    vertices[3].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x + (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f +
-                            256.0f + 16.0f, 384.0f + dialogueBoxHeight, 0.0f, 1.0f);
+        vertices[3].position = ZunVec4(g_GameManager.arcadeRegionTopLeftPos.x +
+                                           (g_GameManager.arcadeRegionSize.x - 256.0f) / 2.0f + 256.0f + 16.0f,
+                                       384.0f + dialogueBoxHeight, 0.0f, 1.0f);
 
     vertices[0].diffuse = vertices[1].diffuse = ColorData(0xd0000000);
     vertices[2].diffuse = vertices[3].diffuse = ColorData(0x90000000);
-//    vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0f;
+    //    vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0f;
     g_AnmManager->DrawNoRotation(&this->msg.portraits[0]);
     g_AnmManager->DrawNoRotation(&this->msg.portraits[1]);
     if (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+        //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+        //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     }
 
     glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
     glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
-//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+    //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+    //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
     if (((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
     {
         glDepthMask(GL_FALSE);
-//        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 0);
+        //        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 0);
     }
 
     if (g_AnmManager->currentTextureHandle == 0)
@@ -819,8 +817,8 @@ ZunResult GuiImpl::DrawDialogue()
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
 
-//    g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
-//    g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(vertices[0]));
+    //    g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
+    //    g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(vertices[0]));
     g_AnmManager->SetCurrentVertexShader(0xff);
     g_AnmManager->SetCurrentColorOp(0xff);
     g_AnmManager->SetCurrentBlendMode(0xff);
@@ -829,22 +827,20 @@ ZunResult GuiImpl::DrawDialogue()
     {
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
         glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 4);
-//        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4);
+        //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 4);
+        //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4);
     }
 
     glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
     glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
-//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, 2);
-//    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, 2);
+    //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, 2);
+    //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, 2);
     g_AnmManager->DrawNoRotation(&this->msg.dialogueLines[0]);
     g_AnmManager->DrawNoRotation(&this->msg.dialogueLines[1]);
     g_AnmManager->DrawNoRotation(&this->msg.introLines[0]);
     g_AnmManager->DrawNoRotation(&this->msg.introLines[1]);
     return ZUN_SUCCESS;
 }
-
-
 
 ZunBool Gui::MsgWait()
 {
@@ -1042,7 +1038,6 @@ void Gui::UpdateStageElements()
     return;
 }
 
-
 static ZunColor COLOR1 = 0xa0d0ff;
 static ZunColor COLOR2 = 0xa080ff;
 static ZunColor COLOR3 = 0xe080c0;
@@ -1105,7 +1100,7 @@ void Gui::DrawGameScene()
     g_Supervisor.viewport.Width = 640;
     g_Supervisor.viewport.Height = 480;
     g_Supervisor.viewport.Set();
-//    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+    //    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
 
     vm = &this->impl->vms[6];
     if (((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) == 0 &&
@@ -1216,12 +1211,14 @@ void Gui::DrawGameScene()
         VertexDiffuseXyzrhw vertices[4];
         if (g_GameManager.currentPower > 0)
         {
-//            std::memcpy(&vertices[0].position, &ZunVec3(496.0f, 186.0f, 0.1f), sizeof(ZunVec3));
-//            std::memcpy(&vertices[1].position, &ZunVec3(g_GameManager.currentPower + 496 + 0.0f, 186.0f, 0.1f),
-//                   sizeof(ZunVec3));
-//            std::memcpy(&vertices[2].position, &ZunVec3(496.0f, 202.0f, 0.1f), sizeof(ZunVec3));
-//            std::memcpy(&vertices[3].position, &ZunVec3(g_GameManager.currentPower + 496 + 0.0f, 202.0f, 0.1f),
-//                   sizeof(ZunVec3));
+            //            std::memcpy(&vertices[0].position, &ZunVec3(496.0f, 186.0f, 0.1f), sizeof(ZunVec3));
+            //            std::memcpy(&vertices[1].position, &ZunVec3(g_GameManager.currentPower + 496 + 0.0f, 186.0f,
+            //            0.1f),
+            //                   sizeof(ZunVec3));
+            //            std::memcpy(&vertices[2].position, &ZunVec3(496.0f, 202.0f, 0.1f), sizeof(ZunVec3));
+            //            std::memcpy(&vertices[3].position, &ZunVec3(g_GameManager.currentPower + 496 + 0.0f, 202.0f,
+            //            0.1f),
+            //                   sizeof(ZunVec3));
 
             vertices[0].position = ZunVec4(496.0f, 186.0f, 0.1f, 1.0f);
             vertices[1].position = ZunVec4(g_GameManager.currentPower + 496 + 0.0f, 186.0f, 0.1f, 1.0f);
@@ -1231,26 +1228,27 @@ void Gui::DrawGameScene()
             vertices[0].diffuse = vertices[2].diffuse = ColorData(0xe0e0e0ff);
             vertices[1].diffuse = vertices[3].diffuse = ColorData(0x80e0e0ff);
 
-//            vertices[0].position.w = vertices[1].position.w = vertices[2].position.w = vertices[3].position.w = 1.0;
+            //            vertices[0].position.w = vertices[1].position.w = vertices[2].position.w =
+            //            vertices[3].position.w = 1.0;
 
             if ((g_Supervisor.cfg.opts >> 8 & 1) == 0)
             {
                 glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
                 glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
-//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
-//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+                //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+                //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
             }
 
             glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
             glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
-//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
-//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
+            //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
+            //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
             if ((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST & 1) == 0)
             {
                 glDepthFunc(GL_ALWAYS);
                 glDepthMask(GL_FALSE);
-//                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
-//                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+                //                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+                //                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
             }
 
             if (g_AnmManager->currentTextureHandle == 0)
@@ -1274,8 +1272,9 @@ void Gui::DrawGameScene()
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
 
-//            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
-//            g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(VertexDiffuseXyzrhw));
+            //            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
+            //            g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices,
+            //            sizeof(VertexDiffuseXyzrhw));
             g_AnmManager->SetCurrentVertexShader(0xff);
             g_AnmManager->SetCurrentColorOp(0xff);
             g_AnmManager->SetCurrentBlendMode(0xff);
@@ -1284,14 +1283,14 @@ void Gui::DrawGameScene()
             {
                 glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
                 glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
-//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
-//                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+                //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
+                //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
             }
 
             glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
             glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
-//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
-//            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+            //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+            //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
             if (128 <= g_GameManager.currentPower)
             {
                 vm = &this->impl->vms[18];
@@ -1433,7 +1432,7 @@ void Gui::DrawStageElements()
         g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
 
         g_Supervisor.viewport.Set();
-//        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+        //        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
         g_AnmManager->DrawNoRotation(&this->impl->loadingScreenSprite);
     }
 }
@@ -1488,7 +1487,7 @@ ZunResult Gui::RegisterChain()
     return ZUN_SUCCESS;
 }
 
-GuiImpl::GuiImpl() { };
+GuiImpl::GuiImpl() {};
 
 void Gui::CutChain()
 {

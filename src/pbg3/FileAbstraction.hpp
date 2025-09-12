@@ -1,17 +1,17 @@
 #pragma once
 
+#include "inttypes.hpp"
 #include <cstdio>
 #include <filesystem>
 #include <system_error>
-#include "inttypes.hpp"
 
 namespace th06
 {
 enum AccessMode
 {
-  ACCESS_READ,
-  ACCESS_WRITE,
-  ACCESS_INVALID
+    ACCESS_READ,
+    ACCESS_WRITE,
+    ACCESS_INVALID
 };
 
 class IFileAbstraction
@@ -50,11 +50,11 @@ class FileAbstraction : public IFileAbstraction
     {
         return this->handle != NULL;
     }
-    bool GetLastWriteTime(std::filesystem::file_time_type& lastWriteTime)
+    bool GetLastWriteTime(std::filesystem::file_time_type &lastWriteTime)
     {
         std::error_code err;
         lastWriteTime = std::filesystem::last_write_time(*path, err);
-        return (bool) err;
+        return (bool)err;
     }
 
   protected:

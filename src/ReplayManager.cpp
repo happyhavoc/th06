@@ -17,7 +17,6 @@ namespace th06
 {
 DIFFABLE_STATIC(ReplayManager *, g_ReplayManager)
 
-
 ZunResult ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
 {
     u8 *checksumCursor;
@@ -210,7 +209,7 @@ ChainCallbackResult ReplayManager::OnDraw(ReplayManager *mgr)
 
 inline StageReplayData *AllocateStageReplayData(i32 size)
 {
-    return (StageReplayData *) std::malloc(size);
+    return (StageReplayData *)std::malloc(size);
 }
 
 inline void ReleaseReplayData(void *data)
@@ -222,7 +221,6 @@ inline void ReleaseStageReplayData(void *data)
 {
     return std::free(data);
 }
-
 
 ZunResult ReplayManager::AddedCallback(ReplayManager *mgr)
 {
@@ -282,7 +280,7 @@ ZunResult ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
     mgr->frameId = 0;
     if (mgr->replayData == NULL)
     {
-        mgr->replayData = (ReplayData *) std::malloc(sizeof(ReplayData));
+        mgr->replayData = (ReplayData *)std::malloc(sizeof(ReplayData));
 
         mgr->replayData->header = (ReplayHeader *)FileSystem::OpenPath(mgr->replayFile, g_GameManager.demoMode == 0);
         if (ValidateReplayData(mgr->replayData->header, g_LastFileSize) != ZUN_SUCCESS)
@@ -294,7 +292,8 @@ ZunResult ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
             if (mgr->replayData->header->stageReplayDataOffsets[idx] != 0)
             {
                 mgr->replayData->stageReplayData[idx] =
-                    (StageReplayData *)(((u8 *) mgr->replayData->header) + mgr->replayData->header->stageReplayDataOffsets[idx]);
+                    (StageReplayData *)(((u8 *)mgr->replayData->header) +
+                                        mgr->replayData->header->stageReplayDataOffsets[idx]);
             }
             else
             {
@@ -393,9 +392,9 @@ void ReplayManager::SaveReplay(char *replayPath, char *replayName)
                 {
                     if (mgr->replayData->stageReplayData[stageIdx] != NULL)
                     {
-                        replayCopy.stageReplayDataOffsets[stageIdx] = (u32) stageReplayPos;
-                        stageReplayPos += (size_t) ((u8 *) mgr->replayInputStageBookmarks[stageIdx] -
-                                          (u8 *) mgr->replayData->stageReplayData[stageIdx]);
+                        replayCopy.stageReplayDataOffsets[stageIdx] = (u32)stageReplayPos;
+                        stageReplayPos += (size_t)((u8 *)mgr->replayInputStageBookmarks[stageIdx] -
+                                                   (u8 *)mgr->replayData->stageReplayData[stageIdx]);
                     }
                 }
                 utils::DebugPrint2("%s write ...\n", replayPath);
@@ -433,8 +432,8 @@ void ReplayManager::SaveReplay(char *replayPath, char *replayName)
                     if (mgr->replayData->stageReplayData[stageIdx] != NULL)
                     {
                         checksumCursor = (u8 *)mgr->replayData->stageReplayData[stageIdx];
-                        for (csumStagePos = 0; csumStagePos < ((iptr) mgr->replayInputStageBookmarks[stageIdx]) -
-                                                                  ((iptr) mgr->replayData->stageReplayData[stageIdx]);
+                        for (csumStagePos = 0; csumStagePos < ((iptr)mgr->replayInputStageBookmarks[stageIdx]) -
+                                                                  ((iptr)mgr->replayData->stageReplayData[stageIdx]);
                              csumStagePos += 1, checksumCursor += 1)
                         {
                             checksum += *checksumCursor;
@@ -457,8 +456,8 @@ void ReplayManager::SaveReplay(char *replayPath, char *replayName)
                     if (mgr->replayData->stageReplayData[stageIdx] != NULL)
                     {
                         obfuscateCursor = (u8 *)mgr->replayData->stageReplayData[stageIdx];
-                        for (obfStagePos = 0; obfStagePos < ((iptr) mgr->replayInputStageBookmarks[stageIdx]) -
-                                                                ((iptr) mgr->replayData->stageReplayData[stageIdx]);
+                        for (obfStagePos = 0; obfStagePos < ((iptr)mgr->replayInputStageBookmarks[stageIdx]) -
+                                                                ((iptr)mgr->replayData->stageReplayData[stageIdx]);
                              obfStagePos += 1, obfuscateCursor += 1)
                         {
                             *obfuscateCursor += obfOffset;
@@ -475,9 +474,9 @@ void ReplayManager::SaveReplay(char *replayPath, char *replayName)
                     if (mgr->replayData->stageReplayData[stageIdx] != NULL)
                     {
                         std::fwrite(mgr->replayData->stageReplayData[stageIdx], 1,
-                               ((iptr) mgr->replayInputStageBookmarks[stageIdx]) -
-                                   ((iptr) mgr->replayData->stageReplayData[stageIdx]),
-                               file);
+                                    ((iptr)mgr->replayInputStageBookmarks[stageIdx]) -
+                                        ((iptr)mgr->replayData->stageReplayData[stageIdx]),
+                                    file);
                     }
                 }
                 std::fclose(file);
@@ -486,8 +485,8 @@ void ReplayManager::SaveReplay(char *replayPath, char *replayName)
             {
                 if (g_ReplayManager->replayData->stageReplayData[stageIdx] != NULL)
                 {
-                    utils::DebugPrint2("Replay Size %d\n", ((iptr) mgr->replayInputStageBookmarks[stageIdx]) -
-                                                               ((iptr) mgr->replayData->stageReplayData[stageIdx]));
+                    utils::DebugPrint2("Replay Size %d\n", ((iptr)mgr->replayInputStageBookmarks[stageIdx]) -
+                                                               ((iptr)mgr->replayData->stageReplayData[stageIdx]));
                     ReleaseStageReplayData(g_ReplayManager->replayData->stageReplayData[stageIdx]);
                 }
             }

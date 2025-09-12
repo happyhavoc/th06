@@ -39,20 +39,20 @@ ZunResult EclManager::Load(char *eclPath)
     i32 idx;
 
     this->eclFile = (EclRawHeader *)FileSystem::OpenPath(eclPath, false);
-    
+
     if (this->eclFile == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ECLMANAGER_ENEMY_DATA_CORRUPT);
         return ZUN_ERROR;
     }
-    
-    this->timelinePtrs[0] = (EclTimelineInstr *) (((u8 *) this->eclFile) + this->eclFile->timelineOffsets[0]);
 
-    this->subTable = (EclRawInstr **) malloc(sizeof(EclRawInstr *) * this->eclFile->subCount);
-    
+    this->timelinePtrs[0] = (EclTimelineInstr *)(((u8 *)this->eclFile) + this->eclFile->timelineOffsets[0]);
+
+    this->subTable = (EclRawInstr **)malloc(sizeof(EclRawInstr *) * this->eclFile->subCount);
+
     for (idx = 0; idx < this->eclFile->subCount; idx++)
     {
-        this->subTable[idx] = (EclRawInstr *) (((u8 *) this->eclFile) + this->eclFile->subOffsets[idx]);
+        this->subTable[idx] = (EclRawInstr *)(((u8 *)this->eclFile) + this->eclFile->subOffsets[idx]);
     }
 
     this->timeline = this->timelinePtrs[0];
@@ -129,7 +129,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             case ECL_OPCODE_JUMP:
             HANDLE_JUMP:
                 enemy->currentContext.time.current = instruction->args.jump.time;
-                instruction = (EclRawInstr *)(((u8 *) instruction) + args->jump.offset);
+                instruction = (EclRawInstr *)(((u8 *)instruction) + args->jump.offset);
                 goto YOLO;
             case ECL_OPCODE_SETINT:
             case ECL_OPCODE_SETFLOAT:
@@ -202,8 +202,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 EnemyEclInstr::MathMod(enemy, instruction->args.alu.res, &args->alu.arg1.id, &args->alu.arg2.id);
                 break;
             case ECL_OPCODE_MATHATAN2:
-                EnemyEclInstr::MathAtan2(enemy, instruction->args.alu.res, &args->alu.arg1.f32Param, &args->alu.arg2.f32Param,
-                                         &args->alu.arg3.f32Param, &args->alu.arg4.f32Param);
+                EnemyEclInstr::MathAtan2(enemy, instruction->args.alu.res, &args->alu.arg1.f32Param,
+                                         &args->alu.arg2.f32Param, &args->alu.arg3.f32Param, &args->alu.arg4.f32Param);
                 break;
             case ECL_OPCODE_CMPINT:
                 local_48 = *EnemyEclInstr::GetVar(enemy, &instruction->args.cmp.lhs.id, NULL);
@@ -958,7 +958,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                     local_bc = 1.0f - local_bc;
                     local_bc = local_bc * local_bc * local_bc * local_bc;
                 }
-                enemy->axisSpeed =  enemy->moveInterp * local_bc + enemy->moveInterpStartPos - enemy->position;
+                enemy->axisSpeed = enemy->moveInterp * local_bc + enemy->moveInterpStartPos - enemy->position;
                 enemy->angle = atan2f(enemy->axisSpeed.y, enemy->axisSpeed.x);
                 if ((ZunBool)(enemy->moveInterpTimer.current <= 0))
                 {
