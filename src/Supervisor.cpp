@@ -439,7 +439,6 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
     {
         if (SDL_IsGameController(i) && (supervisor->gameController = SDL_GameControllerOpen(i)) != NULL)
         {
-            
 
             break;
         }

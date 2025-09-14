@@ -53,22 +53,22 @@ u16 Controller::GetControllerInput(u16 buttons)
     //
     if (g_Supervisor.gameController != NULL)
     {
-    //        memset(&aa, 0, sizeof(aa));
-    //        aa.dwSize = sizeof(JOYINFOEX);
-    //        aa.dwFlags = JOY_RETURNALL;
-    //
-    //        if (joyGetPosEx(0, &aa) != MMSYSERR_NOERROR)
-    //        {
-    //            return buttons;
-    //        }
-    //
+        //        memset(&aa, 0, sizeof(aa));
+        //        aa.dwSize = sizeof(JOYINFOEX);
+        //        aa.dwFlags = JOY_RETURNALL;
+        //
+        //        if (joyGetPosEx(0, &aa) != MMSYSERR_NOERROR)
+        //        {
+        //            return buttons;
+        //        }
+        //
         shootPressed = SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.shootButton,
-            TH_BUTTON_SHOOT, g_Supervisor.gameController);
+                                                     TH_BUTTON_SHOOT, g_Supervisor.gameController);
 
         if (g_ControllerMapping.shootButton != g_ControllerMapping.focusButton)
         {
-            SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.focusButton,
-            TH_BUTTON_FOCUS, g_Supervisor.gameController);
+            SetButtonFromControllerInputs(&buttons, g_Supervisor.cfg.controllerMapping.focusButton, TH_BUTTON_FOCUS,
+                                          g_Supervisor.gameController);
         }
         else
         {
@@ -130,22 +130,23 @@ u16 Controller::GetControllerInput(u16 buttons)
         }
 
         // SDL sticks run from -32768 to 32767, with the minimum being up / left and the max being down / right
-    //
-    //        ab = ((g_JoystickCaps.wXmax - g_JoystickCaps.wXmin) / 2 / 2);
-    //
+        //
+        //        ab = ((g_JoystickCaps.wXmax - g_JoystickCaps.wXmin) / 2 / 2);
+        //
 
         buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_RIGHT, stickX, JOYSTICK_MIDPOINT(0, INT16_MAX));
         buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_LEFT, -stickX, JOYSTICK_MIDPOINT(0, INT16_MAX));
 
         buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_DOWN, stickY, JOYSTICK_MIDPOINT(0, INT16_MAX));
         buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_UP, -stickY, JOYSTICK_MIDPOINT(0, INT16_MAX));
-    //
-    //        ab = ((g_JoystickCaps.wYmax - g_JoystickCaps.wYmin) / 2 / 2);
-    //        buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_DOWN, aa.dwYpos,
-    //                                           JOYSTICK_MIDPOINT(g_JoystickCaps.wYmin, g_JoystickCaps.wYmax) + ab);
-    //        buttons |= JOYSTICK_BUTTON_PRESSED(
-    //            TH_BUTTON_UP, JOYSTICK_MIDPOINT(g_JoystickCaps.wYmin, g_JoystickCaps.wYmax) - ab, aa.dwYpos);
-    //
+        //
+        //        ab = ((g_JoystickCaps.wYmax - g_JoystickCaps.wYmin) / 2 / 2);
+        //        buttons |= JOYSTICK_BUTTON_PRESSED(TH_BUTTON_DOWN, aa.dwYpos,
+        //                                           JOYSTICK_MIDPOINT(g_JoystickCaps.wYmin, g_JoystickCaps.wYmax) +
+        //                                           ab);
+        //        buttons |= JOYSTICK_BUTTON_PRESSED(
+        //            TH_BUTTON_UP, JOYSTICK_MIDPOINT(g_JoystickCaps.wYmin, g_JoystickCaps.wYmax) - ab, aa.dwYpos);
+        //
     }
     //    else
     //    {
@@ -273,7 +274,7 @@ u32 Controller::SetButtonFromControllerInputs(u16 *outButtons, i16 controllerBut
         return 0;
     }
 
-    pressed = SDL_GameControllerGetButton(controller, (SDL_GameControllerButton) controllerButtonToTest);
+    pressed = SDL_GameControllerGetButton(controller, (SDL_GameControllerButton)controllerButtonToTest);
 
     *outButtons |= pressed ? touhouButton & 0xFFFF : 0;
 
@@ -296,12 +297,12 @@ u8 *th06::Controller::GetControllerState()
     if (g_Supervisor.gameController != NULL)
     {
         memset(&g_ControllerData, 0, sizeof(g_ControllerData));
-    
+
         SDL_Joystick *joystick = SDL_GameControllerGetJoystick(g_Supervisor.gameController);
 
         for (int i = 0; i < SDL_CONTROLLER_BUTTON_MAX; i++)
         {
-            if (SDL_GameControllerGetButton(g_Supervisor.gameController, (SDL_GameControllerButton) i))
+            if (SDL_GameControllerGetButton(g_Supervisor.gameController, (SDL_GameControllerButton)i))
             {
                 g_ControllerData[i] = 0x80;
             }
