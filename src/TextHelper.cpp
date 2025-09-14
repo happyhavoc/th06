@@ -476,7 +476,7 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
         sdlShadowColor.g = (shadowColor >> 8) & 0xFF;
         sdlShadowColor.r = shadowColor & 0xFF;
 
-        shadowText = TTF_RenderUTF8_Solid(g_Font, convertedText, sdlShadowColor);
+        shadowText = TTF_RenderUTF8_Blended(g_Font, convertedText, sdlShadowColor);
         // SetTextColor(hdc, shadowColor);
         // TextOutA(hdc, xPos * 2 + 3, 2, string, strlen(string));
 
