@@ -136,10 +136,13 @@ struct Supervisor
         return this->effectiveFramerateMultiplier;
     }
 
-    u32 IsUnknown()
+    u32 RedrawWholeFrame()
     {
+        // SDL makes no guarantees about frame state after buffer swap,
+        //   and Wayland will "reuse" old framebuffers in a nondeterministic
+        //   way, so we're basically required to always redraw to avoid UI corruption
         return (this->cfg.opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH & 1) |
-               (this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1);
+               (this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) | 1;
     }
 
     u32 ShouldRunAt60Fps()

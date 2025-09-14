@@ -736,7 +736,7 @@ ZunResult Supervisor::LoadConfig(const char *path)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_USE_16BIT_TEXTURES);
     }
-    if (this->IsUnknown())
+    if (this->RedrawWholeFrame())
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_FORCE_BACKBUFFER_CLEAR);
     }

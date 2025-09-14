@@ -39,7 +39,7 @@ RenderResult GameWindow::Render()
     RUN_CHAINS:
         if (g_Supervisor.cfg.frameskipConfig <= this->curFrame)
         {
-            if (g_Supervisor.IsUnknown())
+            if (g_Supervisor.RedrawWholeFrame())
             {
                 viewport.X = 0;
                 viewport.Y = 0;

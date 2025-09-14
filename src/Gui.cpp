@@ -1104,7 +1104,7 @@ void Gui::DrawGameScene()
 
     vm = &this->impl->vms[6];
     if (((g_Supervisor.cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS) & 1) == 0 &&
-        (vm->currentInstruction != NULL || g_Supervisor.unk198 != 0 || g_Supervisor.IsUnknown()))
+        (vm->currentInstruction != NULL || g_Supervisor.unk198 != 0 || g_Supervisor.RedrawWholeFrame()))
     {
         for (yPos = 0.0f; yPos < 464.0f; yPos += 32.0f)
         {
