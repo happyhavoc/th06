@@ -1051,23 +1051,6 @@ ZunResult AnmManager::Draw3(AnmVm *vm)
     worldTransformMatrix.m[0][0] *= vm->scaleX;
     worldTransformMatrix.m[1][1] *= -vm->scaleY;
 
-    if (vm->flags.flag15)
-    {
-        printf("Matrix before rotation\n");
-
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                printf("%f ", worldTransformMatrix.m[i][j]);
-            }
-
-            printf("\n");
-        }
-
-        printf("\n");
-    }
-
     if (vm->rotation.x != 0.0)
     {
         //        D3DXMatrixRotationX(&rotationMatrix, vm->rotation.x);
@@ -1092,23 +1075,6 @@ ZunResult AnmManager::Draw3(AnmVm *vm)
         worldTransformMatrix.Rotate(vm->rotation.z, 0.0f, 0.0f, 1.0f);
     }
 
-    if (vm->flags.flag15)
-    {
-        printf("Matrix after rotation\n");
-
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                printf("%f ", worldTransformMatrix.m[i][j]);
-            }
-
-            printf("\n");
-        }
-
-        printf("\n");
-    }
-
     if ((vm->flags.anchor & AnmVmAnchor_Left) == 0)
     {
         worldTransformMatrix.m[3][0] = vm->pos.x;
@@ -1131,24 +1097,8 @@ ZunResult AnmManager::Draw3(AnmVm *vm)
 
     worldTransformMatrix.m[3][2] = vm->pos.z;
 
-    if (vm->flags.flag15)
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
-                printf("%f ", worldTransformMatrix.m[i][j]);
-            }
-
-            printf("\n");
-        }
-
-        printf("\n");
-    }
-
     // Now, set transform matrix.
     //    g_Supervisor.d3dDevice->SetTransform(D3DTS_WORLD, &worldTransformMatrix);
-    //    printf("Setting world transform\n");
     glMultMatrixf((GLfloat *)&worldTransformMatrix.m);
 
     // Load sprite if vm->sprite is not the same as current sprite.
@@ -1256,7 +1206,6 @@ ZunResult AnmManager::Draw2(AnmVm *vm)
     glMultMatrixf((GLfloat *)worldTransformMatrix.m);
 
     //    g_Supervisor.d3dDevice->SetTransform(D3DTS_WORLD, &worldTransformMatrix);
-    //    printf("Setting world transform\n");
 
     if (this->currentSprite != vm->sprite)
     {
