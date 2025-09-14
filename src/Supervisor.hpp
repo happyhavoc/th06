@@ -4,6 +4,7 @@
 // #include <d3dx8math.h>
 // #include <dinput.h>
 
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_video.h>
 
 #include "Chain.hpp"
@@ -152,6 +153,7 @@ struct Supervisor
     //    LPDIRECTINPUT8 dinputIface;
     //    LPDIRECTINPUTDEVICE8A keyboard;
     //    LPDIRECTINPUTDEVICE8A controller;
+    SDL_GameController *gameController;
     //    DIDEVCAPS controllerCaps;
     SDL_Window *gameWindow;
     ZunMatrix viewMatrix;

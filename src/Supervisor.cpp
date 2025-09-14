@@ -19,6 +19,7 @@
 #include "inttypes.hpp"
 #include "utils.hpp"
 
+#include <SDL2/SDL_joystick.h>
 #include <SDL2/SDL_timer.h>
 #include <cstdio>
 #include <cstring>
@@ -432,6 +433,18 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
     //    supervisor->keyboard->Acquire();
     GameErrorContext::Log(&g_GameErrorContext, TH_ERR_DIRECTINPUT_INITIALIZED);
 
+    int numSticks = SDL_NumJoysticks();
+
+    for (int i = 0; i < numSticks; i++)
+    {
+        if (SDL_IsGameController(i) && (supervisor->gameController = SDL_GameControllerOpen(i)) != NULL)
+        {
+            
+
+            break;
+        }
+    }
+
     //    supervisor->dinputIface->EnumDevices(DI8DEVCLASS_GAMECTRL, Supervisor::EnumGameControllersCb, NULL,
     //                                         DIEDFL_ATTACHEDONLY);
     //    if (supervisor->controller)
@@ -498,11 +511,11 @@ ZunResult Supervisor::DeletedCallback(Supervisor *s)
     //    {
     //        s->controller->Unacquire();
     //    }
-    //    if (s->controller != NULL)
-    //    {
-    //        s->controller->Release();
-    //        s->controller = NULL;
-    //    }
+    if (s->gameController != NULL)
+    {
+        SDL_GameControllerClose(s->gameController);
+        s->gameController = NULL;
+    }
     //    if (s->dinputIface != NULL)
     //    {
     //        s->dinputIface->Release();

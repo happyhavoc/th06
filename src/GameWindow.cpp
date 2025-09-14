@@ -169,7 +169,7 @@ void GameWindow::Present()
 
 void GameWindow::CreateGameWindow()
 {
-    SDL_Init(SDL_INIT_VIDEO);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
 
     u32 flags = SDL_WINDOW_OPENGL;
     i32 height = GAME_WINDOW_HEIGHT;
