@@ -517,6 +517,7 @@ HRESULT CStreamingSound::UpdateFadeOut()
 // Desc: Handle the notification that tell us to put more wav data in the
 //       circular buffer
 //-----------------------------------------------------------------------------
+#pragma var_order(dwDSLockedBufferSize2, pDSLockedBuffer, dwBytesWrittenToBuffer, pDSLockedBuffer2, bRestored, dwPlayDelta, hr, dwDSLockedBufferSize, dwCurrentPlayPos)
 HRESULT CStreamingSound::HandleWaveStreamNotification(BOOL bLoopedPlay)
 {
     HRESULT hr;
