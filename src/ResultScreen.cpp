@@ -1909,8 +1909,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                 }
                 g_AsciiManager.AddFormatText(spritePos.AsD3dXVec(), "No.%.2d", spellcardIdx + 1);
 
-                // TODO: This is really cursed, there has to be a better way
-                (*(ZunVec3 *)&resultScreen->unk_28a0[row].pos).AsD3dXVec()->x += 96.0f;
+                resultScreen->unk_28a0[row].pos[0] += 96.0f;
 
                 g_AnmManager->DrawNoRotation(&resultScreen->unk_28a0[row]);
 
