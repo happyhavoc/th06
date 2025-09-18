@@ -341,6 +341,7 @@ HRESULT CSound::RestoreBuffer(LPDIRECTSOUNDBUFFER pDSB, BOOL *pbWasRestored)
 // Name: CSound::GetFreeBuffer()
 // Desc: Checks to see if a buffer is playing and returns TRUE if it is.
 //-----------------------------------------------------------------------------
+#pragma var_order(bIsPlaying, i)
 LPDIRECTSOUNDBUFFER CSound::GetFreeBuffer()
 {
     BOOL bIsPlaying = FALSE;
