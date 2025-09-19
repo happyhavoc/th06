@@ -42,7 +42,8 @@ u32 IPbg3Parser::ReadVarInt()
         break;
     }
 
-    while (intLen != 0) {
+    while (intLen != 0)
+    {
         if (this->ReadBit())
         {
             res |= intLen;
