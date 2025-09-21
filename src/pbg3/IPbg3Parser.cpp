@@ -25,7 +25,7 @@ u32 IPbg3Parser::ReadVarInt()
         varintHdr |= 1;
     }
 
-    u32 intLen;
+    u32 intLen = 0;
     switch (varintHdr)
     {
     case 0:
@@ -40,22 +40,17 @@ u32 IPbg3Parser::ReadVarInt()
     case 3:
         intLen = 0x80000000;
         break;
-    default:
-        // TODO: There's probably a way to match without goto, but
-        // I can't figure it out... a simple `return 0;` won't share
-        // the function epilogue with the other return res.
-        goto end;
     }
 
-    do
+    while (intLen != 0)
     {
         if (this->ReadBit())
         {
             res |= intLen;
         }
         intLen >>= 1;
-    } while (intLen != 0);
-end:
+    }
+
     return res;
 }
 
