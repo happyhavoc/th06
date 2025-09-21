@@ -395,7 +395,7 @@ void Stage::CutChain()
     g_Chain.Cut(&g_StageOnDrawLowPrioChain);
 }
 
-#pragma var_order(vmIdx, idx, curObj, curQuad, sizeVmArr, padding1, padding2, padding3, padding4, padding5, padding6)
+#pragma var_order(vmIdx, idx, curObj, curQuad, sizeVmArr)
 ZunResult Stage::LoadStageData(char *anmpath, char *stdpath)
 {
     RawStageObject *curObj;
@@ -403,7 +403,6 @@ ZunResult Stage::LoadStageData(char *anmpath, char *stdpath)
     i32 idx;
     i32 vmIdx;
     u32 sizeVmArr;
-    u32 padding1, padding2, padding3, padding4, padding5, padding6;
 
     if (g_AnmManager->LoadAnm(ANM_FILE_STAGEBG, anmpath, ANM_OFFSET_STAGEBG) != ZUN_SUCCESS)
     {

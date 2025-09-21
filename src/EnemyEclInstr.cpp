@@ -37,6 +37,7 @@ DIFFABLE_STATIC_ARRAY(f32, 6, g_StarAngleTable);
 DIFFABLE_STATIC(D3DXVECTOR3, g_EnemyPosVector);
 DIFFABLE_STATIC(D3DXVECTOR3, g_PlayerPosVector);
 
+#pragma var_order(alu, angle)
 void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
 {
     EclRawInstrAluArgs *alu;
