@@ -19,7 +19,7 @@ struct ReplayManager
     static ZunResult DeletedCallback(ReplayManager *mgr);
     static void StopRecording();
     static void SaveReplay(char *replay_path, char *param_2);
-    static ZunResult ValidateReplayData(ReplayData *data, i32 fileSize);
+    static ZunResult ValidateReplayData(ReplayHeader *data, i32 fileSize);
 
     ReplayManager()
     {

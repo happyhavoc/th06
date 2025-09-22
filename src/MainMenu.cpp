@@ -21,15 +21,17 @@
 #include "i18n.hpp"
 #include "utils.hpp"
 
-#include <cstring>
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_timer.h>
+#include <cstring>
 
 namespace th06
 {
 DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 4, g_ShortCharacterList) = {"ReimuA ", "ReimuB ", "MarisaA", "MarisaB"};
-DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 5, g_DifficultyList) = {"Easy   ", "Normal ", "Hard   ", "Lunatic", "Extra  "};
+DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 5, g_DifficultyList) = {"Easy   ", "Normal ", "Hard   ", "Lunatic",
+                                                                   "Extra  "};
 DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 7, g_StageList) = {"Stage1", "Stage2", "Stage3", "Stage4",
-                                                        "Stage5", "Stage6", "Extra "};
+                                                              "Stage5", "Stage6", "Extra "};
 
 DIFFABLE_STATIC(i16, g_LastJoystickInput)
 
@@ -129,7 +131,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             g_GameManager.demoMode = 1;
             g_GameManager.demoFrames = 0;
             g_Supervisor.framerateMultiplier = 1.0;
-            std::strcpy((char *) g_GameManager.replayFile, "data/demo/demo00.rpy");
+            std::strcpy((char *)g_GameManager.replayFile, "data/demo/demo00.rpy");
             g_GameManager.currentStage = 3;
             g_GameManager.difficulty = LUNATIC;
             g_Supervisor.curState = SUPERVISOR_STATE_GAMEMANAGER;
@@ -191,14 +193,14 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
         if (32 <= menu->stateTimer)
         {
             controllerData = Controller::GetControllerState();
-            for (sVar1 = 0; sVar1 < 32; sVar1++)
+            for (sVar1 = 0; sVar1 < SDL_CONTROLLER_BUTTON_MAX; sVar1++)
             {
                 if ((controllerData[sVar1] & 0x80) != 0)
                     break;
             }
-            if (sVar1 < 32 && g_LastJoystickInput != sVar1)
+            if (sVar1 < SDL_CONTROLLER_BUTTON_MAX && g_LastJoystickInput != sVar1)
             {
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 switch (menu->cursor)
                 {
                 case 0:
@@ -263,7 +265,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                         menu->vm[sVar1].pendingInterrupt = 3;
                     }
                     menu->cursor = 7;
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                     memcpy(&g_ControllerMapping, menu->controlMapping, sizeof(ControllerMapping));
                     memcpy(&g_Supervisor.cfg.controllerMapping, menu->controlMapping, sizeof(ControllerMapping));
                     break;
@@ -383,7 +385,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->vm[i].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             if (g_GameManager.difficulty < 4)
             {
                 g_Supervisor.cfg.defaultDifficulty = menu->cursor;
@@ -410,7 +412,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             {
                 menu->vm[i].pendingInterrupt = 7;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
             if (g_GameManager.difficulty < 4)
             {
                 vmList = &menu->vm[81 + menu->cursor];
@@ -466,7 +468,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
                 goto here;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
             vmList = &menu->vm[86];
             for (i = 0; i < 2; i++, vmList++)
             {
@@ -502,7 +504,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             }
             else
             {
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 vmList = &menu->vm[86];
                 for (i = 0; i < 2; i++, vmList++)
                 {
@@ -542,7 +544,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
                 menu->cursor = 0;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             break;
         }
         if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
@@ -589,7 +591,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     menu->cursor = 1 - g_GameManager.shotType;
                 }
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
         }
         break;
     case STATE_SHOT_SELECT:
@@ -663,7 +665,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
             }
             vmList = &menu->vm[81 + g_GameManager.difficulty];
             vmList->pendingInterrupt = 0;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             g_GameManager.shotType = menu->cursor;
             menu->cursor = g_GameManager.character;
             vmList = &menu->vm[86];
@@ -699,7 +701,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                     g_GameManager.bombsRemaining = 3;
                 }
                 g_Supervisor.curState = 2;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 g_GameManager.isInReplay = 0;
                 local_48 = 0.0f;
                 if (menu->timeRelatedArrSize >= 2)
@@ -826,7 +828,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
                 }
             }
             menu->cursor = g_GameManager.shotType;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
             break;
         }
         else if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
@@ -884,13 +886,12 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
 
 #pragma intrinsic(strcpy)
 
-
 CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 {
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_UP))
     {
         menu->cursor--;
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         if (menu->cursor < 0)
         {
             menu->cursor = menuLength - 1;
@@ -905,7 +906,7 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_DOWN))
     {
         menu->cursor++;
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         if (menu->cursor < 0)
         {
             menu->cursor = menuLength - 1;
@@ -919,8 +920,6 @@ CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 
     return CURSOR_DONT_MOVE;
 }
-
-
 
 void MainMenu::SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, ZunBool unk)
 {
@@ -1004,9 +1003,6 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, ZunColor curr
     }
 }
 
-
-
-
 ZunResult MainMenu::BeginStartup()
 {
     ZunVec3 vector3Ptr;
@@ -1050,9 +1046,6 @@ ZunResult MainMenu::BeginStartup()
     return ZUN_SUCCESS;
 }
 
-
-
-
 ZunBool MainMenu::WeirdSecondInputCheck()
 {
     i32 vm;
@@ -1094,9 +1087,6 @@ ZunBool MainMenu::WeirdSecondInputCheck()
     return false;
 }
 
-
-
-
 ZunResult MainMenu::DrawStartMenu(void)
 {
     i32 i;
@@ -1137,7 +1127,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 1:
                 if (!(!g_GameManager.HasReachedMaxClears(0, 0) && !g_GameManager.HasReachedMaxClears(0, 1) &&
@@ -1155,11 +1145,11 @@ ZunResult MainMenu::DrawStartMenu(void)
                     this->menuTextColor = COLOR_BLACK;
                     this->numFramesSinceActive = 0;
                     this->framesActive = 60;
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 }
                 else
                 {
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                 }
                 break;
             case 2:
@@ -1182,7 +1172,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 3:
                 for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
@@ -1196,7 +1186,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 4:
                 for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
@@ -1209,7 +1199,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->menuTextColor = COLOR_BLACK;
                 this->numFramesSinceActive = 0;
                 this->framesActive = 60;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 5:
                 this->gameState = STATE_MUSIC_ROOM;
@@ -1218,7 +1208,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 6:
                 this->gameState = STATE_OPTIONS;
@@ -1231,7 +1221,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 this->colorMode16bit = g_Supervisor.cfg.colorMode16bit;
                 this->windowed = g_Supervisor.cfg.windowed;
                 this->frameskipConfig = g_Supervisor.cfg.frameskipConfig;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 break;
             case 7:
                 this->gameState = STATE_QUIT;
@@ -1240,7 +1230,7 @@ ZunResult MainMenu::DrawStartMenu(void)
                 {
                     this->vm[i].pendingInterrupt = 4;
                 }
-                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                 break;
             }
         }
@@ -1252,12 +1242,12 @@ ZunResult MainMenu::DrawStartMenu(void)
             {
                 this->vm[i].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
             this->cursor = 7;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
     }
     return ZUN_SUCCESS;
@@ -1267,11 +1257,11 @@ i32 MainMenu::ReplayHandling()
 {
     AnmVm *anmVm;
     i32 cur;
-//    HANDLE replayFileHandle;
+    //    HANDLE replayFileHandle;
     u32 replayFileIdx;
-    ReplayData *replayData;
+    ReplayHeader *replayData;
     char replayFilePath[32];
-//    WIN32_FIND_DATA replayFileInfo;
+    //    WIN32_FIND_DATA replayFileInfo;
     u8 padding[0x20]; // idk
 
     switch (this->gameState)
@@ -1291,46 +1281,46 @@ i32 MainMenu::ReplayHandling()
                 for (cur = 0; cur < 15; cur++)
                 {
                     std::sprintf(replayFilePath, "./replay/th6_%.2d.rpy", cur + 1);
-                    replayData = (ReplayData *) std::malloc(sizeof(ReplayData));
-                    replayData->header = (ReplayHeader *)FileSystem::OpenPath(replayFilePath, 1);
+                    replayData = (ReplayHeader *)FileSystem::OpenPath(replayFilePath, 1);
                     if (replayData == NULL)
                     {
+                        std::free(replayData);
                         continue;
                     }
                     if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                     {
-                        this->replayFileData[replayFileIdx] = *replayData;
+                        this->replayFileData[replayFileIdx].header = replayData;
                         std::strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
                         std::sprintf(this->replayFileName[replayFileIdx], "No.%.2d", cur + 1);
                         replayFileIdx++;
                     }
                 }
-//                _mkdir("./replay");
-//                _chdir("./replay");
-//                replayFileHandle = FindFirstFileA("th6_ud????.rpy", &replayFileInfo);
-//                if (replayFileHandle != INVALID_HANDLE_VALUE)
-//                {
-//                    for (cur = 0; cur < 0x2d; cur++)
-//                    {
-//                        replayData = (ReplayData *)FileSystem::OpenPath(replayFilePath, 1);
-//                        if (replayData == NULL)
-//                        {
-//                            continue;
-//                        }
-//                        if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
-//                        {
-//                            this->replayFileData[replayFileIdx] = *replayData;
-//                            sprintf(this->replayFilePaths[replayFileIdx], "./replay/%s", replayFileInfo.cFileName);
-//                            sprintf(this->replayFileName[replayFileIdx], "User ");
-//                            replayFileIdx++;
-//                        }
-//                        free(replayData);
-//                        if (!FindNextFileA(replayFileHandle, &replayFileInfo))
-//                            break;
-//                    }
-//                }
-//                FindClose(replayFileHandle);
-//                _chdir("../");
+                //                _mkdir("./replay");
+                //                _chdir("./replay");
+                //                replayFileHandle = FindFirstFileA("th6_ud????.rpy", &replayFileInfo);
+                //                if (replayFileHandle != INVALID_HANDLE_VALUE)
+                //                {
+                //                    for (cur = 0; cur < 0x2d; cur++)
+                //                    {
+                //                        replayData = (ReplayData *)FileSystem::OpenPath(replayFilePath, 1);
+                //                        if (replayData == NULL)
+                //                        {
+                //                            continue;
+                //                        }
+                //                        if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
+                //                        {
+                //                            this->replayFileData[replayFileIdx] = *replayData;
+                //                            sprintf(this->replayFilePaths[replayFileIdx], "./replay/%s",
+                //                            replayFileInfo.cFileName); sprintf(this->replayFileName[replayFileIdx],
+                //                            "User "); replayFileIdx++;
+                //                        }
+                //                        free(replayData);
+                //                        if (!FindNextFileA(replayFileHandle, &replayFileInfo))
+                //                            break;
+                //                    }
+                //                }
+                //                FindClose(replayFileHandle);
+                //                _chdir("../");
                 this->replayFilesNum = replayFileIdx;
                 this->minimumOpacity = 0;
                 this->framesInactive = this->framesActive;
@@ -1374,16 +1364,17 @@ i32 MainMenu::ReplayHandling()
                 anmVm->pendingInterrupt = 0x10;
                 this->stateTimer = 0;
                 this->cursor = 0;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
-                this->currentReplay = (ReplayData *) std::malloc(sizeof(ReplayData));
-                this->currentReplay->header = (ReplayHeader *) FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
-                ReplayManager::ValidateReplayData(this->currentReplay, g_LastFileSize);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
+                this->currentReplay = (ReplayData *)std::malloc(sizeof(ReplayData));
+                this->currentReplay->header =
+                    (ReplayHeader *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
+                ReplayManager::ValidateReplayData(this->currentReplay->header, g_LastFileSize);
                 for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData); cur++)
                 {
                     if (this->currentReplay->header->stageReplayDataOffsets[cur] != 0)
                     {
                         this->currentReplay->stageReplayData[cur] =
-                            (StageReplayData *)(((u8 *) this->currentReplay->header) +
+                            (StageReplayData *)(((u8 *)this->currentReplay->header) +
                                                 (this->currentReplay->header->stageReplayDataOffsets[cur]));
                     }
                     else
@@ -1411,7 +1402,7 @@ i32 MainMenu::ReplayHandling()
             {
                 this->vm[cur].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             this->cursor = 0;
             break;
         }
@@ -1448,7 +1439,7 @@ i32 MainMenu::ReplayHandling()
         {
             g_GameManager.isInReplay = 1;
             g_Supervisor.framerateMultiplier = 1.0;
-            std::strcpy((char *) g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
+            std::strcpy((char *)g_GameManager.replayFile, this->replayFilePaths[this->chosenReplay]);
             g_GameManager.difficulty = (Difficulty)this->currentReplay->header->difficulty;
             g_GameManager.character = this->currentReplay->header->shottypeChara / 2;
             g_GameManager.shotType = this->currentReplay->header->shottypeChara % 2;
@@ -1477,7 +1468,7 @@ i32 MainMenu::ReplayHandling()
             {
                 this->vm[cur].pendingInterrupt = 4;
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             this->gameState = STATE_REPLAY_ANIM;
             anmVm = this->vm;
             for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->vm); cur += 1, anmVm++)
@@ -1711,7 +1702,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
             {
             case CURSOR_OPTIONS_POS_LIFECOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.lifeCount <= 0)
                 {
                     g_Supervisor.cfg.lifeCount = 5;
@@ -1721,7 +1712,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_BOMBCOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.bombCount <= 0)
                 {
                     g_Supervisor.cfg.bombCount = 4;
@@ -1731,7 +1722,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_COLORMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.colorMode16bit <= 0)
                 {
                     g_Supervisor.cfg.colorMode16bit = 2;
@@ -1741,7 +1732,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_MUSICMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.StopAudio();
                 if (g_Supervisor.cfg.musicMode <= OFF)
                 {
@@ -1754,7 +1745,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_PLAYSOUNDS:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (g_Supervisor.cfg.playSounds <= 0)
                 {
                     g_Supervisor.cfg.playSounds = 2;
@@ -1764,7 +1755,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
 
             case CURSOR_OPTIONS_POS_SCREENMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 if (this->windowed <= 0)
                 {
                     this->windowed = 2;
@@ -1776,7 +1767,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
         if (WAS_PRESSED(TH_BUTTON_MENU | TH_BUTTON_BOMB))
         {
             this->cursor = CURSOR_OPTIONS_POS_EXIT;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
         if (WAS_PRESSED_PERIODIC(TH_BUTTON_RIGHT))
         {
@@ -1784,7 +1775,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
             {
             case CURSOR_OPTIONS_POS_LIFECOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.lifeCount += 1;
                 if (g_Supervisor.cfg.lifeCount >= 5)
                 {
@@ -1793,7 +1784,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_BOMBCOUNT:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.bombCount += 1;
                 if (g_Supervisor.cfg.bombCount >= 4)
                 {
@@ -1802,7 +1793,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_COLORMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.colorMode16bit += 1;
                 if (g_Supervisor.cfg.colorMode16bit >= 2)
                 {
@@ -1811,7 +1802,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_MUSICMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.StopAudio();
                 g_Supervisor.cfg.musicMode += 1;
                 if (g_Supervisor.cfg.musicMode >= MIDI + 1)
@@ -1823,7 +1814,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_PLAYSOUNDS:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 g_Supervisor.cfg.playSounds += 1;
                 if (g_Supervisor.cfg.playSounds >= 2)
                 {
@@ -1832,7 +1823,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 break;
             case CURSOR_OPTIONS_POS_SCREENMODE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
                 this->windowed += 1;
                 if (this->windowed >= 2)
                 {
@@ -1854,7 +1845,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                     this->vm[i].pendingInterrupt = 5;
                 }
                 this->cursor = 0;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
 
                 memcpy(this->controlMapping, &g_ControllerMapping, sizeof(ControllerMapping));
 
@@ -1886,7 +1877,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
                 }
                 // TODO: Cursor enum for the main menu
                 this->cursor = 6;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
                 if (this->colorMode16bit != g_Supervisor.cfg.colorMode16bit ||
                     this->windowed != g_Supervisor.cfg.windowed ||
                     this->frameskipConfig != g_Supervisor.cfg.frameskipConfig)
@@ -1939,9 +1930,6 @@ ZunResult MainMenu::ChoosePracticeLevel()
     }
     return ZUN_SUCCESS;
 }
-
-
-
 
 ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
 {
@@ -2297,9 +2285,6 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     return ZUN_SUCCESS;
 }
 
-
-
-
 ZunResult MainMenu::DeletedCallback(MainMenu *menu)
 {
     AnmManager *mgr;
@@ -2328,8 +2313,6 @@ ZunResult MainMenu::DeletedCallback(MainMenu *menu)
     return ZUN_SUCCESS;
 }
 
-
-
 void MainMenu::ReleaseTitleAnm()
 {
     // There's a bit of an off-by-one error here, where it frees
@@ -2340,7 +2323,6 @@ void MainMenu::ReleaseTitleAnm()
         g_AnmManager->ReleaseAnm(i);
     }
 }
-
 
 DIFFABLE_STATIC(MainMenu, g_MainMenu);
 }; // namespace th06

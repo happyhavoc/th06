@@ -2,6 +2,8 @@
 
 #include "inttypes.hpp"
 
+#include <SDL2/SDL_gamecontroller.h>
+
 namespace th06
 {
 enum TouhouButton
@@ -37,7 +39,7 @@ namespace Controller
 {
 u16 GetJoystickCaps(void);
 u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
-                                  u32 inputButtons);
+                                  SDL_GameController *controller);
 
 unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest,
                                               enum TouhouButton touhouButton, u8 *inputButtons);

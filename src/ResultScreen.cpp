@@ -29,8 +29,10 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(f32, 5, g_DifficultyWeightsList) = {-30.0f, -10.0f,
 
 DIFFABLE_STATIC_ASSIGN(u32, g_DefaultMagic) = 'DMYS';
 
+// EoSD assumes every character in this array is a single byte, which is a safe assumption in SJIS, but not
+//   in UTF-8, so we have to encode '･' with an escape sequence
 DIFFABLE_STATIC_ASSIGN(char *, g_AlphabetList) =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,:;･@abcdefghijklmnopqrstuvwxyz+-/*=%0123456789(){}[]<>#!?'\"$      --";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ.,:;\xA5@abcdefghijklmnopqrstuvwxyz+-/*=%0123456789(){}[]<>#!?'\"$      --";
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 6, g_CharacterList) = {TH_HAKUREI_REIMU_SPIRIT,  TH_HAKUREI_REIMU_DREAM,
                                                             TH_KIRISAME_MARISA_DEVIL, TH_KIRISAME_MARISA_LOVE,
@@ -59,7 +61,7 @@ ScoreDat *ResultScreen::OpenScore(char *path)
     ScoreRaw *scoreRaw;
     ScoreDat *scoreDat;
 
-    scoreDat = (ScoreDat *) malloc(sizeof(ScoreDat));
+    scoreDat = (ScoreDat *)malloc(sizeof(ScoreDat));
     scoreRaw = (ScoreRaw *)FileSystem::OpenPath(path, true);
     if (scoreRaw == NULL)
     {
@@ -612,7 +614,7 @@ i32 ResultScreen::HandleResultKeyboard()
             }
             break;
         };
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
     }
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_DOWN))
     {
@@ -631,7 +633,7 @@ i32 ResultScreen::HandleResultKeyboard()
             }
             break;
         };
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
     }
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_LEFT))
     {
@@ -654,7 +656,7 @@ i32 ResultScreen::HandleResultKeyboard()
             }
             break;
         };
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
     }
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_RIGHT))
     {
@@ -673,7 +675,7 @@ i32 ResultScreen::HandleResultKeyboard()
             }
             break;
         };
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
     }
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_SELECTMENU))
     {
@@ -700,7 +702,7 @@ i32 ResultScreen::HandleResultKeyboard()
                 this->selectedCharacter = RESULT_KEYBOARD_END;
             }
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
     }
 
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_RETURNMENU))
@@ -712,12 +714,12 @@ i32 ResultScreen::HandleResultKeyboard()
             this->cursor--;
             this->hscr.name[replayNameIdx2] = ' ';
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
     }
     if (WAS_PRESSED(TH_BUTTON_MENU))
     {
     RETURN_TO_STATS_SCREEN:
-        g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
 
     RETURN_TO_STATS_SCREEN_WITHOUT_SOUND:
 
@@ -741,7 +743,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
     char replayPath[64];
     i32 replayNameCharacter;
     char replayToReadPath[64];
-    ReplayData *replayLoaded;
+    ReplayHeader *replayLoaded;
     i32 idx;
     i32 saveInterrupt;
     std::filesystem::path dirPath;
@@ -810,7 +812,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
             {
             GO_TO_CHOOSE_REPLAY_FILE:
 
-                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 this->resultScreenState = RESULT_SCREEN_STATE_CHOOSING_REPLAY_FILE;
 
                 sprite = &this->unk_40[0];
@@ -826,7 +828,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
         EXIT_WITH_SOUND:
 
             this->frameTimer = 0;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             this->resultScreenState = RESULT_SCREEN_STATE_EXITING;
             sprite = &this->unk_40[0];
             for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
@@ -846,7 +848,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
         {
 
             this->frameTimer = 0;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             this->resultScreenState = RESULT_SCREEN_STATE_EXITING;
             sprite = &this->unk_40[0];
             for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
@@ -868,7 +870,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
             for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->replays); idx++)
             {
                 std::sprintf(replayToReadPath, "./replay/th6_%.2d.rpy", idx + 1);
-                replayLoaded = (ReplayData *)FileSystem::OpenPath(replayToReadPath, 1);
+                replayLoaded = (ReplayHeader *)FileSystem::OpenPath(replayToReadPath, 1);
                 if (replayLoaded == NULL)
                 {
                     continue;
@@ -876,7 +878,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
 
                 if (ReplayManager::ValidateReplayData(replayLoaded, g_LastFileSize) == ZUN_SUCCESS)
                 {
-                    this->replays[idx] = *replayLoaded->header;
+                    this->replays[idx] = *replayLoaded;
                 }
                 std::free(replayLoaded);
             }
@@ -891,7 +893,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
         this->replayNumber = this->cursor;
         if (WAS_PRESSED(TH_BUTTON_SELECTMENU))
         {
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
             this->replayNumber = this->cursor;
             this->frameTimer = 0;
             sprintf(this->defaultReplay.date, "%02i/%02i/%02i", tm->tm_mon, tm->tm_mday, tm->tm_year % 100);
@@ -924,7 +926,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
         }
         if (WAS_PRESSED(10))
         {
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             this->resultScreenState = RESULT_SCREEN_STATE_SAVE_REPLAY_QUESTION;
             sprite = &this->unk_40[0];
             for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->unk_40); idx++, sprite++)
@@ -956,7 +958,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                 }
                 break;
             };
-            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         }
         if (WAS_PRESSED_PERIODIC(TH_BUTTON_DOWN))
         {
@@ -975,7 +977,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                 }
                 break;
             };
-            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         }
         if (WAS_PRESSED_PERIODIC(TH_BUTTON_LEFT))
         {
@@ -998,7 +1000,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                 }
                 break;
             };
-            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         }
         if (WAS_PRESSED_PERIODIC(TH_BUTTON_RIGHT))
         {
@@ -1016,7 +1018,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                 }
                 break;
             };
-            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         }
         if (WAS_PRESSED_PERIODIC(TH_BUTTON_SELECTMENU))
         {
@@ -1051,7 +1053,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                     this->selectedCharacter = RESULT_KEYBOARD_END;
                 }
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
         }
 
         if (WAS_PRESSED_PERIODIC(TH_BUTTON_RETURNMENU))
@@ -1063,7 +1065,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                 this->cursor--;
                 this->replayName[replayNameCharacter2] = ' ';
             }
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
         if (WAS_PRESSED(TH_BUTTON_MENU))
         {
@@ -1126,7 +1128,7 @@ void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
         {
             resultScreen->cursor += length;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
     }
     if (WAS_PRESSED_PERIODIC(TH_BUTTON_DOWN))
     {
@@ -1135,7 +1137,7 @@ void ResultScreen::MoveCursor(ResultScreen *resultScreen, i32 length)
         {
             resultScreen->cursor -= length;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
     }
 }
 
@@ -1148,7 +1150,7 @@ ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 len
         {
             resultScreen->cursor += length;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         return true;
     }
     else if (WAS_PRESSED_PERIODIC(TH_BUTTON_RIGHT))
@@ -1158,7 +1160,7 @@ ZunBool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 len
         {
             resultScreen->cursor -= length;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_MOVE_MENU);
         return true;
     }
     else
@@ -1516,13 +1518,13 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
                     vm->pendingInterrupt = 2;
                 }
                 resultScreen->resultScreenState = RESULT_SCREEN_STATE_EXITING;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             }
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
             resultScreen->cursor = RESULT_SCREEN_CURSOR_EXIT;
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
         break;
 
@@ -1588,7 +1590,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
                     }
                 }
                 resultScreen->cheatCodeStep = 0;
-                g_SoundPlayer.PlaySoundByIdx(SOUND_1UP, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_1UP);
             }
         }
         else
@@ -1623,7 +1625,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             resultScreen->resultScreenState = RESULT_SCREEN_STATE_INIT;
             resultScreen->frameTimer = 1;
             vm = &resultScreen->unk_40[0];
@@ -1676,7 +1678,7 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
         }
         if (WAS_PRESSED(TH_BUTTON_RETURNMENU))
         {
-            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK, 0);
+            g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
             resultScreen->resultScreenState = RESULT_SCREEN_STATE_INIT;
             resultScreen->frameTimer = 1;
             vm = &resultScreen->unk_40[0];
@@ -1723,8 +1725,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
     u8 unused3;
 
     AnmVm *sprite;
-    char keyboardCharacter;
-    u8 unk;
+    char keyboardCharacter[2];
     ZunVec2 charPos;
 
     i32 spellcardIdx;
@@ -1785,7 +1786,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                         {
                             g_AsciiManager.color = 0xfff0f0ff;
 
-                            std::strcpy(name, "       ");
+                            std::strcpy(name, "        ");
                             name[8] = 0;
 
                             name[resultScreen->cursor >= 8 ? 7 : resultScreen->cursor] = '_';
@@ -1832,7 +1833,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                         {
                             g_AsciiManager.color = 0xfffff0f0;
 
-                            std::strcpy(name, "       ");
+                            std::strcpy(name, "        ");
                             name[8] = 0;
 
                             name[resultScreen->cursor >= 8 ? 7 : resultScreen->cursor] = '_';
@@ -1951,22 +1952,22 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                 strPos = spritePos;
                 strPos.x += charPos.y;
                 strPos.y += charPos.x;
-                keyboardCharacter = g_AlphabetList[row * RESULT_KEYBOARD_COLUMNS + column];
-                unk = 0;
+                keyboardCharacter[0] = g_AlphabetList[row * RESULT_KEYBOARD_COLUMNS + column];
+                keyboardCharacter[1] = '\0';
 
                 if (row == 5)
                 {
                     if (column == 14)
                     {
-                        keyboardCharacter = 0x80; // SP
+                        keyboardCharacter[0] = 0x80; // SP
                     }
                     else if (column == 15)
                     {
-                        keyboardCharacter = 0x81; // END
+                        keyboardCharacter[0] = 0x81; // END
                     }
                 }
 
-                g_AsciiManager.AddString(&strPos, &keyboardCharacter);
+                g_AsciiManager.AddString(&strPos, keyboardCharacter);
 
                 spritePos.x += 20.0f;
             }
@@ -2008,7 +2009,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
                                              resultScreen->defaultReplay.score);
                 g_AsciiManager.color = 0xfff0f0ff;
 
-                std::strcpy(name, "       ");
+                std::strcpy(name, "        ");
 
                 name[8] = 0;
 

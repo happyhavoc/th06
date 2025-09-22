@@ -74,14 +74,12 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 31, g_PowerItemScore) = {
     10,  20,  30,   40,   50,   60,   70,   80,   90,   100,  200,  300,   400,   500,   600,  700,
     800, 900, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000, 51200};
 
-i32 inline calculatePointScore(Item *curItem, i32 scoreAcquiredItemTop, i32 scoreAcquiredItemBottom,
-                                 i32 posMultiplier)
+i32 inline calculatePointScore(Item *curItem, i32 scoreAcquiredItemTop, i32 scoreAcquiredItemBottom, i32 posMultiplier)
 {
     return ((i32)curItem->currentPosition.y < 128)
                ? scoreAcquiredItemTop
                : (scoreAcquiredItemBottom - (((i32)curItem->currentPosition.y - 128) * posMultiplier));
 }
-
 
 void ItemManager::OnUpdate()
 {
@@ -195,7 +193,7 @@ void ItemManager::OnUpdate()
                     if (idx2 != iVar8)
                     {
                         g_AsciiManager.CreatePopup1(&curItem->currentPosition, -1, 0xff80c0ff);
-                        g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP, 0);
+                        g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP);
                     }
                     else
                     {
@@ -274,7 +272,7 @@ void ItemManager::OnUpdate()
                     if (idx3 != iVar9)
                     {
                         g_AsciiManager.CreatePopup1(&curItem->currentPosition, -1, 0xff80c0ff);
-                        g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP, 0);
+                        g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP);
                     }
                     else
                     {
@@ -297,14 +295,14 @@ void ItemManager::OnUpdate()
                     g_Gui.flags.flag0 = 2;
                 }
                 g_GameManager.IncreaseSubrank(200);
-                g_SoundPlayer.PlaySoundByIdx(SOUND_1UP, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_1UP);
                 break;
             case ITEM_FULL_POWER:
                 if (g_GameManager.currentPower < 128)
                 {
                     g_BulletManager.TurnAllBulletsIntoPoints();
                     g_Gui.ShowFullPowerMode(0);
-                    g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP, 0);
+                    g_SoundPlayer.PlaySoundByIdx(SOUND_POWERUP);
                     g_AsciiManager.CreatePopup1(&curItem->currentPosition, -1, 0xff80c0ff);
                 }
                 g_GameManager.currentPower = 128;
@@ -331,11 +329,10 @@ void ItemManager::OnUpdate()
     }
     if (itemAcquired)
     {
-        g_SoundPlayer.PlaySoundByIdx(SOUND_15, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_15);
     }
     return;
 }
-
 
 void ItemManager::RemoveAllItems()
 {
@@ -352,7 +349,6 @@ void ItemManager::RemoveAllItems()
     }
     return;
 }
-
 
 void ItemManager::OnDraw()
 {

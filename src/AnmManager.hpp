@@ -36,7 +36,9 @@ struct ColorData
     GLubyte b;
     GLubyte a;
 
-    ColorData() {}
+    ColorData()
+    {
+    }
 
     ColorData(ZunColor color)
     {
@@ -141,7 +143,7 @@ struct AnmManager
     AnmManager();
     ~AnmManager();
 
-//    void ReleaseVertexBuffer();
+    //    void ReleaseVertexBuffer();
     void SetupVertexBuffer();
 
     ZunResult CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, i32 textureFormat);
@@ -182,7 +184,7 @@ struct AnmManager
     }
     void SetCurrentTexture(GLuint textureHandle)
     {
-        if(this->currentTextureHandle != textureHandle)
+        if (this->currentTextureHandle != textureHandle)
         {
             this->currentTextureHandle = textureHandle;
             glBindTexture(GL_TEXTURE_2D, textureHandle);
@@ -213,7 +215,8 @@ struct AnmManager
     ZunResult LoadSurface(i32 surfaceIdx, const char *path);
     void ReleaseSurface(i32 surfaceIdx);
     void CopySurfaceToBackBuffer(i32 surfaceIdx, i32 left, i32 top, i32 x, i32 y);
-    void CopySurfaceRectToBackBuffer(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLeft, i32 rectTop, i32 width, i32 height);
+    void CopySurfaceRectToBackBuffer(i32 surfaceIdx, i32 rectX, i32 rectY, i32 rectLeft, i32 rectTop, i32 width,
+                                     i32 height);
 
     void TranslateRotation(VertexTex1Xyzrhw *param_1, float x, float y, float sine, float cosine, float xOffset,
                            float yOffset);
@@ -224,7 +227,8 @@ struct AnmManager
     {
         vm->anmFileIndex = anmFileIdx;
         vm->pos = ZunVec3(0, 0, 0);
-        vm->posOffset = ZunVec3(0, 0, 0);;
+        vm->posOffset = ZunVec3(0, 0, 0);
+        ;
         vm->fontHeight = 15;
         vm->fontWidth = 15;
 
@@ -251,8 +255,8 @@ struct AnmManager
 
     AnmLoadedSprite sprites[2048];
     AnmVm virtualMachine;
-//    GLuint textures[264];
-//    void *imageDataArray[256];
+    //    GLuint textures[264];
+    //    void *imageDataArray[256];
     TextureData textures[264];
     i32 maybeLoadedSpriteCount;
     AnmRawInstr *scripts[2048];
@@ -260,8 +264,8 @@ struct AnmManager
     AnmRawEntry *anmFiles[128];
     u32 anmFilesSpriteIndexOffsets[128];
     SDL_Surface *surfaces[32];
-//    SDL_Surface *surfacesBis[32];
-//    D3DXIMAGE_INFO surfaceSourceInfo[32];
+    //    SDL_Surface *surfacesBis[32];
+    //    D3DXIMAGE_INFO surfaceSourceInfo[32];
     ZunColor currentTextureFactor;
     GLuint currentTextureHandle;
     GLuint dummyTextureHandle;
@@ -270,7 +274,7 @@ struct AnmManager
     u8 currentVertexShader;
     u8 currentZWriteDisable;
     AnmLoadedSprite *currentSprite;
-//    IDirect3DVertexBuffer8 *vertexBuffer;
+    //    IDirect3DVertexBuffer8 *vertexBuffer;
     RenderVertexInfo vertexBufferContents[4];
     i32 screenshotTextureId;
     i32 screenshotLeft;

@@ -4,6 +4,7 @@
 // #include <d3dx8math.h>
 // #include <dinput.h>
 
+#include <SDL2/SDL_gamecontroller.h>
 #include <SDL2/SDL_video.h>
 
 #include "Chain.hpp"
@@ -115,7 +116,7 @@ struct Supervisor
     static void DrawFpsCounter();
 
     ZunBool ReadMidiFile(u32 midiFileIdx, char *path);
-    i32 PlayMidiFile(i32 midiFileIdx);
+    ZunResult PlayMidiFile(i32 midiFileIdx);
     ZunResult PlayAudio(char *path);
     ZunResult StopAudio();
     ZunResult SetupMidiPlayback(char *path);
@@ -135,10 +136,13 @@ struct Supervisor
         return this->effectiveFramerateMultiplier;
     }
 
-    u32 IsUnknown()
+    u32 RedrawWholeFrame()
     {
+        // SDL makes no guarantees about frame state after buffer swap,
+        //   and Wayland will "reuse" old framebuffers in a nondeterministic
+        //   way, so we're basically required to always redraw to avoid UI corruption
         return (this->cfg.opts >> GCOS_CLEAR_BACKBUFFER_ON_REFRESH & 1) |
-               (this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1);
+               (this->cfg.opts >> GCOS_DISPLAY_MINIMUM_GRAPHICS & 1) | 1;
     }
 
     u32 ShouldRunAt60Fps()
@@ -146,18 +150,19 @@ struct Supervisor
         return (this->cfg.opts >> GCOS_FORCE_60FPS & 1) && this->vsyncEnabled;
     }
 
-//    HINSTANCE hInstance;
-//    PDIRECT3D8 d3dIface;
-//    PDIRECT3DDEVICE8 d3dDevice;
-//    LPDIRECTINPUT8 dinputIface;
-//    LPDIRECTINPUTDEVICE8A keyboard;
-//    LPDIRECTINPUTDEVICE8A controller;
-//    DIDEVCAPS controllerCaps;
+    //    HINSTANCE hInstance;
+    //    PDIRECT3D8 d3dIface;
+    //    PDIRECT3DDEVICE8 d3dDevice;
+    //    LPDIRECTINPUT8 dinputIface;
+    //    LPDIRECTINPUTDEVICE8A keyboard;
+    //    LPDIRECTINPUTDEVICE8A controller;
+    SDL_GameController *gameController;
+    //    DIDEVCAPS controllerCaps;
     SDL_Window *gameWindow;
     ZunMatrix viewMatrix;
     ZunMatrix projectionMatrix;
     ZunViewport viewport;
-//    D3DPRESENT_PARAMETERS presentParameters;
+    //    D3DPRESENT_PARAMETERS presentParameters;
     GameConfiguration cfg;
     GameConfiguration defaultConfig;
     i32 calcCount;
@@ -174,7 +179,7 @@ struct Supervisor
     f32 effectiveFramerateMultiplier;
     f32 framerateMultiplier;
 
-//    MidiOutput *midiOutput;
+    //    MidiOutput *midiOutput;
 
     f32 unk1b4;
     f32 unk1b8;
@@ -187,7 +192,7 @@ struct Supervisor
     u8 colorMode16Bits;
 
     u32 startupTimeBeforeMenuMusic;
-//    D3DCAPS8 d3dCaps;
+    //    D3DCAPS8 d3dCaps;
 };
 ZUN_ASSERT_SIZE(Supervisor, 0x4d8);
 

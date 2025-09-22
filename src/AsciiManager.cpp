@@ -209,7 +209,6 @@ void AsciiManager::AddFormatText(ZunVec3 *position, const char *fmt, ...)
     va_end(args);
 }
 
-
 void AsciiManager::DrawStrings(void)
 {
     i32 padding_1;
@@ -811,7 +810,7 @@ void StageMenu::OnDrawRetryMenu()
         g_Supervisor.viewport.Width = g_GameManager.arcadeRegionSize.x;
         g_Supervisor.viewport.Height = g_GameManager.arcadeRegionSize.y;
         g_Supervisor.viewport.Set();
-//        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
+        //        g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
         if (g_Supervisor.lockableBackbuffer && (this->curState != RETRY_MENU_OPENING || this->numFrames > 2))
         {
             g_AnmManager->DrawNoRotation(&this->menuBackground);
@@ -835,7 +834,6 @@ void StageMenu::OnDrawRetryMenu()
     }
     return;
 }
-
 
 void AsciiManager::DrawPopupsWithHwVertexProcessing()
 {
@@ -886,7 +884,6 @@ void AsciiManager::DrawPopupsWithHwVertexProcessing()
 
     return;
 }
-
 
 void AsciiManager::DrawPopupsWithoutHwVertexProcessing()
 {

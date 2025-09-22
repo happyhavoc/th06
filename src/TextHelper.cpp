@@ -4,9 +4,9 @@
 #include "Supervisor.hpp"
 #include "i18n.hpp"
 
+#include <SDL2/SDL_ttf.h>
 #include <cstring>
 #include <iconv.h>
-#include <SDL2/SDL_ttf.h>
 
 namespace th06
 {
@@ -22,17 +22,17 @@ namespace th06
 // };
 
 DIFFABLE_STATIC(TTF_Font *, g_Font);
-DIFFABLE_STATIC_ASSIGN(iconv_t, g_Iconv) = (iconv_t) -1;
+DIFFABLE_STATIC_ASSIGN(iconv_t, g_Iconv) = (iconv_t)-1;
 
 TextHelper::TextHelper()
 {
-//    this->format = (D3DFORMAT)-1;
-//    this->width = 0;
-//    this->height = 0;
-//    this->hdc = 0;
-//    this->gdiObj2 = 0;
-//    this->gdiObj = 0;
-//    this->buffer = NULL;
+    //    this->format = (D3DFORMAT)-1;
+    //    this->width = 0;
+    //    this->height = 0;
+    //    this->hdc = 0;
+    //    this->gdiObj2 = 0;
+    //    this->gdiObj = 0;
+    //    this->buffer = NULL;
 }
 
 TextHelper::~TextHelper()
@@ -43,24 +43,24 @@ TextHelper::~TextHelper()
 
 bool TextHelper::ReleaseBuffer()
 {
-//    if (this->hdc)
-//    {
-//        SelectObject(this->hdc, this->gdiObj);
-//        DeleteDC(this->hdc);
-//        DeleteObject(this->gdiObj2);
-//        this->format = (D3DFORMAT)-1;
-//        this->width = 0;
-//        this->height = 0;
-//        this->hdc = 0;
-//        this->gdiObj2 = 0;
-//        this->gdiObj = 0;
-//        this->buffer = NULL;
-        return true;
-//    }
-//    else
-//    {
-//        return false;
-//    }
+    //    if (this->hdc)
+    //    {
+    //        SelectObject(this->hdc, this->gdiObj);
+    //        DeleteDC(this->hdc);
+    //        DeleteObject(this->gdiObj2);
+    //        this->format = (D3DFORMAT)-1;
+    //        this->width = 0;
+    //        this->height = 0;
+    //        this->hdc = 0;
+    //        this->gdiObj2 = 0;
+    //        this->gdiObj = 0;
+    //        this->buffer = NULL;
+    return true;
+    //    }
+    //    else
+    //    {
+    //        return false;
+    //    }
 }
 
 #define TEXT_BUFFER_HEIGHT 64
@@ -72,7 +72,7 @@ ZunResult TextHelper::CreateTextBuffer()
 
     // Primary font is MSゴシック, which is nonfree and has to be taken from a Windows install
     // Fallback is Noto Sans Regular (JP) which is redistributable
-    if ((g_Font = TTF_OpenFont(TH_PRIMARY_FONT_FILENAME,  10), g_Font == NULL) &&
+    if ((g_Font = TTF_OpenFont(TH_PRIMARY_FONT_FILENAME, 10), g_Font == NULL) &&
         (std::printf("%s\n", TTF_GetError()), g_Font = TTF_OpenFont(TH_FALLBACK_FONT_FILENAME, 10), g_Font == NULL))
     {
         std::printf("%s\n", TTF_GetError());
@@ -83,14 +83,14 @@ ZunResult TextHelper::CreateTextBuffer()
 
     g_Iconv = iconv_open("UTF-8", "MS932");
 
-    if (g_Iconv == (iconv_t) -1)
+    if (g_Iconv == (iconv_t)-1)
     {
         GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_ICONV_INIT_FAILED);
         return ZUN_ERROR;
     }
 
-    g_TextBufferSurface = SDL_CreateRGBSurfaceWithFormat(0, GAME_WINDOW_WIDTH, TEXT_BUFFER_HEIGHT,
-                                                         16, SDL_PIXELFORMAT_ARGB1555);
+    g_TextBufferSurface =
+        SDL_CreateRGBSurfaceWithFormat(0, GAME_WINDOW_WIDTH, TEXT_BUFFER_HEIGHT, 32, SDL_PIXELFORMAT_RGBA32);
 
     SDL_SetSurfaceBlendMode(g_TextBufferSurface, SDL_BLENDMODE_NONE);
 
@@ -178,7 +178,8 @@ ZunResult TextHelper::CreateTextBuffer()
 // {
 //     i32 local_8;
 //
-//     for (local_8 = 0; g_FormatInfoArray[local_8].format != -1 && g_FormatInfoArray[local_8].format != format; local_8++)
+//     for (local_8 = 0; g_FormatInfoArray[local_8].format != -1 && g_FormatInfoArray[local_8].format != format;
+//     local_8++)
 //     {
 //     }
 //     if (format == -1)
@@ -292,6 +293,113 @@ ZunResult TextHelper::CreateTextBuffer()
 // }
 //
 
+// Text strings in asset files are encoded using Shift_JIS. This allows RenderTextToTexture to handle both UTF-8 and
+// Shift_JIS. This also does not check for overlong encoding, but that shouldn't matter
+bool isUTF8Encoded(char *string)
+{
+#define UTF8_1BYTE_MASK 0x80
+#define UTF8_2BYTE_MASK 0xE0
+#define UTF8_3BYTE_MASK 0xF0
+#define UTF8_4BYTE_MASK 0xF8
+
+#define UTF8_2NDBYTE_MASK 0xC0
+
+// 0xxx xxxx
+#define UTF8_1BYTE_PREFIX 0x00
+// 110x xxxx
+#define UTF8_2BYTE_PREFIX 0xC0
+// 1110 xxxx
+#define UTF8_3BYTE_PREFIX 0xE0
+// 1111 0xxx
+#define UTF8_4BYTE_PREFIX 0xF0
+
+// 10xx xxxx
+#define UTF8_2NDBYTE_PREFIX 0x80
+
+    bool isMultiByteParse = false;
+    int codepointLen = 0;
+
+    while (*string != '\0')
+    {
+        unsigned char c = *(unsigned char *)string;
+
+        if (!isMultiByteParse)
+        {
+            if ((c & UTF8_1BYTE_MASK) != UTF8_1BYTE_PREFIX)
+            {
+                isMultiByteParse = true;
+
+                if ((c & UTF8_2BYTE_MASK) == UTF8_2BYTE_PREFIX)
+                    codepointLen = 1;
+                else if ((c & UTF8_3BYTE_MASK) == UTF8_3BYTE_PREFIX)
+                    codepointLen = 2;
+                else if ((c & UTF8_4BYTE_MASK) == UTF8_4BYTE_PREFIX)
+                    codepointLen = 3;
+                else
+                    return false;
+            }
+        }
+        else
+        {
+            if ((c & UTF8_2NDBYTE_MASK) != UTF8_2NDBYTE_PREFIX)
+                return false;
+
+            if (--codepointLen == 0)
+                isMultiByteParse = false;
+        }
+
+        string++;
+    }
+
+    return true;
+
+#undef UTF8_1BYTE_MASK
+#undef UTF8_2BYTE_MASK
+#undef UTF8_3BYTE_MASK
+#undef UTF8_4BYTE_MASK
+
+#undef UTF8_2NDBYTE_MASK
+
+#undef UTF8_1BYTE_PREFIX
+#undef UTF8_2BYTE_PREFIX
+#undef UTF8_3BYTE_PREFIX
+#undef UTF8_4BYTE_PREFIX
+
+#undef UTF8_2NDBYTE_PREFIX
+}
+
+void SurfaceOverwriteBlend(SDL_Surface *srcSurface, SDL_Surface *dstSurface, u32 x)
+{
+    // Source surface is A8R8G8B8
+    // Dest surface is RGBA32
+    // We want to overwrite dest unless source has alpha 0
+
+    SDL_LockSurface(srcSurface);
+    SDL_LockSurface(dstSurface);
+
+    u32 *srcData = (u32 *)srcSurface->pixels;
+    u8 *dstData = (u8 *)dstSurface->pixels;
+
+    for (int i = 0; i < srcSurface->h; i++)
+    {
+        for (int j = 0; j < srcSurface->w; j++)
+        {
+            if ((srcData[j] & 0xFF00'0000) != 0)
+            {
+                dstData[i * dstSurface->pitch + (x + j) * 4] = (srcData[j] >> 16) & 0xFF;
+                dstData[i * dstSurface->pitch + (x + j) * 4 + 1] = (srcData[j] >> 8) & 0xFF;
+                dstData[i * dstSurface->pitch + (x + j) * 4 + 2] = srcData[j] & 0xFF;
+                dstData[i * dstSurface->pitch + (x + j) * 4 + 3] = (srcData[j] >> 24) & 0xFF;
+            }
+        }
+
+        srcData += srcSurface->pitch / 4;
+    }
+
+    SDL_UnlockSurface(dstSurface);
+    SDL_UnlockSurface(srcSurface);
+}
+
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
                                      i32 fontWidth, ZunColor textColor, ZunColor shadowColor, char *string,
                                      TextureData *outTexture)
@@ -301,46 +409,54 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     SDL_Rect shadowRect;
     SDL_Rect textRect;
 
-//    HGDIOBJ h;
-//    LPDIRECT3DSURFACE8 destSurface;
-//    RECT destRect;
-//    RECT srcRect;
-//    D3DSURFACE_DESC textSurfaceDesc;
-//    HFONT font;
-//    HDC hdc;
+    //    HGDIOBJ h;
+    //    LPDIRECT3DSURFACE8 destSurface;
+    //    RECT destRect;
+    //    RECT srcRect;
+    //    D3DSURFACE_DESC textSurfaceDesc;
+    //    HFONT font;
+    //    HDC hdc;
 
     char convertedText[1024];
 
-    // Standard doesn't specify what happens with the length fields during state reset, so give a value to be safe
-    size_t stringBytes = 1024;
-    size_t outBytes = 1024;
-
-    iconv(g_Iconv, NULL, &stringBytes, NULL, &outBytes); // Resets iconv state
-
-    stringBytes = std::strlen(string);
-    outBytes = sizeof(convertedText) - 1;
-    char *convEnd = convertedText;
-
-    if(iconv(g_Iconv, (char **) &string, &stringBytes, &convEnd, &outBytes) == (size_t) -1)
+    if (!isUTF8Encoded(string))
     {
-        // Just don't render text in case of error
-        return;
-    }
+        // Standard doesn't specify what happens with the length fields during state reset, so give a value to be safe
+        size_t stringBytes = 1024;
+        size_t outBytes = 1024;
 
-    *convEnd = '\0';
+        iconv(g_Iconv, NULL, &stringBytes, NULL, &outBytes); // Resets iconv state
+
+        stringBytes = std::strlen(string);
+        outBytes = sizeof(convertedText) - 1;
+        char *convEnd = convertedText;
+
+        if (iconv(g_Iconv, (char **)&string, &stringBytes, &convEnd, &outBytes) == (size_t)-1)
+        {
+            // Just don't render text in case of error
+            return;
+        }
+
+        *convEnd = '\0';
+    }
+    else
+    {
+        std::strcpy(convertedText, string);
+    }
 
     TTF_SetFontSize(g_Font, fontHeight * 2);
 
-//    font = CreateFontA(fontHeight * 2, 0, 0, 0, FW_BOLD, false, false, false, SHIFTJIS_CHARSET, OUT_DEFAULT_PRECIS,
-//                       CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, FF_ROMAN | FIXED_PITCH, TH_FONT_NAME);
+    //    font = CreateFontA(fontHeight * 2, 0, 0, 0, FW_BOLD, false, false, false, SHIFTJIS_CHARSET,
+    //    OUT_DEFAULT_PRECIS,
+    //                       CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, FF_ROMAN | FIXED_PITCH, TH_FONT_NAME);
 
-//    TextHelper textHelper;
-//    g_TextBufferSurface->GetDesc(&textSurfaceDesc);
-//    textHelper.AllocateBufferWithFallback(textSurfaceDesc.Width, textSurfaceDesc.Height, textSurfaceDesc.Format);
-//    hdc = textHelper.hdc;
-//    h = SelectObject(hdc, font);
-//    textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6);
-//    SetBkMode(hdc, TRANSPARENT);
+    //    TextHelper textHelper;
+    //    g_TextBufferSurface->GetDesc(&textSurfaceDesc);
+    //    textHelper.AllocateBufferWithFallback(textSurfaceDesc.Width, textSurfaceDesc.Height, textSurfaceDesc.Format);
+    //    hdc = textHelper.hdc;
+    //    h = SelectObject(hdc, font);
+    //    textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6);
+    //    SetBkMode(hdc, TRANSPARENT);
 
     finalCopySrc.x = 0;
     finalCopySrc.y = 0;
@@ -355,19 +471,19 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     {
         // Render shadow.
         SDL_Color sdlShadowColor;
-        sdlShadowColor.a = shadowColor >> 24;
-        sdlShadowColor.r = (shadowColor >> 16) & 0xFF;
+        sdlShadowColor.a = 0xFF;
+        sdlShadowColor.b = (shadowColor >> 16) & 0xFF;
         sdlShadowColor.g = (shadowColor >> 8) & 0xFF;
-        sdlShadowColor.b = shadowColor & 0xFF;
+        sdlShadowColor.r = shadowColor & 0xFF;
 
-        shadowText = TTF_RenderUTF8_Solid(g_Font, convertedText, sdlShadowColor);
+        shadowText = TTF_RenderUTF8_Blended(g_Font, convertedText, sdlShadowColor);
         // SetTextColor(hdc, shadowColor);
         // TextOutA(hdc, xPos * 2 + 3, 2, string, strlen(string));
 
         if (shadowText != NULL)
         {
             shadowRect.x = xPos * 2 + 3;
-            shadowRect.y = 0;
+            shadowRect.y = 2;
             shadowRect.w = shadowText->w;
             shadowRect.h = shadowText->h;
 
@@ -379,38 +495,38 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     }
 
     SDL_Color sdlTextColor;
-    sdlTextColor.a = textColor >> 24;
-    sdlTextColor.r = (textColor >> 16) & 0xFF;
+    sdlTextColor.a = 0xFF;
+    sdlTextColor.b = (textColor >> 16) & 0xFF;
     sdlTextColor.g = (textColor >> 8) & 0xFF;
-    sdlTextColor.b = textColor & 0xFF;
+    sdlTextColor.r = textColor & 0xFF;
 
-    SDL_Surface *regularText = TTF_RenderUTF8_Solid(g_Font, convertedText, sdlTextColor);
+    SDL_Surface *regularText = TTF_RenderUTF8_Blended(g_Font, convertedText, sdlTextColor);
 
     if (regularText != NULL)
     {
         textRect.x = xPos * 2;
         textRect.y = 0;
-        textRect.w = shadowText->w;
-        textRect.h = shadowText->h;
+        textRect.w = regularText->w;
+        textRect.h = regularText->h;
 
-        SDL_SetSurfaceBlendMode(regularText, SDL_BLENDMODE_BLEND);
-        SDL_BlitSurface(regularText, NULL, g_TextBufferSurface, &textRect);
+        SurfaceOverwriteBlend(regularText, g_TextBufferSurface, xPos * 2);
+
+        //        SDL_SetSurfaceBlendMode(regularText, SDL_BLENDMODE_BLEND);
+        //        SDL_BlitSurface(regularText, NULL, g_TextBufferSurface, &textRect);
 
         SDL_FreeSurface(regularText);
     }
 
-    if (!outTexture->textureData) {
-        outTexture->textureData = (u8*)malloc(outTexture->width * outTexture->height * 4);
+    if (!outTexture->textureData)
+    {
+        outTexture->textureData = (u8 *)malloc(outTexture->width * outTexture->height * 4);
         memset(outTexture->textureData, 0, outTexture->width * outTexture->height * 4);
     }
 
-    outTexture->format = SDL_PIXELFORMAT_ARGB8888;
+    outTexture->format = SDL_PIXELFORMAT_RGBA32;
     SDL_Surface *textureSurface = SDL_CreateRGBSurfaceWithFormatFrom(
-        outTexture->textureData, outTexture->width, outTexture->height,
-        SDL_BITSPERPIXEL(outTexture->format),
-        outTexture->width * SDL_BYTESPERPIXEL(outTexture->format),
-        outTexture->format
-    );
+        outTexture->textureData, outTexture->width, outTexture->height, SDL_BITSPERPIXEL(outTexture->format),
+        outTexture->width * SDL_BYTESPERPIXEL(outTexture->format), outTexture->format);
 
     // Render main text.
     // SetTextColor(hdc, textColor);
@@ -427,26 +543,18 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
     finalCopyDst.w = spriteWidth;
     finalCopyDst.h = 16;
 
-
     // outTexture->GetSurfaceLevel(0, &destSurface);
     // D3DXLoadSurfaceFromSurface(destSurface, NULL, &destRect, g_TextBufferSurface, NULL, &srcRect, 4, 0);
 
-    if (SDL_BlitScaled(g_TextBufferSurface, &finalCopySrc, textureSurface, &finalCopyDst) < 0) {
+    if (SDL_SoftStretchLinear(g_TextBufferSurface, &finalCopySrc, textureSurface, &finalCopyDst) < 0)
+    {
         SDL_Log("SDL_BlitScaled failed! Error: %s", SDL_GetError());
     }
 
     glBindTexture(GL_TEXTURE_2D, outTexture->handle);
 
-    glTexSubImage2D(
-        GL_TEXTURE_2D,
-        0,
-        0, 0,
-        outTexture->width,
-        outTexture->height,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        outTexture->textureData
-    );
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, outTexture->width, outTexture->height, GL_RGBA, GL_UNSIGNED_BYTE,
+                    outTexture->textureData);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -466,10 +574,10 @@ void th06::TextHelper::ReleaseTextBuffer()
         g_Font = NULL;
     }
 
-    if (g_Iconv != (iconv_t) -1)
+    if (g_Iconv != (iconv_t)-1)
     {
         iconv_close(g_Iconv);
-        g_Iconv = (iconv_t) -1;
+        g_Iconv = (iconv_t)-1;
     }
 
     if (g_TextBufferSurface != NULL)

@@ -1,8 +1,8 @@
 #include "GameErrorContext.hpp"
-#include <cstdio>
-#include <cstdarg>
-#include <cstring>
 #include <SDL2/SDL_messagebox.h>
+#include <cstdarg>
+#include <cstdio>
+#include <cstring>
 
 namespace th06
 {

@@ -144,7 +144,7 @@ i32 Pbg3Parser::ReadByteAlignedData(u8 *data, u32 bytesToRead)
     return FileAbstraction::Read(data, bytesToRead, &numBytesRead);
 }
 
-i32 Pbg3Parser::GetLastWriteTime(std::filesystem::file_time_type& lastWriteTime)
+i32 Pbg3Parser::GetLastWriteTime(std::filesystem::file_time_type &lastWriteTime)
 {
     if (!this->HasNonNullHandle())
     {

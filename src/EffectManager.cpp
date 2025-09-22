@@ -36,7 +36,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(EffectInfo, 20, g_Effects) = {
     {ANM_SCRIPT_BULLET4_SCRIPT_18, EffectManager::EffectUpdateCallback4},
     {ANM_SCRIPT_EFFECTS_SPELLCARD_BACKGROUND, NULL},
     {ANM_SCRIPT_BULLET4_SPAWN_GLOW_2, EffectManager::EffectCallbackAttract},
-    {ANM_SCRIPT_BULLET4_SPAWN_WHITE_PARTICLE, EffectManager::EffectCallbackAttractSlow},
+    {ANM_SCRIPT_BULLET4_SPAWN_GLOW_3, EffectManager::EffectCallbackAttractSlow},
     {ANM_SCRIPT_BULLET4_SCRIPT_19, EffectManager::EffectCallbackStill},
 };
 
@@ -92,7 +92,6 @@ i32 EffectManager::EffectCallbackStill(Effect *effect)
     return EFFECT_CALLBACK_RESULT_DONE;
 }
 
-
 i32 EffectManager::EffectUpdateCallback4(Effect *effect)
 {
     f32 posMagnitude;
@@ -113,9 +112,9 @@ i32 EffectManager::EffectUpdateCallback4(Effect *effect)
     effect->quaternion.z = normalizedPos.z * verticalAngle;
     effect->quaternion.w = horizontalAngle;
 
-    local_54.Rotate(effect->angleRelated, normalizedPos.x, normalizedPos.y, normalizedPos.z);
+    local_54.FromQuaternion(effect->quaternion);
 
-//    D3DXMatrixRotationQuaternion(&local_54, &effect->quaternion);
+    //    D3DXMatrixRotationQuaternion(&local_54, &effect->quaternion);
 
     posOffset.x = normalizedPos.y * 1.0f - normalizedPos.z * 0.0f;
     posOffset.y = normalizedPos.z * 0.0f - normalizedPos.x * 1.0f;
@@ -130,11 +129,11 @@ i32 EffectManager::EffectUpdateCallback4(Effect *effect)
     else
     {
         posOffset.getNormalized(posOffset);
-//        D3DXVec3Normalize(&posOffset, &posOffset);
+        //        D3DXVec3Normalize(&posOffset, &posOffset);
     }
 
     posOffset *= effect->unk_15c;
-//    D3DXVec3TransformCoord(&posOffset, &posOffset, &local_54);
+    //    D3DXVec3TransformCoord(&posOffset, &posOffset, &local_54);
     posOffset = local_54 * posOffset;
     posOffset.z *= 6.0f;
 
@@ -200,7 +199,6 @@ i32 EffectManager::EffectCallbackAttractSlow(Effect *effect)
 
     return EFFECT_CALLBACK_RESULT_DONE;
 }
-
 
 Effect *EffectManager::SpawnParticles(i32 effectIdx, ZunVec3 *pos, i32 count, ZunColor color)
 {
@@ -345,13 +343,13 @@ ZunResult EffectManager::AddedCallback(EffectManager *mgr)
         }
         break;
     case 6:
-        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff06.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
+        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff05.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;
         }
         break;
     case 7:
-        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff07.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
+        if (g_AnmManager->LoadAnm(ANM_FILE_EFFECTS, "data/eff04.anm", ANM_OFFSET_EFFECTS) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;
         }

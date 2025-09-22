@@ -84,8 +84,8 @@ union EclRawInstrArg {
         i16 lo;
         i16 hi;
     } sh;
-    f32 f32;
-    i32 i32;
+    f32 f32Param;
+    i32 i32Param;
     EclVarId id;
 };
 
@@ -194,7 +194,7 @@ struct EclRawInstrBulletEffectsArgs
 
 struct EclRawInstrSetInt
 {
-    i32 i32;
+    i32 i32Param;
 };
 
 struct EclRawInstrSpellcardEffectArgs

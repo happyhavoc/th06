@@ -139,7 +139,6 @@ void Enemy::ResetEffectArray(Enemy *enemy)
     enemy->effectIdx = 0;
 }
 
-
 void EnemyManager::RunEclTimeline()
 {
     ZunVec3 pos4;
@@ -381,7 +380,6 @@ ZunBool Enemy::HandleLifeCallback()
     return false;
 }
 
-
 ZunBool Enemy::HandleTimerCallback()
 {
 
@@ -515,7 +513,6 @@ ZunResult EnemyManager::RegisterChain(char *stgEnm1, char *stgEnm2)
     }
     return ZUN_SUCCESS;
 }
-
 
 ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
 {
@@ -696,7 +693,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
                     curEnemy->life = 0;
                     break;
                 }
-                g_SoundPlayer.PlaySoundByIdx((SoundIdx)((enemyIdx % 2) + SOUND_2), 0);
+                g_SoundPlayer.PlaySoundByIdx((SoundIdx)((enemyIdx % 2) + SOUND_2));
                 g_EffectManager.SpawnParticles(curEnemy->deathAnm1, &curEnemy->position, 1, 0xffffffff);
                 g_EffectManager.SpawnParticles(curEnemy->deathAnm2 + 4, &curEnemy->position, 4, 0xffffffff);
                 if (0 <= curEnemy->deathCallbackSub)
@@ -723,7 +720,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
             }
             else if (enemyLifeBeforeDmg > curEnemy->life)
             {
-                g_SoundPlayer.PlaySoundByIdx(SOUND_TOTAL_BOSS_DEATH, 0);
+                g_SoundPlayer.PlaySoundByIdx(SOUND_TOTAL_BOSS_DEATH);
                 curEnemy->primaryVm.flags.colorOp = AnmVmColorOp_Add;
                 curEnemy->unk_e41 = 4;
             }
@@ -741,7 +738,6 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
     mgr->timelineTime.Tick();
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
-
 
 void Enemy::UpdateEffects(Enemy *enemy)
 {
@@ -765,7 +761,6 @@ void Enemy::UpdateEffects(Enemy *enemy)
         effect->angleRelated = utils::AddNormalizeAngle(effect->angleRelated, ZUN_PI / 100);
     }
 }
-
 
 ChainCallbackResult EnemyManager::OnDraw(EnemyManager *mgr)
 {

@@ -45,7 +45,7 @@ class Chain
   private:
     ChainElem calcChain;
     ChainElem drawChain;
-//    unsigned int midiOutputDeviceCount;
+    //    unsigned int midiOutputDeviceCount;
     unsigned int unk;
 
     void ReleaseSingleChain(ChainElem *root);

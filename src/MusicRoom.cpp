@@ -22,7 +22,6 @@ ZunResult MusicRoom::CheckInputEnable()
     return ZUN_SUCCESS;
 }
 
-
 ZunBool MusicRoom::ProcessInput()
 {
     i32 i;
@@ -80,7 +79,7 @@ ZunBool MusicRoom::ProcessInput()
             if (i % 2 == 0 || std::strlen(this->trackDescriptors[this->selectedSongIndex].description[i / 2]) > 32)
             {
                 std::memcpy(lineCharBuffer,
-                       &this->trackDescriptors[this->selectedSongIndex].description[i / 2][(i % 2) * 32], 32);
+                            &this->trackDescriptors[this->selectedSongIndex].description[i / 2][(i % 2) * 32], 32);
             }
 
             if (lineCharBuffer[0] != '\0')
@@ -227,7 +226,6 @@ ChainCallbackResult MusicRoom::OnDraw(MusicRoom *musicRoom)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-
 ZunResult MusicRoom::AddedCallback(MusicRoom *musicRoom)
 {
     u32 charIndex;
@@ -329,7 +327,7 @@ ZunResult MusicRoom::AddedCallback(MusicRoom *musicRoom)
                 }
 
                 std::memset(musicRoom->trackDescriptors[i].description[lineIndex], 0,
-                       sizeof(musicRoom->trackDescriptors[i].description[lineIndex]));
+                            sizeof(musicRoom->trackDescriptors[i].description[lineIndex]));
                 charIndex = 0;
                 while (*currChar != '\n' && *currChar != '\r')
                 {
@@ -419,6 +417,5 @@ ZunResult MusicRoom::DeletedCallback(MusicRoom *musicRoom)
 
     return ZUN_SUCCESS;
 }
-
 
 } // namespace th06

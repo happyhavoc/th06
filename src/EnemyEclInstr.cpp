@@ -29,7 +29,7 @@ struct PatchouliShottypeVars
 ZUN_ASSERT_SIZE(PatchouliShottypeVars, 0x18);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(PatchouliShottypeVars, 2, g_PatchouliShottypeVars) = {{{{0, 3, 1}, {2, 3, 4}}},
-                                                                                   {{{1, 4, 0}, {4, 2, 4}}}};
+                                                                                   {{{1, 4, 0}, {4, 2, 3}}}};
 DIFFABLE_STATIC(i32, g_PlayerShot);
 DIFFABLE_STATIC(f32, g_PlayerDistance);
 DIFFABLE_STATIC(f32, g_PlayerAngle);
@@ -43,10 +43,10 @@ void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
     f32 angle;
 
     alu = &instr->args.alu;
-    angle = *GetVarFloat(enemy, &alu->arg1.f32, NULL);
+    angle = *GetVarFloat(enemy, &alu->arg1.f32Param, NULL);
 
-    enemy->moveInterp.x = sinf(angle) * alu->arg2.f32 * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * alu->arg2.f32 * alu->res / 2.0f;
+    enemy->moveInterp.x = std::cos(angle) * alu->arg2.f32Param * alu->res / 2.0f;
+    enemy->moveInterp.y = std::sin(angle) * alu->arg2.f32Param * alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
@@ -62,9 +62,9 @@ void MovePosTime(Enemy *enemy, EclRawInstr *instr)
     ZunVec3 newPos;
     EclRawInstrAluArgs *alu = &instr->args.alu;
 
-    newPos.x = *GetVarFloat(enemy, &alu->arg1.f32, NULL);
-    newPos.y = *GetVarFloat(enemy, &alu->arg2.f32, NULL);
-    newPos.z = *GetVarFloat(enemy, &alu->arg3.f32, NULL);
+    newPos.x = *GetVarFloat(enemy, &alu->arg1.f32Param, NULL);
+    newPos.y = *GetVarFloat(enemy, &alu->arg2.f32Param, NULL);
+    newPos.z = *GetVarFloat(enemy, &alu->arg3.f32Param, NULL);
 
     enemy->moveInterp = newPos - enemy->position;
     enemy->moveInterpStartPos = enemy->position;
@@ -84,8 +84,8 @@ void MoveTime(Enemy *enemy, EclRawInstr *instr)
     alu = &instr->args.alu;
     angle = *GetVarFloat(enemy, &enemy->angle, NULL);
 
-    enemy->moveInterp.x = sinf(angle) * enemy->speed * alu->res / 2.0f;
-    enemy->moveInterp.y = cosf(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.x = std::cos(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.y = std::sin(angle) * enemy->speed * alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
@@ -248,7 +248,6 @@ f32 *GetVarFloat(Enemy *enemy, f32 *eclVarId, EclValueType *valueType)
     }
 }
 
-
 void SetVar(Enemy *enemy, EclVarId lhs, void *rhs)
 {
     i32 *lhsPtr;
@@ -267,7 +266,6 @@ void SetVar(Enemy *enemy, EclVarId lhs, void *rhs)
     }
     return;
 }
-
 
 void MathAdd(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
@@ -293,7 +291,6 @@ void MathAdd(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-
 void MathSub(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
     EclValueType outType;
@@ -316,7 +313,6 @@ void MathSub(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     }
     return;
 }
-
 
 void MathMul(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
@@ -343,7 +339,6 @@ void MathMul(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-
 void MathDiv(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
     EclValueType outType;
@@ -366,7 +361,6 @@ void MathDiv(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     }
     return;
 }
-
 
 void MathMod(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsVarId)
 {
@@ -391,7 +385,6 @@ void MathMod(Enemy *enemy, EclVarId outVarId, EclVarId *lhsVarId, EclVarId *rhsV
     return;
 }
 
-
 void MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2, f32 *x2)
 {
     EclValueType outType;
@@ -409,7 +402,6 @@ void MathAtan2(Enemy *enemy, EclVarId outVarId, f32 *x1, f32 *y1, f32 *y2, f32 *
     }
     return;
 }
-
 
 void ExInsCirnoRainbowBallJank(Enemy *enemy, EclRawInstr *instr)
 {
@@ -533,7 +525,7 @@ void ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr)
             enemy->bulletProps.speed1 = propsSpeedBackup;
             enemy->bulletProps.angle1 -= (ZUN_PI / 6) * patternPosition;
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_16, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_16);
     }
     enemy->currentContext.var2++;
 }
@@ -544,7 +536,6 @@ void ExInsPatchouliShottypeSetVars(Enemy *enemy, EclRawInstr *instr)
     enemy->currentContext.var2 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var2;
     enemy->currentContext.var3 = g_PatchouliShottypeVars[g_GameManager.character].shotVars[g_GameManager.shotType].var3;
 }
-
 
 void ExInsStage56Func4(Enemy *enemy, EclRawInstr *instr)
 {
@@ -722,11 +713,10 @@ void ExInsStage5Func5(Enemy *enemy, EclRawInstr *instr)
             bulletProps.spriteOffset = 3;
             g_BulletManager.SpawnBulletPattern(&bulletProps);
         }
-        g_SoundPlayer.PlaySoundByIdx(SOUND_7, 0);
+        g_SoundPlayer.PlaySoundByIdx(SOUND_7);
     }
     enemy->currentContext.var2++;
 }
-
 
 void ExInsStage6XFunc6(Enemy *enemy, EclRawInstr *instr)
 {
@@ -900,7 +890,6 @@ void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
     }
 }
 
-
 void ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr)
 {
     i32 changedBullets;
@@ -938,7 +927,6 @@ void ExInsStage6Func8(Enemy *enemy, EclRawInstr *instr)
 
     enemy->currentContext.var3 = changedBullets;
 }
-
 
 void ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr)
 {
@@ -986,7 +974,6 @@ void ExInsStage6Func9(Enemy *enemy, EclRawInstr *instr)
         }
     }
 }
-
 
 void ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr)
 {
@@ -1074,7 +1061,6 @@ void ExInsStage4Func12(Enemy *enemy, EclRawInstr *instr)
     }
 }
 
-
 void ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr)
 {
     f32 basePatternAngle;
@@ -1097,7 +1083,6 @@ void ExInsStageXFunc13(Enemy *enemy, EclRawInstr *instr)
     }
     enemy->currentContext.var3++;
 }
-
 
 void ExInsStageXFunc14(Enemy *enemy, EclRawInstr *instr)
 {
@@ -1195,7 +1180,6 @@ void ExInsStageXFunc15(Enemy *enemy, EclRawInstr *instr)
     ExInsStage6XFunc10(enemy, instr);
     enemy->currentContext.var3 = totalIterations;
 }
-
 
 void ExInsStageXFunc16(Enemy *enemy, EclRawInstr *instr)
 {

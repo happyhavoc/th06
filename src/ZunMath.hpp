@@ -1,11 +1,11 @@
 #pragma once
 
-#include <cmath>
-#include <cstring>
-#include <GL/gl.h>
 #include "GameWindow.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
+#include <GL/gl.h>
+#include <cmath>
+#include <cstring>
 
 #define glDepthRangef glDepthRange
 #define glFrustumf glFrustum
@@ -18,7 +18,9 @@ struct ZunVec2
     f32 x;
     f32 y;
 
-    ZunVec2() {}
+    ZunVec2()
+    {
+    }
 
     ZunVec2(f32 x, f32 y)
     {
@@ -45,7 +47,9 @@ struct ZunVec3
     f32 y;
     f32 z;
 
-    ZunVec3() {}
+    ZunVec3()
+    {
+    }
 
     ZunVec3(f32 x, f32 y, f32 z)
     {
@@ -127,8 +131,7 @@ struct ZunVec3
 
     void calcCross(ZunVec3 &dst, ZunVec3 &vec)
     {
-        dst = ZunVec3(this->y * vec.z - this->z * vec.y,
-                      this->z * vec.x - this->x * vec.z,
+        dst = ZunVec3(this->y * vec.z - this->z * vec.y, this->z * vec.x - this->x * vec.z,
                       this->x * vec.y - this->y * vec.x);
     }
 
@@ -155,7 +158,9 @@ struct ZunVec4
     f32 z;
     f32 w;
 
-    ZunVec4() {}
+    ZunVec4()
+    {
+    }
 
     ZunVec4(f32 x, f32 y, f32 z, f32 w)
     {
@@ -176,11 +181,14 @@ struct ZunMatrix
     {
         ZunMatrix result;
 
-        for(int i = 0; i < 4; i++) {
-            for(int j = 0; j < 4; j++) {
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
                 result.m[i][j] = 0.0f;
 
-                for(int k = 0; k < 4; k++) {
+                for (int k = 0; k < 4; k++)
+                {
                     result.m[i][j] += this->m[k][j] * b.m[i][k];
                 }
             }
@@ -234,6 +242,31 @@ struct ZunMatrix
 
         *this = rotationMatrix * *this;
     }
+
+    // Equivalent to D3DXMatrixRotationQuaternion
+    void FromQuaternion(const ZunVec4 &q)
+    {
+        float x2 = 2.0f * q.x;
+        float y2 = 2.0f * q.y;
+        float z2 = 2.0f * q.z;
+
+        this->m[0][0] = 1.0f - y2 * q.y - z2 * q.z;
+        this->m[0][1] = y2 * q.x + z2 * q.w;
+        this->m[0][2] = z2 * q.x - y2 * q.w;
+        this->m[0][3] = 0.0f;
+        this->m[1][0] = y2 * q.x - z2 * q.w;
+        this->m[1][1] = 1.0f - x2 * q.x - z2 * q.z;
+        this->m[1][2] = z2 * q.y + x2 * q.w;
+        this->m[1][3] = 0.0f;
+        this->m[2][0] = z2 * q.x + y2 * q.w;
+        this->m[2][1] = z2 * q.y - x2 * q.w;
+        this->m[2][2] = 1.0f - x2 * q.x - y2 * q.y;
+        this->m[2][3] = 0.0f;
+        this->m[3][0] = 0.0f;
+        this->m[3][1] = 0.0f;
+        this->m[3][2] = 0.0f;
+        this->m[3][3] = 1.0f;
+    }
 };
 static_assert(sizeof(ZunMatrix) == 0x40, "ZunMatrix has additional padding between struct members!");
 
@@ -281,8 +314,8 @@ struct ZunViewport
 
 #define sincos(in, out_sine, out_cosine)                                                                               \
     {                                                                                                                  \
-        out_sine = std::sin(in); \
-        out_cosine = std::cos(in); \
+        out_sine = std::sin(in);                                                                                       \
+        out_cosine = std::cos(in);                                                                                     \
     }
 
 inline void fsincos_wrapper(f32 *out_sine, f32 *out_cosine, f32 angle)
@@ -358,7 +391,7 @@ inline void createViewMatrix(ZunVec3 &camera, ZunVec3 &target, ZunVec3 &up)
     lookMatrix.m[3][2] = -zAxis.calcDot(camera);
     lookMatrix.m[3][3] = 1.0f;
 
-    glLoadMatrixf((GLfloat *) lookMatrix.m);
+    glLoadMatrixf((GLfloat *)lookMatrix.m);
 }
 
 // Sets matrix mode to projection and clobbers current matrix
@@ -425,7 +458,8 @@ inline void inverseViewportMatrix()
 }
 
 // Reimplementation of D3DXVec3Project. TODO: Replace if possible once port is working
-inline void projectVec3(ZunVec3 &out, ZunVec3 &inVec, ZunViewport &viewport, ZunMatrix &projection, ZunMatrix &view, ZunMatrix &world)
+inline void projectVec3(ZunVec3 &out, ZunVec3 &inVec, ZunViewport &viewport, ZunMatrix &projection, ZunMatrix &view,
+                        ZunMatrix &world)
 {
     // WARNING: Runs into issues if matrices do things with W (Zun's never do)
 
