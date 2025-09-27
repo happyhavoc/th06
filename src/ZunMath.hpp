@@ -270,7 +270,7 @@ struct ZunMatrix
 };
 static_assert(sizeof(ZunMatrix) == 0x40, "ZunMatrix has additional padding between struct members!");
 
-// A viewport using D3D conventions (x, y is the top right corner of the viewport)
+// A viewport using D3D conventions (x, y is the top left corner of the viewport)
 struct ZunViewport
 {
     i32 X;
