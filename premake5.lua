@@ -10,9 +10,45 @@ targetdir "."
 objdir "obj"
 
 files {
-    "src/**.cpp",
-    "src/**.hpp",
-    "src/pbg3/**.cpp"
+    "src/AnmManager.cpp",
+    "src/AsciiManager.cpp",
+    "src/BombData.cpp",
+    "src/BulletData.cpp",
+    "src/BulletManager.cpp",
+    "src/Chain.cpp",
+    "src/Controller.cpp",
+    "src/EclManager.cpp",
+    "src/EffectManager.cpp",
+    "src/Ending.cpp",
+    "src/EnemyEclInstr.cpp",
+    "src/EnemyManager.cpp",
+    "src/FileSystem.cpp",
+    "src/GameErrorContext.cpp",
+    "src/GameManager.cpp",
+    "src/GameWindow.cpp",
+    "src/Gui.cpp",
+    "src/ItemManager.cpp",
+    "src/main.cpp",
+    "src/MainMenu.cpp",
+    "src/MusicRoom.cpp",
+    "src/Player.cpp",
+    "src/ReplayManager.cpp",
+    "src/ResultScreen.cpp",
+    "src/Rng.cpp",
+    "src/ScreenEffect.cpp",
+    "src/SoundPlayer.cpp",
+    "src/Stage.cpp",
+    "src/Supervisor.cpp",
+    "src/TextHelper.cpp",
+    "src/utils.cpp",
+    "src/ZunTimer.cpp",
+    "src/pbg3/FileAbstraction.cpp",
+    "src/pbg3/IPbg3Parser.cpp",
+    "src/pbg3/Pbg3Archive.cpp",
+    "src/pbg3/Pbg3Parser.cpp",
+
+    -- keep headers visible
+    "src/**.hpp"
 }
 includedirs { "src" }
 
