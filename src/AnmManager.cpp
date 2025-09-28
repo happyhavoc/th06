@@ -1906,43 +1906,77 @@ void AnmManager::CopySurfaceRectToBackBuffer(i32 surfaceIdx, i32 dstX, i32 dstY,
 
 void AnmManager::TakeScreenshot(i32 textureId, i32 left, i32 top, i32 width, i32 height)
 {
-    //    LPDIRECT3DSURFACE8 sourceSurface;
-    //    LPDIRECT3DSURFACE8 destSurface;
-    //    RECT rect;
-    //
+    u8 *backBufferPixels = NULL;
+    u8 *dstFormatPixels = NULL;
+    SDL_Surface *dstFormatSurface = NULL;
+    SDL_Rect stretchDstRect;
+    SDL_Rect stretchSrcRect;
+    SDL_Surface *stretchedSurface = NULL;
+    SDL_Surface *unstretchedSurface = NULL;
 
-    if (this->textures[textureId].handle == 0)
+    // OpenGL throws an error specifically for negative W / H and pixels are undefined for 0 inputs.
+    if (this->textures[textureId].handle == 0 || width <= 0 || height <= 0)
     {
         return;
     }
 
     this->SetCurrentTexture(this->textures[textureId].handle);
 
-    //
-    //    if (g_Supervisor.d3dDevice->GetBackBuffer(0, D3DBACKBUFFER_TYPE_MONO, &sourceSurface) != D3D_OK)
-    //    {
-    //        return;
-    //    }
-    //    if (this->textures[textureId]->GetSurfaceLevel(0, &destSurface) != D3D_OK)
-    //    {
-    //        sourceSurface->Release();
-    //        return;
-    //    }
-    //
-    //    rect.left = left;
-    //    rect.top = top;
-    //    rect.right = left + width;
-    //    rect.bottom = top + height;
-    //    if (D3DXLoadSurfaceFromSurface(destSurface, NULL, NULL, sourceSurface, NULL, &rect, D3DX_DEFAULT, 0) !=
-    //    D3D_OK)
-    //    {
-    //        destSurface->Release();
-    //        sourceSurface->Release();
-    //        return;
-    //    }
-    //    destSurface->Release();
-    //    sourceSurface->Release();
-    //    return;
+    backBufferPixels = new u8[width * height * 4];
+
+    glReadPixels(left, GAME_WINDOW_HEIGHT - (top + height), width, height, GL_RGBA, GL_UNSIGNED_BYTE, backBufferPixels);
+
+    unstretchedSurface =
+        SDL_CreateRGBSurfaceWithFormatFrom(backBufferPixels, width, height, 32, width * 4, SDL_PIXELFORMAT_RGBA32);
+    stretchedSurface = SDL_CreateRGBSurfaceWithFormat(0, this->textures[textureId].width,
+                                                      this->textures[textureId].height, 32, SDL_PIXELFORMAT_RGBA32);
+
+    if (unstretchedSurface == NULL || stretchedSurface == NULL)
+    {
+        goto cleanup;
+    }
+
+    // OpenGL texture coordinates are upside down compared to the D3D conventions. To account for this,
+    //   we need to flip the texture
+    FlipSurface(unstretchedSurface);
+
+    stretchSrcRect.x = 0;
+    stretchSrcRect.y = 0;
+    stretchSrcRect.h = height;
+    stretchSrcRect.w = width;
+
+    stretchDstRect.x = 0;
+    stretchDstRect.y = 0;
+    stretchDstRect.h = this->textures[textureId].height;
+    stretchDstRect.w = this->textures[textureId].width;
+
+    if (SDL_SoftStretchLinear(unstretchedSurface, &stretchSrcRect, stretchedSurface, &stretchDstRect) < 0)
+    {
+        goto cleanup;
+    }
+
+    dstFormatSurface =
+        SDL_ConvertSurfaceFormat(stretchedSurface, g_TextureFormatSDLMapping[this->textures[textureId].format], 0);
+
+    if (dstFormatSurface == NULL)
+    {
+        goto cleanup;
+    }
+
+    dstFormatPixels =
+        ExtractSurfacePixels(dstFormatSurface, g_TextureFormatBytesPerPixel[this->textures[textureId].format]);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, g_TextureFormatGLFormatMapping[this->textures[textureId].format],
+                 this->textures[textureId].width, this->textures[textureId].height, 0,
+                 g_TextureFormatGLFormatMapping[this->textures[textureId].format],
+                 g_TextureFormatGLTypeMapping[this->textures[textureId].format], dstFormatPixels);
+
+cleanup:
+    SDL_FreeSurface(unstretchedSurface);
+    SDL_FreeSurface(stretchedSurface);
+    SDL_FreeSurface(dstFormatSurface);
+    delete[] backBufferPixels;
+    delete[] dstFormatPixels;
 }
 
 // Utter mess that needs to be rewritten
