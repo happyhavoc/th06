@@ -26,6 +26,7 @@ project "th06"
     "src/GameErrorContext.cpp",
     "src/GameManager.cpp",
     "src/GameWindow.cpp",
+    "src/GLFunc.cpp",
     "src/Gui.cpp",
     "src/ItemManager.cpp",
     "src/main.cpp",
@@ -63,7 +64,7 @@ project "th06"
     local sdl2_libs   = os.outputof("sdl2-config --libs")   or ""
     if #sdl2_cflags > 0 then buildoptions { sdl2_cflags } end
     if #sdl2_libs   > 0 then linkoptions  { sdl2_libs }   end
-    links { "GL", "SDL2_image", "SDL2_ttf", "m" }
+    links { "SDL2_image", "SDL2_ttf", "m" }
   filter {}
 
   filter "system:windows"
@@ -72,7 +73,7 @@ project "th06"
 
   filter { "system:windows", "action:vs*" }
     warnings "Extra"
-    links { "SDL2", "SDL2main", "SDL2_image", "SDL2_ttf", "opengl32" }
+    links { "SDL2", "SDL2main", "SDL2_image", "SDL2_ttf" }
 
     local SDL2_DIR       = os.getenv("SDL2_DIR")
     local SDL2_IMAGE_DIR = os.getenv("SDL2_IMAGE_DIR")
@@ -101,7 +102,6 @@ project "th06"
   filter {}
 
   filter { "system:windows", "action:not vs*" }
-    links { "opengl32" }
     local pc_cflags = os.outputof("pkg-config --cflags sdl2 SDL2_image SDL2_ttf") or ""
     local pc_libs   = os.outputof("pkg-config --libs   sdl2 SDL2_image SDL2_ttf") or ""
     if #pc_cflags > 0 then buildoptions { pc_cflags } end

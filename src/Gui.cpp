@@ -1,6 +1,5 @@
 #include "Gui.hpp"
 
-#include <GL/gl.h>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -10,6 +9,7 @@
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "FileSystem.hpp"
+#include "GLFunc.hpp"
 #include "GameManager.hpp"
 #include "Player.hpp"
 #include "SoundPlayer.hpp"
@@ -87,7 +87,7 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
     char spellCardBonusStr[32];
     ZunVec3 stringPos;
 
-    glDepthFunc(GL_ALWAYS);
+    g_glFuncTable.glDepthFunc(GL_ALWAYS);
     //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
     if (gui->impl->finishedStage)
     {
@@ -216,7 +216,7 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
         g_AsciiManager.color = COLOR_WHITE;
     }
     g_AsciiManager.isGui = 0;
-    glDepthFunc(GL_LEQUAL);
+    g_glFuncTable.glDepthFunc(GL_LEQUAL);
     //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
@@ -780,19 +780,19 @@ ZunResult GuiImpl::DrawDialogue()
     g_AnmManager->DrawNoRotation(&this->msg.portraits[1]);
     if (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+        g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+        g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
         //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
         //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
     }
 
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
+    g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
+    g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
     //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
     //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
     if (((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST) & 1) == 0)
     {
-        glDepthMask(GL_FALSE);
+        g_glFuncTable.glDepthMask(GL_FALSE);
         //        g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, 0);
     }
 
@@ -803,19 +803,19 @@ ZunResult GuiImpl::DrawDialogue()
 
     inverseViewportMatrix();
 
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices[0].position);
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices[0].diffuse);
+    g_glFuncTable.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    g_glFuncTable.glEnableClientState(GL_COLOR_ARRAY);
+    g_glFuncTable.glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices[0].position);
+    g_glFuncTable.glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices[0].diffuse);
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    g_glFuncTable.glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-    glMatrixMode(GL_TEXTURE);
-    glPopMatrix();
-    glMatrixMode(GL_MODELVIEW);
-    glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
+    g_glFuncTable.glMatrixMode(GL_TEXTURE);
+    g_glFuncTable.glPopMatrix();
+    g_glFuncTable.glMatrixMode(GL_MODELVIEW);
+    g_glFuncTable.glPopMatrix();
+    g_glFuncTable.glMatrixMode(GL_PROJECTION);
+    g_glFuncTable.glPopMatrix();
 
     //    g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
     //    g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(vertices[0]));
@@ -825,14 +825,14 @@ ZunResult GuiImpl::DrawDialogue()
     g_AnmManager->SetCurrentZWriteDisable(0xff);
     if (((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP) & 1) == 0)
     {
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+        g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+        g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
         //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, 4);
         //        g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, 4);
     }
 
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+    g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
+    g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
     //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, 2);
     //    g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, 2);
     g_AnmManager->DrawNoRotation(&this->msg.dialogueLines[0]);
@@ -1233,20 +1233,20 @@ void Gui::DrawGameScene()
 
             if ((g_Supervisor.cfg.opts >> 8 & 1) == 0)
             {
-                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
-                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
+                g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
+                g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
                 //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
                 //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
             }
 
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
+            g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
+            g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR);
             //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
             //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_DIFFUSE);
             if ((g_Supervisor.cfg.opts >> GCOS_TURN_OFF_DEPTH_TEST & 1) == 0)
             {
-                glDepthFunc(GL_ALWAYS);
-                glDepthMask(GL_FALSE);
+                g_glFuncTable.glDepthFunc(GL_ALWAYS);
+                g_glFuncTable.glDepthMask(GL_FALSE);
                 //                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
                 //                g_Supervisor.d3dDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
             }
@@ -1258,19 +1258,19 @@ void Gui::DrawGameScene()
 
             inverseViewportMatrix();
 
-            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-            glEnableClientState(GL_COLOR_ARRAY);
-            glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices[0].position);
-            glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices[0].diffuse);
+            g_glFuncTable.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            g_glFuncTable.glEnableClientState(GL_COLOR_ARRAY);
+            g_glFuncTable.glVertexPointer(4, GL_FLOAT, sizeof(*vertices), &vertices[0].position);
+            g_glFuncTable.glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(*vertices), &vertices[0].diffuse);
 
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            g_glFuncTable.glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-            glMatrixMode(GL_TEXTURE);
-            glPopMatrix();
-            glMatrixMode(GL_MODELVIEW);
-            glPopMatrix();
-            glMatrixMode(GL_PROJECTION);
-            glPopMatrix();
+            g_glFuncTable.glMatrixMode(GL_TEXTURE);
+            g_glFuncTable.glPopMatrix();
+            g_glFuncTable.glMatrixMode(GL_MODELVIEW);
+            g_glFuncTable.glPopMatrix();
+            g_glFuncTable.glMatrixMode(GL_PROJECTION);
+            g_glFuncTable.glPopMatrix();
 
             //            g_Supervisor.d3dDevice->SetVertexShader(D3DFVF_DIFFUSE | D3DFVF_XYZRHW);
             //            g_Supervisor.d3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices,
@@ -1281,14 +1281,14 @@ void Gui::DrawGameScene()
             g_AnmManager->SetCurrentZWriteDisable(0xff);
             if ((g_Supervisor.cfg.opts >> GCOS_NO_COLOR_COMP & 1) == 0)
             {
-                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
-                glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
+                g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
+                g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
                 //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
                 //                g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
             }
 
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
-            glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+            g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
+            g_glFuncTable.glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
             //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
             //            g_Supervisor.d3dDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
             if (128 <= g_GameManager.currentPower)

@@ -19,10 +19,6 @@
 // #include <d3d8types.h>
 // #include <d3dx8math.h>
 
-#ifndef glClearDepthf
-#define glClearDepthf glClearDepth
-#endif
-
 namespace th06
 {
 
@@ -171,8 +167,8 @@ ChainCallbackResult GameManager::OnUpdate(GameManager *gameManager)
     SetupCamera(0);
 
     g_Supervisor.viewport.Set();
-    glClearDepthf(g_Stage.skyFog.color);
-    glClear(GL_DEPTH_BUFFER_BIT);
+    g_glFuncTable.glClearDepthf(1.0f);
+    g_glFuncTable.glClear(GL_DEPTH_BUFFER_BIT);
 
     //    g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
     //    g_Supervisor.d3dDevice->Clear(0, NULL, D3DCLEAR_ZBUFFER, g_Stage.skyFog.color, 1.0, 0);
@@ -530,11 +526,11 @@ void GameManager::SetupCameraStageBackground(f32 extraRenderDistance)
     eyeVec.y = -viewportMiddleHeight;
     eyeVec.z = -cameraDistance;
     createViewMatrix(eyeVec, atVec, upVec);
-    glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *)&g_Supervisor.viewMatrix.m);
+    g_glFuncTable.glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *)&g_Supervisor.viewMatrix.m);
     //    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
     g_GameManager.cameraDistance = fabsf(cameraDistance);
     perspectiveMatrixFromFOV(fov, aspectRatio, 100.0f, 10000.0f + extraRenderDistance);
-    glGetFloatv(GL_PROJECTION_MATRIX, (GLfloat *)&g_Supervisor.projectionMatrix.m);
+    g_glFuncTable.glGetFloatv(GL_PROJECTION_MATRIX, (GLfloat *)&g_Supervisor.projectionMatrix.m);
     //    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
     //                               10000.0f + extraRenderDistance);
     //    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);
@@ -575,11 +571,11 @@ void GameManager::SetupCamera(f32 extraRenderDistance)
     eyeVec.y = -viewportMiddleHeight;
     eyeVec.z = eyeVecZ;
     createViewMatrix(eyeVec, atVec, upVec);
-    glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *)&g_Supervisor.viewMatrix.m);
+    g_glFuncTable.glGetFloatv(GL_MODELVIEW_MATRIX, (GLfloat *)&g_Supervisor.viewMatrix.m);
     //    D3DXMatrixLookAtLH(&g_Supervisor.viewMatrix, &eyeVec, &atVec, &upVec);
     g_GameManager.cameraDistance = fabsf(cameraDistance);
     perspectiveMatrixFromFOV(fov, aspectRatio, 100.0f, 10000.0f + extraRenderDistance);
-    glGetFloatv(GL_PROJECTION_MATRIX, (GLfloat *)&g_Supervisor.projectionMatrix.m);
+    g_glFuncTable.glGetFloatv(GL_PROJECTION_MATRIX, (GLfloat *)&g_Supervisor.projectionMatrix.m);
     //    D3DXMatrixPerspectiveFovLH(&g_Supervisor.projectionMatrix, fov, aspectRatio, 100.0f,
     //                               10000.0f + extraRenderDistance);
     //    g_Supervisor.d3dDevice->SetTransform(D3DTS_VIEW, &g_Supervisor.viewMatrix);

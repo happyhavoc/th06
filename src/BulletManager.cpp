@@ -1,11 +1,10 @@
-#include <GL/gl.h>
-
+#include "BulletManager.hpp"
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
-#include "BulletManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "Enemy.hpp"
+#include "GLFunc.hpp"
 #include "GameManager.hpp"
 #include "Gui.hpp"
 #include "ItemManager.hpp"
@@ -1103,7 +1102,7 @@ ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
     Bullet *curBullet1;
     Bullet *curBullet2;
 
-    glDepthFunc(GL_ALWAYS);
+    g_glFuncTable.glDepthFunc(GL_ALWAYS);
 
     for (curLaser = &mgr->lasers[0], idx = 0; idx < ARRAY_SIZE_SIGNED(mgr->lasers); idx++, curLaser++)
     {
@@ -1259,7 +1258,7 @@ ChainCallbackResult BulletManager::OnDraw(BulletManager *mgr)
         }
     }
 
-    glDepthFunc(GL_LEQUAL);
+    g_glFuncTable.glDepthFunc(GL_LEQUAL);
 
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }

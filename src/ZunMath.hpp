@@ -1,14 +1,14 @@
 #pragma once
 
+#include "GLFunc.hpp"
 #include "GameWindow.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include <GL/gl.h>
 #include <cmath>
 #include <cstring>
 
-#define glDepthRangef glDepthRange
-#define glFrustumf glFrustum
+namespace th06
+{
 
 // sizeof checks kept in because technically, the standard does allow compilers to add more padding than is required
 
@@ -282,8 +282,8 @@ struct ZunViewport
 
     void Set()
     {
-        glViewport(this->X, GAME_WINDOW_HEIGHT - (this->Y + this->Height), this->Width, this->Height);
-        glDepthRangef(this->MinZ, this->MaxZ);
+        g_glFuncTable.glViewport(this->X, GAME_WINDOW_HEIGHT - (this->Y + this->Height), this->Width, this->Height);
+        g_glFuncTable.glDepthRangef(this->MinZ, this->MaxZ);
     }
 
     void Get()
@@ -291,8 +291,8 @@ struct ZunViewport
         GLint viewPortGet[4];
         GLfloat depthRangeGet[2];
 
-        glGetIntegerv(GL_VIEWPORT, viewPortGet);
-        glGetFloatv(GL_DEPTH_RANGE, depthRangeGet);
+        g_glFuncTable.glGetIntegerv(GL_VIEWPORT, viewPortGet);
+        g_glFuncTable.glGetFloatv(GL_DEPTH_RANGE, depthRangeGet);
 
         this->X = viewPortGet[0];
         this->Y = viewPortGet[1];
@@ -356,7 +356,7 @@ inline f32 mapRange(f32 in, f32 domainLow, f32 domainHigh, f32 rangeLow, f32 ran
 // Creates a left handed matrix, using the method from Microsoft's docs
 inline void createViewMatrix(ZunVec3 &camera, ZunVec3 &target, ZunVec3 &up)
 {
-    glMatrixMode(GL_MODELVIEW);
+    g_glFuncTable.glMatrixMode(GL_MODELVIEW);
 
     ZunMatrix lookMatrix;
 
@@ -391,29 +391,29 @@ inline void createViewMatrix(ZunVec3 &camera, ZunVec3 &target, ZunVec3 &up)
     lookMatrix.m[3][2] = -zAxis.calcDot(camera);
     lookMatrix.m[3][3] = 1.0f;
 
-    glLoadMatrixf((GLfloat *)lookMatrix.m);
+    g_glFuncTable.glLoadMatrixf((GLfloat *)lookMatrix.m);
 }
 
 // Sets matrix mode to projection and clobbers current matrix
 inline void perspectiveMatrixFromFOV(f32 verticalFOV, f32 aspectRatio, f32 nearPlane, f32 farPlane)
 {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+    g_glFuncTable.glMatrixMode(GL_PROJECTION);
+    g_glFuncTable.glLoadIdentity();
 
     // D3D has pixels at integer locations, but OpenGL uses half integer pixels. This may need correction
     // https://www.slideshare.net/slideshow/opengl-32-and-more/2172343
     // There are some other clip space differences between D3D and OpenGL, but they shouldn't matter for EoSD
 
     // This should be uncommented if pixel off-by-one errors show up
-    // glTranslatef(0.5f / GAME_WINDOW_WIDTH, 0.5f / GAME_WINDOW_HEIGHT, 0.0f);
+    // g_glFuncTable.glTranslatef(0.5f / GAME_WINDOW_WIDTH, 0.5f / GAME_WINDOW_HEIGHT, 0.0f);
 
     f32 vertical = std::tanf(verticalFOV / 2) * nearPlane;
     f32 horizontal = vertical * aspectRatio;
 
-    glFrustumf(-horizontal, horizontal, -vertical, vertical, nearPlane, farPlane);
+    g_glFuncTable.glFrustumf(-horizontal, horizontal, -vertical, vertical, nearPlane, farPlane);
 
     // Change right handed matrix OpenGL generates to a left-handed one to match D3D coordinates
-    glScalef(1.0f, 1.0f, -1.0f);
+    g_glFuncTable.glScalef(1.0f, 1.0f, -1.0f);
 }
 
 // Pushes an identity matrix to the modelview stack and pushes a matrix that maps screen coordinates to
@@ -425,17 +425,17 @@ inline void inverseViewportMatrix()
 
     viewport.Get();
 
-    glMatrixMode(GL_TEXTURE);
-    glPushMatrix();
-    glLoadIdentity();
+    g_glFuncTable.glMatrixMode(GL_TEXTURE);
+    g_glFuncTable.glPushMatrix();
+    g_glFuncTable.glLoadIdentity();
 
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
+    g_glFuncTable.glMatrixMode(GL_MODELVIEW);
+    g_glFuncTable.glPushMatrix();
+    g_glFuncTable.glLoadIdentity();
 
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
+    g_glFuncTable.glMatrixMode(GL_PROJECTION);
+    g_glFuncTable.glPushMatrix();
+    g_glFuncTable.glLoadIdentity();
 
     // Mappings:
     //   X: [viewport x .. viewport width] -> [-1 .. 1]
@@ -452,9 +452,9 @@ inline void inverseViewportMatrix()
     //   Graphical output should really be checked thoroughly to make sure nothing (especially in the 3D draw functions)
     //   ends up a half pixel off.
 
-    glTranslatef(-1.0f, 1.0f, -1.0f);
-    glScalef(1.0f / (viewport.Width / 2.0f), -1.0f / (viewport.Height / 2.0f), 2.0f);
-    glTranslatef(-viewport.X, -viewport.Y, 0.0f);
+    g_glFuncTable.glTranslatef(-1.0f, 1.0f, -1.0f);
+    g_glFuncTable.glScalef(1.0f / (viewport.Width / 2.0f), -1.0f / (viewport.Height / 2.0f), 2.0f);
+    g_glFuncTable.glTranslatef(-viewport.X, -viewport.Y, 0.0f);
 }
 
 // Reimplementation of D3DXVec3Project. TODO: Replace if possible once port is working
@@ -475,3 +475,5 @@ inline void projectVec3(ZunVec3 &out, ZunVec3 &inVec, ZunViewport &viewport, Zun
     out.y = mapRange(clipVector.y, -1.0f, 1.0f, viewport.Y + viewport.Height, viewport.Y);
     out.z = mapRange(clipVector.z, -1.0f, 1.0f, viewport.MinZ, viewport.MaxZ);
 }
+
+}; // namespace th06

@@ -3,11 +3,11 @@
 // #include <d3d8.h>
 // #include <d3dx8math.h>
 
-#include <GL/gl.h>
 #include <SDL2/SDL_video.h>
 
 #include "AnmIdx.hpp"
 #include "AnmVm.hpp"
+#include "GLFunc.hpp"
 #include "GameManager.hpp"
 #include "ZunResult.hpp"
 #include "ZunTimer.hpp"
@@ -187,7 +187,7 @@ struct AnmManager
         if (this->currentTextureHandle != textureHandle)
         {
             this->currentTextureHandle = textureHandle;
-            glBindTexture(GL_TEXTURE_2D, textureHandle);
+            g_glFuncTable.glBindTexture(GL_TEXTURE_2D, textureHandle);
         }
     }
     void SetCurrentSprite(AnmLoadedSprite *sprite)

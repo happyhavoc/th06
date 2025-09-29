@@ -106,9 +106,9 @@ ChainCallbackResult Stage::OnUpdate(Stage *stage)
                         ((stage->skyFog.color >> 16) & 0xFF) / 255.0f, ((stage->skyFog.color >> 8) & 0xFF) / 255.0f,
                         (stage->skyFog.color & 0xFF) / 255.0f, ((stage->skyFog.color >> 24) & 0xFF) / 255.0f};
 
-                    glFogfv(GL_FOG_COLOR, fogColor);
-                    glFogf(GL_FOG_START, stage->skyFog.nearPlane);
-                    glFogf(GL_FOG_END, stage->skyFog.farPlane);
+                    g_glFuncTable.glFogfv(GL_FOG_COLOR, fogColor);
+                    g_glFuncTable.glFogf(GL_FOG_START, stage->skyFog.nearPlane);
+                    g_glFuncTable.glFogf(GL_FOG_END, stage->skyFog.farPlane);
                 }
                 stage->instructionIndex++;
                 stage->skyFogInterpFinal = stage->skyFog;
@@ -207,9 +207,9 @@ ChainCallbackResult Stage::OnUpdate(Stage *stage)
                                    ((stage->skyFog.color >> 8) & 0xFF) / 255.0f, (stage->skyFog.color & 0xFF) / 255.0f,
                                    ((stage->skyFog.color >> 24) & 0xFF) / 255.0f};
 
-            glFogfv(GL_FOG_COLOR, fogColor);
-            glFogf(GL_FOG_START, stage->skyFog.nearPlane);
-            glFogf(GL_FOG_END, stage->skyFog.farPlane);
+            g_glFuncTable.glFogfv(GL_FOG_COLOR, fogColor);
+            g_glFuncTable.glFogf(GL_FOG_START, stage->skyFog.nearPlane);
+            g_glFuncTable.glFogf(GL_FOG_END, stage->skyFog.farPlane);
 
             //            g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, stage->skyFog.color);
             //            g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&stage->skyFog.nearPlane);
@@ -248,14 +248,14 @@ ChainCallbackResult Stage::OnDrawHighPrio(Stage *stage)
                                ((stage->skyFog.color >> 8) & 0xFF) / 255.0f, (stage->skyFog.color & 0xFF) / 255.0f,
                                ((stage->skyFog.color >> 24) & 0xFF) / 255.0f};
 
-        glFogfv(GL_FOG_COLOR, fogColor);
+        g_glFuncTable.glFogfv(GL_FOG_COLOR, fogColor);
     }
 
     //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(u32 *)&stage->skyFog.nearPlane);
     //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(u32 *)&stage->skyFog.farPlane);
 
-    glFogf(GL_FOG_START, stage->skyFog.nearPlane);
-    glFogf(GL_FOG_END, stage->skyFog.farPlane);
+    g_glFuncTable.glFogf(GL_FOG_START, stage->skyFog.nearPlane);
+    g_glFuncTable.glFogf(GL_FOG_END, stage->skyFog.farPlane);
 
     if (stage->spellcardState <= RUNNING)
     {
@@ -302,8 +302,8 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
     g_Supervisor.viewport.MaxZ = 0.5;
     GameManager::SetupCameraStageBackground(0);
     g_Supervisor.viewport.Set();
-    glFogf(GL_FOG_START, 1000.0f);
-    glFogf(GL_FOG_END, 2000.0f);
+    g_glFuncTable.glFogf(GL_FOG_START, 1000.0f);
+    g_glFuncTable.glFogf(GL_FOG_END, 2000.0f);
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
@@ -355,9 +355,9 @@ ZunResult Stage::AddedCallback(Stage *stage)
     GLfloat fogColor[4] = {((stage->skyFog.color >> 16) & 0xFF) / 255.0f, ((stage->skyFog.color >> 8) & 0xFF) / 255.0f,
                            (stage->skyFog.color & 0xFF) / 255.0f, ((stage->skyFog.color >> 24) & 0xFF) / 255.0f};
 
-    glFogfv(GL_FOG_COLOR, fogColor);
-    glFogf(GL_FOG_START, stage->skyFog.nearPlane);
-    glFogf(GL_FOG_END, stage->skyFog.farPlane);
+    g_glFuncTable.glFogfv(GL_FOG_COLOR, fogColor);
+    g_glFuncTable.glFogf(GL_FOG_START, stage->skyFog.nearPlane);
+    g_glFuncTable.glFogf(GL_FOG_END, stage->skyFog.farPlane);
 
     return ZUN_SUCCESS;
 }
