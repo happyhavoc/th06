@@ -1,7 +1,7 @@
 #pragma once
 
 #include "diffbuild.hpp"
-#include <GLES/gl.h>
+#include <GL/gl.h>
 #include <SDL2/SDL_opengl.h>
 
 namespace th06
