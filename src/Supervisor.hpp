@@ -147,7 +147,7 @@ struct Supervisor
 
     u32 ShouldRunAt60Fps()
     {
-        return (this->cfg.opts >> GCOS_FORCE_60FPS & 1) && this->vsyncEnabled;
+        return (this->cfg.opts >> GCOS_FORCE_60FPS & 1) || this->vsyncEnabled;
     }
 
     //    HINSTANCE hInstance;
