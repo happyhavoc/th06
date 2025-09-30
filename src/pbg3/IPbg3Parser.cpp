@@ -1,4 +1,4 @@
-#include "pbg3/IPbg3Parser.hpp"
+#include "IPbg3Parser.hpp"
 
 namespace th06
 {

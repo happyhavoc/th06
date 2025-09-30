@@ -31,7 +31,7 @@ struct MusicRoom
 
     static ZunResult AddedCallback(MusicRoom *musicRoom);
     static ZunResult DeletedCallback(MusicRoom *musicRoom);
-    ZunBool ProcessInput();
+    bool ProcessInput();
     ZunResult CheckInputEnable();
     static ChainCallbackResult OnDraw(MusicRoom *musicRoom);
     static ChainCallbackResult OnUpdate(MusicRoom *musicRoom);

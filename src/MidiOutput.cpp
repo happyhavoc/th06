@@ -23,7 +23,7 @@ MidiDevice::~MidiDevice()
     this->Close();
 }
 
-ZunBool MidiDevice::OpenDevice(u32 uDeviceId)
+bool MidiDevice::OpenDevice(u32 uDeviceId)
 {
     if (this->handle != 0)
     {
@@ -68,7 +68,7 @@ union MidiShortMsg {
     u32 dwMsg;
 };
 
-ZunBool MidiDevice::SendLongMsg(LPMIDIHDR pmh)
+bool MidiDevice::SendLongMsg(LPMIDIHDR pmh)
 {
     if (this->handle == 0)
     {
@@ -85,7 +85,7 @@ ZunBool MidiDevice::SendLongMsg(LPMIDIHDR pmh)
     }
 }
 
-ZunBool MidiDevice::SendShortMsg(u8 midiStatus, u8 firstByte, u8 secondByte)
+bool MidiDevice::SendShortMsg(u8 midiStatus, u8 firstByte, u8 secondByte)
 {
     MidiShortMsg pkt;
 

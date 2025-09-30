@@ -1,6 +1,6 @@
 #pragma once
 
-#include "inttypes.hpp"
+#include "../inttypes.hpp"
 #include <filesystem>
 
 namespace th06

@@ -19,7 +19,6 @@
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
-#include "ZunBool.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 
@@ -341,7 +340,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-i32 Player::CalcDamageToEnemy(ZunVec3 *enemyPos, ZunVec3 *enemyHitboxSize, ZunBool *hitWithLazerDuringBomb)
+i32 Player::CalcDamageToEnemy(ZunVec3 *enemyPos, ZunVec3 *enemyHitboxSize, bool *hitWithLazerDuringBomb)
 {
     ZunVec3 bulletTopLeft;
     i32 damage;
@@ -876,7 +875,7 @@ ZunResult Player::HandlePlayerInputs()
         intermediateFloat *= intermediateFloat;
         horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
 
-        if ((ZunBool)(this->focusMovementTimer.current >= 8))
+        if (this->focusMovementTimer.current >= 8)
         {
             this->orbState = ORB_FOCUSED;
         }
@@ -915,7 +914,7 @@ ZunResult Player::HandlePlayerInputs()
         intermediateFloat *= intermediateFloat;
         intermediateFloat = 1.0f - intermediateFloat;
         horizontalOrbOffset = -16.0f * intermediateFloat + 24.0f;
-        if ((ZunBool)(this->focusMovementTimer.current >= 8))
+        if (this->focusMovementTimer.current >= 8)
         {
             this->orbState = ORB_UNFOCUSED;
         }
