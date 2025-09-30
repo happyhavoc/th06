@@ -12,7 +12,7 @@ namespace th06
 struct RunningSpellcardInfo
 {
     bool isCapturing;
-    bool isActive;
+    int isActive;
     i32 captureScore;
     u32 idx;
     bool usedBomb;

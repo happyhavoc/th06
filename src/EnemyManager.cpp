@@ -407,7 +407,7 @@ bool Enemy::HandleTimerCallback()
             g_EnemyManager.spellcardInfo.isCapturing = false;
             if (g_EnemyManager.spellcardInfo.isActive)
             {
-                g_EnemyManager.spellcardInfo.isActive = false;
+                g_EnemyManager.spellcardInfo.isActive++;
             }
             g_BulletManager.RemoveAllBullets(0);
         }
