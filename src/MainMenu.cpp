@@ -1014,17 +1014,19 @@ ZunResult MainMenu::BeginStartup()
         g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
         return ZUN_ERROR;
     }
-    if (g_Supervisor.startupTimeBeforeMenuMusic > 0)
-    {
-        time = SDL_GetTicks();
-        while ((time - g_Supervisor.startupTimeBeforeMenuMusic >= 0) &&
-               (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
-        {
-            time = SDL_GetTicks();
-        }
-        g_Supervisor.startupTimeBeforeMenuMusic = 0;
-        g_Supervisor.PlayAudio("bgm/th06_01.mid");
-    }
+    // if (g_Supervisor.startupTimeBeforeMenuMusic > 0)
+    // {
+    //     time = SDL_GetTicks();
+    //     while ((time - g_Supervisor.startupTimeBeforeMenuMusic >= 0) &&
+    //            (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
+    //     {
+    //         time = SDL_GetTicks();
+    //     }
+    //     g_Supervisor.startupTimeBeforeMenuMusic = 0;
+    //     g_Supervisor.PlayAudio("bgm/th06_01.mid");
+    // }
+    g_Supervisor.startupTimeBeforeMenuMusic = 0;
+    g_Supervisor.PlayAudio("bgm/th06_01.mid");
     for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
     {
         this->vm[i].pendingInterrupt = 1;
