@@ -77,5 +77,5 @@ struct GLFuncTable
     bool isGlesContext;
 };
 
-DIFFABLE_EXTERN(GLFuncTable, g_glFuncTable)
+extern GLFuncTable g_glFuncTable;
 }; // namespace th06

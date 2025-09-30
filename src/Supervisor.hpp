@@ -194,11 +194,11 @@ struct Supervisor
 };
 ZUN_ASSERT_SIZE(Supervisor, 0x4d8);
 
-DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
-DIFFABLE_EXTERN(Supervisor, g_Supervisor)
-DIFFABLE_EXTERN(u16, g_LastFrameInput)
-DIFFABLE_EXTERN(u16, g_CurFrameInput)
-DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
-DIFFABLE_EXTERN(SDL_Surface *, g_TextBufferSurface)
-DIFFABLE_EXTERN(u16, g_NumOfFramesInputsWereHeld);
+extern ControllerMapping g_ControllerMapping;
+extern Supervisor g_Supervisor;
+extern u16 g_LastFrameInput;
+extern u16 g_CurFrameInput;
+extern u16 g_IsEigthFrameOfHeldInput;
+extern SDL_Surface *g_TextBufferSurface;
+extern u16 g_NumOfFramesInputsWereHeld;
 }; // namespace th06

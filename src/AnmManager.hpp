@@ -284,5 +284,5 @@ struct AnmManager
 };
 ZUN_ASSERT_SIZE(AnmManager, 0x2112c);
 
-DIFFABLE_EXTERN(AnmManager *, g_AnmManager);
+extern AnmManager *g_AnmManager;
 }; // namespace th06

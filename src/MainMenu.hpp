@@ -120,5 +120,5 @@ struct MainMenu
 };
 ZUN_ASSERT_SIZE(MainMenu, 0x10f34);
 
-DIFFABLE_EXTERN(MainMenu, g_MainMenu);
+extern MainMenu g_MainMenu;
 }; // namespace th06

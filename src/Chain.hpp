@@ -64,5 +64,5 @@ class Chain
     ChainElem *CreateElem(ChainCallback callback);
 };
 
-DIFFABLE_EXTERN(Chain, g_Chain)
+extern Chain g_Chain;
 }; // namespace th06

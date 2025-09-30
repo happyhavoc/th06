@@ -120,6 +120,6 @@ struct BulletManager
 };
 ZUN_ASSERT_SIZE(BulletManager, 0xf5c18);
 
-DIFFABLE_EXTERN(u32 *, g_EffectsColor);
-DIFFABLE_EXTERN(BulletManager, g_BulletManager);
+extern u32 *g_EffectsColor;
+extern BulletManager g_BulletManager;
 }; // namespace th06

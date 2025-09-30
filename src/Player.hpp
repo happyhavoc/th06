@@ -256,5 +256,5 @@ struct Player
 };
 ZUN_ASSERT_SIZE(Player, 0x98f0);
 
-DIFFABLE_EXTERN(Player, g_Player);
+extern Player g_Player;
 }; // namespace th06

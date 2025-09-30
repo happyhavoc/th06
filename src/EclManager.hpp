@@ -499,5 +499,5 @@ struct EclManager
 };
 ZUN_ASSERT_SIZE(EclManager, 0xc);
 
-DIFFABLE_EXTERN(EclManager, g_EclManager);
+extern EclManager g_EclManager;
 }; // namespace th06

@@ -60,5 +60,5 @@ struct EffectManager
 };
 ZUN_ASSERT_SIZE(EffectManager, 0x2f984);
 
-DIFFABLE_EXTERN(EffectManager, g_EffectManager);
+extern EffectManager g_EffectManager;
 }; // namespace th06

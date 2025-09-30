@@ -54,7 +54,6 @@
     extern "C" type name[size];                                                                                        \
     template <> type DIFFBUILD_HIDE_NAME_##name[size]
 #else
-#define DIFFABLE_EXTERN(type, name) extern type name;
 #define DIFFABLE_EXTERN_ARRAY(type, size, name) extern "C" type name[size];
 #define DIFFABLE_STATIC(type, name) type name;
 #define DIFFABLE_STATIC_ARRAY(type, size, name) type name[size];

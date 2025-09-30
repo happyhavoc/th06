@@ -39,5 +39,5 @@ class Pbg3Archive
     Pbg3Entry *entries;
 };
 
-DIFFABLE_EXTERN(Pbg3Archive **, g_Pbg3Archives)
+extern Pbg3Archive **g_Pbg3Archives;
 }; // namespace th06
