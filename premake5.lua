@@ -1,3 +1,7 @@
+require "premake-ninja/ninja"
+
+premake.path = premake.path .. "/premake-ninja"
+
 workspace "th06"
   configurations { "Debug", "Release" }
   location "build"

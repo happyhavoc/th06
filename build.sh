@@ -1,3 +1,5 @@
+NPROC=$(nproc)
+
 CLEAN=false
 for arg in "$@"; do
     if [ "$arg" = "--clean" ]; then
@@ -11,6 +13,6 @@ if [ "$CLEAN" = "TRUE" ]; then
     rm th06
 fi
 
-premake5 --cc=clang gmake
+premake5 --cc=clang ninja
 cd build
-make -j${nproc} && cd ..
+ninja -j${NPROC}
