@@ -1098,7 +1098,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
             vm->rotation.y = *local_10++;
             vm->rotation.z = *local_10;
             break;
-        case AnmOpcode_SetPosition:
+        case AnmOpcode_SetAngleVel:
             local_14 = (f32 *)&curInstr->args[0];
             vm->angleVel.x = *local_14++;
             vm->angleVel.y = *local_14++;
@@ -1132,7 +1132,7 @@ i32 AnmManager::ExecuteScript(AnmVm *vm)
         case AnmOpcode_SetBlendDefault:
             vm->flags.blendMode = AnmVmBlendMode_InvSrcAlpha;
             break;
-        case AnmOpcode_SetTranslation:
+        case AnmOpcode_SetPosition:
             if (vm->flags.flag5 == 0)
             {
                 vm->pos =
