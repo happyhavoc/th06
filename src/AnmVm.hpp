@@ -36,14 +36,14 @@ struct AnmLoadedSprite
 #define AnmOpcode_FlipX 7
 #define AnmOpcode_FlipY 8
 #define AnmOpcode_SetRotation 9
-#define AnmOpcode_SetPosition 10
+#define AnmOpcode_SetAngleVel 10
 #define AnmOpcode_SetScaleSpeed 11
 #define AnmOpcode_Fade 12
 #define AnmOpcode_SetBlendAdditive 13
 #define AnmOpcode_SetBlendDefault 14
 #define AnmOpcode_ExitHide 15
 #define AnmOpcode_SetRandomSprite 16
-#define AnmOpcode_SetTranslation 17
+#define AnmOpcode_SetPosition 17
 #define AnmOpcode_PosTimeLinear 18
 #define AnmOpcode_PosTimeDecel 19
 #define AnmOpcode_PosTimeAccel 20
