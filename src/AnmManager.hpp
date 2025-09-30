@@ -14,6 +14,13 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
+#define TEX_FMT_UNKNOWN 0
+#define TEX_FMT_A8R8G8B8 1
+#define TEX_FMT_A1R5G5B5 2
+#define TEX_FMT_R5G6B5 3
+#define TEX_FMT_R8G8B8 4
+#define TEX_FMT_A4R4G4B4 5
+
 namespace th06
 {
 struct TextureData
