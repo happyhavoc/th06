@@ -5,6 +5,7 @@
 #include "i18n.hpp"
 
 #include <SDL2/SDL_ttf.h>
+#include <algorithm>
 #include <cstring>
 #include <iconv.h>
 
@@ -197,54 +198,37 @@ ZunResult TextHelper::CreateTextBuffer()
 //     u16 alpha : 1;
 // };
 //
-// bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
-// {
-//     i32 doubleArea;
-//     u8 *bufferRegion;
-//     i32 idx;
-//     u8 *bufferStart;
-//     A1R5G5B5 *bufferCursor;
-//
-//     doubleArea = spriteWidth * fontHeight * 2;
-//     bufferStart = &this->buffer[0];
-//     bufferRegion = &bufferStart[y * spriteWidth * 2];
-//     switch (this->format)
-//     {
-//     case D3DFMT_A8R8G8B8:
-//         for (idx = 3; idx < doubleArea; idx += 4)
-//         {
-//             bufferRegion[idx] = bufferRegion[idx] ^ 0xff;
-//         }
-//         break;
-//     case D3DFMT_A1R5G5B5:
-//         for (bufferCursor = (A1R5G5B5 *)bufferRegion, idx = 0; idx < doubleArea; idx += 2, bufferCursor += 1)
-//         {
-//             bufferCursor->alpha ^= 1;
-//             if (bufferCursor->alpha)
-//             {
-//                 bufferCursor->red = bufferCursor->red - bufferCursor->red * idx / doubleArea / 2;
-//                 bufferCursor->green = bufferCursor->green - bufferCursor->green * idx / doubleArea / 2;
-//                 bufferCursor->blue = bufferCursor->blue - bufferCursor->blue * idx / doubleArea / 4;
-//             }
-//             else
-//             {
-//                 bufferCursor->red = 31 - idx * 31 / doubleArea / 2;
-//                 bufferCursor->green = 31 - idx * 31 / doubleArea / 2;
-//                 bufferCursor->blue = 31 - idx * 31 / doubleArea / 4;
-//             }
-//         }
-//         break;
-//     case D3DFMT_A4R4G4B4:
-//         for (idx = 1; idx < doubleArea; idx = idx + 2)
-//         {
-//             bufferRegion[idx] = bufferRegion[idx] ^ 0xf0;
-//         }
-//         break;
-//     default:
-//         return false;
-//     }
-//     return true;
-// }
+
+bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
+{
+    u8 *bufferCursor;
+    i32 gradientArea;
+    i32 i = 0;
+
+    gradientArea = spriteWidth * fontHeight;
+
+    SDL_LockSurface(g_TextBufferSurface);
+
+    // In D3D EoSD this function mostly inverts the alpha, but on A1R5G5B5 surfaces specifically it also
+    //   creates a gradient. D3D EoSD will always attempt to create an A1R5G5B5 surface for the text buffer,
+    //   will only attempt use other formats as a fallback, and in those cases the text will be bugged anyway. 
+    //   As part of the port from GDI to SDL_ttf, we've converted the text buffer surface to always be RGBA32
+    //   and no longer need the alpha inversion, but we still want that gradient to be applied
+
+    for (bufferCursor = (u8 *)g_TextBufferSurface->pixels; i < gradientArea; i++, bufferCursor += 4)
+    {
+        if (bufferCursor[3]) // A
+        {
+            bufferCursor[0] = bufferCursor[0] - bufferCursor[0] * i / gradientArea / 2; // R
+            bufferCursor[1] = bufferCursor[1] - bufferCursor[1] * i / gradientArea / 2; // G
+            bufferCursor[2] = bufferCursor[2] - bufferCursor[2] * i / gradientArea / 4; // B
+        }
+    }
+
+    SDL_UnlockSurface(g_TextBufferSurface);
+
+    return true;
+}
 //
 // bool TextHelper::CopyTextToSurface(SDL_Surface *outSurface)
 // {
@@ -460,8 +444,8 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
 
     finalCopySrc.x = 0;
     finalCopySrc.y = 0;
-    finalCopySrc.w = spriteWidth * 2 - 1;
-    finalCopySrc.h = fontHeight * 2 - 1;
+    finalCopySrc.w = spriteWidth * 2 - 2;
+    finalCopySrc.h = fontHeight * 2 - 2;
 
     SDL_FillRect(g_TextBufferSurface, &finalCopySrc, 0);
 
@@ -523,17 +507,17 @@ void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 sp
         memset(outTexture->textureData, 0, outTexture->width * outTexture->height * 4);
     }
 
-    outTexture->format = SDL_PIXELFORMAT_RGBA32;
+//    outTexture->format = ;
     SDL_Surface *textureSurface = SDL_CreateRGBSurfaceWithFormatFrom(
-        outTexture->textureData, outTexture->width, outTexture->height, SDL_BITSPERPIXEL(outTexture->format),
-        outTexture->width * SDL_BYTESPERPIXEL(outTexture->format), outTexture->format);
+        outTexture->textureData, outTexture->width, outTexture->height, SDL_BITSPERPIXEL(SDL_PIXELFORMAT_RGBA32),
+        outTexture->width * SDL_BYTESPERPIXEL(SDL_PIXELFORMAT_RGBA32), SDL_PIXELFORMAT_RGBA32);
 
     // Render main text.
     // SetTextColor(hdc, textColor);
     // TextOutA(hdc, xPos * 2, 0, string, strlen(string));
 
     // SelectObject(hdc, h);
-    // textHelper.InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6);
+    InvertAlpha(0, 0, spriteWidth * 2, fontHeight * 2 + 6);
     // textHelper.CopyTextToSurface(g_TextBufferSurface);
     // SelectObject(hdc, h);
     // DeleteObject(font);

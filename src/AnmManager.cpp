@@ -41,13 +41,6 @@ GLenum g_TextureFormatGLTypeMapping[6] = {0,
 
 u8 g_TextureFormatBytesPerPixel[6] = {0, 4, 2, 2, 3, 2};
 
-#define TEX_FMT_UNKNOWN 0
-#define TEX_FMT_A8R8G8B8 1
-#define TEX_FMT_A1R5G5B5 2
-#define TEX_FMT_R5G6B5 3
-#define TEX_FMT_R8G8B8 4
-#define TEX_FMT_A4R4G4B4 5
-
 void AnmManager::CreateTextureObject()
 {
     g_glFuncTable.glGenTextures(1, &this->currentTextureHandle);
