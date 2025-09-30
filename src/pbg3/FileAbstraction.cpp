@@ -183,7 +183,8 @@ u8 *FileAbstraction::ReadWholeFile(u32 maxSize)
                 this->Seek(oldLocation, SEEK_SET);
                 return data;
             }
-            // Yes, this case leaks the data. Amazing, I know.
+            // BUGFIX: The code originally just leaked the data here.
+            delete[] data;
         }
     }
     return NULL;
