@@ -551,9 +551,10 @@ void SoundPlayer::MixAudio(u32 samples)
 
             for (u32 j = 0; j < samplesToMix; j++)
             {
-                mixBuffer[samplesMixed + j * 2] += ((i16)SDL_ReadLE16(backgroundMusic.srcWav.fileStream)) * fadeoutMult;
-                mixBuffer[samplesMixed + j * 2 + 1] +=
-                    ((i16)SDL_ReadLE16(backgroundMusic.srcWav.fileStream)) * fadeoutMult;
+                u32 samplePair = SDL_ReadLE32(backgroundMusic.srcWav.fileStream);
+                // Splits a 32 bit read into two 16 bit samples for left and right.
+                mixBuffer[samplesMixed + j * 2] += (i16)(samplePair & 0xFFFF) * fadeoutMult;
+                mixBuffer[samplesMixed + j * 2 + 1] += (i16)(samplePair >> 16) * fadeoutMult;
             }
 
             backgroundMusic.pos += samplesToMix;
