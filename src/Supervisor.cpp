@@ -27,7 +27,7 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(Supervisor, g_Supervisor)
+Supervisor g_Supervisor;
 DIFFABLE_STATIC_ASSIGN(ControllerMapping, g_ControllerMapping) = {
     (i16)SDL_CONTROLLER_BUTTON_A,
     (i16)SDL_CONTROLLER_BUTTON_B,
@@ -39,11 +39,11 @@ DIFFABLE_STATIC_ASSIGN(ControllerMapping, g_ControllerMapping) = {
     (i16)SDL_CONTROLLER_BUTTON_DPAD_RIGHT,
     (i16)SDL_CONTROLLER_BUTTON_RIGHTSHOULDER,
 };
-DIFFABLE_STATIC(SDL_Surface *, g_TextBufferSurface)
-DIFFABLE_STATIC(u16, g_LastFrameInput);
-DIFFABLE_STATIC(u16, g_CurFrameInput);
-DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
-DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
+SDL_Surface *g_TextBufferSurface;
+u16 g_LastFrameInput;
+u16 g_CurFrameInput;
+u16 g_IsEigthFrameOfHeldInput;
+u16 g_NumOfFramesInputsWereHeld;
 
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {

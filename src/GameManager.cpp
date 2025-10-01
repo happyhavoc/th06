@@ -77,10 +77,10 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(DifficultyInfo, 5, g_DifficultyInfo) = {
 };
 
 // These are either on Supervisor.cpp or somewhere else
-DIFFABLE_STATIC(GameManager, g_GameManager);
+GameManager g_GameManager;
 
-DIFFABLE_STATIC(ChainElem, g_GameManagerCalcChain);
-DIFFABLE_STATIC(ChainElem, g_GameManagerDrawChain);
+ChainElem g_GameManagerCalcChain;
+ChainElem g_GameManagerDrawChain;
 
 #define MAX_SCORE 999999999
 #define MAX_CLEARS 99

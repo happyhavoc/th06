@@ -45,7 +45,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 26, g_SFXList) = {
     "data/wav/kira01.wav", "data/wav/kira02.wav",   "data/wav/extend.wav",   "data/wav/timeout.wav",
     "data/wav/graze.wav",  "data/wav/powerup.wav",
 };
-DIFFABLE_STATIC(SoundPlayer, g_SoundPlayer)
+SoundPlayer g_SoundPlayer;
 
 SoundPlayer::SoundPlayer()
 {

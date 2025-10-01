@@ -8,7 +8,7 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(u32, g_LastFileSize)
+u32 g_LastFileSize;
 
 u8 *FileSystem::OpenPath(const char *filepath, int isExternalResource)
 {

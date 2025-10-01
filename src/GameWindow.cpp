@@ -15,9 +15,9 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(GameWindow, g_GameWindow)
-DIFFABLE_STATIC(i32, g_TickCountToEffectiveFramerate)
-DIFFABLE_STATIC(f64, g_LastFrameTime)
+DIFFABLE_STATIC(GameWindow, g_GameWindow);
+DIFFABLE_STATIC(i32, g_TickCountToEffectiveFramerate);
+DIFFABLE_STATIC(f64, g_LastFrameTime);
 
 #define FRAME_TIME (1000. / 60.)
 
