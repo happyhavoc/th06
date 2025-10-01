@@ -58,7 +58,7 @@ project "th06"
   includedirs { "src" }
 
   filter "toolset:gcc"   buildoptions { "-Wall", "-Wextra", "-Wpedantic" }
-  filter "toolset:clang" buildoptions { "-Wall", "-Wextra", "-Wpedantic", "-Wno-gnu-anonymous-struct", "-Wno-unused-parameter" }
+  filter "toolset:clang" buildoptions { "-Wall", "-Wextra", "-Wpedantic", "-Wno-gnu-anonymous-struct", "-Wno-unused-parameter", "-Wno-nontrivial-memcall" }
   filter {}
 
   kind "WindowedApp"
