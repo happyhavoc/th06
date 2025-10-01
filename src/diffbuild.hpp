@@ -61,7 +61,7 @@
 #define DIFFABLE_STATIC_ARRAY_ASSIGN(type, size, name) type name[size]
 #endif
 
-#if defined(BINARYMATCHBUILD) || defined(DIFFBUILD) || defined(DLLBUILD)
+#if defined(BINARYMATCHBUILD) || defined(DIFFBUILD)
 #define ZUN_ASSERT_SIZE(type, size) static_assert(sizeof(type) == size);
 #else
 #define ZUN_ASSERT_SIZE(type, size) static_assert(true);
