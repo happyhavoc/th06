@@ -855,6 +855,7 @@ ZunResult Supervisor::PlayAudio(const char *path)
         //            midiOutput->LoadFile(path);
         //            midiOutput->Play();
         //        }
+        utils::DebugPrint2("Midi output is currently not supported! (and might not ever be)");
     }
     else if (g_Supervisor.cfg.musicMode == WAV)
     {

@@ -19,6 +19,9 @@ u8 *FileSystem::OpenPath(const char *filepath, int isExternalResource)
     const char *entryname;
     i32 pbg3Idx;
 
+    // Skip PBG3 loading.
+    isExternalResource = 1;
+
     entryIdx = -1;
     if (isExternalResource == 0)
     {
