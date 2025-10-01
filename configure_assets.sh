@@ -36,6 +36,8 @@ for file in $GAME_LOCATION*.DAT; do
     printf " Done!\n"
 done;
 
+echo "Moving files..."
+
 cd $GAME_LOCATION/data
 mv thdat_output/ascii*.png ./ascii
 mv thdat_output/demo00.rpy ./demo
@@ -69,3 +71,5 @@ rm thdat_output/*.mid
 
 mv thdat_output/*.* ./
 rm -rf thdat_output
+
+echo "Done!"
