@@ -70,7 +70,7 @@ struct AsciiManager
     void DrawPopupsWithHwVertexProcessing();
     void DrawPopupsWithoutHwVertexProcessing();
 
-    void AddString(ZunVec3 *position, char *text);
+    void AddString(ZunVec3 *position, const char *text);
     void AddFormatText(ZunVec3 *position, const char *fmt, ...);
     void CreatePopup1(ZunVec3 *position, i32 value, ZunColor color);
     void CreatePopup2(ZunVec3 *position, i32 value, ZunColor color);
@@ -94,7 +94,7 @@ struct AsciiManager
     i32 nextPopupIndex1;
     i32 nextPopupIndex2;
     // Seems unused
-    WeirdPadding unk3;
+    // WeirdPadding unk3;
     // Menu that shows up when the player presses the menu button while in-game.
     StageMenu gameMenu;
     // Menu that shows up when the player dies after losing their last life.

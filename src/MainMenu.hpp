@@ -84,7 +84,7 @@ struct MainMenu
 
     AnmVm vm[122];
     i32 cursor;
-    i8 padding[0x40];
+    // i8 padding[0x40];
     u32 unk_81e4;
     i32 chosenReplay;
     i32 replayFilesNum;

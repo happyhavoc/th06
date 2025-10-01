@@ -102,7 +102,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             case SUPERVISOR_STATE_EXITERROR:
                 return CHAIN_CALLBACK_RESULT_EXIT_GAME_ERROR;
             case SUPERVISOR_STATE_RESULTSCREEN:
-                if (ResultScreen::RegisterChain(NULL) != ZUN_SUCCESS)
+                if (ResultScreen::RegisterChain(0) != ZUN_SUCCESS)
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -617,7 +617,7 @@ void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
     this->pbg3Archives[pbg3FileIdx] = NULL;
 }
 
-i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, char *filename)
+i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, const char *filename)
 {
     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
     {
@@ -911,9 +911,9 @@ ZunResult Supervisor::StopAudio()
 
 ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 {
-    i32 unused1;
-    i32 unused2;
-    i32 unused3;
+    // i32 unused1;
+    // i32 unused2;
+    // i32 unused3;
 
     if (g_Supervisor.cfg.musicMode == MIDI)
     {

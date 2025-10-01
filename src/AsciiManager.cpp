@@ -170,7 +170,7 @@ void AsciiManager::CutChain()
     // to free it!
 }
 
-void AsciiManager::AddString(ZunVec3 *position, char *text)
+void AsciiManager::AddString(ZunVec3 *position, const char *text)
 {
     if (this->numStrings >= 0x100)
     {
@@ -211,9 +211,9 @@ void AsciiManager::AddFormatText(ZunVec3 *position, const char *fmt, ...)
 
 void AsciiManager::DrawStrings(void)
 {
-    i32 padding_1;
-    i32 padding_2;
-    i32 padding_3;
+    // i32 padding_1;
+    // i32 padding_2;
+    // i32 padding_3;
     i32 i;
     bool guiString;
     f32 charWidth;

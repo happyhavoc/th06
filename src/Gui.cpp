@@ -221,7 +221,7 @@ ChainCallbackResult Gui::OnDraw(Gui *gui)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-void Gui::ShowBombNamePortrait(u32 sprite, char *bombName)
+void Gui::ShowBombNamePortrait(u32 sprite, const char *bombName)
 {
     g_AnmManager->SetAndExecuteScriptIdx(&this->impl->playerSpellcardPortrait, 0x4a1);
     g_AnmManager->SetActiveSprite(&this->impl->playerSpellcardPortrait, sprite);
@@ -459,7 +459,7 @@ ZunResult Gui::ActualAddedCallback()
     return ZUN_SUCCESS;
 }
 
-ZunResult Gui::LoadMsg(char *path)
+ZunResult Gui::LoadMsg(const char *path)
 {
     i32 idx;
 

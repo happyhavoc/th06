@@ -36,8 +36,8 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 9, g_EclFiles) = {"dummy",
 
 struct AnmStageFiles
 {
-    char *file1;
-    char *file2;
+    const char *file1;
+    const char *file2;
 };
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(AnmStageFiles, 8, g_AnmStageFiles) = {
@@ -278,7 +278,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
     i32 i;
     Catk *catk;
     bool failedToLoadReplay;
-    i32 padding[3];
+    // i32 padding[3];
 
     failedToLoadReplay = false;
     //    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
@@ -474,7 +474,7 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
 
 ZunResult GameManager::DeletedCallback(GameManager *mgr)
 {
-    i32 padding1, padding2, padding3;
+    // i32 padding1, padding2, padding3;
 
     //    g_Supervisor.d3dDevice->ResourceManagerDiscardBytes(0);
     if (!g_GameManager.demoMode)

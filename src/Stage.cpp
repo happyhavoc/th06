@@ -430,14 +430,14 @@ void Stage::CutChain()
     g_Chain.Cut(&g_StageOnDrawLowPrioChain);
 }
 
-ZunResult Stage::LoadStageData(char *anmpath, char *stdpath)
+ZunResult Stage::LoadStageData(const char *anmpath, const char *stdpath)
 {
     RawStageObject *curObj;
     RawStageQuadBasic *curQuad;
     i32 idx;
     i32 vmIdx;
     u32 sizeVmArr;
-    u32 padding1, padding2, padding3, padding4, padding5, padding6;
+    // u32 padding1, padding2, padding3, padding4, padding5, padding6;
 
     if (g_AnmManager->LoadAnm(ANM_FILE_STAGEBG, anmpath, ANM_OFFSET_STAGEBG) != ZUN_SUCCESS)
     {
@@ -539,7 +539,7 @@ ZunResult Stage::RenderObjects(i32 zLevel)
     RawStageObjectInstance *instance;
     i32 instancesDrawn;
     AnmVm *curQuadVm;
-    i32 unk8;
+    // i32 unk8;
 
     instance = &this->objectInstances[0];
     instancesDrawn = 0;
@@ -556,7 +556,7 @@ ZunResult Stage::RenderObjects(i32 zLevel)
         if (obj->zLevel == zLevel)
         {
             curQuad = &obj->firstQuad;
-            unk8 = 0;
+            // unk8 = 0;
 
             //  Say hello to helper cube:
             //

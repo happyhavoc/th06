@@ -121,7 +121,7 @@ bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)
 
 // Text strings in asset files are encoded using Shift_JIS. This allows RenderTextToTexture to handle both UTF-8 and
 // Shift_JIS. This also does not check for overlong encoding, but that shouldn't matter
-bool isUTF8Encoded(char *string)
+bool isUTF8Encoded(const char *string)
 {
 #define UTF8_1BYTE_MASK 0x80
 #define UTF8_2BYTE_MASK 0xE0
@@ -227,7 +227,7 @@ void SurfaceOverwriteBlend(SDL_Surface *srcSurface, SDL_Surface *dstSurface, u32
 }
 
 void TextHelper::RenderTextToTexture(i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontHeight,
-                                     i32 fontWidth, ZunColor textColor, ZunColor shadowColor, char *string,
+                                     i32 fontWidth, ZunColor textColor, ZunColor shadowColor, const char *string,
                                      TextureData *outTexture)
 {
     char convertedText[1024];

@@ -8,7 +8,7 @@ FileAbstraction::FileAbstraction()
     access = ACCESS_INVALID;
 }
 
-i32 FileAbstraction::Open(char *filename, const char *mode)
+i32 FileAbstraction::Open(const char *filename, const char *mode)
 {
     char openMode[] = "*b";
 

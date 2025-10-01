@@ -1,4 +1,4 @@
-#include "pbg3/Pbg3Parser.hpp"
+#include "Pbg3Parser.hpp"
 
 namespace th06
 {
@@ -7,7 +7,7 @@ Pbg3Parser::Pbg3Parser() : IPbg3Parser(), FileAbstraction()
 {
 }
 
-i32 Pbg3Parser::OpenArchive(char *path)
+i32 Pbg3Parser::OpenArchive(const char *path)
 {
     this->Close();
     this->Reset();

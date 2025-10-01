@@ -205,10 +205,10 @@ struct AnmManager
     i32 ExecuteScript(AnmVm *vm);
     ZunResult Draw(AnmVm *vm);
     void DrawTextToSprite(u32 spriteDstIndex, i32 xPos, i32 yPos, i32 spriteWidth, i32 spriteHeight, i32 fontWidth,
-                          i32 fontHeight, ZunColor textColor, ZunColor shadowColor, char *strToPrint);
-    static void DrawStringFormat(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
-    static void DrawStringFormat2(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
-    static void DrawVmTextFmt(AnmManager *anm_mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, char *fmt, ...);
+                          i32 fontHeight, ZunColor textColor, ZunColor shadowColor, const char *strToPrint);
+    static void DrawStringFormat(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, const char *fmt, ...);
+    static void DrawStringFormat2(AnmManager *mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, const char *fmt, ...);
+    static void DrawVmTextFmt(AnmManager *anm_mgr, AnmVm *vm, ZunColor textColor, ZunColor shadowColor, const char *fmt, ...);
     ZunResult DrawNoRotation(AnmVm *vm);
     ZunResult DrawOrthographic(AnmVm *vm, bool roundToPixel);
     ZunResult DrawFacingCamera(AnmVm *vm);

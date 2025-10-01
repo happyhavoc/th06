@@ -199,7 +199,7 @@ struct ResultScreen
     static ZunResult AddedCallback(ResultScreen *r);
     static ZunResult DeletedCallback(ResultScreen *r);
 
-    static ScoreDat *OpenScore(char *path);
+    static ScoreDat *OpenScore(const char *path);
     static ZunResult ParseCatk(ScoreDat *s, Catk *catk);
     static ZunResult ParseClrd(ScoreDat *s, Clrd *out);
     static ZunResult ParsePscr(ScoreDat *s, Pscr *out);

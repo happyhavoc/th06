@@ -123,7 +123,7 @@ struct Supervisor
 
     static ZunResult SetupDInput(Supervisor *s);
 
-    i32 LoadPbg3(i32 pbg3FileIdx, char *filename);
+    i32 LoadPbg3(i32 pbg3FileIdx, const char *filename);
     void ReleasePbg3(i32 pbg3FileIdx);
 
     ZunResult LoadConfig(const char *path);

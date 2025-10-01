@@ -170,7 +170,7 @@ Pbg3Archive::~Pbg3Archive()
     this->Release();
 }
 
-i32 Pbg3Archive::Load(char *path)
+i32 Pbg3Archive::Load(const char *path)
 {
     if (!this->Release())
     {

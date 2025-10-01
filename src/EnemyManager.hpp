@@ -23,7 +23,7 @@ struct EnemyManager
 {
     void Initialize();
     EnemyManager();
-    static ZunResult RegisterChain(char *stgEnm1, char *stgEnm2);
+    static ZunResult RegisterChain(const char *stgEnm1, const char *stgEnm2);
     static void CutChain();
     static ChainCallbackResult OnUpdate(EnemyManager *enemyManager);
     static ChainCallbackResult OnDraw(EnemyManager *enemyManager);
@@ -33,8 +33,8 @@ struct EnemyManager
     void RunEclTimeline();
     Enemy *SpawnEnemy(i32 eclSubId, ZunVec3 *pos, i16 life, i16 itemDrop, i32 score);
 
-    char *stgEnmAnmFilename;
-    char *stgEnm2AnmFilename;
+    const char *stgEnmAnmFilename;
+    const char *stgEnm2AnmFilename;
     Enemy enemyTemplate;
     Enemy enemies[257];
     Enemy *bosses[8];

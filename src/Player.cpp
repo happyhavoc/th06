@@ -1096,8 +1096,8 @@ FireBulletResult Player::FireSingleBullet(Player *player, PlayerBullet *bullet, 
     CharacterPowerBulletData *bulletData;
     f32 *pfVar4;
     i32 bulletFrame;
-    i32 unused;
-    i32 unused2;
+    // i32 unused;
+    // i32 unused2;
 
     while (g_GameManager.currentPower >= powerData->power)
     {
@@ -1252,7 +1252,7 @@ i32 Player::CalcKillBoxCollision(ZunVec3 *bulletCenter, ZunVec3 *bulletSize)
     f32 bulletLeft, bulletTop, bulletRight, bulletBottom;
     f32 bombProjectileLeft, bombProjectileTop, bombProjectileRight, bombProjectileBottom;
     i32 curBombIdx;
-    i32 padding1, padding2, padding3, padding4;
+    // i32 padding1, padding2, padding3, padding4;
 
     curBombProjectile = this->bombProjectiles;
     bulletLeft = bulletCenter->x - bulletSize->x / 2.0f;

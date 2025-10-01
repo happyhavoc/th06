@@ -1264,7 +1264,7 @@ i32 MainMenu::ReplayHandling()
     ReplayHeader *replayData;
     char replayFilePath[32];
     //    WIN32_FIND_DATA replayFileInfo;
-    u8 padding[0x20]; // idk
+    // u8 padding[0x20]; // idk
 
     switch (this->gameState)
     {
