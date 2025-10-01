@@ -102,5 +102,5 @@ struct AsciiManager
     AsciiManagerPopup popups[515];
 };
 ZUN_ASSERT_SIZE(AsciiManager, 0xc1ac);
-extern "C" AsciiManager g_AsciiManager;
+extern AsciiManager g_AsciiManager;
 }; // namespace th06
