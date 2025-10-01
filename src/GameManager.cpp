@@ -24,7 +24,7 @@ namespace th06
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 5, g_ExtraLivesScores) = {10000000, 20000000, 40000000, 60000000, 1900000000};
 
-DIFFABLE_STATIC_ARRAY_ASSIGN(char *, 9, g_EclFiles) = {"dummy",
+DIFFABLE_STATIC_ARRAY_ASSIGN(const char *, 9, g_EclFiles) = {"dummy",
                                                        "data/ecldata1.ecl",
                                                        "data/ecldata2.ecl",
                                                        "data/ecldata3.ecl",

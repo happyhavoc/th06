@@ -9,7 +9,7 @@
 
 namespace th06
 {
-enum ItemType // This enum is 1 byte in size on Enemy
+enum ItemType : i16 // This enum is 1 byte in size on Enemy
 {
     ITEM_POWER_SMALL,
     ITEM_POINT,

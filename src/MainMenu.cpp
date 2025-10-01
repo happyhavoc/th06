@@ -38,7 +38,7 @@ i16 g_LastJoystickInput;
 MainMenu::MainMenu()
 {
     // what?
-    int waste1, waste2, waste3, waste4;
+    // int waste1, waste2, waste3, waste4;
 }
 
 ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
@@ -884,7 +884,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-#pragma intrinsic(strcpy)
+// #pragma intrinsic(strcpy)
 
 CursorMovement MainMenu::MoveCursor(MainMenu *menu, i32 menuLength)
 {

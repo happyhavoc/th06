@@ -424,7 +424,7 @@ endParsing:
     return ZUN_SUCCESS;
 }
 
-ZunResult Ending::LoadEnding(char *endFilePath)
+ZunResult Ending::LoadEnding(const char *endFilePath)
 {
     char *endFileDat;
 

@@ -819,7 +819,7 @@ ZunResult Supervisor::PlayMidiFile(i32 midiFileIdx)
     return ZUN_ERROR;
 }
 
-ZunResult Supervisor::SetupMidiPlayback(char *path)
+ZunResult Supervisor::SetupMidiPlayback(const char *path)
 {
     // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
     // Standard short circuiting boolean operators and nested conditionals don't seem to work, at least
@@ -840,7 +840,7 @@ success:
     return ZUN_SUCCESS;
 }
 
-ZunResult Supervisor::PlayAudio(char *path)
+ZunResult Supervisor::PlayAudio(const char *path)
 {
     char wavName[256];
     char wavPos[256];
