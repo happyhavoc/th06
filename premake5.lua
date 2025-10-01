@@ -1,6 +1,7 @@
 require "premake-ninja/ninja"
-
 premake.path = premake.path .. "/premake-ninja"
+
+
 
 workspace "th06"
   configurations { "Debug", "Release" }
@@ -9,9 +10,8 @@ workspace "th06"
 project "th06"
   language "C++"
   cppdialect "C++20"
-  targetname "th06"
   targetdir "."
-  objdir "obj"
+  objdir "obj/%{cfg.buildcfg}/"
 
   files {
     "src/AnmManager.cpp",
@@ -58,7 +58,7 @@ project "th06"
   includedirs { "src" }
 
   filter "toolset:gcc"   buildoptions { "-Wall", "-Wextra", "-Wpedantic" }
-  filter "toolset:clang" buildoptions { "-Wall", "-Wextra", "-Wpedantic", "-Wno-gnu-anonymous-struct", "-Wno-unused-parameter", "-Wno-nontrivial-memcall", "-Wno-c99-extensions", "-Wno-zero-length-array" }
+  filter "toolset:clang" buildoptions { "-Wall", "-Wextra", "-Wpedantic", "-Wno-gnu-anonymous-struct", "-Wno-unused-parameter", "-Wno-nontrivial-memcall", "-Wno-c99-extensions", "-Wno-switch" }
   filter {}
 
   kind "WindowedApp"
@@ -103,7 +103,6 @@ project "th06"
       filter { "architecture:x86"    } libdirs { SDL2_TTF_DIR .. "/lib/x86" }
       filter {}
     end
-  filter {}
 
   filter { "system:windows", "action:not vs*" }
     local pc_cflags = os.outputof("pkg-config --cflags sdl2 SDL2_image SDL2_ttf") or ""
@@ -114,11 +113,13 @@ project "th06"
 
   filter "configurations:Debug"
     defines { "DEBUG" }
+    targetname "th06_debug"
     symbols "On"
     optimize "Off"
 
   filter "configurations:Release"
     defines { "NDEBUG" }
+    targetname "th06_release"
     optimize "Speed"
     symbols "Off"
 

@@ -341,7 +341,7 @@ struct EclRawHeader
     i16 subCount;
     i16 mainCount;
     u32 timelineOffsets[3];
-    u32 subOffsets[0];
+    u32 subOffsets[];
 };
 ZUN_ASSERT_SIZE(EclRawHeader, 0x10);
 

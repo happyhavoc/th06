@@ -1327,7 +1327,7 @@ u32 ResultScreen::DrawFinalStats()
 ZunResult ResultScreen::RegisterChain(i32 unk)
 {
 
-    i32 unused[16];
+    // i32 unused[16];
     ResultScreen *resultScreen;
     resultScreen = new ResultScreen();
 
@@ -1364,7 +1364,7 @@ ZunResult ResultScreen::RegisterChain(i32 unk)
 
 ResultScreen::ResultScreen()
 {
-    i32 unused[12];
+    // i32 unused[12];
     std::memset(this, 0, sizeof(ResultScreen));
     this->cursor = 1;
 }
@@ -1720,9 +1720,9 @@ ChainCallbackResult ResultScreen::OnUpdate(ResultScreen *resultScreen)
 
 ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
 {
-    u8 unused[12];
-    u8 unused2;
-    u8 unused3;
+    // u8 unused[12];
+    // u8 unused2;
+    // u8 unused3;
 
     AnmVm *sprite;
     char keyboardCharacter[2];

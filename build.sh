@@ -1,18 +1,28 @@
-NPROC=$(nproc)
+#!/usr/bin/env bash
+set -e
 
-CLEAN=false
+NPROC=$(nproc)
+BUILD_TYPE="Debug"
+
 for arg in "$@"; do
     if [ "$arg" = "--clean" ]; then
-        CLEAN=TRUE
+        CLEAN=true
+    elif [ "$arg" = "Release" ] || [ "$arg" = "Debug" ] || [ "$arg" = "All" ]; then
+        BUILD_TYPE=$arg
     fi
-done;
+done
 
-if [ "$CLEAN" = "TRUE" ]; then
-    rm -rf build
-    rm -rf obj/
-    rm th06
+if [ "$CLEAN" = true ]; then
+    rm -rf build obj
+    rm -f th06_*
 fi
+
 
 premake5 --cc=clang ninja
 cd build
-ninja -j${NPROC}
+
+if [ "$BUILD_TYPE" = "All" ]; then
+    ninja -j${NPROC} Debug Release
+else
+    ninja -j${NPROC} $BUILD_TYPE
+fi
