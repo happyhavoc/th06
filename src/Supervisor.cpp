@@ -909,10 +909,6 @@ ZunResult Supervisor::StopAudio()
 
 ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 {
-    // i32 unused1;
-    // i32 unused2;
-    // i32 unused3;
-
     if (g_Supervisor.cfg.musicMode == MIDI)
     {
         //        if (g_Supervisor.midiOutput != NULL)

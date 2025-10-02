@@ -1350,7 +1350,8 @@ i32 MainMenu::ReplayHandling()
         {
             break;
         }
-        if (this->replayFilesNum != NULL)
+        // Originally NULL, but null is 0, and this makes the compiler happy.
+        if (this->replayFilesNum != 0)
         {
             MoveCursor(this, this->replayFilesNum);
             this->chosenReplay = this->cursor;

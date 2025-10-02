@@ -517,9 +517,8 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
 ZunResult Ending::AddedCallback(Ending *ending)
 {
     i32 shotTypeAndCharacter;
-    i32 unused;
-
-    unused = g_GameManager.character * 2 + g_GameManager.shotType;
+    // i32 unused;
+    // unused = g_GameManager.character * 2 + g_GameManager.shotType;
 
     g_GameManager.isGameCompleted = true;
     g_Supervisor.isInEnding = true;

@@ -44,8 +44,8 @@ void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
     alu = &instr->args.alu;
     angle = *GetVarFloat(enemy, &alu->arg1.f32Param, NULL);
 
-    enemy->moveInterp.x = std::cos(angle) * alu->arg2.f32Param * alu->res / 2.0f;
-    enemy->moveInterp.y = std::sin(angle) * alu->arg2.f32Param * alu->res / 2.0f;
+    enemy->moveInterp.x = std::cos(angle) * alu->arg2.f32Param * (f32)alu->res / 2.0f;
+    enemy->moveInterp.y = std::sin(angle) * alu->arg2.f32Param * (f32)alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
@@ -83,8 +83,8 @@ void MoveTime(Enemy *enemy, EclRawInstr *instr)
     alu = &instr->args.alu;
     angle = *GetVarFloat(enemy, &enemy->angle, NULL);
 
-    enemy->moveInterp.x = std::cos(angle) * enemy->speed * alu->res / 2.0f;
-    enemy->moveInterp.y = std::sin(angle) * enemy->speed * alu->res / 2.0f;
+    enemy->moveInterp.x = std::cos(angle) * enemy->speed * (f32)alu->res / 2.0f;
+    enemy->moveInterp.y = std::sin(angle) * enemy->speed * (f32)alu->res / 2.0f;
     enemy->moveInterp.z = 0.0f;
 
     enemy->moveInterpStartPos = enemy->position;
@@ -978,12 +978,12 @@ void ExInsStage6Func11(Enemy *enemy, EclRawInstr *instr)
 {
     Bullet *currentBullet;
     i32 i;
-    f32 unusedRandomNumber;
+    // f32 unusedRandomNumber;
 
     currentBullet = g_BulletManager.bullets;
     EnemyBulletShooter unusedBulletProps;
 
-    unusedRandomNumber = g_Rng.GetRandomF32InRange(ZUN_PI * 2) - ZUN_PI;
+    // unusedRandomNumber = g_Rng.GetRandomF32InRange(ZUN_PI * 2) - ZUN_PI;
     g_EffectManager.SpawnParticles(PARTICLE_EFFECT_UNK_12, &enemy->position, 1, COLOR_WHITE);
 
     for (i = 0; i < ARRAY_SIZE_SIGNED(g_BulletManager.bullets); i++, currentBullet++)

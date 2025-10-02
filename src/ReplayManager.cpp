@@ -67,7 +67,7 @@ ZunResult ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
     return ZUN_SUCCESS;
 }
 
-ZunResult ReplayManager::RegisterChain(i32 isDemo, char *replayFile)
+ZunResult ReplayManager::RegisterChain(i32 isDemo, const char *replayFile)
 {
     ReplayManager *replayMgr;
 

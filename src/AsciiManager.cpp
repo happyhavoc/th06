@@ -251,7 +251,7 @@ void AsciiManager::DrawStrings(void)
 
             g_Supervisor.viewport.Set();
         }
-        while (*text != NULL)
+        while (*text != 0)
         {
             if (*text == '\n')
             {

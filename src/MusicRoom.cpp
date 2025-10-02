@@ -26,10 +26,10 @@ bool MusicRoom::ProcessInput()
 {
     i32 i;
     char lineCharBuffer[64];
-    i32 listPos;
+    // i32 listPos;
 
     // This variable is never used after this?
-    listPos = this->listingOffset;
+    // listPos = this->listingOffset;
 
     if (WAS_PRESSED(TH_BUTTON_UP))
     {

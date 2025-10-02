@@ -1,5 +1,6 @@
 #pragma once
 
+#include "diffbuild.hpp"
 #include "inttypes.hpp"
 
 namespace th06
