@@ -12,7 +12,7 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(ItemManager, g_ItemManager);
+ItemManager g_ItemManager;
 
 ItemManager::ItemManager() {
 

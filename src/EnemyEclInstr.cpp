@@ -29,12 +29,12 @@ ZUN_ASSERT_SIZE(PatchouliShottypeVars, 0x18);
 
 DIFFABLE_STATIC_ARRAY_ASSIGN(PatchouliShottypeVars, 2, g_PatchouliShottypeVars) = {{{{0, 3, 1}, {2, 3, 4}}},
                                                                                    {{{1, 4, 0}, {4, 2, 3}}}};
-DIFFABLE_STATIC(i32, g_PlayerShot);
-DIFFABLE_STATIC(f32, g_PlayerDistance);
-DIFFABLE_STATIC(f32, g_PlayerAngle);
+i32 g_PlayerShot;
+f32 g_PlayerDistance;
+f32 g_PlayerAngle;
 DIFFABLE_STATIC_ARRAY(f32, 6, g_StarAngleTable);
-DIFFABLE_STATIC(ZunVec3, g_EnemyPosVector);
-DIFFABLE_STATIC(ZunVec3, g_PlayerPosVector);
+ZunVec3 g_EnemyPosVector;
+ZunVec3 g_PlayerPosVector;
 
 void MoveDirTime(Enemy *enemy, EclRawInstr *instr)
 {

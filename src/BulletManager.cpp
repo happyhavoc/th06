@@ -16,9 +16,9 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(BulletManager, g_BulletManager);
-DIFFABLE_STATIC(ChainElem, g_BulletManagerCalcChain);
-DIFFABLE_STATIC(ChainElem, g_BulletManagerDrawChain);
+BulletManager g_BulletManager;
+ChainElem g_BulletManagerCalcChain;
+ChainElem g_BulletManagerDrawChain;
 DIFFABLE_STATIC_ARRAY_ASSIGN(u32, 28, g_EffectsColorWithTextureBlending) = {
     0xff000000, 0xff303030, 0xff606060, 0xff500000, 0xff900000, 0xffff2020, 0xff400040,
     0xff800080, 0xffff30ff, 0xff000050, 0xff000090, 0xff2020ff, 0xff203060, 0xff304090,

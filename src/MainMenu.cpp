@@ -2325,5 +2325,5 @@ void MainMenu::ReleaseTitleAnm()
     }
 }
 
-DIFFABLE_STATIC(MainMenu, g_MainMenu);
+MainMenu g_MainMenu;
 }; // namespace th06
