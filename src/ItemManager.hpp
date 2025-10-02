@@ -18,7 +18,8 @@ enum ItemType : i16 // This enum is 1 byte in size on Enemy
     ITEM_FULL_POWER,
     ITEM_LIFE,
     ITEM_POINT_BULLET,
-    ITEM_NO_ITEM = 0xffffffff,
+    // Might need to be 0xffffff? That causes zed to freak out though..
+    ITEM_NO_ITEM = -1,
 };
 
 struct Item

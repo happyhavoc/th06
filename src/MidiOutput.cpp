@@ -1,7 +1,4 @@
 #include "inttypes.hpp"
-// #include <Windows.h>
-// #include <mmreg.h>
-// #include <mmsystem.h>
 
 #include "FileSystem.hpp"
 #include "MidiOutput.hpp"

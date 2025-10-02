@@ -4,15 +4,10 @@
 #include "BulletManager.hpp"
 #include "EclManager.hpp"
 #include "Effect.hpp"
-#include "ItemManager.hpp"
 #include "SoundPlayer.hpp"
 #include "ZunMath.hpp"
-#include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
-// #include <Windows.h>
-// #include <d3d8.h>
-// #include <d3dx8math.h>
 #include <cstring>
 
 namespace th06

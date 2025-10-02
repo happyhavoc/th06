@@ -1,9 +1,5 @@
 #pragma once
 
-// #include <Windows.h>
-// #include <d3d8types.h>
-// #include <string.h>
-
 #include "Chain.hpp"
 #include "ZunColor.hpp"
 #include "ZunResult.hpp"
