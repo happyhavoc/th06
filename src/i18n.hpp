@@ -95,13 +95,6 @@
 
 #define TH_JP_UNKNOWN_SPELLCARD "？？？？？"
 
-#define TH_JP_CM_DAT_FILE "紅魔郷CM.DAT"
-#define TH_JP_ED_DAT_FILE "紅魔郷ED.DAT"
-#define TH_JP_IN_DAT_FILE "紅魔郷IN.DAT"
-#define TH_JP_MD_DAT_FILE "紅魔郷MD.DAT"
-#define TH_JP_ST_DAT_FILE "紅魔郷ST.DAT"
-#define TH_JP_TL_DAT_FILE "紅魔郷TL.DAT"
-
 // EN
 #define TH_EN_CONFIG_FILE "th06.cfg"
 #define TH_EN_WINDOW_TITLE "Touhou Koumakyou ~ the Embodiment of Scarlet Devil"
@@ -193,12 +186,6 @@
 
 #define TH_EN_UNKNOWN_SPELLCARD "??????"
 
-#define TH_EN_CM_DAT_FILE "th06e_CM.DAT"
-#define TH_EN_ED_DAT_FILE "th06e_ED.DAT"
-#define TH_EN_IN_DAT_FILE "th06e_IN.DAT"
-#define TH_EN_MD_DAT_FILE "th06e_MD.DAT"
-#define TH_EN_ST_DAT_FILE "th06e_ST.DAT"
-#define TH_EN_TL_DAT_FILE "th06e_TL.DAT"
 #define TH_CONCAT_HELPER(x, y) x##y
 
 #define TH_MAKE_LANG_STR(lang, id) TH_CONCAT_HELPER(lang, id)
