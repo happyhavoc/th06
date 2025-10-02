@@ -221,7 +221,7 @@ ChainCallbackResult Player::OnUpdate(Player *p)
                     g_ItemManager.SpawnItem(&p->positionCenter, ITEM_FULL_POWER, 2);
                     g_GameManager.currentPower = 0;
                     g_Gui.flags.flag2 = 2;
-                    g_GameManager.extraLives = -1;
+                    g_GameManager.extraLives = 0xFF;
                 }
                 g_GameManager.DecreaseSubrank(1600);
             }
