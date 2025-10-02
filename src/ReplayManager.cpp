@@ -282,7 +282,7 @@ ZunResult ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
     {
         mgr->replayData = (ReplayData *)std::malloc(sizeof(ReplayData));
 
-        mgr->replayData->header = (ReplayHeader *)FileSystem::OpenPath(mgr->replayFile, g_GameManager.demoMode == 0);
+        mgr->replayData->header = (ReplayHeader *)FileSystem::OpenPath(mgr->replayFile);
         if (ValidateReplayData(mgr->replayData->header, g_LastFileSize) != ZUN_SUCCESS)
         {
             return ZUN_ERROR;

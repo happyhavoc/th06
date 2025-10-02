@@ -443,7 +443,7 @@ ZunResult Stage::LoadStageData(const char *anmpath, const char *stdpath)
     {
         return ZUN_ERROR;
     }
-    this->stdData = (RawStageHeader *)FileSystem::OpenPath(stdpath, false);
+    this->stdData = (RawStageHeader *)FileSystem::OpenPath(stdpath);
     if (this->stdData == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_STAGE_DATA_CORRUPTED);

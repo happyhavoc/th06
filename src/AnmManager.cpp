@@ -56,7 +56,7 @@ SDL_Surface *AnmManager::LoadToSurfaceWithFormat(const char *filename, SDL_Pixel
     SDL_Surface *imageTargetSurface;
     SDL_RWops *rwData;
 
-    data = FileSystem::OpenPath(filename, 0);
+    data = FileSystem::OpenPath(filename);
 
     if (data == NULL)
     {
@@ -493,7 +493,7 @@ ZunResult AnmManager::CreateEmptyTexture(i32 textureIdx, u32 width, u32 height, 
 ZunResult AnmManager::LoadAnm(i32 anmIdx, const char *path, i32 spriteIdxOffset)
 {
     this->ReleaseAnm(anmIdx);
-    this->anmFiles[anmIdx] = (AnmRawEntry *)FileSystem::OpenPath(path, 0);
+    this->anmFiles[anmIdx] = (AnmRawEntry *)FileSystem::OpenPath(path);
 
     AnmRawEntry *anm = this->anmFiles[anmIdx];
 

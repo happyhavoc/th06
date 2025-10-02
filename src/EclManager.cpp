@@ -39,7 +39,7 @@ ZunResult EclManager::Load(const char *eclPath)
 {
     i32 idx;
 
-    this->eclFile = (EclRawHeader *)FileSystem::OpenPath(eclPath, false);
+    this->eclFile = (EclRawHeader *)FileSystem::OpenPath(eclPath);
 
     if (this->eclFile == NULL)
     {

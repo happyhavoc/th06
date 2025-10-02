@@ -282,7 +282,7 @@ ZunResult SoundPlayer::LoadPos(char *path)
         return ZUN_ERROR;
     }
 
-    fileData = FileSystem::OpenPath(path, 0);
+    fileData = FileSystem::OpenPath(path);
 
     if (fileData == NULL)
     {
@@ -347,7 +347,7 @@ ZunResult SoundPlayer::LoadSound(i32 idx, const char *path, f32 volumeMultiplier
         this->soundBuffers[idx].samples = NULL;
     }
 
-    wavRawData = (u8 *)FileSystem::OpenPath(path, 0);
+    wavRawData = (u8 *)FileSystem::OpenPath(path);
 
     if (wavRawData == NULL)
     {

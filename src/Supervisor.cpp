@@ -308,16 +308,10 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 {
     i32 i;
 
-    for (i = 0; i < (i32)(sizeof(s->pbg3Archives) / sizeof(s->pbg3Archives[0])); i++)
-    {
-        s->pbg3Archives[i] = NULL;
-    }
-
-    g_Pbg3Archives = s->pbg3Archives;
-    if (s->LoadPbg3(IN_PBG3_INDEX, TH_IN_DAT_FILE))
-    {
-        return ZUN_ERROR;
-    }
+    // if (s->LoadPbg3(IN_PBG3_INDEX, TH_IN_DAT_FILE))
+    // {
+    //     return ZUN_ERROR;
+    // }
 
     // D3DX code swaps twice to copy to both buffers
 
@@ -366,9 +360,9 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
         return ZUN_ERROR;
     }
 
-    s->ReleasePbg3(IN_PBG3_INDEX);
-    if (g_Supervisor.LoadPbg3(MD_PBG3_INDEX, TH_MD_DAT_FILE) != 0)
-        return ZUN_ERROR;
+    // s->ReleasePbg3(IN_PBG3_INDEX);
+    // if (g_Supervisor.LoadPbg3(MD_PBG3_INDEX, TH_MD_DAT_FILE) != 0)
+    //     return ZUN_ERROR;
 
     return ZUN_SUCCESS;
 }
@@ -489,14 +483,14 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
 
 ZunResult Supervisor::DeletedCallback(Supervisor *s)
 {
-    i32 pbg3Idx;
+    // i32 pbg3Idx;
 
     //    g_AnmManager->ReleaseVertexBuffer();
-    for (pbg3Idx = 0; pbg3Idx < ARRAY_SIZE_SIGNED(s->pbg3Archives); pbg3Idx += 1)
-    {
-        s->ReleasePbg3(pbg3Idx);
-    }
-    g_AnmManager->ReleaseAnm(0);
+    // for (pbg3Idx = 0; pbg3Idx < ARRAY_SIZE_SIGNED(s->pbg3Archives); pbg3Idx += 1)
+    // {
+    //     s->ReleasePbg3(pbg3Idx);
+    // }
+    // g_AnmManager->ReleaseAnm(0);
     AsciiManager::CutChain();
     g_SoundPlayer.StopBGM();
     //    if (s->midiOutput != NULL)
@@ -596,60 +590,63 @@ void Supervisor::TickTimer(i32 *frames, f32 *subframes)
     }
 }
 
-void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
-{
-    if (this->pbg3Archives[pbg3FileIdx] == NULL)
-    {
-        return;
-    }
+// void Supervisor::ReleasePbg3(i32 pbg3FileIdx)
+// {
+//     // if (this->pbg3Archives[pbg3FileIdx] == NULL)
+//     // {
+//     //     return;
+//     // }
 
-    // Double free! Release is called internally by the Pbg3Archive destructor,
-    // and as such should not be called directly. By calling it directly here,
-    // it ends up being called twice, which will cause the resources owned by
-    // Pbg3Archive to be freed multiple times, which can result in crashes.
-    //
-    // For some reason, this double-free doesn't cause crashes in the original
-    // game. However, this can cause problems in dllbuilds of the game. Maybe
-    // some accuracy improvements in the PBG3 handling will remove this
-    // difference.
-    this->pbg3Archives[pbg3FileIdx]->Release();
-    delete this->pbg3Archives[pbg3FileIdx];
-    this->pbg3Archives[pbg3FileIdx] = NULL;
-}
+//     // Double free! Release is called internally by the Pbg3Archive destructor,
+//     // and as such should not be called directly. By calling it directly here,
+//     // it ends up being called twice, which will cause the resources owned by
+//     // Pbg3Archive to be freed multiple times, which can result in crashes.
+//     //
+//     // For some reason, this double-free doesn't cause crashes in the original
+//     // game. However, this can cause problems in dllbuilds of the game. Maybe
+//     // some accuracy improvements in the PBG3 handling will remove this
+//     // difference.
+//     // this->pbg3Archives[pbg3FileIdx]->Release();
+//     // delete this->pbg3Archives[pbg3FileIdx];
+//     // this->pbg3Archives[pbg3FileIdx] = NULL;
+// }
 
-i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, const char *filename)
-{
-    if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
-    {
-        this->ReleasePbg3(pbg3FileIdx);
-        this->pbg3Archives[pbg3FileIdx] = new Pbg3Archive();
-        utils::DebugPrint("%s open ...\n", filename);
-        if (this->pbg3Archives[pbg3FileIdx]->Load(filename) != 0)
-        {
-            std::strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
+// i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, const char *filename)
+// {
+//     if (this->pbg3Archives[pbg3FileIdx] == NULL || strcmp(filename, this->pbg3ArchiveNames[pbg3FileIdx]) != 0)
+//     {
+//         this->ReleasePbg3(pbg3FileIdx);
+//         this->pbg3Archives[pbg3FileIdx] = new Pbg3Archive();
+//         utils::DebugPrint("%s open ...\n", filename);
+//         if (this->pbg3Archives[pbg3FileIdx]->Load(filename) != 0)
+//         {
+//             std::strcpy(this->pbg3ArchiveNames[pbg3FileIdx], filename);
 
-            char verPath[128];
-            std::sprintf(verPath, "ver%.4x.dat", GAME_VERSION);
-            i32 res = this->pbg3Archives[pbg3FileIdx]->FindEntry(verPath);
-            if (res < 0)
-            {
-                GameErrorContext::Fatal(&g_GameErrorContext, "error : データのバージョンが違います\n");
-                return 1;
-            }
-        }
-        else
-        {
-            delete this->pbg3Archives[pbg3FileIdx];
-            // Let's really make sure this is null by nulling twice. I assume
-            // there's some kind of inline function here, like it's actually
-            // calling this->pbg3Archives.delete(pbg3FileIdx), followed by a
-            // manual nulling?
-            this->pbg3Archives[pbg3FileIdx] = NULL;
-            this->pbg3Archives[pbg3FileIdx] = NULL;
-        }
-    }
-    return 0;
-}
+//             char verPath[128];
+//             std::sprintf(verPath, "ver%.4x.dat", GAME_VERSION);
+//             i32 res = this->pbg3Archives[pbg3FileIdx]->FindEntry(verPath);
+//             if (res < 0)
+//             {
+//                 GameErrorContext::Fatal(&g_GameErrorContext, "error : データのバージョンが違います\n");
+//                 return 1;
+//             }
+//         }
+//         else
+//         {
+//             delete this->pbg3Archives[pbg3FileIdx];
+//             // Let's really make sure this is null by nulling twice. I assume
+//             // there's some kind of inline function here, like it's actually
+//             // calling this->pbg3Archives.delete(pbg3FileIdx), followed by a
+//             // manual nulling?
+//             this->pbg3Archives[pbg3FileIdx] = NULL;
+//             this->pbg3Archives[pbg3FileIdx] = NULL;
+//         }
+//     }
+//     return 0;
+// }
+// i32 Supervisor::LoadPbg3(i32 pbg3FileIdx, const char *filename) {
+//     return 0;
+// }
 
 ZunResult Supervisor::LoadConfig(const char *path)
 {
@@ -659,7 +656,7 @@ ZunResult Supervisor::LoadConfig(const char *path)
 
     std::memset(&g_Supervisor.cfg, 0, sizeof(GameConfiguration));
     g_Supervisor.cfg.opts = g_Supervisor.cfg.opts | (1 << GCOS_USE_D3D_HW_TEXTURE_BLENDING);
-    data = (GameConfiguration *)FileSystem::OpenPath(path, 1);
+    data = (GameConfiguration *)FileSystem::OpenPath(path);
     if (data == NULL)
     {
         g_Supervisor.cfg.lifeCount = 2;

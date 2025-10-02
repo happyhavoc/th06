@@ -1283,7 +1283,7 @@ i32 MainMenu::ReplayHandling()
                 for (cur = 0; cur < 15; cur++)
                 {
                     std::sprintf(replayFilePath, "./replay/th6_%.2d.rpy", cur + 1);
-                    replayData = (ReplayHeader *)FileSystem::OpenPath(replayFilePath, 1);
+                    replayData = (ReplayHeader *)FileSystem::OpenPath(replayFilePath);
                     if (replayData == NULL)
                     {
                         std::free(replayData);
@@ -1369,7 +1369,7 @@ i32 MainMenu::ReplayHandling()
                 g_SoundPlayer.PlaySoundByIdx(SOUND_SELECT);
                 this->currentReplay = (ReplayData *)std::malloc(sizeof(ReplayData));
                 this->currentReplay->header =
-                    (ReplayHeader *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay], 1);
+                    (ReplayHeader *)FileSystem::OpenPath(this->replayFilePaths[this->chosenReplay]);
                 ReplayManager::ValidateReplayData(this->currentReplay->header, g_LastFileSize);
                 for (cur = 0; cur < ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData); cur++)
                 {
@@ -2023,7 +2023,7 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 {
     i32 i;
 
-    g_Supervisor.LoadPbg3(3, TH_TL_DAT_FILE);
+    // g_Supervisor.LoadPbg3(3, TH_TL_DAT_FILE);
     for (i = ANM_FILE_SELECT01; i <= ANM_FILE_REPLAY; i++)
     {
         g_AnmManager->ReleaseAnm(i);

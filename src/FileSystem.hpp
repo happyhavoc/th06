@@ -6,7 +6,7 @@ namespace th06
 {
 namespace FileSystem
 {
-u8 *OpenPath(const char *filepath, int isExternalResource);
+u8 *OpenPath(const char *filepath);
 int WriteDataToFile(const char *path, void *data, std::size_t size);
 } // namespace FileSystem
 

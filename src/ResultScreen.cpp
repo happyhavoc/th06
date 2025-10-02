@@ -62,7 +62,7 @@ ScoreDat *ResultScreen::OpenScore(const char *path)
     ScoreDat *scoreDat;
 
     scoreDat = (ScoreDat *)malloc(sizeof(ScoreDat));
-    scoreRaw = (ScoreRaw *)FileSystem::OpenPath(path, true);
+    scoreRaw = (ScoreRaw *)FileSystem::OpenPath(path);
     if (scoreRaw == NULL)
     {
     FAILED_TO_READ:
@@ -870,7 +870,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
             for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->replays); idx++)
             {
                 std::sprintf(replayToReadPath, "./replay/th6_%.2d.rpy", idx + 1);
-                replayLoaded = (ReplayHeader *)FileSystem::OpenPath(replayToReadPath, 1);
+                replayLoaded = (ReplayHeader *)FileSystem::OpenPath(replayToReadPath);
                 if (replayLoaded == NULL)
                 {
                     continue;

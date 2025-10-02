@@ -388,8 +388,8 @@ ZunResult GameManager::AddedCallback(GameManager *mgr)
             mgr->currentPower = 128;
         }
     }
-    g_Supervisor.LoadPbg3(CM_PBG3_INDEX, TH_CM_DAT_FILE);
-    g_Supervisor.LoadPbg3(ST_PBG3_INDEX, TH_ST_DAT_FILE);
+    // g_Supervisor.LoadPbg3(CM_PBG3_INDEX, TH_CM_DAT_FILE);
+    // g_Supervisor.LoadPbg3(ST_PBG3_INDEX, TH_ST_DAT_FILE);
     if (g_GameManager.isInReplay == 1)
     {
         if (ReplayManager::RegisterChain(1, (char *)g_GameManager.replayFile) != ZUN_SUCCESS)

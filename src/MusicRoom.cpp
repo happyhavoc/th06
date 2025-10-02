@@ -257,7 +257,7 @@ ZunResult MusicRoom::AddedCallback(MusicRoom *musicRoom)
 
     g_AnmManager->SetAndExecuteScriptIdx(musicRoom->mainVm, ANM_OFFSET_MUSIC00);
     musicRoom->waitFramesCount = 0;
-    currChar = (char *)FileSystem::OpenPath("data/musiccmt.txt", 0);
+    currChar = (char *)FileSystem::OpenPath("data/musiccmt.txt");
     fileBase = currChar;
 
     if (currChar == NULL)

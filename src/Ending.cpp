@@ -429,7 +429,7 @@ ZunResult Ending::LoadEnding(const char *endFilePath)
     char *endFileDat;
 
     endFileDat = this->endFileData;
-    this->endFileData = (char *)FileSystem::OpenPath(endFilePath, false);
+    this->endFileData = (char *)FileSystem::OpenPath(endFilePath);
     if (this->endFileData == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ENDING_END_FILE_CORRUPTED);
@@ -523,7 +523,7 @@ ZunResult Ending::AddedCallback(Ending *ending)
 
     g_GameManager.isGameCompleted = true;
     g_Supervisor.isInEnding = true;
-    g_Supervisor.LoadPbg3(ED_PBG3_INDEX, TH_ED_DAT_FILE);
+    // g_Supervisor.LoadPbg3(ED_PBG3_INDEX, TH_ED_DAT_FILE);
     g_AnmManager->LoadAnm(ANM_FILE_STAFF01, "data/staff01.anm", ANM_OFFSET_STAFF01);
     g_AnmManager->LoadAnm(ANM_FILE_STAFF02, "data/staff02.anm", ANM_OFFSET_STAFF02);
     g_AnmManager->LoadAnm(ANM_FILE_STAFF03, "data/staff03.anm", ANM_OFFSET_STAFF03);
@@ -635,7 +635,7 @@ ZunResult Ending::DeletedCallback(Ending *ending)
     ending = NULL;
 
     g_Supervisor.isInEnding = false;
-    g_Supervisor.ReleasePbg3(ED_PBG3_INDEX);
+    // g_Supervisor.ReleasePbg3(ED_PBG3_INDEX);
     return ZUN_SUCCESS;
 }
 }; // namespace th06

@@ -14,7 +14,6 @@
 #include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-#include "pbg3/Pbg3Archive.hpp"
 
 namespace th06
 {
@@ -123,8 +122,8 @@ struct Supervisor
 
     static ZunResult SetupDInput(Supervisor *s);
 
-    i32 LoadPbg3(i32 pbg3FileIdx, const char *filename);
-    void ReleasePbg3(i32 pbg3FileIdx);
+    // i32 LoadPbg3(i32 pbg3FileIdx, const char *filename);
+    // void ReleasePbg3(i32 pbg3FileIdx);
 
     ZunResult LoadConfig(const char *path);
 
@@ -181,9 +180,6 @@ struct Supervisor
 
     f32 unk1b4;
     f32 unk1b8;
-
-    Pbg3Archive *pbg3Archives[16];
-    Pbg3ArchiveName pbg3ArchiveNames[16];
 
     u8 hasD3dHardwareVertexProcessing;
     u8 lockableBackbuffer;

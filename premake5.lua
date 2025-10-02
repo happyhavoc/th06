@@ -48,9 +48,6 @@ project "th06"
     "src/utils.cpp",
     "src/ZunTimer.cpp",
     "src/pbg3/FileAbstraction.cpp",
-    "src/pbg3/IPbg3Parser.cpp",
-    "src/pbg3/Pbg3Archive.cpp",
-    "src/pbg3/Pbg3Parser.cpp",
     -- keep headers visible
     "src/**.hpp"
   }

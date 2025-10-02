@@ -464,7 +464,7 @@ ZunResult Gui::LoadMsg(const char *path)
     i32 idx;
 
     this->FreeMsgFile();
-    this->impl->msg.msgFile = (MsgRawHeader *)FileSystem::OpenPath(path, 0);
+    this->impl->msg.msgFile = (MsgRawHeader *)FileSystem::OpenPath(path);
     if (this->impl->msg.msgFile == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GUI_MSG_FILE_CORRUPTED, path);

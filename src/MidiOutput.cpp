@@ -226,7 +226,7 @@ ZunResult MidiOutput::ReadFileData(u32 idx, char *path)
     this->StopPlayback();
     this->ReleaseFileData(idx);
 
-    this->midiFileData[idx] = FileSystem::OpenPath(path, false);
+    this->midiFileData[idx] = FileSystem::OpenPath(path);
 
     if (this->midiFileData[idx] == (byte *)0x0)
     {
