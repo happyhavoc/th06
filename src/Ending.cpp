@@ -184,7 +184,7 @@ ZunResult Ending::ParseEndFile()
             case END_OPCODE_BACKGROUND:
                 /* background(jpg_file) */
 
-                if (g_AnmManager->LoadSurface(0, this->endFileDataPtr + 1) != ZUN_SUCCESS)
+                if (!g_AnmManager->LoadSurface(0, this->endFileDataPtr + 1))
                 {
                     return ZUN_ERROR;
                 }

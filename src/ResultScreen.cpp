@@ -2047,27 +2047,27 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
     if (resultScreen->resultScreenState != RESULT_SCREEN_STATE_EXIT)
     {
 
-        if (g_AnmManager->LoadSurface(0, "data/result/result.jpg") != ZUN_SUCCESS)
+        if (!g_AnmManager->LoadSurface(0, "data/result/result.jpg"))
         {
             return ZUN_ERROR;
         }
 
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT00, "data/result00.anm", ANM_OFFSET_RESULT00) != ZUN_SUCCESS)
+        if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT00, "data/result00.anm", ANM_OFFSET_RESULT00))
         {
             return ZUN_ERROR;
         }
 
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT01, "data/result01.anm", ANM_OFFSET_RESULT01) != ZUN_SUCCESS)
+        if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT01, "data/result01.anm", ANM_OFFSET_RESULT01))
         {
             return ZUN_ERROR;
         }
 
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT02, "data/result02.anm", ANM_OFFSET_RESULT02) != ZUN_SUCCESS)
+        if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT02, "data/result02.anm", ANM_OFFSET_RESULT02))
         {
             return ZUN_ERROR;
         }
 
-        if (g_AnmManager->LoadAnm(ANM_FILE_RESULT03, "data/result03.anm", ANM_OFFSET_RESULT03) != ZUN_SUCCESS)
+        if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT03, "data/result03.anm", ANM_OFFSET_RESULT03))
         {
             return ZUN_ERROR;
         }

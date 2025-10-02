@@ -439,7 +439,7 @@ ZunResult Stage::LoadStageData(const char *anmpath, const char *stdpath)
     u32 sizeVmArr;
     // u32 padding1, padding2, padding3, padding4, padding5, padding6;
 
-    if (g_AnmManager->LoadAnm(ANM_FILE_STAGEBG, anmpath, ANM_OFFSET_STAGEBG) != ZUN_SUCCESS)
+    if (!g_AnmManager->LoadAnm(ANM_FILE_STAGEBG, anmpath, ANM_OFFSET_STAGEBG))
     {
         return ZUN_ERROR;
     }

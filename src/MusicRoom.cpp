@@ -235,22 +235,22 @@ ZunResult MusicRoom::AddedCallback(MusicRoom *musicRoom)
     char lineCharBuffer[64];
     i32 lineIndex;
 
-    if (g_AnmManager->LoadSurface(0, "data/result/music.jpg") != ZUN_SUCCESS)
+    if (!g_AnmManager->LoadSurface(0, "data/result/music.jpg"))
     {
         return ZUN_ERROR;
     }
 
-    if (g_AnmManager->LoadAnm(ANM_FILE_MUSIC00, "data/music00.anm", ANM_OFFSET_MUSIC00) != ZUN_SUCCESS)
+    if (!g_AnmManager->LoadAnm(ANM_FILE_MUSIC00, "data/music00.anm", ANM_OFFSET_MUSIC00))
     {
         return ZUN_ERROR;
     }
 
-    if (g_AnmManager->LoadAnm(ANM_FILE_MUSIC01, "data/music01.anm", ANM_OFFSET_MUSIC01) != ZUN_SUCCESS)
+    if (!g_AnmManager->LoadAnm(ANM_FILE_MUSIC01, "data/music01.anm", ANM_OFFSET_MUSIC01))
     {
         return ZUN_ERROR;
     }
 
-    if (g_AnmManager->LoadAnm(ANM_FILE_MUSIC02, "data/music02.anm", ANM_OFFSET_MUSIC02) != ZUN_SUCCESS)
+    if (!g_AnmManager->LoadAnm(ANM_FILE_MUSIC02, "data/music02.anm", ANM_OFFSET_MUSIC02))
     {
         return ZUN_ERROR;
     }
