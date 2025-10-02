@@ -1438,7 +1438,7 @@ i32 MainMenu::ReplayHandling()
                 }
             }
         }
-        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) && this->currentReplay[this->cursor].header->stageReplayDataOffsets)
+        if (WAS_PRESSED(TH_BUTTON_SELECTMENU) /* && this->currentReplay[this->cursor].header->stageReplayDataOffsets */)
         {
             g_GameManager.isInReplay = 1;
             g_Supervisor.framerateMultiplier = 1.0;

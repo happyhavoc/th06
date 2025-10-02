@@ -128,7 +128,7 @@ void Enemy::ResetEffectArray(Enemy *enemy)
 {
     i32 idx;
 
-    for (idx = 0; idx < enemy->effectIdx; idx++)
+    for (idx = 0; idx < (i32)enemy->effectIdx; idx++)
     {
         if (!enemy->effectArray[idx])
         {
@@ -745,7 +745,7 @@ void Enemy::UpdateEffects(Enemy *enemy)
     Effect *effect;
     i32 i;
 
-    for (i = 0; i < enemy->effectIdx; i++)
+    for (i = 0; i < (i32)enemy->effectIdx; i++)
     {
         effect = enemy->effectArray[i];
         if (!effect)

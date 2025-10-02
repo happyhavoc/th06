@@ -138,7 +138,7 @@ ZunResult Ending::ParseEndFile()
         }
         else
         {
-            if (WAS_PRESSED(TH_BUTTON_SELECTMENU) || this->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP))
+            if (WAS_PRESSED(TH_BUTTON_SELECTMENU) || (this->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP)))
             {
                 this->timer3.InitializeForPopup();
             }
@@ -164,7 +164,7 @@ ZunResult Ending::ParseEndFile()
         }
         else
         {
-            if (WAS_PRESSED(TH_BUTTON_SELECTMENU) || this->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP))
+            if (WAS_PRESSED(TH_BUTTON_SELECTMENU) || (this->hasSeenEnding && IS_PRESSED(TH_BUTTON_SKIP)))
             {
                 this->timer2.InitializeForPopup();
             }

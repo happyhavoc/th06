@@ -362,7 +362,7 @@ i32 Player::CalcDamageToEnemy(ZunVec3 *enemyPos, ZunVec3 *enemyHitboxSize, bool 
     for (idx = 0; idx < ARRAY_SIZE_SIGNED(this->bullets); idx++, bullet++)
     {
         if (bullet->bulletState == BULLET_STATE_UNUSED ||
-            bullet->bulletState != BULLET_STATE_FIRED && bullet->bulletType != BULLET_TYPE_2)
+            (bullet->bulletState != BULLET_STATE_FIRED && bullet->bulletType != BULLET_TYPE_2))
         {
             continue;
         }

@@ -54,7 +54,7 @@ ZunResult ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
         checksum += *checksumCursor;
     }
 
-    if (checksum != data->checksum)
+    if (checksum != (u32)data->checksum)
     {
         return ZUN_ERROR;
     }
@@ -422,7 +422,7 @@ void ReplayManager::SaveReplay(char *replayPath, char *replayName)
                 // Calculate the checksum.
                 checksumCursor = (u8 *)&replayCopy.key;
                 checksum = 0x3f000318;
-                for (stageIdx = 0; stageIdx < sizeof(ReplayHeader) - offsetof(ReplayHeader, key);
+                for (stageIdx = 0; (u32)stageIdx < sizeof(ReplayHeader) - offsetof(ReplayHeader, key);
                      stageIdx += 1, checksumCursor += 1)
                 {
                     checksum += *checksumCursor;
@@ -445,7 +445,7 @@ void ReplayManager::SaveReplay(char *replayPath, char *replayName)
                 // Obfuscate the data.
                 obfuscateCursor = (u8 *)&replayCopy.rngValue3;
                 obfOffset = replayCopy.key;
-                for (stageIdx = 0; stageIdx < sizeof(ReplayHeader) - offsetof(ReplayHeader, rngValue3);
+                for (stageIdx = 0; (u32)stageIdx < sizeof(ReplayHeader) - offsetof(ReplayHeader, rngValue3);
                      stageIdx += 1, obfuscateCursor += 1)
                 {
                     *obfuscateCursor += obfOffset;
