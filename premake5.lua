@@ -47,7 +47,6 @@ project "th06"
     "src/TextHelper.cpp",
     "src/utils.cpp",
     "src/ZunTimer.cpp",
-    "src/pbg3/FileAbstraction.cpp",
     -- keep headers visible
     "src/**.hpp"
   }
