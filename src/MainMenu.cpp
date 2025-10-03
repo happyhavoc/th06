@@ -2179,7 +2179,7 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
     return ZUN_SUCCESS;
 }
 
-ZunResult MainMenu::RegisterChain(u32 isDemo)
+bool MainMenu::RegisterChain(u32 isDemo)
 {
     MainMenu *menu = &g_MainMenu;
 
@@ -2192,9 +2192,9 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
     menu->chainCalc->addedCallback = (ChainAddedCallback)MainMenu::AddedCallback;
     menu->chainCalc->deletedCallback = (ChainDeletedCallback)MainMenu::DeletedCallback;
     menu->stateTimer = 0;
-    if (g_Chain.AddToCalcChain(menu->chainCalc, TH_CHAIN_PRIO_CALC_MAINMENU) != 0)
+    if (!g_Chain.AddToCalcChain(menu->chainCalc, TH_CHAIN_PRIO_CALC_MAINMENU))
     {
-        return ZUN_ERROR;
+        return false;
     }
     menu->chainDraw = g_Chain.CreateElem((ChainCallback)MainMenu::OnDraw);
     menu->chainDraw->arg = menu;
@@ -2202,10 +2202,10 @@ ZunResult MainMenu::RegisterChain(u32 isDemo)
     menu->lastFrameTime = 0;
     menu->stateTimer = 60;
     menu->frameCountForRefreshRateCalc = 0;
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult MainMenu::AddedCallback(MainMenu *m)
+bool MainMenu::AddedCallback(MainMenu *m)
 {
     i32 i;
     ScoreDat *scoredat;
@@ -2283,10 +2283,10 @@ ZunResult MainMenu::AddedCallback(MainMenu *m)
     }
     g_GameManager.demoMode = 0;
     g_GameManager.demoFrames = 0;
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult MainMenu::DeletedCallback(MainMenu *menu)
+bool MainMenu::DeletedCallback(MainMenu *menu)
 {
     AnmManager *mgr;
     void *replay;
@@ -2311,7 +2311,7 @@ ZunResult MainMenu::DeletedCallback(MainMenu *menu)
 
     replay = menu->currentReplay;
     free(replay);
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void MainMenu::ReleaseTitleAnm()

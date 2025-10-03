@@ -83,7 +83,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
         case SUPERVISOR_STATE_INIT:
         REINIT_MAINMENU:
             s->curState = SUPERVISOR_STATE_MAINMENU;
-            if (MainMenu::RegisterChain(0) != ZUN_SUCCESS)
+            if (!MainMenu::RegisterChain(0))
             {
                 return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
             }
@@ -94,7 +94,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             case SUPERVISOR_STATE_EXITSUCCESS:
                 return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
             case SUPERVISOR_STATE_GAMEMANAGER:
-                if (GameManager::RegisterChain() != ZUN_SUCCESS)
+                if (!GameManager::RegisterChain())
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -102,20 +102,20 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
             case SUPERVISOR_STATE_EXITERROR:
                 return CHAIN_CALLBACK_RESULT_EXIT_GAME_ERROR;
             case SUPERVISOR_STATE_RESULTSCREEN:
-                if (ResultScreen::RegisterChain(0) != ZUN_SUCCESS)
+                if (!ResultScreen::RegisterChain(0))
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
                 break;
             case SUPERVISOR_STATE_MUSICROOM:
-                if (MusicRoom::RegisterChain() != ZUN_SUCCESS)
+                if (!MusicRoom::RegisterChain())
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
                 break;
             case SUPERVISOR_STATE_ENDING:
                 GameManager::CutChain();
-                if (Ending::RegisterChain() != ZUN_SUCCESS)
+                if (!Ending::RegisterChain())
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -148,14 +148,14 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 
             case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
                 GameManager::CutChain();
-                if (ResultScreen::RegisterChain(true) != ZUN_SUCCESS)
+                if (!ResultScreen::RegisterChain(true))
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
                 break;
             case SUPERVISOR_STATE_GAMEMANAGER_REINIT:
                 GameManager::CutChain();
-                if (GameManager::RegisterChain() != ZUN_SUCCESS)
+                if (!GameManager::RegisterChain())
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -170,7 +170,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
                 s->curState = SUPERVISOR_STATE_INIT;
                 ReplayManager::SaveReplay(NULL, NULL);
                 s->curState = SUPERVISOR_STATE_MAINMENU;
-                if (MainMenu::RegisterChain(1) != ZUN_SUCCESS)
+                if (!MainMenu::RegisterChain(1))
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -178,7 +178,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 
             case 10:
                 GameManager::CutChain();
-                if (Ending::RegisterChain() != ZUN_SUCCESS)
+                if (!Ending::RegisterChain())
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -217,7 +217,7 @@ ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
                 s->curState = SUPERVISOR_STATE_INIT;
                 goto REINIT_MAINMENU;
             case SUPERVISOR_STATE_RESULTSCREEN_FROMGAME:
-                if (ResultScreen::RegisterChain(true) != ZUN_SUCCESS)
+                if (!ResultScreen::RegisterChain(true))
                 {
                     return CHAIN_CALLBACK_RESULT_EXIT_GAME_SUCCESS;
                 }
@@ -279,7 +279,7 @@ ChainCallbackResult Supervisor::OnDraw(Supervisor *s)
 //     return TRUE;
 // }
 
-ZunResult Supervisor::RegisterChain()
+bool Supervisor::RegisterChain()
 {
     ChainElem *chain;
     Supervisor *supervisor = &g_Supervisor;
@@ -292,19 +292,19 @@ ZunResult Supervisor::RegisterChain()
     chain->arg = supervisor;
     chain->addedCallback = (ChainAddedCallback)Supervisor::AddedCallback;
     chain->deletedCallback = (ChainDeletedCallback)Supervisor::DeletedCallback;
-    if (g_Chain.AddToCalcChain(chain, TH_CHAIN_PRIO_CALC_SUPERVISOR) != 0)
+    if (!g_Chain.AddToCalcChain(chain, TH_CHAIN_PRIO_CALC_SUPERVISOR))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     chain = g_Chain.CreateElem((ChainCallback)Supervisor::OnDraw);
     chain->arg = supervisor;
     g_Chain.AddToDrawChain(chain, TH_CHAIN_PRIO_DRAW_SUPERVISOR);
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Supervisor::AddedCallback(Supervisor *s)
+bool Supervisor::AddedCallback(Supervisor *s)
 {
     i32 i;
 
@@ -343,13 +343,13 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
     g_SoundPlayer.InitSoundBuffers();
     if (!g_AnmManager->LoadAnm(ANM_FILE_TEXT, "data/text.anm", ANM_OFFSET_TEXT))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
-    if (AsciiManager::RegisterChain() != 0)
+    if (!AsciiManager::RegisterChain())
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ASCIIMANAGER_INIT_FAILED);
-        return ZUN_ERROR;
+        return false;
     }
 
     s->unk198 = 0;
@@ -357,14 +357,14 @@ ZunResult Supervisor::AddedCallback(Supervisor *s)
 
     if (TextHelper::CreateTextBuffer() != ZUN_SUCCESS)
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     // s->ReleasePbg3(IN_PBG3_INDEX);
     // if (g_Supervisor.LoadPbg3(MD_PBG3_INDEX, TH_MD_DAT_FILE) != 0)
     //     return ZUN_ERROR;
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
@@ -481,7 +481,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
 //     return FALSE;
 // }
 
-ZunResult Supervisor::DeletedCallback(Supervisor *s)
+bool Supervisor::DeletedCallback(Supervisor *s)
 {
     // i32 pbg3Idx;
 
@@ -524,7 +524,7 @@ ZunResult Supervisor::DeletedCallback(Supervisor *s)
     //        s->dinputIface->Release();
     //        s->dinputIface = NULL;
     //    }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void Supervisor::DrawFpsCounter()

@@ -166,13 +166,13 @@ struct Player
 {
     Player();
 
-    static ZunResult RegisterChain(u8 unk);
+    static bool RegisterChain(u8 unk);
     static void CutChain();
     static ChainCallbackResult OnUpdate(Player *p);
     static ChainCallbackResult OnDrawHighPrio(Player *p);
     static ChainCallbackResult OnDrawLowPrio(Player *p);
-    static ZunResult AddedCallback(Player *p);
-    static ZunResult DeletedCallback(Player *p);
+    static bool AddedCallback(Player *p);
+    static bool DeletedCallback(Player *p);
 
     static FireBulletResult FireSingleBullet(Player *, PlayerBullet *bullet, i32 bullet_idx, i32 framesSinceLastBullet,
                                              CharacterPowerData *powerData);

@@ -610,7 +610,7 @@ Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
     return laser;
 }
 
-ZunResult BulletManager::RegisterChain(const char *bulletAnmPath)
+bool BulletManager::RegisterChain(const char *bulletAnmPath)
 {
     BulletManager *mgr = &g_BulletManager;
 
@@ -632,9 +632,9 @@ ZunResult BulletManager::RegisterChain(const char *bulletAnmPath)
     g_BulletManagerCalcChain.deletedCallback = (ChainDeletedCallback)BulletManager::DeletedCallback;
     g_BulletManagerCalcChain.arg = mgr;
 
-    if (g_Chain.AddToCalcChain(&g_BulletManagerCalcChain, TH_CHAIN_PRIO_CALC_BULLETMANAGER) != ZUN_SUCCESS)
+    if (!g_Chain.AddToCalcChain(&g_BulletManagerCalcChain, TH_CHAIN_PRIO_CALC_BULLETMANAGER))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     g_BulletManagerDrawChain.callback = (ChainCallback)BulletManager::OnDraw;
@@ -642,7 +642,7 @@ ZunResult BulletManager::RegisterChain(const char *bulletAnmPath)
     g_BulletManagerDrawChain.deletedCallback = NULL;
     g_BulletManagerDrawChain.arg = mgr;
     g_Chain.AddToDrawChain(&g_BulletManagerDrawChain, TH_CHAIN_PRIO_DRAW_BULLETMANAGER);
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
@@ -1332,7 +1332,7 @@ void BulletManager::DrawBulletNoHwVertex(Bullet *bullet)
     g_AnmManager->Draw(anmVm);
 }
 
-ZunResult BulletManager::AddedCallback(BulletManager *mgr)
+bool BulletManager::AddedCallback(BulletManager *mgr)
 {
     u32 idx;
 
@@ -1340,12 +1340,12 @@ ZunResult BulletManager::AddedCallback(BulletManager *mgr)
     {
         if (!g_AnmManager->LoadAnm(ANM_FILE_BULLET3, "data/etama3.anm", ANM_OFFSET_BULLET3))
         {
-            return ZUN_ERROR;
+            return false;
         }
 
         if (!g_AnmManager->LoadAnm(ANM_FILE_BULLET4, "data/etama4.anm", ANM_OFFSET_BULLET4))
         {
-            return ZUN_ERROR;
+            return false;
         }
     }
 
@@ -1417,10 +1417,10 @@ ZunResult BulletManager::AddedCallback(BulletManager *mgr)
     }
 
     memset(&g_ItemManager, 0, sizeof(ItemManager));
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult BulletManager::DeletedCallback(BulletManager *arg)
+bool BulletManager::DeletedCallback(BulletManager *arg)
 {
     if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
     {
@@ -1428,7 +1428,7 @@ ZunResult BulletManager::DeletedCallback(BulletManager *arg)
         g_AnmManager->ReleaseAnm(ANM_FILE_BULLET4);
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void BulletManager::CutChain()

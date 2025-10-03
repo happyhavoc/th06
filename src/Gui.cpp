@@ -244,7 +244,7 @@ void Gui::ShowSpellcard(i32 spellcardSprite, char *spellcardName)
     return;
 }
 
-ZunResult Gui::ActualAddedCallback()
+bool Gui::ActualAddedCallback()
 {
     i32 idx;
 
@@ -253,11 +253,11 @@ ZunResult Gui::ActualAddedCallback()
         memset(this->impl, 0, sizeof(GuiImpl));
         if (!g_AnmManager->LoadAnm(ANM_FILE_FRONT, "data/front.anm", ANM_OFFSET_FRONT))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_LOADING, "data/loading.anm", ANM_OFFSET_LOADING))
         {
-            return ZUN_ERROR;
+            return false;
         }
         this->impl->loadingScreenSprite.activeSpriteIndex = -1;
         switch (g_GameManager.character)
@@ -265,29 +265,29 @@ ZunResult Gui::ActualAddedCallback()
         case CHARA_REIMU:
             if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_CHARA_A, "data/face00a.anm", ANM_OFFSET_FACE_CHARA_A))
             {
-                return ZUN_ERROR;
+                return false;
             }
             if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_CHARA_B, "data/face00b.anm", ANM_OFFSET_FACE_CHARA_B))
             {
-                return ZUN_ERROR;
+                return false;
             }
             if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_CHARA_C, "data/face00c.anm", ANM_OFFSET_FACE_CHARA_C))
             {
-                return ZUN_ERROR;
+                return false;
             }
             break;
         case CHARA_MARISA:
             if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_CHARA_A, "data/face01a.anm", ANM_OFFSET_FACE_CHARA_A))
             {
-                return ZUN_ERROR;
+                return false;
             }
             if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_CHARA_B, "data/face01b.anm", ANM_OFFSET_FACE_CHARA_B))
             {
-                return ZUN_ERROR;
+                return false;
             }
             if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_CHARA_C, "data/face01c.anm", ANM_OFFSET_FACE_CHARA_C))
             {
-                return ZUN_ERROR;
+                return false;
             }
             break;
         }
@@ -302,103 +302,103 @@ ZunResult Gui::ActualAddedCallback()
     case 1:
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_A, "data/face03a.anm", ANM_OFFSET_FACE_STAGE_A))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_B, "data/face03b.anm", ANM_OFFSET_FACE_STAGE_B))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (this->LoadMsg("data/msg1.dat") != ZUN_SUCCESS)
         {
-            return ZUN_ERROR;
+            return false;
         }
         break;
     case 2:
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_A, "data/face05a.anm", ANM_OFFSET_FACE_STAGE_A))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (this->LoadMsg("data/msg2.dat") != ZUN_SUCCESS)
         {
-            return ZUN_ERROR;
+            return false;
         }
         break;
     case 3:
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_A, "data/face06a.anm", ANM_OFFSET_FACE_STAGE_A))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_B, "data/face06b.anm", ANM_OFFSET_FACE_STAGE_B))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (this->LoadMsg("data/msg3.dat") != ZUN_SUCCESS)
         {
-            return ZUN_ERROR;
+            return false;
         }
         break;
     case 4:
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_A, "data/face08a.anm", ANM_OFFSET_FACE_STAGE_A))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_B, "data/face08b.anm", ANM_OFFSET_FACE_STAGE_B))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (this->LoadMsg("data/msg4.dat") != ZUN_SUCCESS)
         {
-            return ZUN_ERROR;
+            return false;
         }
         break;
     case 5:
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_A, "data/face09a.anm", ANM_OFFSET_FACE_STAGE_A))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_B, "data/face09b.anm", ANM_OFFSET_FACE_STAGE_B))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (this->LoadMsg("data/msg5.dat") != ZUN_SUCCESS)
         {
-            return ZUN_ERROR;
+            return false;
         }
         break;
     case 6:
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_A, "data/face09b.anm", ANM_OFFSET_FACE_STAGE_A))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_B, "data/face10a.anm", ANM_OFFSET_FACE_STAGE_B))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_C, "data/face10b.anm", ANM_OFFSET_FACE_STAGE_C))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (this->LoadMsg("data/msg6.dat") != ZUN_SUCCESS)
         {
-            return ZUN_ERROR;
+            return false;
         }
         break;
     default:
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_A, "data/face08a.anm", ANM_OFFSET_FACE_STAGE_A))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_B, "data/face12a.anm", ANM_OFFSET_FACE_STAGE_B))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (!g_AnmManager->LoadAnm(ANM_FILE_FACE_STAGE_C, "data/face12b.anm", ANM_OFFSET_FACE_STAGE_C))
         {
-            return ZUN_ERROR;
+            return false;
         }
         if (this->LoadMsg("data/msg7.dat") != ZUN_SUCCESS)
         {
-            return ZUN_ERROR;
+            return false;
         }
         break;
     }
@@ -450,7 +450,7 @@ ZunResult Gui::ActualAddedCallback()
     this->flags.flag3 = 2;
     this->flags.flag4 = 2;
     this->flags.flag2 = 2;
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ZunResult Gui::LoadMsg(const char *path)
@@ -1431,12 +1431,12 @@ void Gui::DrawStageElements()
     }
 }
 
-ZunResult Gui::AddedCallback(Gui *gui)
+bool Gui::AddedCallback(Gui *gui)
 {
     return gui->ActualAddedCallback();
 }
 
-ZunResult Gui::DeletedCallback(Gui *gui)
+bool Gui::DeletedCallback(Gui *gui)
 {
     g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_A);
     g_AnmManager->ReleaseAnm(ANM_FILE_FACE_STAGE_B);
@@ -1452,10 +1452,10 @@ ZunResult Gui::DeletedCallback(Gui *gui)
         delete gui->impl;
         gui->impl = NULL;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Gui::RegisterChain()
+bool Gui::RegisterChain()
 {
     Gui *gui = &g_Gui;
     if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
@@ -1469,16 +1469,16 @@ ZunResult Gui::RegisterChain()
     g_GuiCalcChain.addedCallback = (ChainAddedCallback)Gui::AddedCallback;
     g_GuiCalcChain.deletedCallback = (ChainDeletedCallback)Gui::DeletedCallback;
     g_GuiCalcChain.arg = gui;
-    if (g_Chain.AddToCalcChain(&g_GuiCalcChain, TH_CHAIN_PRIO_CALC_GUI) != ZUN_SUCCESS)
+    if (!g_Chain.AddToCalcChain(&g_GuiCalcChain, TH_CHAIN_PRIO_CALC_GUI))
     {
-        return ZUN_ERROR;
+        return false;
     }
     g_GuiDrawChain.callback = (ChainCallback)Gui::OnDraw;
     g_GuiDrawChain.addedCallback = NULL;
     g_GuiDrawChain.deletedCallback = NULL;
     g_GuiDrawChain.arg = gui;
     g_Chain.AddToDrawChain(&g_GuiDrawChain, TH_CHAIN_PRIO_DRAW_GUI);
-    return ZUN_SUCCESS;
+    return true;
 }
 
 GuiImpl::GuiImpl() {};

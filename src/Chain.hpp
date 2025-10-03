@@ -20,8 +20,8 @@ enum ChainCallbackResult
 
 // TODO
 typedef ChainCallbackResult (*ChainCallback)(void *);
-typedef ZunResult (*ChainAddedCallback)(void *);
-typedef ZunResult (*ChainDeletedCallback)(void *);
+typedef bool (*ChainAddedCallback)(void *);
+typedef bool (*ChainDeletedCallback)(void *);
 
 class ChainElem
 {
@@ -56,7 +56,7 @@ class Chain
 
     void Cut(ChainElem *to_remove);
     void Release(void);
-    int AddToCalcChain(ChainElem *elem, int priority);
+    bool AddToCalcChain(ChainElem *elem, int priority);
     int AddToDrawChain(ChainElem *elem, int priority);
     int RunDrawChain(void);
     int RunCalcChain(void);

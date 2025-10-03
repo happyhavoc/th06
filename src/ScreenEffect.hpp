@@ -31,8 +31,8 @@ struct ScreenEffect
     static ScreenEffect *RegisterChain(i32 effect, u32 ticks, u32 effectParam1, u32 effectParam2,
                                        u32 unusedEffectParam);
 
-    static ZunResult AddedCallback(ScreenEffect *effect);
-    static ZunResult DeletedCallback(ScreenEffect *effect);
+    static bool AddedCallback(ScreenEffect *effect);
+    static bool DeletedCallback(ScreenEffect *effect);
 
     static ChainCallbackResult DrawFadeIn(ScreenEffect *effect);
     static ChainCallbackResult CalcFadeIn(ScreenEffect *effect);

@@ -68,7 +68,7 @@ restart:
 
     g_AnmManager = new AnmManager();
 
-    if (Supervisor::RegisterChain() != ZUN_SUCCESS)
+    if (!Supervisor::RegisterChain())
     {
         goto stop;
     }

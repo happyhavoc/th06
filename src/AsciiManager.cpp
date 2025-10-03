@@ -82,7 +82,7 @@ ChainCallbackResult AsciiManager::OnDrawPopups(AsciiManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-ZunResult AsciiManager::RegisterChain()
+bool AsciiManager::RegisterChain()
 {
     AsciiManager *mgr = &g_AsciiManager;
 
@@ -92,9 +92,9 @@ ZunResult AsciiManager::RegisterChain()
     g_AsciiManagerCalcChain.addedCallback = (ChainAddedCallback)AsciiManager::AddedCallback;
     g_AsciiManagerCalcChain.deletedCallback = (ChainDeletedCallback)AsciiManager::DeletedCallback;
     g_AsciiManagerCalcChain.arg = mgr;
-    if (g_Chain.AddToCalcChain(&g_AsciiManagerCalcChain, TH_CHAIN_PRIO_CALC_ASCIIMANAGER) != ZUN_SUCCESS)
+    if (!g_Chain.AddToCalcChain(&g_AsciiManagerCalcChain, TH_CHAIN_PRIO_CALC_ASCIIMANAGER))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     g_AsciiManagerOnDrawMenusChain.callback = (ChainCallback)OnDrawMenus;
@@ -109,27 +109,27 @@ ZunResult AsciiManager::RegisterChain()
     g_AsciiManagerOnDrawPopupsChain.arg = mgr;
     g_Chain.AddToDrawChain(&g_AsciiManagerOnDrawPopupsChain, TH_CHAIN_PRIO_DRAW_ASCIIMANAGER_POPUPS);
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult AsciiManager::AddedCallback(AsciiManager *s)
+bool AsciiManager::AddedCallback(AsciiManager *s)
 {
     int x, y, z;
 
     if (!g_AnmManager->LoadAnm(ANM_FILE_ASCII, "data/ascii.anm", ANM_OFFSET_ASCII))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_ASCIIS, "data/asciis.anm", ANM_OFFSET_ASCIIS))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_CAPTURE, "data/capture.anm", ANM_OFFSET_CAPTURE))
     {
-        return ZUN_ERROR;
+        return false;
     }
     s->InitializeVms();
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void AsciiManager::InitializeVms()
@@ -154,12 +154,12 @@ void AsciiManager::InitializeVms()
     this->isSelected = 0;
 }
 
-ZunResult AsciiManager::DeletedCallback(AsciiManager *s)
+bool AsciiManager::DeletedCallback(AsciiManager *s)
 {
     g_AnmManager->ReleaseAnm(ANM_FILE_ASCII);
     g_AnmManager->ReleaseAnm(ANM_FILE_ASCIIS);
     g_AnmManager->ReleaseAnm(ANM_FILE_CAPTURE);
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void AsciiManager::CutChain()

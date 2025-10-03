@@ -5,9 +5,6 @@
 #include "ZunTimer.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
-// #include "zwave.hpp"
-// #include <d3d8.h>
-// #include <d3dx8math.h>
 
 namespace th06
 {
@@ -98,13 +95,13 @@ enum StageOpcode
 struct Stage
 {
     Stage();
-    static ZunResult RegisterChain(u32 stage);
+    static bool RegisterChain(u32 stage);
     static void CutChain();
     static ChainCallbackResult OnUpdate(Stage *stage);
     static ChainCallbackResult OnDrawHighPrio(Stage *stage);
     static ChainCallbackResult OnDrawLowPrio(Stage *stage);
-    static ZunResult AddedCallback(Stage *stage);
-    static ZunResult DeletedCallback(Stage *stage);
+    static bool AddedCallback(Stage *stage);
+    static bool DeletedCallback(Stage *stage);
 
     ZunResult LoadStageData(const char *anmpath, const char *stdpath);
     ZunResult UpdateObjects();

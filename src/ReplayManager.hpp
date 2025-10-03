@@ -9,14 +9,14 @@ namespace th06
 {
 struct ReplayManager
 {
-    static ZunResult RegisterChain(i32 isDemo, const char *replayFile);
+    static bool RegisterChain(i32 isDemo, const char *replayFile);
     static ChainCallbackResult OnUpdate(ReplayManager *mgr);
     static ChainCallbackResult OnUpdateDemoHighPrio(ReplayManager *mgr);
     static ChainCallbackResult OnUpdateDemoLowPrio(ReplayManager *mgr);
     static ChainCallbackResult OnDraw(ReplayManager *mgr);
-    static ZunResult AddedCallback(ReplayManager *mgr);
-    static ZunResult AddedCallbackDemo(ReplayManager *mgr);
-    static ZunResult DeletedCallback(ReplayManager *mgr);
+    static bool AddedCallback(ReplayManager *mgr);
+    static bool AddedCallbackDemo(ReplayManager *mgr);
+    static bool DeletedCallback(ReplayManager *mgr);
     static void StopRecording();
     static void SaveReplay(char *replay_path, char *param_2);
     static ZunResult ValidateReplayData(ReplayHeader *data, i32 fileSize);

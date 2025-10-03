@@ -193,11 +193,11 @@ struct ResultScreen
         free(sd);
     };
 
-    static ZunResult RegisterChain(i32 unk);
+    static bool RegisterChain(i32 unk);
     static ChainCallbackResult OnUpdate(ResultScreen *r);
     static ChainCallbackResult OnDraw(ResultScreen *r);
-    static ZunResult AddedCallback(ResultScreen *r);
-    static ZunResult DeletedCallback(ResultScreen *r);
+    static bool AddedCallback(ResultScreen *r);
+    static bool DeletedCallback(ResultScreen *r);
 
     static ScoreDat *OpenScore(const char *path);
     static ZunResult ParseCatk(ScoreDat *s, Catk *catk);

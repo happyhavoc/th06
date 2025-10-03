@@ -55,14 +55,14 @@ struct AsciiManager
 {
     AsciiManager();
 
-    static ZunResult RegisterChain();
+    static bool RegisterChain();
     static void CutChain();
 
     static ChainCallbackResult OnUpdate(AsciiManager *s);
     static ChainCallbackResult OnDrawMenus(AsciiManager *s);
     static ChainCallbackResult OnDrawPopups(AsciiManager *s);
-    static ZunResult AddedCallback(AsciiManager *s);
-    static ZunResult DeletedCallback(AsciiManager *s);
+    static bool AddedCallback(AsciiManager *s);
+    static bool DeletedCallback(AsciiManager *s);
 
     void InitializeVms();
 

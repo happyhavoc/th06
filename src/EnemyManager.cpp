@@ -488,7 +488,7 @@ void Enemy::ClampPos()
     }
 }
 
-ZunResult EnemyManager::RegisterChain(const char *stgEnm1, const char *stgEnm2)
+bool EnemyManager::RegisterChain(const char *stgEnm1, const char *stgEnm2)
 {
     EnemyManager *mgr = &g_EnemyManager;
     mgr->Initialize();
@@ -500,9 +500,9 @@ ZunResult EnemyManager::RegisterChain(const char *stgEnm1, const char *stgEnm2)
     g_EnemyManagerCalcChain.addedCallback = (ChainAddedCallback)mgr->AddedCallback;
     g_EnemyManagerCalcChain.deletedCallback = (ChainAddedCallback)mgr->DeletedCallback;
     g_EnemyManagerCalcChain.arg = mgr;
-    if (g_Chain.AddToCalcChain(&g_EnemyManagerCalcChain, TH_CHAIN_PRIO_CALC_ENEMYMANAGER))
+    if (!g_Chain.AddToCalcChain(&g_EnemyManagerCalcChain, TH_CHAIN_PRIO_CALC_ENEMYMANAGER))
     {
-        return ZUN_ERROR;
+        return false;
     }
     g_EnemyManagerDrawChain.callback = (ChainCallback)mgr->OnDraw;
     g_EnemyManagerDrawChain.addedCallback = NULL;
@@ -510,9 +510,9 @@ ZunResult EnemyManager::RegisterChain(const char *stgEnm1, const char *stgEnm2)
     g_EnemyManagerDrawChain.arg = mgr;
     if (g_Chain.AddToDrawChain(&g_EnemyManagerDrawChain, TH_CHAIN_PRIO_DRAW_ENEMYMANAGER))
     {
-        return ZUN_ERROR;
+        return false;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
@@ -819,19 +819,19 @@ ChainCallbackResult EnemyManager::OnDraw(EnemyManager *mgr)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
+bool EnemyManager::AddedCallback(EnemyManager *enemyManager)
 {
     Enemy *enemies = enemyManager->enemies;
 
     if (enemyManager->stgEnmAnmFilename &&
         !g_AnmManager->LoadAnm(ANM_FILE_ENEMY, enemyManager->stgEnmAnmFilename, ANM_OFFSET_ENEMY))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (enemyManager->stgEnm2AnmFilename &&
         !g_AnmManager->LoadAnm(ANM_FILE_ENEMY2, enemyManager->stgEnm2AnmFilename, ANM_OFFSET_ENEMY))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     enemyManager->randomItemSpawnIndex = g_Rng.GetRandomU16InRange(ITEM_SPAWNS);
@@ -840,14 +840,14 @@ ZunResult EnemyManager::AddedCallback(EnemyManager *enemyManager)
     enemyManager->spellcardInfo.isActive = 0;
     enemyManager->timelineInstr = NULL;
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult EnemyManager::DeletedCallback(EnemyManager *mgr)
+bool EnemyManager::DeletedCallback(EnemyManager *mgr)
 {
     g_AnmManager->ReleaseAnm(ANM_FILE_ENEMY2);
     g_AnmManager->ReleaseAnm(ANM_FILE_ENEMY);
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void EnemyManager::CutChain()

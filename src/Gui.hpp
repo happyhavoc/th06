@@ -131,14 +131,14 @@ struct GuiFlags
 
 struct Gui
 {
-    static ZunResult RegisterChain();
+    static bool RegisterChain();
     static void CutChain();
-    static ZunResult AddedCallback(Gui *);
-    static ZunResult DeletedCallback(Gui *);
+    static bool AddedCallback(Gui *);
+    static bool DeletedCallback(Gui *);
     static ChainCallbackResult OnUpdate(Gui *);
     static ChainCallbackResult OnDraw(Gui *);
 
-    ZunResult ActualAddedCallback();
+    bool ActualAddedCallback();
     ZunResult LoadMsg(const char *path);
     void FreeMsgFile();
 

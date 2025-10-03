@@ -51,12 +51,12 @@ extern GameManager g_GameManager;
 struct GameManager
 {
     GameManager();
-    static ZunResult RegisterChain();
+    static bool RegisterChain();
     static void CutChain();
     static ChainCallbackResult OnUpdate(GameManager *gameManager);
     static ChainCallbackResult OnDraw(GameManager *gameManager);
-    static ZunResult AddedCallback(GameManager *gameManager);
-    static ZunResult DeletedCallback(GameManager *gameManager);
+    static bool AddedCallback(GameManager *gameManager);
+    static bool DeletedCallback(GameManager *gameManager);
     static void SetupCamera(f32);
     static void SetupCameraStageBackground(f32);
 

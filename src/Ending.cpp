@@ -449,7 +449,7 @@ ZunResult Ending::LoadEnding(const char *endFilePath)
     }
 }
 
-ZunResult Ending::RegisterChain()
+bool Ending::RegisterChain()
 {
     Ending *ending;
 
@@ -460,14 +460,14 @@ ZunResult Ending::RegisterChain()
     ending->calcChain->deletedCallback = (ChainDeletedCallback)Ending::DeletedCallback;
     if (g_Chain.AddToCalcChain(ending->calcChain, TH_CHAIN_PRIO_CALC_ENDING))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     ending->drawChain = g_Chain.CreateElem((ChainCallback)Ending::OnDraw);
     ending->drawChain->arg = ending;
     g_Chain.AddToDrawChain(ending->drawChain, TH_CHAIN_PRIO_DRAW_ENDING);
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ChainCallbackResult Ending::OnUpdate(Ending *ending)
@@ -514,15 +514,12 @@ ChainCallbackResult Ending::OnDraw(Ending *ending)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-ZunResult Ending::AddedCallback(Ending *ending)
+bool Ending::AddedCallback(Ending *ending)
 {
     i32 shotTypeAndCharacter;
-    // i32 unused;
-    // unused = g_GameManager.character * 2 + g_GameManager.shotType;
 
     g_GameManager.isGameCompleted = true;
     g_Supervisor.isInEnding = true;
-    // g_Supervisor.LoadPbg3(ED_PBG3_INDEX, TH_ED_DAT_FILE);
     g_AnmManager->LoadAnm(ANM_FILE_STAFF01, "data/staff01.anm", ANM_OFFSET_STAFF01);
     g_AnmManager->LoadAnm(ANM_FILE_STAFF02, "data/staff02.anm", ANM_OFFSET_STAFF02);
     g_AnmManager->LoadAnm(ANM_FILE_STAFF03, "data/staff03.anm", ANM_OFFSET_STAFF03);
@@ -558,13 +555,13 @@ ZunResult Ending::AddedCallback(Ending *ending)
         case CHARA_REIMU:
             if (ending->LoadEnding("data/end00b.end") != ZUN_SUCCESS)
             {
-                return ZUN_ERROR;
+                return false;
             }
             break;
         case CHARA_MARISA:
             if (ending->LoadEnding("data/end10b.end") != ZUN_SUCCESS)
             {
-                return ZUN_ERROR;
+                return false;
             }
             break;
         }
@@ -578,14 +575,14 @@ ZunResult Ending::AddedCallback(Ending *ending)
             {
                 if (ending->LoadEnding("data/end00.end") != ZUN_SUCCESS)
                 {
-                    return ZUN_ERROR;
+                    return false;
                 }
             }
             else
             {
                 if (ending->LoadEnding("data/end01.end") != ZUN_SUCCESS)
                 {
-                    return ZUN_ERROR;
+                    return false;
                 }
             }
             break;
@@ -594,23 +591,23 @@ ZunResult Ending::AddedCallback(Ending *ending)
             {
                 if (ending->LoadEnding("data/end10.end") != ZUN_SUCCESS)
                 {
-                    return ZUN_ERROR;
+                    return false;
                 }
             }
             else
             {
                 if (ending->LoadEnding("data/end11.end") != ZUN_SUCCESS)
                 {
-                    return ZUN_ERROR;
+                    return false;
                 }
             }
             break;
         }
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Ending::DeletedCallback(Ending *ending)
+bool Ending::DeletedCallback(Ending *ending)
 {
     g_AnmManager->ReleaseAnm(ANM_FILE_STAFF01);
     g_AnmManager->ReleaseAnm(ANM_FILE_STAFF02);
@@ -634,7 +631,6 @@ ZunResult Ending::DeletedCallback(Ending *ending)
     ending = NULL;
 
     g_Supervisor.isInEnding = false;
-    // g_Supervisor.ReleasePbg3(ED_PBG3_INDEX);
-    return ZUN_SUCCESS;
+    return true;
 }
 }; // namespace th06

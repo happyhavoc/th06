@@ -53,11 +53,11 @@ struct Ending
         this->backgroundScrollSpeed = 0.0f;
     }
 
-    static ZunResult RegisterChain();
+    static bool RegisterChain();
     static ChainCallbackResult OnUpdate(Ending *ending);
     static ChainCallbackResult OnDraw(Ending *ending);
-    static ZunResult AddedCallback(Ending *ending);
-    static ZunResult DeletedCallback(Ending *ending);
+    static bool AddedCallback(Ending *ending);
+    static bool DeletedCallback(Ending *ending);
 
     i32 ReadEndFileParameter();
 

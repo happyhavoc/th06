@@ -41,11 +41,11 @@ struct EffectManager
 
     EffectManager();
 
-    static ZunResult RegisterChain();
+    static bool RegisterChain();
     static void CutChain();
     static ChainCallbackResult OnUpdate(EffectManager *mgr);
-    static ZunResult AddedCallback(EffectManager *mgr);
-    static ZunResult DeletedCallback(EffectManager *mgr);
+    static bool AddedCallback(EffectManager *mgr);
+    static bool DeletedCallback(EffectManager *mgr);
 
     static i32 EffectCallbackRandomSplash(Effect *);
     static i32 EffectCallbackRandomSplashBig(Effect *);

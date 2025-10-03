@@ -5,8 +5,6 @@
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
-// #include <d3dx8math.h>
-
 namespace th06
 {
 enum ItemType : i16 // This enum is 1 byte in size on Enemy

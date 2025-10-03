@@ -1324,10 +1324,8 @@ u32 ResultScreen::DrawFinalStats()
     return 0;
 }
 
-ZunResult ResultScreen::RegisterChain(i32 unk)
+bool ResultScreen::RegisterChain(i32 unk)
 {
-
-    // i32 unused[16];
     ResultScreen *resultScreen;
     resultScreen = new ResultScreen();
 
@@ -1350,21 +1348,20 @@ ZunResult ResultScreen::RegisterChain(i32 unk)
         }
     }
 
-    if (g_Chain.AddToCalcChain(resultScreen->calcChain, TH_CHAIN_PRIO_CALC_RESULTSCREEN))
+    if (!g_Chain.AddToCalcChain(resultScreen->calcChain, TH_CHAIN_PRIO_CALC_RESULTSCREEN))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     resultScreen->drawChain = g_Chain.CreateElem((ChainCallback)ResultScreen::OnDraw);
     resultScreen->drawChain->arg = resultScreen;
     g_Chain.AddToDrawChain(resultScreen->drawChain, TH_CHAIN_PRIO_DRAW_RESULTSCREEN);
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ResultScreen::ResultScreen()
 {
-    // i32 unused[12];
     std::memset(this, 0, sizeof(ResultScreen));
     this->cursor = 1;
 }
@@ -2036,7 +2033,7 @@ ChainCallbackResult th06::ResultScreen::OnDraw(ResultScreen *resultScreen)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
+bool ResultScreen::AddedCallback(ResultScreen *resultScreen)
 {
 
     i32 slot;
@@ -2049,27 +2046,27 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
 
         if (!g_AnmManager->LoadSurface(0, "data/result/result.jpg"))
         {
-            return ZUN_ERROR;
+            return false;
         }
 
         if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT00, "data/result00.anm", ANM_OFFSET_RESULT00))
         {
-            return ZUN_ERROR;
+            return false;
         }
 
         if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT01, "data/result01.anm", ANM_OFFSET_RESULT01))
         {
-            return ZUN_ERROR;
+            return false;
         }
 
         if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT02, "data/result02.anm", ANM_OFFSET_RESULT02))
         {
-            return ZUN_ERROR;
+            return false;
         }
 
         if (!g_AnmManager->LoadAnm(ANM_FILE_RESULT03, "data/result03.anm", ANM_OFFSET_RESULT03))
         {
-            return ZUN_ERROR;
+            return false;
         }
 
         sprite = &resultScreen->unk_40[0];
@@ -2149,10 +2146,10 @@ ZunResult ResultScreen::AddedCallback(ResultScreen *resultScreen)
 
     resultScreen->unk_39a0.activeSpriteIndex = -1;
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult ResultScreen::DeletedCallback(ResultScreen *resultScreen)
+bool ResultScreen::DeletedCallback(ResultScreen *resultScreen)
 {
     i32 character;
     i32 difficulty;
@@ -2184,7 +2181,7 @@ ZunResult ResultScreen::DeletedCallback(ResultScreen *resultScreen)
     delete resultScreen;
     resultScreen = NULL;
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 }; // namespace th06

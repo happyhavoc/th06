@@ -73,11 +73,11 @@ struct MainMenu
     i32 ReplayHandling();
     static ZunResult LoadReplayMenu(MainMenu *menu);
 
-    static ZunResult RegisterChain(u32 isDemo);
+    static bool RegisterChain(u32 isDemo);
     static ChainCallbackResult OnUpdate(MainMenu *s);
     static ChainCallbackResult OnDraw(MainMenu *s);
-    static ZunResult AddedCallback(MainMenu *s);
-    static ZunResult DeletedCallback(MainMenu *s);
+    static bool AddedCallback(MainMenu *s);
+    static bool DeletedCallback(MainMenu *s);
     static ZunResult LoadDiffCharSelect(MainMenu *s);
 
     static void ReleaseTitleAnm();

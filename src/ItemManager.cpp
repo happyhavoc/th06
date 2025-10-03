@@ -8,8 +8,6 @@
 #include "SoundPlayer.hpp"
 #include "utils.hpp"
 
-// #include <d3dx8math.h>
-
 namespace th06
 {
 ItemManager g_ItemManager;

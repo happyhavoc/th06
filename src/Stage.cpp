@@ -307,7 +307,7 @@ ChainCallbackResult Stage::OnDrawLowPrio(Stage *stage)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-ZunResult Stage::AddedCallback(Stage *stage)
+bool Stage::AddedCallback(Stage *stage)
 {
     ZunTimer *facingDirTimer;
     ZunTimer *scriptTimer;
@@ -328,7 +328,7 @@ ZunResult Stage::AddedCallback(Stage *stage)
     if (stage->LoadStageData(g_StageFiles[g_GameManager.currentStage].anmFile,
                              g_StageFiles[g_GameManager.currentStage].stdFile) != ZUN_SUCCESS)
     {
-        return ZUN_ERROR;
+        return false;
     }
     stage->skyFog.color = COLOR_BLACK;
     stage->skyFog.nearPlane = 200.0;
@@ -348,10 +348,6 @@ ZunResult Stage::AddedCallback(Stage *stage)
     facingDirTimer->InitializeForPopup();
     stage->unpauseFlag = 0;
 
-    //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGCOLOR, stage->skyFog.color);
-    //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&stage->skyFog.nearPlane);
-    //    g_Supervisor.d3dDevice->SetRenderState(D3DRS_FOGEND, *(DWORD *)&stage->skyFog.farPlane);
-
     GLfloat fogColor[4] = {((stage->skyFog.color >> 16) & 0xFF) / 255.0f, ((stage->skyFog.color >> 8) & 0xFF) / 255.0f,
                            (stage->skyFog.color & 0xFF) / 255.0f, ((stage->skyFog.color >> 24) & 0xFF) / 255.0f};
 
@@ -359,10 +355,10 @@ ZunResult Stage::AddedCallback(Stage *stage)
     g_glFuncTable.glFogf(GL_FOG_START, stage->skyFog.nearPlane);
     g_glFuncTable.glFogf(GL_FOG_END, stage->skyFog.farPlane);
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Stage::RegisterChain(u32 stage)
+bool Stage::RegisterChain(u32 stage)
 {
 
     Stage *stg = &g_Stage;
@@ -383,9 +379,9 @@ ZunResult Stage::RegisterChain(u32 stage)
     g_StageCalcChain.deletedCallback = (ChainDeletedCallback)Stage::DeletedCallback;
     g_StageCalcChain.arg = stg;
 
-    if (g_Chain.AddToCalcChain(&g_StageCalcChain, TH_CHAIN_PRIO_CALC_STAGE))
+    if (!g_Chain.AddToCalcChain(&g_StageCalcChain, TH_CHAIN_PRIO_CALC_STAGE))
     {
-        return ZUN_ERROR;
+        return false;
     }
     g_StageOnDrawHighPrioChain.callback = (ChainCallback)OnDrawHighPrio;
     g_StageOnDrawHighPrioChain.addedCallback = NULL;
@@ -398,10 +394,10 @@ ZunResult Stage::RegisterChain(u32 stage)
     g_StageOnDrawLowPrioChain.arg = stg;
     g_Chain.AddToDrawChain(&g_StageOnDrawLowPrioChain, TH_CHAIN_PRIO_DRAW_LOW_PRIO_STAGE);
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Stage::DeletedCallback(Stage *s)
+bool Stage::DeletedCallback(Stage *s)
 {
     g_AnmManager->ReleaseAnm(ANM_FILE_STAGEBG);
     if (s->quadVms != NULL)
@@ -420,7 +416,7 @@ ZunResult Stage::DeletedCallback(Stage *s)
     free(s->objects);
     s->objects = NULL;
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void Stage::CutChain()

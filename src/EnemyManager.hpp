@@ -22,12 +22,12 @@ struct EnemyManager
 {
     void Initialize();
     EnemyManager();
-    static ZunResult RegisterChain(const char *stgEnm1, const char *stgEnm2);
+    static bool RegisterChain(const char *stgEnm1, const char *stgEnm2);
     static void CutChain();
     static ChainCallbackResult OnUpdate(EnemyManager *enemyManager);
     static ChainCallbackResult OnDraw(EnemyManager *enemyManager);
-    static ZunResult AddedCallback(EnemyManager *enemyManager);
-    static ZunResult DeletedCallback(EnemyManager *enemyManager);
+    static bool AddedCallback(EnemyManager *enemyManager);
+    static bool DeletedCallback(EnemyManager *enemyManager);
 
     void RunEclTimeline();
     Enemy *SpawnEnemy(i32 eclSubId, ZunVec3 *pos, i16 life, i16 itemDrop, i32 score);

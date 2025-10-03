@@ -9,7 +9,6 @@
 #include "AnmVm.hpp"
 #include "GLFunc.hpp"
 #include "GameManager.hpp"
-#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 

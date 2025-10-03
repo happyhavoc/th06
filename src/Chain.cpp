@@ -44,7 +44,7 @@ Chain::Chain()
     unk = 0;
 }
 
-int Chain::AddToCalcChain(ChainElem *elem, int priority)
+bool Chain::AddToCalcChain(ChainElem *elem, int priority)
 {
     ChainElem *cur;
 
@@ -83,7 +83,7 @@ int Chain::AddToCalcChain(ChainElem *elem, int priority)
 
     if (elem->addedCallback != NULL)
     {
-        int res = elem->addedCallback(elem->arg);
+        bool res = elem->addedCallback(elem->arg);
         elem->addedCallback = NULL;
 
         return res;

@@ -37,7 +37,7 @@ Player::Player()
 {
 }
 
-ZunResult Player::RegisterChain(u8 unk)
+bool Player::RegisterChain(u8 unk)
 {
     Player *p = &g_Player;
     std::memset(p, 0, sizeof(Player));
@@ -52,13 +52,13 @@ ZunResult Player::RegisterChain(u8 unk)
     p->chainDraw2->arg = p;
     p->chainCalc->addedCallback = (ChainAddedCallback)Player::AddedCallback;
     p->chainCalc->deletedCallback = (ChainDeletedCallback)Player::DeletedCallback;
-    if (g_Chain.AddToCalcChain(p->chainCalc, TH_CHAIN_PRIO_CALC_PLAYER))
+    if (!g_Chain.AddToCalcChain(p->chainCalc, TH_CHAIN_PRIO_CALC_PLAYER))
     {
-        return ZUN_ERROR;
+        return false;
     }
     g_Chain.AddToDrawChain(p->chainDraw1, TH_CHAIN_PRIO_DRAW_LOW_PRIO_PLAYER);
     g_Chain.AddToDrawChain(p->chainDraw2, TH_CHAIN_PRIO_DRAW_HIGH_PRIO_PLAYER);
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void Player::CutChain()
@@ -72,7 +72,7 @@ void Player::CutChain()
     return;
 }
 
-ZunResult Player::AddedCallback(Player *p)
+bool Player::AddedCallback(Player *p)
 {
     PlayerBullet *curBullet;
     i32 idx;
@@ -84,7 +84,7 @@ ZunResult Player::AddedCallback(Player *p)
         if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT) &&
             !g_AnmManager->LoadAnm(ANM_FILE_PLAYER, "data/player00.anm", ANM_OFFSET_PLAYER))
         {
-            return ZUN_ERROR;
+            return false;
         }
         g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, ANM_SCRIPT_PLAYER_IDLE);
         break;
@@ -92,7 +92,7 @@ ZunResult Player::AddedCallback(Player *p)
         if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT) &&
             !g_AnmManager->LoadAnm(ANM_FILE_PLAYER, "data/player01.anm", ANM_OFFSET_PLAYER))
         {
-            return ZUN_ERROR;
+            return false;
         }
         g_AnmManager->SetAndExecuteScriptIdx(&p->playerSprite, ANM_SCRIPT_PLAYER_IDLE);
         break;
@@ -138,16 +138,16 @@ ZunResult Player::AddedCallback(Player *p)
     p->verticalMovementSpeedMultiplierDuringBomb = 1.0;
     p->horizontalMovementSpeedMultiplierDuringBomb = 1.0;
     p->respawnTimer = 8;
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Player::DeletedCallback(Player *p)
+bool Player::DeletedCallback(Player *p)
 {
     if ((i32)(g_Supervisor.curState != SUPERVISOR_STATE_GAMEMANAGER_REINIT))
     {
         g_AnmManager->ReleaseAnm(ANM_FILE_PLAYER);
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ChainCallbackResult Player::OnUpdate(Player *p)
