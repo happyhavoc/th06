@@ -4,7 +4,6 @@
 #include "SoundPlayer.hpp"
 #include "ZunColor.hpp"
 #include "ZunMath.hpp"
-#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
@@ -485,10 +484,10 @@ enum EclRawInstrOpcode
 
 struct EclManager
 {
-    ZunResult Load(const char *ecl);
+    bool Load(const char *ecl);
     void Unload();
-    ZunResult RunEcl(Enemy *enemy);
-    ZunResult CallEclSub(EnemyEclContext *enemyEcl, i16 subId);
+    bool RunEcl(Enemy *enemy);
+    bool CallEclSub(EnemyEclContext *enemyEcl, i16 subId);
 
     EclRawHeader *eclFile;
     EclTimelineInstr *timelinePtrs[3];

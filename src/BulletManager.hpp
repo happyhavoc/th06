@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AnmVm.hpp"
-#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 

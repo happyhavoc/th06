@@ -107,7 +107,7 @@ void Ending::FadingEffect()
     }
 }
 
-ZunResult Ending::ParseEndFile()
+bool Ending::ParseEndFile()
 {
     i32 vmIndex;
     i32 anmScriptIdx;
@@ -186,7 +186,7 @@ ZunResult Ending::ParseEndFile()
 
                 if (!g_AnmManager->LoadSurface(0, this->endFileDataPtr + 1))
                 {
-                    return ZUN_ERROR;
+                    return false;
                 }
                 break;
 
@@ -218,9 +218,9 @@ ZunResult Ending::ParseEndFile()
             case END_OPCODE_EXEC_END_FILE:
                 /* exec(endfile) */
 
-                if (this->LoadEnding(this->endFileDataPtr + 1) != ZUN_SUCCESS)
+                if (!this->LoadEnding(this->endFileDataPtr + 1))
                 {
-                    return ZUN_ERROR;
+                    return false;
                 }
                 charactersReaded = 0;
                 lineDisplayed = false;
@@ -336,7 +336,7 @@ ZunResult Ending::ParseEndFile()
                 break;
 
             case END_OPCODE_END:
-                return ZUN_ERROR;
+                return false;
             }
 
             while ((this->endFileDataPtr[0] != '\n' && (this->endFileDataPtr[0] != '\r')))
@@ -421,10 +421,10 @@ endParsing:
         this->backgroundScrollSpeed = 0.0f;
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Ending::LoadEnding(const char *endFilePath)
+bool Ending::LoadEnding(const char *endFilePath)
 {
     char *endFileDat;
 
@@ -433,7 +433,7 @@ ZunResult Ending::LoadEnding(const char *endFilePath)
     if (this->endFileData == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ENDING_END_FILE_CORRUPTED);
-        return ZUN_ERROR;
+        return false;
     }
     else
     {
@@ -445,7 +445,7 @@ ZunResult Ending::LoadEnding(const char *endFilePath)
         {
             std::free(endFileDat);
         }
-        return ZUN_SUCCESS;
+        return true;
     }
 }
 
@@ -477,7 +477,7 @@ ChainCallbackResult Ending::OnUpdate(Ending *ending)
 
     for (framesPressed = 0;;)
     {
-        if (ending->ParseEndFile() != ZUN_SUCCESS)
+        if (!ending->ParseEndFile())
         {
             return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
         }
@@ -553,13 +553,13 @@ bool Ending::AddedCallback(Ending *ending)
         switch (g_GameManager.character)
         {
         case CHARA_REIMU:
-            if (ending->LoadEnding("data/end00b.end") != ZUN_SUCCESS)
+            if (!ending->LoadEnding("data/end00b.end"))
             {
                 return false;
             }
             break;
         case CHARA_MARISA:
-            if (ending->LoadEnding("data/end10b.end") != ZUN_SUCCESS)
+            if (!ending->LoadEnding("data/end10b.end"))
             {
                 return false;
             }
@@ -573,14 +573,14 @@ bool Ending::AddedCallback(Ending *ending)
         case CHARA_REIMU:
             if (g_GameManager.shotType == SHOT_TYPE_A)
             {
-                if (ending->LoadEnding("data/end00.end") != ZUN_SUCCESS)
+                if (!ending->LoadEnding("data/end00.end"))
                 {
                     return false;
                 }
             }
             else
             {
-                if (ending->LoadEnding("data/end01.end") != ZUN_SUCCESS)
+                if (!ending->LoadEnding("data/end01.end"))
                 {
                     return false;
                 }
@@ -589,14 +589,14 @@ bool Ending::AddedCallback(Ending *ending)
         case CHARA_MARISA:
             if (g_GameManager.shotType == SHOT_TYPE_A)
             {
-                if (ending->LoadEnding("data/end10.end") != ZUN_SUCCESS)
+                if (!ending->LoadEnding("data/end10.end"))
                 {
                     return false;
                 }
             }
             else
             {
-                if (ending->LoadEnding("data/end11.end") != ZUN_SUCCESS)
+                if (!ending->LoadEnding("data/end11.end"))
                 {
                     return false;
                 }

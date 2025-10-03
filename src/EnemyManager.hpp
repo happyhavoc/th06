@@ -3,7 +3,6 @@
 #include "Chain.hpp"
 #include "EclManager.hpp"
 #include "Enemy.hpp"
-#include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06

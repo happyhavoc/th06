@@ -97,8 +97,8 @@ ZUN_ASSERT_SIZE(GuiFormattedText, 0x20);
 struct GuiImpl
 {
     GuiImpl();
-    ZunResult RunMsg();
-    ZunResult DrawDialogue();
+    bool RunMsg();
+    bool DrawDialogue();
     void MsgRead(i32 msgIdx);
 
     AnmVm vms[26];
@@ -139,7 +139,7 @@ struct Gui
     static ChainCallbackResult OnDraw(Gui *);
 
     bool ActualAddedCallback();
-    ZunResult LoadMsg(const char *path);
+    bool LoadMsg(const char *path);
     void FreeMsgFile();
 
     bool IsStageFinished();

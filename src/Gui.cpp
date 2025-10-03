@@ -308,7 +308,7 @@ bool Gui::ActualAddedCallback()
         {
             return false;
         }
-        if (this->LoadMsg("data/msg1.dat") != ZUN_SUCCESS)
+        if (!this->LoadMsg("data/msg1.dat"))
         {
             return false;
         }
@@ -318,7 +318,7 @@ bool Gui::ActualAddedCallback()
         {
             return false;
         }
-        if (this->LoadMsg("data/msg2.dat") != ZUN_SUCCESS)
+        if (!this->LoadMsg("data/msg2.dat"))
         {
             return false;
         }
@@ -332,7 +332,7 @@ bool Gui::ActualAddedCallback()
         {
             return false;
         }
-        if (this->LoadMsg("data/msg3.dat") != ZUN_SUCCESS)
+        if (!this->LoadMsg("data/msg3.dat"))
         {
             return false;
         }
@@ -346,7 +346,7 @@ bool Gui::ActualAddedCallback()
         {
             return false;
         }
-        if (this->LoadMsg("data/msg4.dat") != ZUN_SUCCESS)
+        if (!this->LoadMsg("data/msg4.dat"))
         {
             return false;
         }
@@ -360,7 +360,7 @@ bool Gui::ActualAddedCallback()
         {
             return false;
         }
-        if (this->LoadMsg("data/msg5.dat") != ZUN_SUCCESS)
+        if (!this->LoadMsg("data/msg5.dat"))
         {
             return false;
         }
@@ -378,7 +378,7 @@ bool Gui::ActualAddedCallback()
         {
             return false;
         }
-        if (this->LoadMsg("data/msg6.dat") != ZUN_SUCCESS)
+        if (!this->LoadMsg("data/msg6.dat"))
         {
             return false;
         }
@@ -396,7 +396,7 @@ bool Gui::ActualAddedCallback()
         {
             return false;
         }
-        if (this->LoadMsg("data/msg7.dat") != ZUN_SUCCESS)
+        if (!this->LoadMsg("data/msg7.dat"))
         {
             return false;
         }
@@ -453,7 +453,7 @@ bool Gui::ActualAddedCallback()
     return true;
 }
 
-ZunResult Gui::LoadMsg(const char *path)
+bool Gui::LoadMsg(const char *path)
 {
     i32 idx;
 
@@ -462,7 +462,7 @@ ZunResult Gui::LoadMsg(const char *path)
     if (this->impl->msg.msgFile == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GUI_MSG_FILE_CORRUPTED, path);
-        return ZUN_ERROR;
+        return false;
     }
     this->impl->msg.currentMsgIdx = 0xffffffff;
     this->impl->msg.currentInstr = NULL;
@@ -474,7 +474,7 @@ ZunResult Gui::LoadMsg(const char *path)
         this->impl->msg.instrs[idx] =
             (MsgRawInstr *)(((u8 *)+this->impl->msg.msgFile) + this->impl->msg.msgFile->instrsOffsets[idx]);
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void Gui::FreeMsgFile()
@@ -529,13 +529,13 @@ void GuiImpl::MsgRead(i32 msgIdx)
     return;
 }
 
-ZunResult GuiImpl::RunMsg()
+bool GuiImpl::RunMsg()
 {
     MsgRawInstrArgs *args;
 
     if (this->msg.currentMsgIdx < 0)
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (this->msg.ignoreWaitCounter > 0)
     {
@@ -551,7 +551,7 @@ ZunResult GuiImpl::RunMsg()
         {
         case MSG_OPCODE_MSGDELETE:
             this->msg.currentMsgIdx = 0xffffffff;
-            return ZUN_ERROR;
+            return false;
         case MSG_OPCODE_PORTRAITANMSCRIPT:
             args = &this->msg.currentInstr->args;
             g_AnmManager->SetAndExecuteScriptIdx(
@@ -699,20 +699,20 @@ SKIP_TIME_INCREMENT:
     {
         this->msg.timer.SetCurrent(60);
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult GuiImpl::DrawDialogue()
+bool GuiImpl::DrawDialogue()
 {
     f32 dialogueBoxHeight;
 
     if (this->msg.currentMsgIdx < 0)
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (g_GameManager.currentStage == 6 && (this->msg.currentMsgIdx == 1 || this->msg.currentMsgIdx == 11))
     {
-        return ZUN_SUCCESS;
+        return true;
     }
     if ((i32)(this->msg.timer.current < 60))
     {
@@ -833,7 +833,7 @@ ZunResult GuiImpl::DrawDialogue()
     g_AnmManager->DrawNoRotation(&this->msg.dialogueLines[1]);
     g_AnmManager->DrawNoRotation(&this->msg.introLines[0]);
     g_AnmManager->DrawNoRotation(&this->msg.introLines[1]);
-    return ZUN_SUCCESS;
+    return true;
 }
 
 bool Gui::MsgWait()

@@ -560,7 +560,7 @@ ChainCallbackResult EnemyManager::OnUpdate(EnemyManager *mgr)
         {
             curEnemy->HandleTimerCallback();
         }
-        if (g_EclManager.RunEcl(curEnemy) == ZUN_ERROR)
+        if (!g_EclManager.RunEcl(curEnemy))
         {
             curEnemy->flags.active = 0;
             curEnemy->Despawn();

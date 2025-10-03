@@ -422,7 +422,7 @@ bool GameManager::AddedCallback(GameManager *mgr)
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ENEMYMANAGER);
         return false;
     }
-    if (g_EclManager.Load(g_EclFiles[mgr->currentStage]) != ZUN_SUCCESS)
+    if (!g_EclManager.Load(g_EclFiles[mgr->currentStage]))
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_ECLMANAGER);
         return false;

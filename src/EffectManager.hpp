@@ -4,7 +4,6 @@
 #include "Effect.hpp"
 #include "ZunColor.hpp"
 #include "ZunMath.hpp"
-#include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06

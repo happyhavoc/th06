@@ -35,7 +35,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(ExInsn, 17, g_EclExInsn) = {
     EnemyEclInstr::ExInsStageXFunc16
 };
 
-ZunResult EclManager::Load(const char *eclPath)
+bool EclManager::Load(const char *eclPath)
 {
     i32 idx;
 
@@ -44,7 +44,7 @@ ZunResult EclManager::Load(const char *eclPath)
     if (this->eclFile == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_ECLMANAGER_ENEMY_DATA_CORRUPT);
-        return ZUN_ERROR;
+        return false;
     }
 
     this->timelinePtrs[0] = (EclTimelineInstr *)(((u8 *)this->eclFile) + this->eclFile->timelineOffsets[0]);
@@ -57,7 +57,7 @@ ZunResult EclManager::Load(const char *eclPath)
     }
 
     this->timeline = this->timelinePtrs[0];
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void EclManager::Unload()
@@ -73,15 +73,15 @@ void EclManager::Unload()
     return;
 }
 
-ZunResult EclManager::CallEclSub(EnemyEclContext *ctx, i16 subId)
+bool EclManager::CallEclSub(EnemyEclContext *ctx, i16 subId)
 {
     ctx->currentInstr = this->subTable[subId];
     ctx->time.InitializeForPopup();
     ctx->subId = subId;
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult EclManager::RunEcl(Enemy *enemy)
+bool EclManager::RunEcl(Enemy *enemy)
 {
     EclRawInstr *instruction;
     EclRawInstrArgs *args;
@@ -120,7 +120,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             switch (instruction->opCode)
             {
             case ECL_OPCODE_UNIMP:
-                return ZUN_ERROR;
+                return false;
             case ECL_OPCODE_JUMPDEC:
                 local_14 = *EnemyEclInstr::GetVar(enemy, &args->jump.var, NULL);
                 local_14--;
@@ -1032,7 +1032,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
             }
             enemy->currentContext.currentInstr = instruction;
             enemy->currentContext.time.Tick();
-            return ZUN_SUCCESS;
+            return true;
         }
     }
 }

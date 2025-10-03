@@ -2,7 +2,6 @@
 
 #include "AnmVm.hpp"
 #include "Chain.hpp"
-#include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
 
@@ -61,9 +60,9 @@ struct Ending
 
     i32 ReadEndFileParameter();
 
-    ZunResult ParseEndFile();
+    bool ParseEndFile();
 
-    ZunResult LoadEnding(const char *endFilePath);
+    bool LoadEnding(const char *endFilePath);
     void FadingEffect();
 
     ChainElem *calcChain;

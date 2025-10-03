@@ -2,7 +2,6 @@
 
 #include "Chain.hpp"
 #include "ResultScreen.hpp"
-#include "ZunResult.hpp"
 #include "diffbuild.hpp"
 #include "inttypes.hpp"
 
