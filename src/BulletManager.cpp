@@ -529,7 +529,7 @@ i32 BulletManager::DespawnBullets(i32 maxBonusScore, bool awardPoints)
     return totalBonusScore;
 }
 
-ZunResult BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
+bool BulletManager::SpawnBulletPattern(EnemyBulletShooter *bulletProps)
 {
     i32 idx1, idx2;
     f32 angle;
@@ -551,7 +551,7 @@ out:
     {
         g_SoundPlayer.PlaySoundByIdx(bulletProps->sfx);
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
