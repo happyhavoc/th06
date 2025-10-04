@@ -12,7 +12,7 @@
 namespace th06
 {
 
-ZunResult MusicRoom::CheckInputEnable()
+bool MusicRoom::CheckInputEnable()
 {
     if (this->waitFramesCount >= 8)
     {
@@ -142,7 +142,7 @@ ChainCallbackResult MusicRoom::OnUpdate(MusicRoom *musicRoom)
         switch (musicRoom->enableInput)
         {
         case false:
-            if (!musicRoom->CheckInputEnable())
+            if (musicRoom->CheckInputEnable())
             {
                 break;
             }

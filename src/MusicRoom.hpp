@@ -2,7 +2,6 @@
 
 #include "AnmVm.hpp"
 #include "Chain.hpp"
-#include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06
@@ -32,7 +31,7 @@ struct MusicRoom
     static bool AddedCallback(MusicRoom *musicRoom);
     static bool DeletedCallback(MusicRoom *musicRoom);
     bool ProcessInput();
-    ZunResult CheckInputEnable();
+    bool CheckInputEnable();
     static ChainCallbackResult OnDraw(MusicRoom *musicRoom);
     static ChainCallbackResult OnUpdate(MusicRoom *musicRoom);
     static bool RegisterChain();

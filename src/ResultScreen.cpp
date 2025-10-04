@@ -232,7 +232,7 @@ void ResultScreen::FreeAllScores(ScoreListNode *scores)
     }
 }
 
-ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
+bool ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
 {
 
     i32 cursor;
@@ -242,7 +242,7 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
 
     if (outCatk == NULL)
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     parsedCatk = (Catk *)header->ShiftBytes(header->dataOffset);
@@ -259,10 +259,10 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
         cursor -= parsedCatk->base.th6kLen;
         parsedCatk = (Catk *)&parsedCatk->name[parsedCatk->base.th6kLen - 0x18];
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
+bool ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
 {
     i32 cursor;
     Clrd *parsedClrd;
@@ -273,7 +273,7 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
 
     if (outClrd == NULL)
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     for (characterShotType = 0; characterShotType < CLRD_NUM_CHARACTERS; characterShotType++)
@@ -307,10 +307,10 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
         cursor -= parsedClrd->base.th6kLen;
         parsedClrd = (Clrd *)(((u8 *)&parsedClrd->base) + parsedClrd->base.th6kLen);
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
+bool ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
 {
     i32 cursor;
     Pscr *parsedPscr;
@@ -323,7 +323,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
 
     if (outClrd == NULL)
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     for (pscr = outClrd, character = 0; character < PSCR_NUM_CHARS_SHOTTYPES; character++)
@@ -363,7 +363,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
         cursor -= parsedPscr->base.th6kLen;
         parsedPscr = parsedPscr->ShiftBytes(parsedPscr->base.th6kLen);
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void ResultScreen::ReleaseScoreDat(ScoreDat *scoreDat)
@@ -876,7 +876,7 @@ i32 ResultScreen::HandleReplaySaveKeyboard()
                     continue;
                 }
 
-                if (ReplayManager::ValidateReplayData(replayLoaded, g_LastFileSize) == ZUN_SUCCESS)
+                if (ReplayManager::ValidateReplayData(replayLoaded, g_LastFileSize))
                 {
                     this->replays[idx] = *replayLoaded;
                 }
@@ -1169,7 +1169,7 @@ bool ResultScreen::MoveCursorHorizontally(ResultScreen *resultScreen, i32 length
     }
 }
 
-ZunResult ResultScreen::CheckConfirmButton()
+bool ResultScreen::CheckConfirmButton()
 {
     AnmVm *viewport;
 
@@ -1198,7 +1198,7 @@ ZunResult ResultScreen::CheckConfirmButton()
         }
         break;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 u32 ResultScreen::DrawFinalStats()

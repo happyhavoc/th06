@@ -6,7 +6,6 @@
 #include "Chain.hpp"
 #include "ReplayData.hpp"
 #include "ZunColor.hpp"
-#include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06
@@ -56,29 +55,29 @@ enum OptionsCursorPosition
 struct MainMenu
 {
     MainMenu();
-    ZunResult BeginStartup();
-    ZunResult DrawStartMenu();
+    bool BeginStartup();
+    bool DrawStartMenu();
     u32 OnUpdateOptionsMenu();
-    ZunResult DrawReplayMenu();
-    ZunResult ChoosePracticeLevel();
+    bool DrawReplayMenu();
+    bool ChoosePracticeLevel();
     bool WeirdSecondInputCheck();
     void ColorMenuItem(AnmVm *, i32, i32, i32);
 
-    static ZunResult LoadTitleAnm(MainMenu *menu);
+    static bool LoadTitleAnm(MainMenu *menu);
     static CursorMovement MoveCursor(MainMenu *menu, i32 menuLength);
     static void DrawMenuItem(AnmVm *vm, i32 itemNumber, i32 cursor, ZunColor activeItemColor,
                              ZunColor inactiveItemColor, i32 spriteIdx /* I think*/);
     static void SwapMapping(MainMenu *menu, i16 btnPressed, i16 oldMapping, bool unk);
 
     i32 ReplayHandling();
-    static ZunResult LoadReplayMenu(MainMenu *menu);
+    static bool LoadReplayMenu(MainMenu *menu);
 
     static bool RegisterChain(u32 isDemo);
     static ChainCallbackResult OnUpdate(MainMenu *s);
     static ChainCallbackResult OnDraw(MainMenu *s);
     static bool AddedCallback(MainMenu *s);
     static bool DeletedCallback(MainMenu *s);
-    static ZunResult LoadDiffCharSelect(MainMenu *s);
+    static bool LoadDiffCharSelect(MainMenu *s);
 
     static void ReleaseTitleAnm();
 

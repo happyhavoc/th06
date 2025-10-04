@@ -48,7 +48,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     f32 deltaTimeAsFrames;
     f32 deltaTimeAsMs;
     i16 mapping;
-    ZunResult startedUp;
+    bool startedUp;
     i16 sVar1;
     u8 *controllerData;
     ControllerMapping mappingData;
@@ -98,7 +98,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     {
     case STATE_STARTUP:
         startedUp = menu->BeginStartup();
-        if (startedUp == ZUN_ERROR)
+        if (!startedUp)
         {
             return CHAIN_CALLBACK_RESULT_CONTINUE_AND_REMOVE_JOB;
         }
@@ -274,7 +274,7 @@ ChainCallbackResult MainMenu::OnUpdate(MainMenu *menu)
     case STATE_DIFFICULTY_LOAD:
         if (menu->stateTimer == 60)
         {
-            if (LoadDiffCharSelect(menu) != ZUN_SUCCESS)
+            if (!LoadDiffCharSelect(menu))
             {
                 GameErrorContext::Log(&g_GameErrorContext, TH_ERR_MAINMENU_LOAD_SELECT_SCREEN_FAILED);
                 g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
@@ -1001,30 +1001,28 @@ void MainMenu::DrawMenuItem(AnmVm *vm, int itemNumber, int cursor, ZunColor curr
     }
 }
 
-ZunResult MainMenu::BeginStartup()
+bool MainMenu::BeginStartup()
 {
     ZunVec3 vector3Ptr;
     u32 time;
     int i;
 
-    if (LoadTitleAnm(this) != ZUN_SUCCESS)
+    if (!LoadTitleAnm(this))
     {
         g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
-        return ZUN_ERROR;
+        return false;
     }
-    // if (g_Supervisor.startupTimeBeforeMenuMusic > 0)
-    // {
-    //     time = SDL_GetTicks();
-    //     while ((time - g_Supervisor.startupTimeBeforeMenuMusic >= 0) &&
-    //            (3000 > time - g_Supervisor.startupTimeBeforeMenuMusic))
-    //     {
-    //         time = SDL_GetTicks();
-    //     }
-    //     g_Supervisor.startupTimeBeforeMenuMusic = 0;
-    //     g_Supervisor.PlayAudio("bgm/th06_01.mid");
-    // }
-    g_Supervisor.startupTimeBeforeMenuMusic = 0;
-    g_Supervisor.PlayAudio("bgm/th06_01.mid");
+    if (g_Supervisor.startupTimeBeforeMenuMusic > 0)
+    {
+        time = SDL_GetTicks();
+        while ((time - g_Supervisor.startupTimeBeforeMenuMusic >= 0) &&
+               (500 > time - g_Supervisor.startupTimeBeforeMenuMusic))
+        {
+            time = SDL_GetTicks();
+        }
+        g_Supervisor.startupTimeBeforeMenuMusic = 0;
+        g_Supervisor.PlayAudio("bgm/th06_01.mid");
+    }
     for (i = 0; i < ARRAY_SIZE_SIGNED(this->vm); i++)
     {
         this->vm[i].pendingInterrupt = 1;
@@ -1043,7 +1041,7 @@ ZunResult MainMenu::BeginStartup()
         this->vm[i].posOffset = vector3Ptr;
     }
     this->gameState = STATE_PRE_INPUT;
-    return ZUN_SUCCESS;
+    return true;
 }
 
 bool MainMenu::WeirdSecondInputCheck()
@@ -1087,7 +1085,7 @@ bool MainMenu::WeirdSecondInputCheck()
     return false;
 }
 
-ZunResult MainMenu::DrawStartMenu(void)
+bool MainMenu::DrawStartMenu(void)
 {
     i32 i;
     i = MoveCursor(this, 8);
@@ -1269,7 +1267,7 @@ i32 MainMenu::ReplayHandling()
     case STATE_REPLAY_LOAD:
         if (this->stateTimer == 60)
         {
-            if (LoadReplayMenu(this))
+            if (!LoadReplayMenu(this))
             {
                 GameErrorContext::Log(&g_GameErrorContext, "japanese");
                 g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
@@ -1287,7 +1285,7 @@ i32 MainMenu::ReplayHandling()
                         std::free(replayData);
                         continue;
                     }
-                    if (!ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
+                    if (ReplayManager::ValidateReplayData(replayData, g_LastFileSize))
                     {
                         this->replayFileData[replayFileIdx].header = replayData;
                         std::strcpy(this->replayFilePaths[replayFileIdx], replayFilePath);
@@ -1482,7 +1480,7 @@ i32 MainMenu::ReplayHandling()
     return 0;
 }
 
-ZunResult MainMenu::DrawReplayMenu()
+bool MainMenu::DrawReplayMenu()
 {
     i32 replayAmount;
     i32 i;
@@ -1582,7 +1580,7 @@ ZunResult MainMenu::DrawReplayMenu()
     }
     g_AsciiManager.color = COLOR_WHITE;
     g_AsciiManager.isSelected = false;
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void MainMenu::ColorMenuItem(AnmVm *vm, i32 item, i32 subItem, i32 subItemSelected)
@@ -1895,7 +1893,7 @@ u32 MainMenu::OnUpdateOptionsMenu()
     return 0;
 }
 
-ZunResult MainMenu::ChoosePracticeLevel()
+bool MainMenu::ChoosePracticeLevel()
 {
     if (this->gameState == STATE_PRACTICE_LVL_SELECT)
     {
@@ -1929,7 +1927,7 @@ ZunResult MainMenu::ChoosePracticeLevel()
         }
         g_AsciiManager.color = 0xFFFFFFFF;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
@@ -2018,7 +2016,7 @@ ChainCallbackResult MainMenu::OnDraw(MainMenu *menu)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
+bool MainMenu::LoadTitleAnm(MainMenu *menu)
 {
     i32 i;
 
@@ -2029,27 +2027,27 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_TITLE01, "data/title01.anm", ANM_OFFSET_TITLE01))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_TITLE02, "data/title02.anm", ANM_OFFSET_TITLE02))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_TITLE03, "data/title03.anm", ANM_OFFSET_TITLE03))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_TITLE04, "data/title04.anm", ANM_OFFSET_TITLE04))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_TITLE01S, "data/title01s.anm", ANM_OFFSET_TITLE01S))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_TITLE04S, "data/title04s.anm", ANM_OFFSET_TITLE04S))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     for (i = 0; i < 80; i++)
@@ -2062,13 +2060,13 @@ ZunResult MainMenu::LoadTitleAnm(MainMenu *menu)
 
     if (!g_AnmManager->LoadSurface(0, "data/title/title00.jpg"))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
+bool MainMenu::LoadDiffCharSelect(MainMenu *menu)
 {
     AnmVm *vm;
     i32 i;
@@ -2079,43 +2077,43 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
     }
     if (!g_AnmManager->LoadSurface(0, "data/title/select00.jpg"))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SELECT01, "data/select01.anm", ANM_OFFSET_SELECT01))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SELECT02, "data/select02.anm", ANM_OFFSET_SELECT02))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SELECT03, "data/select03.anm", ANM_OFFSET_SELECT03))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SELECT04, "data/select04.anm", ANM_OFFSET_SELECT04))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SELECT05, "data/select05.anm", ANM_OFFSET_SELECT05))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SLPL00A, "data/slpl00a.anm", ANM_OFFSET_SLPL00A))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SLPL00B, "data/slpl00b.anm", ANM_OFFSET_SLPL00B))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SLPL01A, "data/slpl01a.anm", ANM_OFFSET_SLPL01A))
     {
-        return ZUN_ERROR;
+        return false;
     }
     if (!g_AnmManager->LoadAnm(ANM_FILE_SLPL01B, "data/slpl01b.anm", ANM_OFFSET_SLPL01B))
     {
-        return ZUN_ERROR;
+        return false;
     }
     for (vm = &menu->vm[0x50], i = ANM_SCRIPT_SELECT01_START; i <= ANM_SCRIPT_SELECT01_END; i++, vm++)
     {
@@ -2134,10 +2132,10 @@ ZunResult MainMenu::LoadDiffCharSelect(MainMenu *menu)
         vm->baseSpriteIndex = vm->activeSpriteIndex;
         vm->flags.zWriteDisable = 1;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
+bool MainMenu::LoadReplayMenu(MainMenu *menu)
 {
     AnmVm *vm;
     i32 fileIdx;
@@ -2149,12 +2147,12 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
 
     if (!g_AnmManager->LoadSurface(0, "data/title/select00.jpg"))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     if (!g_AnmManager->LoadAnm(ANM_FILE_REPLAY, "data/replay00.anm", ANM_OFFSET_REPLAY))
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     vm = &menu->vm[96];
@@ -2176,7 +2174,7 @@ ZunResult MainMenu::LoadReplayMenu(MainMenu *menu)
         vm->baseSpriteIndex = vm->activeSpriteIndex;
         vm->flags.zWriteDisable = 1;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 bool MainMenu::RegisterChain(u32 isDemo)

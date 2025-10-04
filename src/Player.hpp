@@ -6,7 +6,6 @@
 #include "Chain.hpp"
 #include "GameManager.hpp"
 #include "ZunMath.hpp"
-#include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06
@@ -183,9 +182,9 @@ struct Player
     static FireBulletResult FireBulletMarisaB(Player *, PlayerBullet *, u32, u32);
 
     static void StartFireBulletTimer(Player *);
-    ZunResult HandlePlayerInputs();
+    bool HandlePlayerInputs();
     static void UpdatePlayerBullets(Player *);
-    static ZunResult UpdateFireBulletsTimer(Player *);
+    static bool UpdateFireBulletsTimer(Player *);
 
     static void SpawnBullets(Player *, u32 timer);
     static void DrawBullets(Player *p);

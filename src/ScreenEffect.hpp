@@ -2,7 +2,6 @@
 
 #include "Chain.hpp"
 #include "ZunColor.hpp"
-#include "ZunResult.hpp"
 #include "ZunTimer.hpp"
 #include "inttypes.hpp"
 

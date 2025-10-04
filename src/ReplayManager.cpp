@@ -17,7 +17,7 @@ namespace th06
 {
 ReplayManager *g_ReplayManager;
 
-ZunResult ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
+bool ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
 {
     u8 *checksumCursor;
     u32 checksum;
@@ -27,13 +27,13 @@ ZunResult ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
 
     if (data == NULL)
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     /* "T6RP" magic bytes */
     if (*(i32 *)data->magic != *(i32 *)"T6RP")
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     /* Deobfuscate the replay decryptedData */
@@ -56,15 +56,15 @@ ZunResult ReplayManager::ValidateReplayData(ReplayHeader *data, i32 fileSize)
 
     if (checksum != (u32)data->checksum)
     {
-        return ZUN_ERROR;
+        return false;
     }
 
     if (data->version != GAME_VERSION)
     {
-        return ZUN_ERROR;
+        return false;
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 bool ReplayManager::RegisterChain(i32 isDemo, const char *replayFile)
@@ -127,7 +127,7 @@ bool ReplayManager::RegisterChain(i32 isDemo, const char *replayFile)
             break;
         }
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 #define TH_BUTTON_REPLAY_CAPTURE                                                                                       \
@@ -283,7 +283,7 @@ bool ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
         mgr->replayData = (ReplayData *)std::malloc(sizeof(ReplayData));
 
         mgr->replayData->header = (ReplayHeader *)FileSystem::OpenPath(mgr->replayFile);
-        if (ValidateReplayData(mgr->replayData->header, g_LastFileSize) != ZUN_SUCCESS)
+        if (!ValidateReplayData(mgr->replayData->header, g_LastFileSize))
         {
             return false;
         }

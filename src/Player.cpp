@@ -628,7 +628,7 @@ ChainCallbackResult Player::OnDrawLowPrio(Player *p)
     return CHAIN_CALLBACK_RESULT_CONTINUE;
 }
 
-ZunResult Player::HandlePlayerInputs()
+bool Player::HandlePlayerInputs()
 {
     float intermediateFloat;
 
@@ -935,7 +935,7 @@ ZunResult Player::HandlePlayerInputs()
         this->StartFireBulletTimer(this);
     }
     this->previousFrameInput = g_CurFrameInput;
-    return ZUN_SUCCESS;
+    return true;
 }
 
 void Player::DrawBullets(Player *p)
@@ -987,11 +987,11 @@ void Player::StartFireBulletTimer(Player *p)
     }
 }
 
-ZunResult Player::UpdateFireBulletsTimer(Player *p)
+bool Player::UpdateFireBulletsTimer(Player *p)
 {
     if (p->fireBulletTimer.AsFrames() < 0)
     {
-        return ZUN_SUCCESS;
+        return true;
     }
 
     if (p->fireBulletTimer.HasTicked() && (!g_Player.bombInfo.isInUse || g_GameManager.character != CHARA_MARISA ||
@@ -1007,7 +1007,7 @@ ZunResult Player::UpdateFireBulletsTimer(Player *p)
     {
         p->fireBulletTimer.SetCurrent(-1);
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 f32 Player::AngleFromPlayer(ZunVec3 *pos)

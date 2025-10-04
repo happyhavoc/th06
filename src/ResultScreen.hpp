@@ -2,7 +2,6 @@
 
 #include "AnmVm.hpp"
 #include "ReplayData.hpp"
-#include "ZunResult.hpp"
 #include "inttypes.hpp"
 
 namespace th06
@@ -200,9 +199,9 @@ struct ResultScreen
     static bool DeletedCallback(ResultScreen *r);
 
     static ScoreDat *OpenScore(const char *path);
-    static ZunResult ParseCatk(ScoreDat *s, Catk *catk);
-    static ZunResult ParseClrd(ScoreDat *s, Clrd *out);
-    static ZunResult ParsePscr(ScoreDat *s, Pscr *out);
+    static bool ParseCatk(ScoreDat *s, Catk *catk);
+    static bool ParseClrd(ScoreDat *s, Clrd *out);
+    static bool ParsePscr(ScoreDat *s, Pscr *out);
 
     static void WriteScore(ResultScreen *r);
     void FreeScore(i32 difficulty, i32 character);
@@ -216,7 +215,7 @@ struct ResultScreen
 
     i32 HandleResultKeyboard();
     i32 HandleReplaySaveKeyboard();
-    ZunResult CheckConfirmButton();
+    bool CheckConfirmButton();
 
     static i32 LinkScore(ScoreListNode *, Hscr *);
     i32 LinkScoreEx(Hscr *out, i32 difficulty, i32 character);
