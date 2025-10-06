@@ -867,7 +867,7 @@ ZunResult Supervisor::PlayAudio(const char *path)
         pathExtension[2] = 'o';
         pathExtension[3] = 's';
         g_SoundPlayer.LoadWav(wavName);
-        if (g_SoundPlayer.LoadPos(wavPos) < ZUN_SUCCESS)
+        if (!g_SoundPlayer.LoadPos(wavPos))
         {
             g_SoundPlayer.PlayBGM(false);
         }

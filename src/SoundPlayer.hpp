@@ -84,19 +84,19 @@ struct SoundPlayer
 {
     SoundPlayer();
 
-    ZunResult InitializeDSound();
-    ZunResult InitSoundBuffers();
-    ZunResult Release(void);
+    bool InitializeDSound();
+    bool InitSoundBuffers();
+    bool Release(void);
 
-    ZunResult LoadSound(i32 idx, const char *path, f32 volumeMultiplier);
+    bool LoadSound(i32 idx, const char *path, f32 volumeMultiplier);
     void PlaySounds();
     void PlaySoundByIdx(SoundIdx idx);
-    ZunResult PlayBGM(bool isLooping);
+    bool PlayBGM(bool isLooping);
     void StopBGM();
     void FadeOut(f32 seconds);
 
-    ZunResult LoadWav(char *path);
-    ZunResult LoadPos(char *path);
+    bool LoadWav(char *path);
+    bool LoadPos(char *path);
 
     void BackgroundMusicPlayerThread();
     void MixAudio(u32 samples);
