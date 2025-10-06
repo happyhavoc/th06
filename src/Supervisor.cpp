@@ -355,7 +355,7 @@ bool Supervisor::AddedCallback(Supervisor *s)
     s->unk198 = 0;
     g_AnmManager->SetupVertexBuffer();
 
-    if (TextHelper::CreateTextBuffer() != ZUN_SUCCESS)
+    if (!TextHelper::CreateTextBuffer())
     {
         return false;
     }

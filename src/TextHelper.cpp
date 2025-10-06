@@ -57,7 +57,7 @@ bool TextHelper::ReleaseBuffer()
 #define TEXT_BUFFER_HEIGHT 64
 
 // Extended to initialize all globals for text helper
-ZunResult TextHelper::CreateTextBuffer()
+bool TextHelper::CreateTextBuffer()
 {
     TTF_Init();
 
@@ -69,7 +69,7 @@ ZunResult TextHelper::CreateTextBuffer()
         printf("%s\n", TTF_GetError());
 
         GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FONTS_NOT_FOUND);
-        return ZUN_ERROR;
+        return false;
     }
 
     g_Iconv = iconv_open("UTF-8", "MS932");
@@ -77,7 +77,7 @@ ZunResult TextHelper::CreateTextBuffer()
     if (g_Iconv == (iconv_t)-1)
     {
         GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_ICONV_INIT_FAILED);
-        return ZUN_ERROR;
+        return false;
     }
 
     g_TextBufferSurface =
@@ -85,7 +85,7 @@ ZunResult TextHelper::CreateTextBuffer()
 
     SDL_SetSurfaceBlendMode(g_TextBufferSurface, SDL_BLENDMODE_NONE);
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 bool TextHelper::InvertAlpha(i32 x, i32 y, i32 spriteWidth, i32 fontHeight)

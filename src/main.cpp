@@ -10,7 +10,6 @@
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "Supervisor.hpp"
-#include "ZunResult.hpp"
 #include "i18n.hpp"
 #include "utils.hpp"
 

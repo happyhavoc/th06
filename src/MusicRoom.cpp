@@ -19,7 +19,7 @@ bool MusicRoom::CheckInputEnable()
         this->enableInput = 1;
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 bool MusicRoom::ProcessInput()

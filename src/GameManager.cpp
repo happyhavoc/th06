@@ -435,7 +435,7 @@ bool GameManager::AddedCallback(GameManager *mgr)
     if (!Gui::RegisterChain())
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_GAMEMANAGER_FAILED_TO_INITIALIZE_GUI);
-        return ZUN_ERROR;
+        return false;
     }
     if (g_GameManager.isInReplay == 0)
     {

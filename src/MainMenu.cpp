@@ -1248,7 +1248,7 @@ bool MainMenu::DrawStartMenu(void)
             g_SoundPlayer.PlaySoundByIdx(SOUND_BACK);
         }
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 i32 MainMenu::ReplayHandling()
@@ -1271,7 +1271,7 @@ i32 MainMenu::ReplayHandling()
             {
                 GameErrorContext::Log(&g_GameErrorContext, "japanese");
                 g_Supervisor.curState = SUPERVISOR_STATE_EXITSUCCESS;
-                return ZUN_SUCCESS;
+                return true;
             }
             else
             {
@@ -1388,7 +1388,7 @@ i32 MainMenu::ReplayHandling()
 
                     if ((int)this->cursor >= ARRAY_SIZE_SIGNED(this->currentReplay->stageReplayData))
                     {
-                        return ZUN_SUCCESS;
+                        return true;
                     }
                 }
             }
