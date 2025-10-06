@@ -10,7 +10,6 @@
 #include "Supervisor.hpp"
 #include "ZunColor.hpp"
 #include "utils.hpp"
-// #include <d3d8.h>
 
 namespace th06
 {
@@ -325,8 +324,8 @@ bool Stage::AddedCallback(Stage *stage)
     stage->spellcardState = NOT_RUNNING;
     stage->skyFogInterpDuration = 0;
 
-    if (stage->LoadStageData(g_StageFiles[g_GameManager.currentStage].anmFile,
-                             g_StageFiles[g_GameManager.currentStage].stdFile) != ZUN_SUCCESS)
+    if (!stage->LoadStageData(g_StageFiles[g_GameManager.currentStage].anmFile,
+                             g_StageFiles[g_GameManager.currentStage].stdFile))
     {
         return false;
     }
@@ -426,24 +425,23 @@ void Stage::CutChain()
     g_Chain.Cut(&g_StageOnDrawLowPrioChain);
 }
 
-ZunResult Stage::LoadStageData(const char *anmpath, const char *stdpath)
+bool Stage::LoadStageData(const char *anmpath, const char *stdpath)
 {
     RawStageObject *curObj;
     RawStageQuadBasic *curQuad;
     i32 idx;
     i32 vmIdx;
     u32 sizeVmArr;
-    // u32 padding1, padding2, padding3, padding4, padding5, padding6;
 
     if (!g_AnmManager->LoadAnm(ANM_FILE_STAGEBG, anmpath, ANM_OFFSET_STAGEBG))
     {
-        return ZUN_ERROR;
+        return false;
     }
     this->stdData = (RawStageHeader *)FileSystem::OpenPath(stdpath);
     if (this->stdData == NULL)
     {
         GameErrorContext::Log(&g_GameErrorContext, TH_ERR_STAGE_DATA_CORRUPTED);
-        return ZUN_ERROR;
+        return false;
     }
     this->objectsCount = this->stdData->nbObjects;
     this->quadCount = this->stdData->nbFaces;
@@ -472,10 +470,10 @@ ZunResult Stage::LoadStageData(const char *anmpath, const char *stdpath)
             curQuad = (RawStageQuadBasic *)((u8 *)curQuad + curQuad->byteSize);
         }
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Stage::UpdateObjects()
+bool Stage::UpdateObjects()
 {
     AnmVm *vm;
     RawStageQuadBasic *objQuad;
@@ -519,10 +517,10 @@ ZunResult Stage::UpdateObjects()
             }
         }
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Stage::RenderObjects(i32 zLevel)
+bool Stage::RenderObjects(i32 zLevel)
 {
     f32 quadWidth;
     ZunVec3 projectSrc;
@@ -535,7 +533,6 @@ ZunResult Stage::RenderObjects(i32 zLevel)
     RawStageObjectInstance *instance;
     i32 instancesDrawn;
     AnmVm *curQuadVm;
-    // i32 unk8;
 
     instance = &this->objectInstances[0];
     instancesDrawn = 0;
@@ -717,6 +714,6 @@ ZunResult Stage::RenderObjects(i32 zLevel)
     skip:
         instance++;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 }; // namespace th06

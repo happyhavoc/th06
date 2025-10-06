@@ -103,9 +103,9 @@ struct Stage
     static bool AddedCallback(Stage *stage);
     static bool DeletedCallback(Stage *stage);
 
-    ZunResult LoadStageData(const char *anmpath, const char *stdpath);
-    ZunResult UpdateObjects();
-    ZunResult RenderObjects(i32 zLevel);
+    bool LoadStageData(const char *anmpath, const char *stdpath);
+    bool UpdateObjects();
+    bool RenderObjects(i32 zLevel);
 
     AnmVm *quadVms;
     RawStageHeader *stdData;
