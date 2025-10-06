@@ -367,7 +367,7 @@ bool Supervisor::AddedCallback(Supervisor *s)
     return true;
 }
 
-ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
+bool Supervisor::SetupDInput(Supervisor *supervisor)
 {
     //    HINSTANCE hInst;
     //
@@ -463,7 +463,7 @@ ZunResult Supervisor::SetupDInput(Supervisor *supervisor)
     //
     //        GameErrorContext::Log(&g_GameErrorContext, TH_ERR_PAD_FOUND);
     //    }
-    return ZUN_SUCCESS;
+    return true;
 }
 
 // BOOL CALLBACK Supervisor::EnumGameControllersCb(LPCDIDEVICEINSTANCEA pdidInstance, LPVOID pContext)
@@ -648,7 +648,7 @@ void Supervisor::TickTimer(i32 *frames, f32 *subframes)
 //     return 0;
 // }
 
-ZunResult Supervisor::LoadConfig(const char *path)
+bool Supervisor::LoadConfig(const char *path)
 {
     GameConfiguration *data;
     FILE *wavFile;
@@ -774,10 +774,10 @@ ZunResult Supervisor::LoadConfig(const char *path)
     {
         GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FILE_CANNOT_BE_EXPORTED, path);
         GameErrorContext::Fatal(&g_GameErrorContext, TH_ERR_FOLDER_HAS_WRITE_PROTECT_OR_DISK_FULL);
-        return ZUN_ERROR;
+        return false;
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 bool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
@@ -796,7 +796,7 @@ bool Supervisor::ReadMidiFile(u32 midiFileIdx, char *path)
     return true;
 }
 
-ZunResult Supervisor::PlayMidiFile(i32 midiFileIdx)
+bool Supervisor::PlayMidiFile(i32 midiFileIdx)
 {
     //    MidiOutput *globalMidiController;
     //
@@ -810,13 +810,13 @@ ZunResult Supervisor::PlayMidiFile(i32 midiFileIdx)
         //            globalMidiController->Play();
         //        }
         //
-        return ZUN_SUCCESS;
+        return true;
     }
 
-    return ZUN_ERROR;
+    return false;
 }
 
-ZunResult Supervisor::SetupMidiPlayback(const char *path)
+bool Supervisor::SetupMidiPlayback(const char *path)
 {
     // There doesn't seem to be a way to recreate the jump assembly needed without gotos?
     // Standard short circuiting boolean operators and nested conditionals don't seem to work, at least
@@ -830,14 +830,14 @@ ZunResult Supervisor::SetupMidiPlayback(const char *path)
     }
     else
     {
-        return ZUN_ERROR;
+        return false;
     }
 
 success:
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Supervisor::PlayAudio(const char *path)
+bool Supervisor::PlayAudio(const char *path)
 {
     char wavName[256];
     char wavPos[256];
@@ -878,12 +878,12 @@ ZunResult Supervisor::PlayAudio(const char *path)
     }
     else
     {
-        return ZUN_ERROR;
+        return false;
     }
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Supervisor::StopAudio()
+bool Supervisor::StopAudio()
 {
     if (g_Supervisor.cfg.musicMode == MIDI)
     {
@@ -900,14 +900,14 @@ ZunResult Supervisor::StopAudio()
         }
         else
         {
-            return ZUN_ERROR;
+            return false;
         }
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
-ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
+bool Supervisor::FadeOutMusic(f32 fadeOutSeconds)
 {
     if (g_Supervisor.cfg.musicMode == MIDI)
     {
@@ -938,11 +938,11 @@ ZunResult Supervisor::FadeOutMusic(f32 fadeOutSeconds)
         }
         else
         {
-            return ZUN_ERROR;
+            return false;
         }
     }
 
-    return ZUN_SUCCESS;
+    return true;
 }
 
 }; // namespace th06

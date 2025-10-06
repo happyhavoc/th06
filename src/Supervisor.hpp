@@ -114,18 +114,18 @@ struct Supervisor
     static void DrawFpsCounter();
 
     bool ReadMidiFile(u32 midiFileIdx, char *path);
-    ZunResult PlayMidiFile(i32 midiFileIdx);
-    ZunResult PlayAudio(const char *path);
-    ZunResult StopAudio();
-    ZunResult SetupMidiPlayback(const char *path);
-    ZunResult FadeOutMusic(f32 fadeOutSeconds);
+    bool PlayMidiFile(i32 midiFileIdx);
+    bool PlayAudio(const char *path);
+    bool StopAudio();
+    bool SetupMidiPlayback(const char *path);
+    bool FadeOutMusic(f32 fadeOutSeconds);
 
-    static ZunResult SetupDInput(Supervisor *s);
+    static bool SetupDInput(Supervisor *s);
 
     // i32 LoadPbg3(i32 pbg3FileIdx, const char *filename);
     // void ReleasePbg3(i32 pbg3FileIdx);
 
-    ZunResult LoadConfig(const char *path);
+    bool LoadConfig(const char *path);
 
     void TickTimer(i32 *frames, f32 *subframes);
 
@@ -148,14 +148,7 @@ struct Supervisor
         return (this->cfg.opts >> GCOS_FORCE_60FPS & 1) || this->vsyncEnabled;
     }
 
-    //    HINSTANCE hInstance;
-    //    PDIRECT3D8 d3dIface;
-    //    PDIRECT3DDEVICE8 d3dDevice;
-    //    LPDIRECTINPUT8 dinputIface;
-    //    LPDIRECTINPUTDEVICE8A keyboard;
-    //    LPDIRECTINPUTDEVICE8A controller;
     SDL_GameController *gameController;
-    //    DIDEVCAPS controllerCaps;
     SDL_Window *gameWindow;
     ZunMatrix viewMatrix;
     ZunMatrix projectionMatrix;
@@ -186,7 +179,6 @@ struct Supervisor
     u8 colorMode16Bits;
 
     u32 startupTimeBeforeMenuMusic;
-    //    D3DCAPS8 d3dCaps;
 };
 ZUN_ASSERT_SIZE(Supervisor, 0x4d8);
 

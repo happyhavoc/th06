@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
 
     //    g_Supervisor.hInstance = hInstance;
 
-    if (g_Supervisor.LoadConfig(TH_CONFIG_FILE) != ZUN_SUCCESS)
+    if (!g_Supervisor.LoadConfig(TH_CONFIG_FILE))
     {
         g_GameErrorContext.Flush();
         return -1;
