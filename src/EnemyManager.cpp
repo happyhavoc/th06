@@ -28,6 +28,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(u8, 32, g_RandomItems) = {
     ITEM_POINT,       ITEM_POWER_SMALL, ITEM_POWER_SMALL, ITEM_POINT,       ITEM_POINT,       ITEM_POINT,
     ITEM_POWER_SMALL, ITEM_POWER_BIG};
 
+#pragma var_order(i, enemy)
 void EnemyManager::Initialize()
 {
     i32 i;
