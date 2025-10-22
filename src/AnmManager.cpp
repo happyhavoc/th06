@@ -346,6 +346,23 @@ ZunResult AnmManager::LoadTexture(i32 textureIdx, char *textureName, i32 texture
     textureSurface = LoadToSurfaceWithFormat(textureName, g_TextureFormatSDLMapping[textureFormat],
                                              (u8 **)&this->textures[textureIdx].fileData);
 
+    // Hideous hack to account for ANM entries that report a different texture size than the actual size
+    AnmRawEntry *entry = this->anmFiles[textureIdx];
+    if (textureSurface->w != entry->width || textureSurface->h != entry->height)
+    {
+        
+        SDL_Surface *textureSurface2 = SDL_CreateRGBSurfaceWithFormat(0,
+                                                                      entry->width,
+                                                                      entry->height,
+                                                                      g_TextureFormatBytesPerPixel[textureFormat] * 8,
+                                                                      g_TextureFormatSDLMapping[textureFormat]);
+        SDL_Rect srcRect = { 0, 0, textureSurface->w, textureSurface->h };
+        SDL_Rect dstRect = { 0, 0, entry->width, entry->height };
+        SDL_BlitScaled(textureSurface, &srcRect, textureSurface2, &dstRect);
+        SDL_FreeSurface(textureSurface);
+        textureSurface = textureSurface2;
+    }
+
     if (textureSurface == NULL)
     {
         return ZUN_ERROR;
