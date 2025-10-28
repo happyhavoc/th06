@@ -434,7 +434,7 @@ void BulletManager::RemoveAllBullets(ZunBool turnIntoItem)
             }
         }
 
-        laser->grazeInterval = 0;
+        laser->hitboxEndDelay = 0;
     }
 }
 
@@ -518,7 +518,7 @@ i32 BulletManager::DespawnBullets(i32 maxBonusScore, ZunBool awardPoints)
             }
         }
 
-        laser->grazeInterval = 0;
+        laser->hitboxEndDelay = 0;
     }
 
     g_GameManager.score += totalBonusScore;
@@ -597,8 +597,8 @@ Laser *BulletManager::SpawnLaserPattern(EnemyLaserShooter *bulletProps)
         laser->startTime = bulletProps->startTime;
         laser->duration = bulletProps->duration;
         laser->endTime = bulletProps->stopTime;
-        laser->grazeDelay = bulletProps->grazeDelay;
-        laser->grazeInterval = bulletProps->grazeDistance;
+        laser->hitboxStartTime = bulletProps->hitboxStartTime;
+        laser->hitboxEndDelay = bulletProps->hitboxEndDelay;
 
         if (laser->startTime == 0)
         {
@@ -1012,10 +1012,13 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                 }
 
                 curLaser->vm0.scaleX = local_14 / 16.0f;
+                // Bug: ZUN intended to set laserSize.y instead of laserSize.x
+                // This way, between hitboxStartTime and startTime, the laser would have a thinner hitbox.
+                // Setting laserSize.x results in a tiny hitbox at the laser midpoint.
                 laserSize.x = local_14 / 2.0f;
             }
 
-            if ((ZunBool)(curLaser->timer.current >= curLaser->grazeDelay))
+            if ((ZunBool)(curLaser->timer.current >= curLaser->hitboxStartTime))
             {
                 g_Player.CalcLaserHitbox(&laserCenter, &laserSize, &curLaser->pos, curLaser->angle,
                                          curLaser->timer.AsFrames() % 12 == 0);
@@ -1064,11 +1067,15 @@ ChainCallbackResult BulletManager::OnUpdate(BulletManager *mgr)
                     local_14 =
                         curLaser->width - (curLaser->timer.AsFramesFloat() * curLaser->width) / curLaser->endTime;
                     curLaser->vm0.scaleX = local_14 / 16.0f;
+                    // Bug: ZUN intended to set laserSize.y instead of laserSize.x
+                    // This way, for hitboxEndDelay ticks after the laser starts despawning,
+                    // the laser would have a thinner hitbox.
+                    // Setting laserSize.x results in a tiny hitbox at the laser midpoint.
                     laserSize.x = local_14 / 2.0f;
                 }
             }
 
-            if ((ZunBool)(curLaser->timer.current < curLaser->grazeInterval))
+            if ((ZunBool)(curLaser->timer.current < curLaser->hitboxEndDelay))
             {
                 g_Player.CalcLaserHitbox(&laserCenter, &laserSize, &curLaser->pos, curLaser->angle,
                                          curLaser->timer.AsFrames() % 12 == 0);

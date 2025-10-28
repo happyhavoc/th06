@@ -888,8 +888,8 @@ void ExInsStage6Func7(Enemy *enemy, EclRawInstr *instr)
                     laserProps.startTime = innerLoopCount * 16 + 60;
                     laserProps.duration = 90 - innerLoopCount * 16;
                     laserProps.stopTime = 16;
-                    laserProps.grazeDelay = 50;
-                    laserProps.grazeDistance = 16;
+                    laserProps.hitboxStartTime = 50;
+                    laserProps.hitboxEndDelay = 16;
                     laserProps.flags = 2;
                     laserProps.type = 1;
                     g_BulletManager.SpawnLaserPattern(&laserProps);

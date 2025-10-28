@@ -169,8 +169,8 @@ struct EclRawInstrLaserArgs
     i32 startTime;
     i32 duration;
     i32 stopTime;
-    i32 grazeDelay;
-    i32 grazeDistance;
+    i32 hitboxStartTime;
+    i32 hitboxEndDelay;
     i32 flags;
 };
 

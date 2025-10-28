@@ -462,8 +462,8 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 local_60->startTime = local_64->startTime;
                 local_60->duration = local_64->duration;
                 local_60->stopTime = local_64->stopTime;
-                local_60->grazeDelay = local_64->grazeDelay;
-                local_60->grazeDistance = local_64->grazeDistance;
+                local_60->hitboxStartTime = local_64->hitboxStartTime;
+                local_60->hitboxEndDelay = local_64->hitboxEndDelay;
                 local_60->flags = local_64->flags;
                 if (instruction->opCode == ECL_OPCODE_LASERCREATEAIMED)
                 {
