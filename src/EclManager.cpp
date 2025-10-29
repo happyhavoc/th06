@@ -461,7 +461,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 local_60->width = local_64->width;
                 local_60->startTime = local_64->startTime;
                 local_60->duration = local_64->duration;
-                local_60->stopTime = local_64->stopTime;
+                local_60->despawnDuration = local_64->despawnDuration;
                 local_60->hitboxStartTime = local_64->hitboxStartTime;
                 local_60->hitboxEndDelay = local_64->hitboxEndDelay;
                 local_60->flags = local_64->flags;
