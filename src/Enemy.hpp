@@ -63,9 +63,9 @@ struct EnemyLaserShooter
     f32 width;
     i32 startTime;
     i32 duration;
-    i32 stopTime;
-    i32 grazeDelay;
-    i32 grazeDistance;
+    i32 despawnDuration;
+    i32 hitboxStartTime;
+    i32 hitboxEndDelay;
     u32 unk_44;
     u16 type;
     u32 flags;

@@ -77,10 +77,10 @@ struct Laser
     f32 width;
     f32 speed;
     i32 startTime;
-    i32 grazeDelay;
+    i32 hitboxStartTime;
     i32 duration;
-    i32 endTime;
-    i32 grazeInterval;
+    i32 despawnDuration;
+    i32 hitboxEndDelay;
     i32 inUse;
     ZunTimer timer;
     u16 flags;
