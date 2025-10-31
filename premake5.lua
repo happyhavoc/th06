@@ -2,6 +2,11 @@ workspace "th06"
   configurations { "Debug", "Release" }
   location "build"
 
+newoption {
+   trigger = "no-asoundlib",
+   description = "Disables use of the ALSA MIDI interface on Linux. Results in a build without MIDI support."
+}
+
 project "th06"
   language "C++"
   cppdialect "C++20"
@@ -31,6 +36,7 @@ project "th06"
     "src/ItemManager.cpp",
     "src/main.cpp",
     "src/MainMenu.cpp",
+    "src/MidiOutput.cpp",
     "src/MusicRoom.cpp",
     "src/Player.cpp",
     "src/ReplayManager.cpp",
@@ -58,6 +64,17 @@ project "th06"
   filter {}
 
   kind "WindowedApp"
+
+  if _TARGET_OS == "windows" then
+    files { "src/midi/MidiWin32.cpp" }
+  elseif _TARGET_OS == "linux" and _OPTIONS["no-asoundlib"] == nil then
+    defines { "LIBASOUND_MIDI_SUPPORT" }
+    files { "src/midi/MidiAlsa.cpp" }
+    links { "asound" }
+  else
+    print("Note: Build won't include MIDI support")
+    files { "src/midi/MidiDefault.cpp" }
+  end
 
   filter "system:linux"
     local sdl2_cflags = os.outputof("sdl2-config --cflags") or ""

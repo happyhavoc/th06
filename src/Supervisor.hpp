@@ -9,7 +9,7 @@
 
 #include "Chain.hpp"
 #include "Controller.hpp"
-// #include "MidiOutput.hpp"
+#include "MidiOutput.hpp"
 #include "ZunBool.hpp"
 #include "ZunMath.hpp"
 #include "ZunResult.hpp"
@@ -119,7 +119,6 @@ struct Supervisor
     ZunResult PlayMidiFile(i32 midiFileIdx);
     ZunResult PlayAudio(char *path);
     ZunResult StopAudio();
-    ZunResult SetupMidiPlayback(char *path);
     ZunResult FadeOutMusic(f32 fadeOutSeconds);
 
     static ZunResult SetupDInput(Supervisor *s);
@@ -179,7 +178,7 @@ struct Supervisor
     f32 effectiveFramerateMultiplier;
     f32 framerateMultiplier;
 
-    //    MidiOutput *midiOutput;
+    MidiOutput *midiOutput;
 
     f32 unk1b4;
     f32 unk1b8;
