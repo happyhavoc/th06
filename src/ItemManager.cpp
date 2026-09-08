@@ -112,7 +112,8 @@ void ItemManager::OnUpdate()
             if ((i32)(60 > curItem->timer.current))
             {
                 fVar5 = curItem->timer.AsFramesFloat() / 60.0f;
-                curItem->currentPosition = fVar5 * curItem->targetPosition + curItem->startPositionVelocity.startPosition * (1.0f - fVar5);
+                curItem->currentPosition =
+                    fVar5 * curItem->targetPosition + curItem->startPositionVelocity.startPosition * (1.0f - fVar5);
                 goto yolo;
             }
             else if ((i32)(curItem->timer.current == 60))
