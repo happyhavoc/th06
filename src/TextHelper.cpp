@@ -86,8 +86,7 @@ struct THBITMAPINFO
 };
 
 #pragma function(memset)
-#pragma var_order(imageWidthInBytes, deviceContext, originalBitmapObj, padding, bitmapInfo, formatInfo, bitmapObj,     \
-                  bitmapData)
+#pragma var_order(imageWidthInBytes, deviceContext, originalBitmapObj, bitmapInfo, formatInfo, bitmapObj, bitmapData)
 bool TextHelper::TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format)
 {
     HGDIOBJ originalBitmapObj;
@@ -95,7 +94,6 @@ bool TextHelper::TryAllocateBuffer(i32 width, i32 height, D3DFORMAT format)
     HBITMAP bitmapObj;
     FormatInfo *formatInfo;
     THBITMAPINFO bitmapInfo;
-    u32 padding;
     HDC deviceContext;
     i32 imageWidthInBytes;
 
