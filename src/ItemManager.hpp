@@ -26,7 +26,10 @@ struct Item
 {
     AnmVm sprite;
     D3DXVECTOR3 currentPosition;
-    D3DXVECTOR3 startPosition;
+    union startPositionVelocity {
+        D3DXVECTOR3 startPosition;
+        D3DXVECTOR3 velocity;
+    };
     D3DXVECTOR3 targetPosition;
     ZunTimer timer;
     i8 itemType;

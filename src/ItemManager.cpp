@@ -46,9 +46,9 @@ void ItemManager::SpawnItem(D3DXVECTOR3 *position, ItemType itemType, int state)
         }
         item->isInUse = 1;
         item->currentPosition = *position;
-        item->startPosition.x = 0.0f;
-        item->startPosition.y = -2.2f;
-        item->startPosition.z = 0.0f;
+        item->startPositionVelocity.velocity.x = 0.0f;
+        item->startPositionVelocity.velocity.y = -2.2f;
+        item->startPositionVelocity.velocity.z = 0.0f;
         item->itemType = itemType;
         item->state = state;
         item->timer.InitializeForPopup();
@@ -59,7 +59,7 @@ void ItemManager::SpawnItem(D3DXVECTOR3 *position, ItemType itemType, int state)
             // From -64.0 to 128.0f
             item->targetPosition.y = g_Rng.GetRandomF32ZeroToOne() * 192.0f - 64.0f;
             item->targetPosition.z = 0.0;
-            item->startPosition = item->currentPosition;
+            item->startPositionVelocity.startPosition = item->currentPosition;
         }
         g_AnmManager->SetAndExecuteScriptIdx(&item->sprite, ANM_SCRIPT_BULLET3_ITEMS_START + itemType);
         item->sprite.color = COLOR_WHITE;
@@ -112,12 +112,13 @@ void ItemManager::OnUpdate()
             if ((i32)(60 > curItem->timer.current))
             {
                 fVar5 = curItem->timer.AsFramesFloat() / 60.0f;
-                curItem->currentPosition = fVar5 * curItem->targetPosition + curItem->startPosition * (1.0f - fVar5);
+                curItem->currentPosition =
+                    fVar5 * curItem->targetPosition + curItem->startPositionVelocity.startPosition * (1.0f - fVar5);
                 goto yolo;
             }
             else if ((i32)(curItem->timer.current == 60))
             {
-                curItem->startPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+                curItem->startPositionVelocity.velocity = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -125,33 +126,33 @@ void ItemManager::OnUpdate()
             if (curItem->state == 1 || (128 <= g_GameManager.currentPower && g_Player.positionCenter.y < 128.0f))
             {
                 playerAngle = g_Player.AngleToPlayer(&curItem->currentPosition);
-                sincosmul(&curItem->startPosition, playerAngle, 8.0f);
+                sincosmul(&curItem->startPositionVelocity.velocity, playerAngle, 8.0f);
                 curItem->state = 1;
             }
             else
             {
-                curItem->startPosition.x = 0.0;
-                curItem->startPosition.z = 0.0;
-                if (curItem->startPosition.y < -2.2f)
+                curItem->startPositionVelocity.velocity.x = 0.0;
+                curItem->startPositionVelocity.velocity.z = 0.0;
+                if (curItem->startPositionVelocity.velocity.y < -2.2f)
                 {
-                    curItem->startPosition.y = -2.2f;
+                    curItem->startPositionVelocity.velocity.y = -2.2f;
                 }
             }
         }
-        curItem->currentPosition += curItem->startPosition * g_Supervisor.effectiveFramerateMultiplier;
+        curItem->currentPosition += curItem->startPositionVelocity.velocity * g_Supervisor.effectiveFramerateMultiplier;
         if (g_GameManager.arcadeRegionSize.y + (f32)GAME_REGION_TOP <= curItem->currentPosition.y)
         {
             curItem->isInUse = 0;
             g_GameManager.DecreaseSubrank(3);
             continue;
         }
-        if (curItem->startPosition.y < 3.0f)
+        if (curItem->startPositionVelocity.velocity.y < 3.0f)
         {
-            curItem->startPosition.y += g_Supervisor.effectiveFramerateMultiplier * 0.03f;
+            curItem->startPositionVelocity.velocity.y += g_Supervisor.effectiveFramerateMultiplier * 0.03f;
         }
         else
         {
-            curItem->startPosition.y = 3.0f;
+            curItem->startPositionVelocity.velocity.y = 3.0f;
         }
     yolo:
         if (g_Player.CalcItemBoxCollision(&curItem->currentPosition, &g_ItemSize))
