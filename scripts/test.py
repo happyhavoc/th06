@@ -12,7 +12,7 @@ def main():
 
     # Then, run the tests
     run_windows_program(
-        [SCRIPTS_DIR.parent / "build" / "th06e-tests.exe"],
+        [SCRIPTS_DIR.parent / "build" / "th06-tests.exe"],
         cwd=str(SCRIPTS_DIR.parent),
     )
 

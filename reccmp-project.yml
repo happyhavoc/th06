@@ -1,0 +1,22 @@
+targets:
+  th06:
+    filename: th06.exe
+    source_root: src
+    hash:
+      sha256: 9f76483c46256804792399296619c1274363c31cd8f1775fafb55106fb852245
+    data_sources:
+      - config/reccmp-functions.csv
+      - config/reccmp-globals.csv
+      - config/reccmp-floats.csv
+      - config/reccmp-strings.csv
+    encoding:
+    ghidra:
+      ignore_types: []
+      ignore_functions: []
+      name_substitutions: []
+      allow_hash_mismatch: false
+    report:
+      ignore_functions: []
+      ignore_variables: []
+      icon:
+    marker_aliases: {}

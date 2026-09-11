@@ -20,7 +20,7 @@ For a functioning port of the game to other platforms (Linux, modern Windows, et
 
 This project requires the original `東方紅魔郷.exe` version 1.02h (SHA256 hashsum 9f76483c46256804792399296619c1274363c31cd8f1775fafb55106fb852245, you can check hashsum on windows with command `certutil -hashfile <path-to-your-file> SHA256`.)
 
-Copy `東方紅魔郷.exe` to `resources/game.exe`.
+Copy `東方紅魔郷.exe` to `resources/th06.exe`.
 
 ### Dependencies
 
@@ -86,29 +86,33 @@ history from our team's Ghidra Server.
 If you wish to help us in our Reverse Engineering effort, please contact
 @roblabla on discord so we can give you an account on the Ghidra Server.
 
-### Reimplementation
+### Diffing
 
-The easiest way to work on the reimplementation is through the use of
-[`objdiff`](https://github.com/encounter/objdiff). Here's how to get started:
+In order to contribute to the decompilation, you are going to need reccmp
+([Instructions](https://github.com/isledecomp/reccmp/tree/master?tab=readme-ov-file#getting-started)).
 
-1. First, follow the instruction above to get a devenv setup.
-1. Copy the original `東方紅魔郷.exe` file (version 1.02h) to the
-   `resources/` folder, and rename it into `game.exe`. This will be used as the source to compare the
-   reimplementations against.
-1. Download the latest version of objdiff.
-1. Run `python3 scripts/export_ghidra_objs.py --import-csv`. This will extract
-   from `resources/game.exe` the object files that objdiff can compare against.
-1. Finally, run objdiff and open the th06 project.
+In the project root, run:
 
-#### Choosing a function to decompile
+```bash
+reccmp-project detect --search-path resources/
+```
 
-The easiest is to look at the `config/stubbed.csv` files. Those are all
-functions that are automatically stubbed out. You should pick one of them, open
-the associated object file in objdiff, and click on the function of interest.
+Build the recompiled executable if you have not done so (see
+the above section). Then, in the `build/` directory, run:
 
-Then, open the correct `cpp` file, copy/paste the declaration, and start
-hacking! It may be useful to take the ghidra decompiler output as a base. You
-can find this output in the [th06-re] repository.
+```bash
+reccmp-project detect --what recompiled
+```
+
+To generate a report of the differences between the original and recompiled
+binaries, again in the `build/` directory, run:
+
+```bash
+reccmp-reccmp --target th06 --html report.html
+```
+
+This will display a report of the accuracy to the original binary, and export
+this report to a HTML file `report.html`.
 
 # Credits
 

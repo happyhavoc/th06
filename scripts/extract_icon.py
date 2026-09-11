@@ -7,7 +7,7 @@ import argparse
 
 SCRIPT_PATH = Path(os.path.realpath(__file__)).parent
 RESOURCES_PATH = SCRIPT_PATH.parent / "resources"
-FILENAME = RESOURCES_PATH / "game.exe"
+FILENAME = RESOURCES_PATH / "th06.exe"
 
 
 parser = argparse.ArgumentParser(
@@ -20,7 +20,7 @@ args = parser.parse_args()
 
 if not FILENAME.exists():
     sys.stderr.write(
-        "extract_icon.py: 'game.exe' not found. Copy your executable of Touhou 06 to 'resources/game.exe'"
+        "extract_icon.py: 'th06.exe' not found. Copy your executable of Touhou 06 to 'resources/th06.exe'"
     )
     sys.exit(1)
 icon = icon_extractor.ExtractIcon(str(FILENAME))

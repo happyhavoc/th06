@@ -306,13 +306,13 @@ def configure(build_type):
 
         th06_link_libs = "dxguid.lib d3dx8.lib d3d8.lib dsound.lib winmm.lib kernel32.lib user32.lib dinput8.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib"
         writer.build(
-            "$builddir/th06e.exe",
+            "$builddir/th06.exe",
             "link",
             inputs=objfiles,
             implicit="config/order.txt",
             variables={
                 "link_libs": th06_link_libs,
-                "link_flags": "$th06_link_flags /debug /pdb:$builddir/th06e.pdb",
+                "link_flags": "$th06_link_flags /debug /pdb:$builddir/th06.pdb",
             },
         )
 
@@ -323,23 +323,23 @@ def configure(build_type):
             + ["$builddir/stubs.obj"]
         )
         writer.build(
-            "$builddir/th06e-tests.exe",
+            "$builddir/th06-tests.exe",
             "link",
             inputs=test_objfiles + ["$builddir/munit.lib"],
             variables={
                 "link_libs": th06_link_libs + " $builddir/munit.lib",
-                "link_flags": "/debug /pdb:$builddir/th06e.pdb",
+                "link_flags": "/debug /pdb:$builddir/th06.pdb",
             },
         )
 
         writer.build(
-            "$builddir/th06e.dll",
+            "$builddir/th06.dll",
             "link",
             inputs=objfiles + ["$builddir/dllbuild.obj", "$builddir/detours.lib"],
             implicit=["$builddir/th06.def"],
             variables={
                 "link_libs": th06_link_libs,
-                "link_flags": "/DLL /debug /pdb:$builddir/th06e.pdb /export:DetourFinishHelperProcess,@1,NONAME /def:$builddir/th06.def /export:Direct3DCreate8 /export:malloc /export:calloc /export:realloc /export:??2@YAPAXI@Z /export:free /export:_msize",
+                "link_flags": "/DLL /debug /pdb:$builddir/th06.pdb /export:DetourFinishHelperProcess,@1,NONAME /def:$builddir/th06.def /export:Direct3DCreate8 /export:malloc /export:calloc /export:realloc /export:??2@YAPAXI@Z /export:free /export:_msize",
             },
         )
 
