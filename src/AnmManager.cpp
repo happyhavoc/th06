@@ -425,9 +425,9 @@ void AnmManager::ReleaseAnm(i32 anmIdx)
         for (i = 0; i < this->anmFiles[anmIdx]->numScripts; i++, byteOffset += 2)
         {
             this->scripts[*byteOffset + spriteIdxOffset] = NULL;
-            this->spriteIndices[*byteOffset + spriteIdxOffset] = NULL;
+            this->spriteIndices[*byteOffset + spriteIdxOffset] = 0;
         }
-        this->anmFilesSpriteIndexOffsets[anmIdx] = NULL;
+        this->anmFilesSpriteIndexOffsets[anmIdx] = 0;
         AnmRawEntry *entry = this->anmFiles[anmIdx];
         this->ReleaseTexture(entry->textureIdx);
         AnmRawEntry *anmFilePtr = this->anmFiles[anmIdx];

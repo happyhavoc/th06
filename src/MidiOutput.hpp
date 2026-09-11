@@ -135,14 +135,19 @@ struct MidiOutput : MidiTimer
 
     static u32 Ntohl(u32 val)
     {
-        u8 tmp[4];
+        union {
+            u32 value;
+            u8 bytes[4];
+        } in, out;
 
-        tmp[0] = ((u8 *)&val)[3];
-        tmp[1] = ((u8 *)&val)[2];
-        tmp[2] = ((u8 *)&val)[1];
-        tmp[3] = ((u8 *)&val)[0];
+        in.value = val;
 
-        return *(const u32 *)tmp;
+        out.bytes[0] = in.bytes[3];
+        out.bytes[1] = in.bytes[2];
+        out.bytes[2] = in.bytes[1];
+        out.bytes[3] = in.bytes[0];
+
+        return out.value;
     }
 
     MIDIHDR *midiHeaders[32];
