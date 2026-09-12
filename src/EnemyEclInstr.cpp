@@ -504,7 +504,7 @@ void ExInsShootStarPattern(Enemy *enemy, EclRawInstr *instr)
     if (enemy->currentContext.var2 % 30 == 0)
     {
         g_StarAngleTable[0] = g_StarAngleTable[1];
-        g_StarAngleTable[1] = utils::AddNormalizeAngle(g_StarAngleTable[1], 4 * ZUN_PI / 5);
+        g_StarAngleTable[1] = utils::AddNormalizeAngle(g_StarAngleTable[0], 4 * ZUN_PI / 5);
         g_StarAngleTable[2] = utils::AddNormalizeAngle(g_StarAngleTable[1], 4 * ZUN_PI / 5);
         g_StarAngleTable[3] = utils::AddNormalizeAngle(g_StarAngleTable[2], 4 * ZUN_PI / 5);
         g_StarAngleTable[4] = utils::AddNormalizeAngle(g_StarAngleTable[3], 4 * ZUN_PI / 5);
