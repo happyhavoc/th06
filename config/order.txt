@@ -8,7 +8,7 @@
 ?InitializeVms@AsciiManager@th06@@QAEXXZ
 ?DeletedCallback@AsciiManager@th06@@SA?AW4ZunResult@@PAU12@@Z
 ?CutChain@AsciiManager@th06@@SAXXZ
-?AddString@AsciiManager@th06@@QAEXPAUD3DXVECTOR3@@PAD@Z
+?AddString@AsciiManager@th06@@QAEXPAUD3DXVECTOR3@@PBD@Z
 ?AddFormatText@AsciiManager@th06@@QAAXPAUD3DXVECTOR3@@PBDZZ
 ?DrawStrings@AsciiManager@th06@@QAEXXZ
 ?CreatePopup1@AsciiManager@th06@@QAEXPAUD3DXVECTOR3@@HK@Z

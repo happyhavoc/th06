@@ -767,13 +767,11 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                             if (!g_GameManager.isInReplay)
                             {
                                 local_80->numSuccess++;
-                                // What. the. fuck?
-                                // memmove(&local_80->nameCsum, &local_80->characterShotType, 4);
-                                for (local_84 = 4; 0 < local_84; local_84 = local_84 + -1)
+                                for (local_84 = 4; 0 < local_84; local_84--)
                                 {
-                                    ((u8 *)&local_80->nameCsum)[local_84 + 1] = ((u8 *)&local_80->nameCsum)[local_84];
+                                    local_80->characterShotType[local_84] = local_80->characterShotType[local_84 - 1];
                                 }
-                                local_80->characterShotType = g_GameManager.CharacterShotType();
+                                local_80->characterShotType[0] = g_GameManager.CharacterShotType();
                             }
                             g_GameManager.spellcardsCaptured++;
                         }
@@ -899,7 +897,7 @@ ZunResult EclManager::RunEcl(Enemy *enemy)
                 }
                 else
                 {
-                    enemy->bulletProps.flags &= 0xfffffdff;
+                    enemy->bulletProps.flags &= ~0x200;
                 }
                 break;
             case ECL_OPCODE_ENEMYFLAGDISABLECALLSTACK:
