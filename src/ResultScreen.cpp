@@ -529,7 +529,7 @@ i32 ResultScreen::LinkScoreEx(Hscr *out, i32 difficulty, i32 character)
 
 void ResultScreen::FreeScore(i32 difficulty, i32 character)
 {
-    free(&this->scores[difficulty][character]);
+    ResultScreen::FreeAllScores(&this->scores[difficulty][character]);
 }
 
 #pragma function("strcpy")
@@ -1216,7 +1216,7 @@ u32 ResultScreen::DrawFinalStats()
         strPos = viewport->pos;
         strPos.x += 224.0f;
         strPos.y += 32.0f;
-        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.score);
+        g_AsciiManager.AddFormatText(&strPos, "%9d", g_GameManager.guiScore);
 
         if (g_GameManager.guiScore < 2000000)
         {

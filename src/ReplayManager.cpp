@@ -301,8 +301,8 @@ ZunResult ReplayManager::AddedCallbackDemo(ReplayManager *mgr)
     g_GameManager.powerItemCountForScore = replayData->powerItemCountForScore;
     if (2 <= g_GameManager.currentStage && mgr->replayData->stageReplayData[g_GameManager.currentStage - 2] != NULL)
     {
-        g_GameManager.guiScore = mgr->replayData->stageReplayData[g_GameManager.currentStage - 2]->score;
-        g_GameManager.score = g_GameManager.guiScore;
+        g_GameManager.score = mgr->replayData->stageReplayData[g_GameManager.currentStage - 2]->score;
+        g_GameManager.guiScore = g_GameManager.score;
     }
     return ZUN_SUCCESS;
 }

@@ -153,7 +153,7 @@ void BombData::BombReimuACalc(Player *player)
                     player->bombProjectiles[i].sizeX = 256.0f;
                     player->bombProjectiles[i].sizeY = 256.0f;
 
-                    player->bombInfo.bombRegionVelocities[i] / 100.0f; // ZUN moment
+                    player->bombInfo.bombRegionVelocities[i] / 8.0f;
 
                     g_SoundPlayer.PlaySoundByIdx(SOUND_F, 0);
                     ScreenEffect::RegisterChain(SCREEN_EFFECT_SHAKE, 16, 8, 0, 0);
