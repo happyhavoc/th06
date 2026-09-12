@@ -111,8 +111,11 @@ ZunResult Player::AddedCallback(Player *p)
     p->grabItemSize.z = 5.0;
     p->playerDirection = MOVEMENT_NONE;
     memcpy(&p->characterData, &g_CharData[g_GameManager.CharacterShotType()], sizeof(CharacterData));
-    p->characterData.diagonalMovementSpeed = p->characterData.orthogonalMovementSpeed / sqrtf(2.0);
-    p->characterData.diagonalMovementSpeedFocus = p->characterData.orthogonalMovementSpeedFocus / sqrtf(2.0);
+
+    // Yes, this is needed.
+    static const float two = 2.0f;
+    p->characterData.diagonalMovementSpeed = p->characterData.orthogonalMovementSpeed / (float)sqrt(two);
+    p->characterData.diagonalMovementSpeedFocus = p->characterData.orthogonalMovementSpeedFocus / (float)sqrt(two);
     p->fireBulletCallback = p->characterData.fireBulletCallback;
     p->fireBulletFocusCallback = p->characterData.fireBulletFocusCallback;
     p->playerState = PLAYER_STATE_SPAWNING;
