@@ -98,14 +98,14 @@ ScoreDat *ResultScreen::OpenScore(char *path)
             goto FAILED_TO_READ;
         }
         fileLen = scoreData->fileLen;
-        decryptedFilePointer = scoreData->ShiftBytes(scoreData->dataOffset);
+        decryptedFilePointer = (Th6k *)((u8 *)scoreData + scoreData->dataOffset);
         fileLen -= scoreData->dataOffset;
         while (fileLen > 0)
         {
             if (decryptedFilePointer->magic == TH6K_MAGIC)
                 break;
 
-            decryptedFilePointer = decryptedFilePointer->ShiftBytes(decryptedFilePointer->th6kLen);
+            decryptedFilePointer = (Th6k *)((u8 *)decryptedFilePointer + decryptedFilePointer->th6kLen);
             fileLen = fileLen - decryptedFilePointer->th6kLen;
         }
         if (fileLen <= 0)
@@ -141,7 +141,7 @@ u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 char
     }
 
     remainingSize = scoreData->fileLen;
-    highScore = (Hscr *)scoreData->ShiftBytes(scoreData->dataOffset);
+    highScore = (Hscr *)((u8 *)scoreData + scoreData->dataOffset);
     remainingSize -= scoreData->dataOffset;
 
     while (remainingSize > 0)
@@ -160,7 +160,7 @@ u32 ResultScreen::GetHighScore(ScoreDat *scoreDat, ScoreListNode *node, u32 char
         }
 
         remainingSize -= highScore->base.th6kLen;
-        highScore = highScore->ShiftBytes(highScore->base.th6kLen);
+        highScore = (Hscr *)((u8 *)highScore + highScore->base.th6kLen);
     }
     if (scoreData->scores->next != NULL)
     {
@@ -233,7 +233,7 @@ ZunResult ResultScreen::ParseCatk(ScoreDat *scoreDat, Catk *outCatk)
         return ZUN_ERROR;
     }
 
-    parsedCatk = (Catk *)sd->ShiftBytes(sd->dataOffset);
+    parsedCatk = (Catk *)((u8 *)sd + sd->dataOffset);
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
@@ -283,7 +283,7 @@ ZunResult ResultScreen::ParseClrd(ScoreDat *scoreDat, Clrd *outClrd)
         }
     }
 
-    parsedClrd = (Clrd *)sd->ShiftBytes(sd->dataOffset);
+    parsedClrd = (Clrd *)((u8 *)sd + sd->dataOffset);
     cursor = sd->fileLen - sd->dataOffset;
     while (cursor > 0)
     {
@@ -339,7 +339,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
         }
     }
 
-    parsedPscr = (Pscr *)sd->ShiftBytes(sd->dataOffset);
+    parsedPscr = (Pscr *)((u8 *)sd + sd->dataOffset);
     cursor = sd->fileLen - sd->dataOffset;
 
     while (cursor > 0)
@@ -354,7 +354,7 @@ ZunResult ResultScreen::ParsePscr(ScoreDat *scoreDat, Pscr *outClrd)
             outClrd[pscr->character * 6 * 4 + pscr->stage * 4 + pscr->difficulty] = *pscr;
         }
         cursor -= parsedPscr->base.th6kLen;
-        parsedPscr = parsedPscr->ShiftBytes(parsedPscr->base.th6kLen);
+        parsedPscr = (Pscr *)((u8 *)parsedPscr + parsedPscr->base.th6kLen);
     }
     return ZUN_SUCCESS;
 }
@@ -502,7 +502,7 @@ void ResultScreen::WriteScore(ResultScreen *resultScreen)
     xorValue = 0;
     originalByte = 0;
 
-    bytes = (u8 *)sd->ShiftOneByte();
+    bytes = (u8 *)sd + 1;
     remainingSize = sizeOfFile;
 
     remainingSize -= 2;

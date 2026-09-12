@@ -74,7 +74,7 @@ struct AsciiManager
     void DrawPopupsWithHwVertexProcessing();
     void DrawPopupsWithoutHwVertexProcessing();
 
-    void AddString(D3DXVECTOR3 *position, char *text);
+    void AddString(D3DXVECTOR3 *position, const char *text);
     void AddFormatText(D3DXVECTOR3 *position, const char *fmt, ...);
     void CreatePopup1(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);
     void CreatePopup2(D3DXVECTOR3 *position, i32 value, D3DCOLOR color);

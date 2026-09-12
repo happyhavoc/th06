@@ -169,9 +169,9 @@ void AsciiManager::CutChain()
     // to free it!
 }
 
-void AsciiManager::AddString(D3DXVECTOR3 *position, char *text)
+void AsciiManager::AddString(D3DXVECTOR3 *position, const char *text)
 {
-    if (this->numStrings >= 0x100)
+    if (this->numStrings >= ARRAY_SIZE_SIGNED(this->strings))
     {
         return;
     }
@@ -251,7 +251,7 @@ void AsciiManager::DrawStrings(void)
                 g_Supervisor.d3dDevice->SetViewport(&g_Supervisor.viewport);
             }
         }
-        while (*text != NULL)
+        while (*text != '\0')
         {
             if (*text == '\n')
             {

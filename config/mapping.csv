@@ -8,7 +8,7 @@ th06::AsciiManager::AddedCallback,0x4013a0,0x6e,__stdcall,,i32,AsciiManager*
 th06::AsciiManager::InitializeVms,0x401410,0xb9,__thiscall,,void,AsciiManager*
 th06::AsciiManager::DeletedCallback,0x4014d0,0x2e,__stdcall,,ZunResult,AsciiManager*
 th06::AsciiManager::CutChain,0x401500,0x23,__stdcall,,void
-th06::AsciiManager::AddString,0x401530,0x115,__thiscall,,void,AsciiManager*,D3DXVECTOR3*,char*
+th06::AsciiManager::AddString,0x401530,0x115,__thiscall,,void,AsciiManager*,D3DXVECTOR3*,const char*
 th06::AsciiManager::AddFormatText,0x401650,0x5a,__stdcall,varargs,void,AsciiManager*,D3DXVECTOR3*,char*
 th06::AsciiManager::DrawStrings,0x4016b0,0x281,__thiscall,,void,AsciiManager*
 th06::AsciiManager::CreatePopup1,0x401940,0x11c,__thiscall,,void,AsciiManager*,D3DXVECTOR3*,i32,unsigned long
@@ -549,7 +549,7 @@ CD3DXFont::Release,0x440760,0x21,unknown,,u8,u32
 CD3DXFont::CD3DXFont,0x440781,0x1b,unknown,,u8
 CD3DXSprite::~CD3DXSprite,0x44079c,0x40,unknown,,u8
 CD3DXSprite::Initialize,0x4407dc,0x287,unknown,,u8,u32
-CD3DXSprite::AddRef,0x440a63,0x26,unknown,,u8
+CD3DXSprite::GetDevice,0x440a63,0x26,unknown,,u8,u32
 CD3DXSprite::Begin,0x440a89,0x3d,unknown,,u8,u32
 CD3DXSprite::End,0x440ac6,0x2b,unknown,,u8,u32
 CD3DXSprite::QueryInterface,0x440af1,0x44,unknown,,u8,u32,u32,u32
@@ -681,7 +681,7 @@ FUN_00449610,0x449610,0x1c,unknown,,u8,u8
 CD3DXCodecYUV::~CD3DXCodecYUV,0x449631,0x45,unknown,,u8
 CD3DXCodecDXT::~CD3DXCodecDXT,0x449676,0x54,__fastcall,,void,u32*
 Create,0x4496ca,0x5e4,unknown,,u8
-CD3DXCodec::Create,0x449cda,0x1c,unknown,,u8
+CD3DXCodec::`scalar_deleting_destructor',0x449cda,0x1c,unknown,,u8,u8
 CD3DXCodecYUV::`scalar_deleting_destructor',0x449cf6,0x1c,unknown,,u8,u8
 CD3DXCodecDXT::`scalar_deleting_destructor',0x449d12,0x1c,unknown,,u8,u8
 CD3DXCodecDXT::`scalar_deleting_destructor',0x449d33,0x1c,unknown,,u8,u8
