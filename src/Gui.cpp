@@ -17,8 +17,8 @@
 namespace th06
 {
 DIFFABLE_STATIC(Gui, g_Gui);
-DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
+DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 
 ZunBool Gui::IsStageFinished()
 {

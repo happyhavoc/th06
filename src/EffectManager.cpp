@@ -10,11 +10,6 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(EffectManager, g_EffectManager);
-
-DIFFABLE_STATIC(ChainElem, g_EffectManagerCalcChain);
-DIFFABLE_STATIC(ChainElem, g_EffectManagerDrawChain);
-
 DIFFABLE_STATIC_ARRAY_ASSIGN(EffectInfo, 20, g_Effects) = {
     {ANM_SCRIPT_BULLET4_SPAWN_BUBBLE_EXPLOSION_SMALL, NULL},
     {ANM_SCRIPT_BULLET4_SPAWN_BUBBLE_EXPLOSION_SPIRAL, NULL},
@@ -37,6 +32,10 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(EffectInfo, 20, g_Effects) = {
     {ANM_SCRIPT_BULLET4_SPAWN_GLOW_3, EffectManager::EffectCallbackAttractSlow},
     {ANM_SCRIPT_BULLET4_SCRIPT_19, EffectManager::EffectCallbackStill},
 };
+
+DIFFABLE_STATIC(EffectManager, g_EffectManager);
+DIFFABLE_STATIC(ChainElem, g_EffectManagerCalcChain);
+DIFFABLE_STATIC(ChainElem, g_EffectManagerDrawChain);
 
 EffectManager::EffectManager()
 {
