@@ -67,17 +67,17 @@ th06::EnemyEclInstr::ExInsShootStarPattern,0x40bb80,function
 th06::EnemyEclInstr::ExInsPatchouliShottypeSetVars,0x40c100,function
 th06::EnemyEclInstr::ExInsStage56Func4,0x40c180,function
 th06::EnemyEclInstr::ExInsStage5Func5,0x40c5b0,function
-th06::EnemyEclInstr::ExInsStage6XFunc6,0x40caf0,function
+th06::EnemyEclInstr::ExInsBatWingEffect,0x40caf0,function
 th06::EnemyEclInstr::ExInsStage6Func7,0x40d040,function
 th06::EnemyEclInstr::ExInsStage6Func8,0x40d400,function
 th06::EnemyEclInstr::ExInsStage6Func9,0x40d530,function
 th06::EnemyEclInstr::ExInsStage6Func11,0x40d770,function
-th06::EnemyEclInstr::ExInsStage6XFunc10,0x40d930,function
+th06::EnemyEclInstr::ExInsHandleBatTransformation,0x40d930,function
 th06::EnemyEclInstr::ExInsStage4Func12,0x40daa0,function
 th06::EnemyEclInstr::ExInsStageXFunc13,0x40dbc0,function
 th06::EnemyEclInstr::ExInsStageXFunc14,0x40dcc0,function
 th06::EnemyEclInstr::ExInsStageXFunc15,0x40de00,function
-th06::EnemyEclInstr::ExInsStageXFunc16,0x40e1b0,function
+th06::EnemyEclInstr::ExInsFlandreFinalContextUpdate,0x40e1b0,function
 th06::EffectManager::EffectManager,0x40e2d0,function
 th06::EffectManager::Reset,0x40e340,function
 th06::EffectManager::EffectCallbackRandomSplash,0x40e360,function
@@ -447,7 +447,7 @@ th06::CSoundManager::Initialize,0x43a800,function
 th06::CSoundManager::SetPrimaryBufferFormat,0x43a890,function
 th06::CSoundManager::CreateStreaming,0x43a9c0,function
 th06::CSound::CSound,0x43ac90,function
-th06::CSound::operator_delete,0x43ad70,function
+th06::CSound::`scalar deleting destructor',0x43ad70,function
 th06::CSound::~CSound,0x43ada0,function
 th06::CSound::FillBufferWithSound,0x43aea0,function
 th06::CSound::RestoreBuffer,0x43b090,function
@@ -457,7 +457,7 @@ th06::CSound::Play,0x43b240,function
 th06::CSound::Stop,0x43b300,function
 th06::CSound::Reset,0x43b3b0,function
 th06::CStreamingSound::CStreamingSound,0x43b420,function
-th06::CStreamingSound::operator_delete,0x43b480,function
+th06::CStreamingSound::`scalar deleting destructor',0x43b480,function
 th06::CStreamingSound::~CStreamingSound,0x43b4b0,function
 th06::CStreamingSound::UpdateFadeOut,0x43b4d0,function
 th06::CStreamingSound::HandleWaveStreamNotification,0x43b560,function
@@ -474,8 +474,8 @@ th06::IPbg3Parser::Reset,0x43c2f0,function
 th06::IPbg3Parser::ReadVarInt,0x43c310,function
 th06::IPbg3Parser::ReadMagic,0x43c380,function
 th06::IPbg3Parser::ReadString,0x43c3c0,function
-th06::Pbg3ParserVtableAssign,0x43c410,function
-th06::IPbg3Parser::operator_delete,0x43c420,function
+th06::IPbg3Parser::~IPbg3Parser,0x43c410,function
+th06::IPbg3Parser::`scalar deleting destructor',0x43c420,function
 th06::Pbg3Parser::Pbg3Parser,0x43c440,function
 th06::Pbg3Parser::OpenArchive,0x43c4a0,function
 th06::Pbg3Parser::Close,0x43c4f0,function
@@ -488,13 +488,14 @@ th06::Pbg3Parser::ReadByteAlignedData,0x43c680,function
 th06::Pbg3Parser::GetLastWriteTime,0x43c6b0,function
 th06::Pbg3Parser::ReadByte,0x43c6d0,function
 th06::Pbg3Parser::~Pbg3Parser,0x43c6e0,function
-th06::Pbg3Parser::operator_delete,0x43c750,function
+th06::Pbg3Parser::`scalar deleting destructor',0x43c750,function
 th06::Pbg3Archive::Pbg3Archive,0x43c770,function
 th06::Pbg3Archive::ParseHeader,0x43c790,function
 th06::Pbg3Archive::Release,0x43c8d0,function
 th06::Pbg3Archive::FindEntry,0x43c920,function
 th06::Pbg3Archive::GetEntrySize,0x43c990,function
 th06::Pbg3Archive::ReadEntryRaw,0x43c9c0,function
+th06::Pbg3Archive::~Pbg3Archive,0x43ca80,function
 th06::Pbg3Archive::Load,0x43ca90,function
 th06::Pbg3Archive::ReadDecompressEntry,0x43cb40,function
 th06::FileAbstraction::FileAbstraction,0x43ce40,function
@@ -509,6 +510,9 @@ th06::FileAbstraction::Tell,0x43d060,function
 th06::FileAbstraction::GetSize,0x43d080,function
 th06::FileAbstraction::ReadWholeFile,0x43d0a0,function
 th06::FileAbstraction::~FileAbstraction,0x43d130,function
+DINPUT8.DLL::DirectInput8Create,0x43eba0,library
+DSOUND.DLL::DirectSoundCreate8,0x43eba6,library
+D3D8.DLL::Direct3DCreate8,0x43ebac,library
 D3DXVec4Transform,0x43ebb2,library
 D3DXMatrixMultiply,0x43ec4b,library
 D3DXMatrixTranspose,0x43ed2e,library
@@ -679,14 +683,18 @@ CD3DXCodecDXT::Fetch,0x44926f,library
 CD3DXCodecDXT::Encode,0x449516,library
 CD3DXCodecDXT::Decode,0x44959c,library
 FUN_00449610,0x449610,library
+CD3DXCodec::~CD3DXCodec,0x44962c,library
 CD3DXCodecYUV::~CD3DXCodecYUV,0x449631,library
 CD3DXCodecDXT::~CD3DXCodecDXT,0x449676,library
 Create,0x4496ca,library
 CD3DXCodec::Create,0x449cda,library
 CD3DXCodecYUV::`scalar deleting destructor',0x449cf6,library
 CD3DXCodecDXT::`scalar deleting destructor',0x449d12,library
+CD3DXCodecYUV::~CD3DXCodecYUV,0x449d2e,library
 CD3DXCodecDXT::`scalar deleting destructor',0x449d33,library
+CD3DXCodecDXT::~CD3DXCodecDXT,0x449d4f,library
 D3DX::jpeg_CreateDecompress,0x449d54,library
+D3DX::jpeg_destroy,0x449e14,library
 D3DX::default_decompress_parms,0x449e19,library
 D3DX::jpeg_consume_input,0x449f98,library
 D3DX::jpeg_finish_decompress,0x44a032,library
@@ -768,6 +776,7 @@ D3DX::png_read_data,0x44df95,library
 D3DX::png_set_read_fn,0x44dfbd,library
 D3DX::png_sig_cmp,0x44dffc,library
 D3DX::png_zalloc,0x44e044,library
+D3DX::png_free,0x44e097,library
 D3DX::png_reset_crc,0x44e09c,library
 D3DX::png_calculate_crc,0x44e0b4,library
 D3DX::png_info_init,0x44e0f3,library
@@ -994,7 +1003,7 @@ FUN_0045b991,0x45b991,library
 FUN_0045b9c9,0x45b9c9,library
 vsprintf,0x45b9e0,library
 report_failure,0x45ba37,library
-_security_check_cookie,0x45ba68,library
+__security_check_cookie,0x45ba68,library
 _ftol2,0x45ba78,library
 free,0x45baed,library
 FUN_0045bb40,0x45bb40,library
@@ -1017,6 +1026,7 @@ FUN_0045be60,0x45be60,library
 FUN_0045be6a,0x45be6a,library
 FUN_0045be74,0x45be74,library
 atol,0x45be92,library
+atol,0x45bf1a,library
 operator delete,0x45bf1f,library
 operator new,0x45bf24,library
 JumpToContinuation,0x45bf32,library
@@ -1038,7 +1048,7 @@ _abnormal_termination,0x45c342,library
 _NLG_Notify1,0x45c365,library
 _NLG_Notify,0x45c36e,library
 sprintf,0x45c386,library
-FUN_0045c3e0,0x45c3e0,library
+__EH_prolog,0x45c3e0,library
 fabs,0x45c3ff,library
 FID_conflict:__CItan_default,0x45c4b0,library
 tan,0x45c4c4,library
@@ -1415,6 +1425,7 @@ FUN_00468fc1,0x468fc1,library
 FUN_00469030,0x469030,library
 FUN_00469040,0x469040,library
 FUN_00469046,0x469046,library
+KERNEL32.DLL::RtlUnwind,0x4690fe,library
 Unwind@00469110,0x469110,library
 Unwind@00469125,0x469125,library
 Unwind@00469140,0x469140,library

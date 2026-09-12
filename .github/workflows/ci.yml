@@ -83,7 +83,7 @@ jobs:
       run: python scripts/build.py -j0 --build-type objdiffbuild
     - uses: actions/upload-artifact@v4
       with:
-        name: th06-diff
+        name: th06e-diff
         path: |
           build/objdiff/reimpl
 

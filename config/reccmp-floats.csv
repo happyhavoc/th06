@@ -113,6 +113,9 @@ address,type,size
 0x46bac8,float,4
 0x46bb28,float,4
 0x46bb2c,float,4
+0x46bc7c,float,4
+0x46bc80,float,4
+0x46bc84,float,4
 0x46bcb8,float,4
 0x46bcc4,float,4
 0x46bcc8,float,4

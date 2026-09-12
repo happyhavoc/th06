@@ -60,12 +60,6 @@ public class ExportGhidraToReccmp extends GhidraScript
                         continue;
                     }
 
-                    /* or thunks */
-                    if (function.isThunk())
-                    {
-                        continue;
-                    }
-
                     size = function.getBody().getNumAddresses();
 
                     /* some symbol names need to "demangled" in order to match with reccmp. */
