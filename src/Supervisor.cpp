@@ -4,33 +4,26 @@
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
 #include "Ending.hpp"
-#include "FileSystem.hpp"
-#include "GameErrorContext.hpp"
 #include "GameManager.hpp"
 #include "GameWindow.hpp"
+#include "Global.hpp"
 #include "MainMenu.hpp"
 #include "MusicRoom.hpp"
 #include "ReplayManager.hpp"
 #include "ResultScreen.hpp"
-#include "Rng.hpp"
 #include "SoundPlayer.hpp"
 #include "TextHelper.hpp"
 #include "i18n.hpp"
 #include "inttypes.hpp"
-#include "utils.hpp"
 
 #include <stdio.h>
 #include <string.h>
 
 namespace th06
 {
-DIFFABLE_STATIC(Supervisor, g_Supervisor)
 DIFFABLE_STATIC(ControllerMapping, g_ControllerMapping)
 DIFFABLE_STATIC(IDirect3DSurface8 *, g_TextBufferSurface)
-DIFFABLE_STATIC(u16, g_LastFrameInput);
-DIFFABLE_STATIC(u16, g_CurFrameInput);
-DIFFABLE_STATIC(u16, g_IsEigthFrameOfHeldInput);
-DIFFABLE_STATIC(u16, g_NumOfFramesInputsWereHeld);
+DIFFABLE_STATIC(Supervisor, g_Supervisor)
 
 ChainCallbackResult Supervisor::OnUpdate(Supervisor *s)
 {

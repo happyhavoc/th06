@@ -5,11 +5,10 @@
 #include "Enemy.hpp"
 #include "EnemyManager.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "Player.hpp"
-#include "Rng.hpp"
 #include "ZunBool.hpp"
-#include "utils.hpp"
 
 namespace th06
 {

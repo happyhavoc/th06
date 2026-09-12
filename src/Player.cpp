@@ -10,26 +10,24 @@
 #include "EffectManager.hpp"
 #include "EnemyManager.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "ItemManager.hpp"
-#include "Rng.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Supervisor.hpp"
 #include "ZunBool.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 namespace th06
 {
-DIFFABLE_STATIC(Player, g_Player);
-
 DIFFABLE_STATIC_ARRAY_ASSIGN(CharacterData, 4, g_CharData) = {
     /* ReimuA  */ {4.0, 2.0, 4.0, 2.0, Player::FireBulletReimuA, Player::FireBulletReimuA},
     /* ReimuB  */ {4.0, 2.0, 4.0, 2.0, Player::FireBulletReimuB, Player::FireBulletReimuB},
     /* MarisaA */ {5.0, 2.5, 5.0, 2.5, Player::FireBulletMarisaA, Player::FireBulletMarisaA},
     /* MarisaB */ {5.0, 2.5, 5.0, 2.5, Player::FireBulletMarisaB, Player::FireBulletMarisaB},
 };
+DIFFABLE_STATIC(Player, g_Player);
 
 Player::Player()
 {

@@ -8,9 +8,8 @@
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
 #include "ChainPriorities.hpp"
-#include "Filesystem.hpp"
-#include "GameErrorContext.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "ReplayData.hpp"
 #include "ReplayManager.hpp"
 #include "ResultScreen.hpp"
@@ -19,7 +18,6 @@
 #include "Supervisor.hpp"
 #include "ZunColor.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 namespace th06
 {

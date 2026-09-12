@@ -3,22 +3,17 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
-#include "FileSystem.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "ScreenEffect.hpp"
 #include "Supervisor.hpp"
 #include "ZunColor.hpp"
 #include "ZunMemory.hpp"
-#include "utils.hpp"
 #include <d3d8.h>
 
 namespace th06
 {
-DIFFABLE_STATIC(ChainElem, g_StageCalcChain)
-DIFFABLE_STATIC(ChainElem, g_StageOnDrawHighPrioChain)
-DIFFABLE_STATIC(ChainElem, g_StageOnDrawLowPrioChain)
-
 DIFFABLE_STATIC_ARRAY_ASSIGN(StageFile, 8, g_StageFiles) = {
     {"dummy", "dummy"},
     {"data/stg1bg.anm", "data/stage1.std"},
@@ -29,7 +24,10 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(StageFile, 8, g_StageFiles) = {
     {"data/stg6bg.anm", "data/stage6.std"},
     {"data/stg7bg.anm", "data/stage7.std"},
 };
+DIFFABLE_STATIC(ChainElem, g_StageOnDrawHighPrioChain)
 DIFFABLE_STATIC(Stage, g_Stage)
+DIFFABLE_STATIC(ChainElem, g_StageOnDrawLowPrioChain)
+DIFFABLE_STATIC(ChainElem, g_StageCalcChain)
 
 Stage::Stage()
 {

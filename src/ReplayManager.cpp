@@ -2,15 +2,12 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "Controller.hpp"
-#include "FileSystem.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "ReplayManager.hpp"
-#include "Rng.hpp"
 #include "Supervisor.hpp"
 #include "ZunMemory.hpp"
-#include "utils.hpp"
 
 namespace th06
 {

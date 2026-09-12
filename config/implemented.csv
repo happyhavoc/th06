@@ -221,8 +221,6 @@ th06::GameWindow::WindowProc
 th06::GameWindow::CreateGameWindow
 WinMain
 th06::utils::CheckForRunningGameInstance
-th06::utils::DebugPrint
-th06::utils::DebugPrint2
 th06::FileSystem::OpenPath
 th06::FileSystem::WriteDataToFile
 th06::ItemManager::ItemManager

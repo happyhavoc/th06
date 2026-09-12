@@ -1,11 +1,10 @@
 #include "BombData.hpp"
 
 #include "EffectManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
-#include "Rng.hpp"
 #include "ScreenEffect.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 namespace th06
 {
