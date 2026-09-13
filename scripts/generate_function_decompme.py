@@ -53,7 +53,7 @@ def main():
             "disassemble",
             "--att",
             "--force-address-zero",
-            RESOURCES_DIR / "game.exe",
+            RESOURCES_DIR / "th06.exe",
             sys.argv[1],
         ]
     ).decode("utf8")

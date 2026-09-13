@@ -56,10 +56,10 @@ jobs:
       run: python scripts/build.py -j0
     - uses: actions/upload-artifact@v4
       with:
-        name: th06e
+        name: th06
         path: |
-          build/th06e.exe
-          build/th06e.pdb
+          build/th06.exe
+          build/th06.pdb
 
   build-diff:
     needs: ['devenv']
@@ -111,7 +111,7 @@ jobs:
       run: python scripts/build.py -j0 --build-type dllbuild
     - uses: actions/upload-artifact@v4
       with:
-        name: th06e-dll
+        name: th06-dll
         path: |
-          build/th06e.dll
-          build/th06e.pdb
+          build/th06.dll
+          build/th06.pdb

@@ -8,3 +8,5 @@ scripts/dls
 scripts/prefix
 build.ninja
 __pycache__
+reccmp-user.yml
+reccmp-build.yml

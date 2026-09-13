@@ -35,7 +35,7 @@ def main():
             ghidra_helpers.runAnalyze(
                 str(tempdir),
                 "Touhou 06",
-                import_file=str(SCRIPT_PATH.parent / "resources" / "game.exe"),
+                import_file=str(SCRIPT_PATH.parent / "resources" / "th06.exe"),
                 analysis=True,
                 post_scripts=[
                     ["ImportFromXml.java", filename],
@@ -52,7 +52,7 @@ def main():
             ghidra_helpers.runAnalyze(
                 str(tempdir),
                 "Touhou 06",
-                import_file=str(SCRIPT_PATH.parent / "resources" / "game.exe"),
+                import_file=str(SCRIPT_PATH.parent / "resources" / "th06.exe"),
                 analysis=True,
                 post_scripts=[
                     ["ImportFromCsv.java", str(mapping_csv)],
