@@ -2,11 +2,10 @@
 
 #include "AnmManager.hpp"
 #include "AsciiManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "Player.hpp"
-#include "Rng.hpp"
 #include "SoundPlayer.hpp"
-#include "utils.hpp"
 
 #include <d3dx8math.h>
 

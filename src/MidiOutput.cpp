@@ -3,12 +3,11 @@
 #include <mmreg.h>
 #include <mmsystem.h>
 
-#include "FileSystem.hpp"
+#include "Global.hpp"
 #include "MidiOutput.hpp"
 #include "Supervisor.hpp"
 #include "ZunMemory.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 namespace th06
 {

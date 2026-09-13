@@ -4,14 +4,11 @@
 #include "Enemy.hpp"
 #include "EnemyEclInstr.hpp"
 #include "EnemyManager.hpp"
-#include "FileSystem.hpp"
-#include "GameErrorContext.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "Player.hpp"
-#include "Rng.hpp"
 #include "Stage.hpp"
-#include "utils.hpp"
 
 namespace th06
 {
@@ -21,7 +18,6 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(i32, 64, g_SpellcardScore) = {
     300000, 300000, 300000, 300000, 300000, 300000, 400000, 400000, 400000, 400000, 400000, 400000, 400000,
     400000, 500000, 500000, 500000, 500000, 500000, 500000, 600000, 600000, 600000, 600000, 600000, 700000,
     700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000, 700000};
-DIFFABLE_STATIC(EclManager, g_EclManager);
 typedef void (*ExInsn)(Enemy *, EclRawInstr *);
 DIFFABLE_STATIC_ARRAY_ASSIGN(ExInsn, 17, g_EclExInsn) = {EnemyEclInstr::ExInsCirnoRainbowBallJank,
                                                          EnemyEclInstr::ExInsShootAtRandomArea,
@@ -40,6 +36,7 @@ DIFFABLE_STATIC_ARRAY_ASSIGN(ExInsn, 17, g_EclExInsn) = {EnemyEclInstr::ExInsCir
                                                          EnemyEclInstr::ExInsStageXFunc14,
                                                          EnemyEclInstr::ExInsStageXFunc15,
                                                          EnemyEclInstr::ExInsFlandreFinalContextUpdate};
+DIFFABLE_STATIC(EclManager, g_EclManager);
 
 ZunResult EclManager::Load(char *eclPath)
 {

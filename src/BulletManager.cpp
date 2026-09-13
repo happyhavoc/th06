@@ -5,13 +5,12 @@
 #include "ChainPriorities.hpp"
 #include "Enemy.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "ItemManager.hpp"
 #include "Player.hpp"
-#include "Rng.hpp"
 #include "ZunColor.hpp"
 #include "ZunMath.hpp"
-#include "utils.hpp"
 
 namespace th06
 {
@@ -45,7 +44,7 @@ struct BulletTypeInfo
 
 #define ASB3(x) ANM_SCRIPT_BULLET3_##x
 #define ASB4(x) ANM_SCRIPT_BULLET4_##x
-DIFFABLE_STATIC_ARRAY_ASSIGN(BulletTypeInfo, 10, g_BulletTypeInfos) = {
+DIFFABLE_STATIC_ARRAY_ASSIGN(const BulletTypeInfo, 10, g_BulletTypeInfos) = {
     {ASB3(PELLET), ASB3(SPAWN_PELLET_FAST), ASB3(SPAWN_PELLET_NORMAL), ASB3(SPAWN_PELLET_SLOW),
      ASB3(SPAWN_DONUT_SMALL)},
     {ASB3(RING_BALL), ASB3(SPAWN_BIG_BALL_FAST), ASB3(SPAWN_BIG_BALL_NORMAL), ASB3(SPAWN_BIG_BALL_SLOW),

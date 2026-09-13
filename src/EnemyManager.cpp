@@ -5,11 +5,10 @@
 #include "ChainPriorities.hpp"
 #include "EffectManager.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "Player.hpp"
-#include "Rng.hpp"
 #include "diffbuild.hpp"
-#include "utils.hpp"
 
 namespace th06
 {

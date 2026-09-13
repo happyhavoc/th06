@@ -1,12 +1,9 @@
 #include "AnmManager.hpp"
-#include "FileSystem.hpp"
-#include "GameErrorContext.hpp"
-#include "Rng.hpp"
+#include "Global.hpp"
 #include "Supervisor.hpp"
 #include "TextHelper.hpp"
 #include "ZunMath.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 #include <stdio.h>
 
@@ -18,7 +15,7 @@ DIFFABLE_STATIC(VertexTex1DiffuseXyz, g_PrimitivesToDrawUnknown[4]);
 DIFFABLE_STATIC(AnmManager *, g_AnmManager)
 
 #ifndef DIFFBUILD
-D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
+const D3DFORMAT g_TextureFormatD3D8Mapping[6] = {
     D3DFMT_UNKNOWN, D3DFMT_A8R8G8B8, D3DFMT_A1R5G5B5, D3DFMT_R5G6B5, D3DFMT_R8G8B8, D3DFMT_A4R4G4B4,
 };
 #endif

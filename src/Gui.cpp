@@ -6,19 +6,18 @@
 #include "AsciiManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
-#include "FileSystem.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Player.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "ZunColor.hpp"
-#include "utils.hpp"
 
 namespace th06
 {
 DIFFABLE_STATIC(Gui, g_Gui);
-DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 DIFFABLE_STATIC(ChainElem, g_GuiDrawChain);
+DIFFABLE_STATIC(ChainElem, g_GuiCalcChain);
 
 ZunBool Gui::IsStageFinished()
 {

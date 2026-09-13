@@ -2,7 +2,7 @@
 #include "AnmManager.hpp"
 #include "ChainPriorities.hpp"
 #include "GameWindow.hpp"
-#include "Rng.hpp"
+#include "Global.hpp"
 #include "Supervisor.hpp"
 
 namespace th06

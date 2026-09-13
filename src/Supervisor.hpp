@@ -5,7 +5,7 @@
 #include <dinput.h>
 
 #include "Chain.hpp"
-#include "Controller.hpp"
+#include "Global.hpp"
 #include "MidiOutput.hpp"
 #include "ZunBool.hpp"
 #include "ZunResult.hpp"
@@ -192,9 +192,5 @@ ZUN_ASSERT_SIZE(Supervisor, 0x4d8);
 
 DIFFABLE_EXTERN(ControllerMapping, g_ControllerMapping)
 DIFFABLE_EXTERN(Supervisor, g_Supervisor)
-DIFFABLE_EXTERN(u16, g_LastFrameInput)
-DIFFABLE_EXTERN(u16, g_CurFrameInput)
-DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
 DIFFABLE_EXTERN(IDirect3DSurface8 *, g_TextBufferSurface)
-DIFFABLE_EXTERN(u16, g_NumOfFramesInputsWereHeld);
 }; // namespace th06

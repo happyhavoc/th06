@@ -1,12 +1,13 @@
 #include "GameWindow.hpp"
 #include "AnmManager.hpp"
-#include "GameErrorContext.hpp"
+#include "Global.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "Supervisor.hpp"
 #include "diffbuild.hpp"
 #include "i18n.hpp"
+#include <stdio.h>
 
 namespace th06
 {
@@ -585,5 +586,45 @@ void GameWindow::InitD3dDevice(void)
     }
     g_Stage.skyFogNeedsSetup = 1;
     return;
+}
+
+namespace utils
+{
+ZunResult CheckForRunningGameInstance(void)
+{
+    g_ExclusiveMutex = CreateMutex(NULL, TRUE, TEXT("Touhou Koumakyou App"));
+
+    if (g_ExclusiveMutex == NULL)
+    {
+        return ZUN_ERROR;
+    }
+    else if (GetLastError() == ERROR_ALREADY_EXISTS)
+    {
+        g_GameErrorContext.Fatal(TH_ERR_ALREADY_RUNNING);
+        return ZUN_ERROR;
+    }
+
+    return ZUN_SUCCESS;
+}
+}; // namespace utils
+
+void GameErrorContext::Flush()
+{
+    FILE *logFile;
+
+    if (m_BufferEnd != m_Buffer)
+    {
+        this->Log(TH_ERR_LOGGER_END);
+
+        if (m_ShowMessageBox)
+        {
+            MessageBoxA(NULL, m_Buffer, "log", MB_ICONERROR);
+        }
+
+        logFile = fopen("./log.txt", "wt");
+
+        fprintf(logFile, m_Buffer);
+        fclose(logFile);
+    }
 }
 }; // namespace th06

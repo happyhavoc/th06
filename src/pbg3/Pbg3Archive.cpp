@@ -4,7 +4,7 @@
 
 namespace th06
 {
-DIFFABLE_STATIC(Pbg3Archive **, g_Pbg3Archives)
+DIFFABLE_STATIC_ASSIGN(Pbg3Archive **, g_Pbg3Archives) = NULL;
 
 Pbg3Archive::Pbg3Archive()
 {

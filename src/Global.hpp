@@ -1,0 +1,216 @@
+#pragma once
+
+#include <cstdarg>
+#include <d3d8.h>
+#include <d3dx8.h>
+#include <stdio.h>
+#include <windows.h>
+
+#include "ZunMath.hpp"
+#include "ZunResult.hpp"
+#include "diffbuild.hpp"
+#include "i18n.hpp"
+#include "inttypes.hpp"
+
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof(x[0]))
+#define ARRAY_SIZE_SIGNED(x) ((i32)sizeof(x) / (i32)sizeof(x[0]))
+
+#define ZUN_BIT(a) (1 << (a))
+#define ZUN_MASK(a) (ZUN_BIT(a) - 1)
+#define ZUN_RANGE(a, count) (ZUN_MASK((a) + (count)) & ~ZUN_MASK(a))
+#define ZUN_CLEAR_BITS(a, keep_mask) (a & ~keep_mask)
+
+#define IS_PRESSED(key) (g_CurFrameInput & (key))
+#define WAS_PRESSED(key) (((g_CurFrameInput & (key)) != 0) && (g_CurFrameInput & (key)) != (g_LastFrameInput & (key)))
+#define WAS_PRESSED_WEIRD(key)                                                                                         \
+    (WAS_PRESSED(key) || (((g_CurFrameInput & (key)) != 0) && (g_IsEigthFrameOfHeldInput != 0)))
+
+#define RELEASE(o)                                                                                                     \
+    if (o)                                                                                                             \
+    {                                                                                                                  \
+        o->Release();                                                                                                  \
+        o = NULL;                                                                                                      \
+    }
+
+namespace th06
+{
+namespace utils
+{
+ZunResult CheckForRunningGameInstance(void);
+static void DebugPrint(const char *fmt, ...)
+{
+#ifdef DEBUG
+    char tmpBuffer[512];
+    std::va_list args;
+
+    va_start(args, fmt);
+    vsprintf(tmpBuffer, fmt, args);
+    va_end(args);
+
+    printf("DEBUG2: %s\n", tmpBuffer);
+#endif
+}
+
+static void DebugPrint2(const char *fmt, ...)
+{
+#ifdef DEBUG
+    char tmpBuffer[512];
+    std::va_list args;
+
+    va_start(args, fmt);
+    vsprintf(tmpBuffer, fmt, args);
+    va_end(args);
+
+    printf("DEBUG2: %s\n", tmpBuffer);
+#endif
+}
+
+f32 AddNormalizeAngle(f32 a, f32 b);
+void Rotate(D3DXVECTOR3 *outVector, D3DXVECTOR3 *point, f32 angle);
+}; // namespace utils
+
+enum TouhouButton
+{
+    TH_BUTTON_SHOOT = 1 << 0,
+    TH_BUTTON_BOMB = 1 << 1,
+    TH_BUTTON_FOCUS = 1 << 2,
+    TH_BUTTON_MENU = 1 << 3,
+    TH_BUTTON_UP = 1 << 4,
+    TH_BUTTON_DOWN = 1 << 5,
+    TH_BUTTON_LEFT = 1 << 6,
+    TH_BUTTON_RIGHT = 1 << 7,
+    TH_BUTTON_SKIP = 1 << 8,
+    TH_BUTTON_Q = 1 << 9,
+    TH_BUTTON_S = 1 << 10,
+    TH_BUTTON_HOME = 1 << 11,
+    TH_BUTTON_ENTER = 1 << 12,
+
+    TH_BUTTON_UP_LEFT = TH_BUTTON_UP | TH_BUTTON_LEFT,
+    TH_BUTTON_UP_RIGHT = TH_BUTTON_UP | TH_BUTTON_RIGHT,
+    TH_BUTTON_DOWN_LEFT = TH_BUTTON_DOWN | TH_BUTTON_LEFT,
+    TH_BUTTON_DOWN_RIGHT = TH_BUTTON_DOWN | TH_BUTTON_RIGHT,
+    TH_BUTTON_DIRECTION = TH_BUTTON_DOWN | TH_BUTTON_RIGHT | TH_BUTTON_UP | TH_BUTTON_LEFT,
+
+    TH_BUTTON_SELECTMENU = TH_BUTTON_ENTER | TH_BUTTON_SHOOT,
+    TH_BUTTON_RETURNMENU = TH_BUTTON_MENU | TH_BUTTON_BOMB,
+    TH_BUTTON_WRONG_CHEATCODE =
+        TH_BUTTON_SHOOT | TH_BUTTON_BOMB | TH_BUTTON_MENU | TH_BUTTON_Q | TH_BUTTON_S | TH_BUTTON_ENTER,
+    TH_BUTTON_ANY = 0xFFFF,
+};
+
+namespace Controller
+{
+u16 GetJoystickCaps(void);
+u32 SetButtonFromControllerInputs(u16 *outButtons, i16 controllerButtonToTest, enum TouhouButton touhouButton,
+                                  u32 inputButtons);
+
+unsigned int SetButtonFromDirectInputJoystate(u16 *outButtons, i16 controllerButtonToTest,
+                                              enum TouhouButton touhouButton, u8 *inputButtons);
+
+u16 GetControllerInput(u16 buttons);
+u8 *GetControllerState();
+u16 GetInput(void);
+void ResetKeyboard(void);
+}; // namespace Controller
+
+DIFFABLE_EXTERN(u16, g_LastFrameInput)
+DIFFABLE_EXTERN(u16, g_CurFrameInput)
+DIFFABLE_EXTERN(u16, g_IsEigthFrameOfHeldInput)
+DIFFABLE_EXTERN(u16, g_NumOfFramesInputsWereHeld)
+
+class CMyFont
+{
+  private:
+    LPD3DXFONT m_lpFont;
+
+  public:
+    CMyFont()
+    {
+        m_lpFont = NULL;
+    };
+    virtual void Init(LPDIRECT3DDEVICE8 lpD3DDEV, int w, int h);
+    virtual void Print(char *str, int x, int y, D3DCOLOR color = 0xffffffff);
+    virtual void Clean();
+};
+
+// From FileSystem.hpp
+namespace FileSystem
+{
+u8 *OpenPath(char *filepath, int isExternalResource);
+int WriteDataToFile(char *path, void *data, size_t size);
+} // namespace FileSystem
+DIFFABLE_EXTERN(u32, g_LastFileSize)
+
+// From Rng.hpp
+struct Rng
+{
+    u16 seed;
+    u32 generationCount;
+
+    u16 GetRandomU16();
+    u32 GetRandomU32();
+    f32 GetRandomF32ZeroToOne();
+
+    void Initialize(u16 seed)
+    {
+        this->seed = seed;
+        this->generationCount = 0;
+    }
+
+    u16 GetRandomU16InRange(u16 range)
+    {
+        return range != 0 ? this->GetRandomU16() % range : 0;
+    }
+
+    u32 GetRandomU32InRange(u32 range)
+    {
+        return range != 0 ? this->GetRandomU32() % range : 0;
+    }
+
+    f32 GetRandomF32InRange(f32 range)
+    {
+        return this->GetRandomF32ZeroToOne() * range;
+    }
+};
+
+DIFFABLE_EXTERN(Rng, g_Rng)
+DIFFABLE_EXTERN(HANDLE, g_ExclusiveMutex);
+
+// From GameErrorContext.hpp
+class GameErrorContext;
+
+class GameErrorContext
+{
+  public:
+    char m_Buffer[0x800];
+    char *m_BufferEnd;
+    i8 m_ShowMessageBox;
+
+    GameErrorContext()
+    {
+        m_BufferEnd = m_Buffer;
+        m_Buffer[0] = '\0';
+        // Required to get some mov eax, [m_Buffer_ptr]
+        m_ShowMessageBox = false;
+        Log(TH_ERR_LOGGER_START);
+    }
+
+    ~GameErrorContext()
+    {
+    }
+
+    void ResetContext()
+    {
+        m_BufferEnd = m_Buffer;
+        m_BufferEnd[0] = '\0';
+        // TODO: check if it should be m_Buffer[0] above.
+    }
+
+    void Flush();
+
+    const char *Fatal(const char *fmt, ...);
+    const char *Log(const char *fmt, ...);
+};
+
+DIFFABLE_EXTERN(GameErrorContext, g_GameErrorContext)
+}; // namespace th06

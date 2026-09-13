@@ -5,16 +5,15 @@
 #include "EclManager.hpp"
 #include "EffectManager.hpp"
 #include "EnemyManager.hpp"
+#include "Global.hpp"
 #include "Gui.hpp"
 #include "Player.hpp"
 #include "ReplayManager.hpp"
 #include "ResultScreen.hpp"
-#include "Rng.hpp"
 #include "ScreenEffect.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "Supervisor.hpp"
-#include "utils.hpp"
 
 #include <d3d8types.h>
 #include <d3dx8math.h>

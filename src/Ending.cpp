@@ -3,15 +3,13 @@
 #include "AnmManager.hpp"
 #include "Chain.hpp"
 #include "ChainPriorities.hpp"
-#include "FileSystem.hpp"
-#include "GameErrorContext.hpp"
 #include "GameManager.hpp"
+#include "Global.hpp"
 #include "Player.hpp"
 #include "ScreenEffect.hpp"
 #include "Supervisor.hpp"
 #include "ZunMemory.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 namespace th06
 {

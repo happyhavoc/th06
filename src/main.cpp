@@ -7,17 +7,20 @@
 
 #include "AnmManager.hpp"
 #include "Chain.hpp"
-#include "FileSystem.hpp"
-#include "GameErrorContext.hpp"
 #include "GameWindow.hpp"
+#include "Global.hpp"
 #include "SoundPlayer.hpp"
 #include "Stage.hpp"
 #include "Supervisor.hpp"
 #include "ZunResult.hpp"
 #include "i18n.hpp"
-#include "utils.hpp"
 
 using namespace th06;
+
+namespace th06
+{
+DIFFABLE_STATIC(HANDLE, g_ExclusiveMutex)
+}
 
 #pragma var_order(renderResult, testCoopLevelRes, msg, testResetRes, waste1, waste2, waste3, waste4, waste5, waste6)
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
