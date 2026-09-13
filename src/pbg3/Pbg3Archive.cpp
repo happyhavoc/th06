@@ -91,7 +91,7 @@ i32 Pbg3Archive::Release()
         delete[] this->entries;
         this->entries = NULL;
     }
-    delete this->unk;
+    free(this->unk);
     return TRUE;
 }
 

@@ -89,9 +89,7 @@ ZUN_ASSERT_SIZE(RenderVertexInfo, 0x14);
 struct AnmManager
 {
     AnmManager();
-    ~AnmManager()
-    {
-    }
+    ~AnmManager();
 
     void ReleaseVertexBuffer()
     {

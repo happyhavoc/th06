@@ -115,7 +115,7 @@ i32 EffectManager::EffectUpdateCallback4(Effect *effect)
     posOffset.y = normalizedPos.z * 0.0f - normalizedPos.x * 1.0f;
     posOffset.z = normalizedPos.x * 0.0f - normalizedPos.y * 0.0f;
 
-    if (D3DXVec3LengthSq(&posOffset) < 0)
+    if (D3DXVec3LengthSq(&posOffset) < 0.00001f)
     {
         normalizedPos = D3DXVECTOR3(1.0f, 0.0f, 0.0f);
     }

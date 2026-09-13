@@ -147,7 +147,7 @@ void ItemManager::OnUpdate()
         }
         if (curItem->startPosition.y < 3.0f)
         {
-            curItem->startPosition.y += g_Supervisor.effectiveFramerateMultiplier * 0.03f;
+            curItem->startPosition.y += 0.03f * g_Supervisor.effectiveFramerateMultiplier;
         }
         else
         {
@@ -373,7 +373,7 @@ void ItemManager::OnDraw()
         curItem->sprite.pos.z = 0.01f;
         if (curItem->currentPosition.y < -8.0f)
         {
-            curItem->sprite.pos.y = g_GameManager.arcadeRegionTopLeftPos.y + 8.0f;
+            curItem->sprite.pos.y = 8.0f + g_GameManager.arcadeRegionTopLeftPos.y;
             if (curItem->unk_142 != 0)
             {
                 g_AnmManager->SetActiveSprite(&curItem->sprite, curItem->itemType + 519);
